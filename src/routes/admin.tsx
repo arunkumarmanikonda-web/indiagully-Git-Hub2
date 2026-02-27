@@ -3,301 +3,263 @@ import { layout } from '../lib/layout'
 
 const app = new Hono()
 
-// ── ADMIN LOGIN ──────────────────────────────────────────────────────────────
+// ── ADMIN LOGIN ───────────────────────────────────────────────────────────────
 app.get('/', (c) => {
   const content = `
-  <div style="min-height:100vh;background:#080808;display:flex;align-items:center;justify-content:center;padding:2rem">
-    <div style="width:100%;max-width:420px">
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:linear-gradient(135deg,#080004,#0F000A,#080808);position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;"></div>
 
-      <div style="text-align:center;margin-bottom:2.5rem">
-        <div style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);margin-bottom:1.5rem">
-          <i class="fas fa-shield-alt" style="color:#ef4444;font-size:1.1rem"></i>
+  <div style="position:relative;width:100%;max-width:400px;">
+    <div style="text-align:center;margin-bottom:2rem;">
+      <a href="/" style="display:inline-flex;align-items:center;gap:.75rem;">
+        <svg width="26" height="32" viewBox="0 0 38 46" fill="none">
+          <path d="M19 2C9 2 2 9.5 2 19.5C2 26.5 5.8 32.5 11.5 36L9 44H29L26.5 36C32.2 32.5 36 26.5 36 19.5C36 9.5 29 2 19 2Z" stroke="#B8960C" stroke-width="1.5" fill="none"/>
+          <path d="M23 8.5C18.5 8.5 15 11.5 14 15.5C13.2 18.5 14.5 21 17 22.5L14.5 27.5C16.5 28.5 18 29 19.5 29C22.5 29 25.5 27.5 27 25C28.5 22.5 28 19.5 25.5 18L27.5 13C26 10 24.5 8.5 23 8.5Z" fill="#B8960C"/>
+          <ellipse cx="20" cy="18" rx="3" ry="4" fill="#111"/>
+        </svg>
+        <div>
+          <div class="f-serif" style="color:#fff;font-size:.9rem;letter-spacing:.06em;">INDIA GULLY</div>
+          <div style="font-size:.48rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);">Celebrating Desiness</div>
         </div>
-        <div style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(239,68,68,.6);margin-bottom:1.25rem">SUPER ADMIN — RESTRICTED ACCESS</div>
-        <h1 class="f-serif" style="font-size:1.75rem;color:#fff;font-weight:400;margin-bottom:.625rem">Admin Console</h1>
-        <p style="font-size:.8rem;color:rgba(255,255,255,.3);line-height:1.7">India Gully Enterprise Platform. Authorised personnel only. All access is logged and monitored.</p>
+      </a>
+    </div>
+
+    <div style="background:#fff;box-shadow:0 40px 100px rgba(0,0,0,.85);">
+      <div style="height:3px;background:linear-gradient(90deg,#6B1A1A,#B8960C);"></div>
+      <div style="padding:2.25rem 2.25rem 1.75rem;text-align:center;background:#fafafa;border-bottom:1px solid var(--border);">
+        <div style="width:56px;height:56px;background:linear-gradient(135deg,#6B1A1A,#8B2A2A);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;border:2px solid rgba(184,150,12,.3);">
+          <i class="fas fa-shield-alt" style="color:var(--gold);font-size:1.25rem;"></i>
+        </div>
+        <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:var(--ink);margin-bottom:.25rem;">Super Admin Console</h1>
+        <p style="font-size:.78rem;color:var(--ink-muted);">India Gully Enterprise Platform</p>
+        <div style="margin-top:.75rem;padding:.35rem .75rem;background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.2);display:inline-flex;align-items:center;gap:.4rem;">
+          <i class="fas fa-exclamation-triangle" style="color:#dc2626;font-size:.65rem;"></i>
+          <span style="font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#dc2626;">Restricted Access</span>
+        </div>
       </div>
 
-      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);padding:2.5rem">
-        <form id="adminForm" onsubmit="handleAdmin(event)" style="display:flex;flex-direction:column;gap:1.25rem">
+      <div style="padding:2rem 2.25rem 2.25rem;">
+        <form class="ig-form" method="POST" action="/api/auth/admin" style="display:flex;flex-direction:column;gap:1rem;">
           <div>
-            <label class="ig-label" style="color:rgba(255,255,255,.35)">Admin Username</label>
-            <input type="text" id="adminUser" class="ig-input" placeholder="admin" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#fff" required>
+            <label class="ig-lbl">Admin Username</label>
+            <input type="text" name="username" class="ig-inp" required placeholder="admin@indiagully.com" autocomplete="off">
           </div>
           <div>
-            <label class="ig-label" style="color:rgba(255,255,255,.35)">Password</label>
-            <input type="password" id="adminPass" class="ig-input" placeholder="••••••••••••" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#fff" required>
+            <label class="ig-lbl">Admin Password</label>
+            <input type="password" name="password" class="ig-inp" required placeholder="••••••••••••••••" autocomplete="off">
           </div>
           <div>
-            <label class="ig-label" style="color:rgba(255,255,255,.35)">TOTP Code (6-digit)</label>
-            <input type="text" id="adminOtp" class="ig-input" placeholder="000000" maxlength="6" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#fff;letter-spacing:.25em;font-size:1.1rem" required>
+            <label class="ig-lbl">2FA / TOTP Code</label>
+            <input type="text" name="totp" class="ig-inp" required placeholder="6-digit TOTP" maxlength="6" autocomplete="off" inputmode="numeric">
           </div>
-          <div id="adminErr" style="display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);padding:.75rem;font-size:.8rem;color:#fca5a5;text-align:center"></div>
-          <button type="submit" id="adminBtn" class="btn btn-gold" style="justify-content:center;padding:.875rem">
-            <i class="fas fa-shield-alt" style="margin-right:.5rem;font-size:.75rem"></i>Access Admin Console
+          <button type="submit" class="btn" style="background:linear-gradient(135deg,#6B1A1A,#8B2A2A);color:#fff;border-color:transparent;width:100%;justify-content:center;padding:.8rem;margin-top:.25rem;">
+            <i class="fas fa-shield-alt" style="margin-right:.5rem;"></i>Authenticate &amp; Enter
           </button>
         </form>
-      </div>
 
-      <p style="text-align:center;font-size:.72rem;color:rgba(255,255,255,.18);margin-top:1.25rem">
-        Unauthorised access is a criminal offence under the IT Act, 2000 · All sessions are logged<br>
-        <a href="/portal" style="color:rgba(255,255,255,.25);text-decoration:none">← Back to Portal Hub</a>
-      </p>
+        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);text-align:center;">
+          <p style="font-size:.7rem;color:var(--ink-faint);margin-bottom:.3rem;">All admin actions are logged with timestamp, IP and identity.</p>
+          <p style="font-size:.7rem;color:var(--ink-faint);">Unauthorised access is a criminal offence under IT Act 2000.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem;text-align:center;">
+      <a href="/" style="font-size:.78rem;color:rgba(255,255,255,.25);" onmouseover="this.style.color='rgba(255,255,255,.5)'" onmouseout="this.style.color='rgba(255,255,255,.25)'">
+        <i class="fas fa-arrow-left" style="margin-right:.4rem;font-size:.65rem;"></i>Return to India Gully Website
+      </a>
     </div>
   </div>
-
-  <script>
-  function handleAdmin(e) {
-    e.preventDefault();
-    var btn = document.getElementById('adminBtn');
-    var err = document.getElementById('adminErr');
-    err.style.display = 'none';
-    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="margin-right:.5rem"></i>Verifying…';
-    btn.disabled = true;
-    setTimeout(function() {
-      var u = document.getElementById('adminUser').value;
-      var p = document.getElementById('adminPass').value;
-      var o = document.getElementById('adminOtp').value;
-      if(u && p.length >= 4 && o.length === 6) {
-        window.location.href = '/admin/dashboard';
-      } else {
-        err.textContent = 'Invalid credentials. Access denied.';
-        err.style.display = 'block';
-        btn.innerHTML = '<i class="fas fa-shield-alt" style="margin-right:.5rem;font-size:.75rem"></i>Access Admin Console';
-        btn.disabled = false;
-      }
-    }, 1400);
-  }
-  </script>
-  `
-  return c.html(layout('Super Admin', content, { noNav: true, noFooter: true, bodyClass: '' }))
+</div>`
+  return c.html(layout('Super Admin', content, { noNav: true }))
 })
 
-// ── ADMIN DASHBOARD ──────────────────────────────────────────────────────────
+// ── ADMIN DASHBOARD ───────────────────────────────────────────────────────────
 app.get('/dashboard', (c) => {
-  const content = `
-  <div style="display:flex;min-height:100vh;background:#0A0A0A">
+  return c.html(layout('Admin Dashboard', adminDashboard(), { noNav: true, bodyClass: '' }))
+})
 
-    <!-- SIDEBAR -->
-    <aside style="width:256px;background:#111;border-right:1px solid rgba(255,255,255,.07);flex-shrink:0;display:flex;flex-direction:column;overflow-y:auto">
-      <div style="padding:1.5rem;border-bottom:1px solid rgba(255,255,255,.07)">
-        <div class="f-serif" style="color:#fff;font-size:.95rem;letter-spacing:.06em">INDIA GULLY</div>
-        <div style="font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:2px">Super Admin Console</div>
-        <div style="font-size:.6rem;color:rgba(239,68,68,.5);margin-top:.5rem;font-weight:600;letter-spacing:.1em">● LIVE ENVIRONMENT</div>
+function adminDashboard() {
+  const modules = [
+    { icon:'globe',         label:'CMS',                desc:'Edit content, banners, SEO meta',      color:'#B8960C', link:'#cms' },
+    { icon:'users',         label:'User Management',    desc:'Create, manage & deactivate users',     color:'#1A3A6B', link:'#users' },
+    { icon:'sitemap',       label:'Workflow Engine',    desc:'Approval flows, escalations, triggers', color:'#6B3A8B', link:'#workflows' },
+    { icon:'chart-bar',     label:'Finance ERP',        desc:'Vouchers, GST, P&L, Balance Sheet',    color:'#15803d', link:'#finance' },
+    { icon:'user-friends',  label:'HR ERP',             desc:'Payroll, attendance, leave, TDS',       color:'#1d4ed8', link:'#hr' },
+    { icon:'gavel',         label:'Governance',         desc:'Board meetings, minutes, registers',    color:'#7c3aed', link:'#governance' },
+    { icon:'boxes',         label:'HORECA Inventory',   desc:'SKUs, quotes, procurement pipeline',    color:'#0891b2', link:'#horeca' },
+    { icon:'file-signature',label:'Contracts',          desc:'Templates, clauses, e-sign workflow',   color:'#d97706', link:'#contracts' },
+    { icon:'plug',          label:'Integrations',       desc:'Vyapar, GST Portal, email, WhatsApp',   color:'#dc2626', link:'#integrations' },
+    { icon:'chart-pie',     label:'BI & Reports',       desc:'Board dashboards, finance, HR analytics',color:'#be185d', link:'#bi' },
+    { icon:'cog',           label:'System Config',      desc:'Branding, SMTP, storage, API keys',     color:'#374151', link:'#config' },
+    { icon:'shield-alt',    label:'Security & Audit',   desc:'Access logs, RBAC matrix, permissions', color:'#991b1b', link:'#security' },
+  ]
+
+  return `
+<div style="display:flex;height:100vh;overflow:hidden;">
+  <!-- SIDEBAR -->
+  <aside style="width:240px;flex-shrink:0;background:#0C0C0C;display:flex;flex-direction:column;min-height:100vh;">
+    <div style="padding:1.25rem;border-bottom:1px solid rgba(255,255,255,.07);">
+      <div class="f-serif" style="color:#fff;font-size:.9rem;letter-spacing:.05em;">INDIA GULLY</div>
+      <div style="font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:2px;">Super Admin</div>
+    </div>
+    <nav style="flex:1;padding:.75rem .625rem;overflow-y:auto;">
+      <div class="sb-sec">Platform</div>
+      ${[
+        { icon:'tachometer-alt', label:'Dashboard',       on:true  },
+        { icon:'globe',          label:'CMS',             on:false },
+        { icon:'file-contract',  label:'Mandates',        on:false },
+        { icon:'chart-bar',      label:'Finance ERP',     on:false },
+        { icon:'user-friends',   label:'HR ERP',          on:false },
+        { icon:'gavel',          label:'Governance',      on:false },
+        { icon:'boxes',          label:'HORECA',          on:false },
+        { icon:'chart-pie',      label:'BI & Reports',    on:false },
+      ].map(item => `
+      <a href="#" class="sb-lk ${item.on ? 'on' : ''}">
+        <i class="fas fa-${item.icon}" style="width:16px;text-align:center;font-size:.8rem;"></i>${item.label}
+      </a>
+      `).join('')}
+      <div class="sb-sec">System</div>
+      ${[
+        { icon:'users',      label:'User Management', on:false },
+        { icon:'plug',       label:'Integrations',    on:false },
+        { icon:'cog',        label:'Config',          on:false },
+        { icon:'shield-alt', label:'Security & Audit',on:false },
+      ].map(item => `
+      <a href="#" class="sb-lk ${item.on ? 'on' : ''}">
+        <i class="fas fa-${item.icon}" style="width:16px;text-align:center;font-size:.8rem;"></i>${item.label}
+      </a>
+      `).join('')}
+    </nav>
+    <div style="padding:.875rem .625rem;border-top:1px solid rgba(255,255,255,.07);">
+      <a href="/" class="sb-lk"><i class="fas fa-sign-out-alt" style="width:16px;text-align:center;font-size:.8rem;"></i>Sign Out</a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main style="flex:1;overflow-y:auto;background:#F2F2F0;">
+    <!-- Top bar -->
+    <div style="background:#fff;border-bottom:1px solid var(--border);padding:.875rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;">
+      <div>
+        <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:var(--ink);">Admin Dashboard</h1>
+        <p style="font-size:.7rem;color:var(--ink-faint);">India Gully Enterprise Platform · Last sync: 2 min ago</p>
       </div>
-
-      <nav style="flex:1;padding:1rem .75rem">
-        <div class="sidebar-section">Content</div>
-        <a class="sidebar-link active" onclick="showModule('cms')"    href="#"><i class="fas fa-edit"            style="width:16px;font-size:.8rem"></i>CMS & Content</a>
-        <a class="sidebar-link"        onclick="showModule('users')"  href="#"><i class="fas fa-users-cog"       style="width:16px;font-size:.8rem"></i>User Management</a>
-        <a class="sidebar-link"        onclick="showModule('workflow')"href="#"><i class="fas fa-project-diagram"style="width:16px;font-size:.8rem"></i>Workflows & Approvals</a>
-
-        <div class="sidebar-section">Finance ERP</div>
-        <a class="sidebar-link"        onclick="showModule('finance')" href="#"><i class="fas fa-chart-line"     style="width:16px;font-size:.8rem"></i>Finance Dashboard</a>
-        <a class="sidebar-link"        href="#"                                ><i class="fas fa-receipt"        style="width:16px;font-size:.8rem"></i>Vouchers & GL</a>
-        <a class="sidebar-link"        href="#"                                ><i class="fas fa-percent"        style="width:16px;font-size:.8rem"></i>GST Reports</a>
-        <a class="sidebar-link"        href="#"                                ><i class="fas fa-file-invoice-dollar" style="width:16px;font-size:.8rem"></i>Invoices & Payments</a>
-
-        <div class="sidebar-section">HR ERP</div>
-        <a class="sidebar-link"        onclick="showModule('hr')"      href="#"><i class="fas fa-user-friends"  style="width:16px;font-size:.8rem"></i>HR Dashboard</a>
-        <a class="sidebar-link"        href="#"                                ><i class="fas fa-calendar-check" style="width:16px;font-size:.8rem"></i>Attendance & Leave</a>
-        <a class="sidebar-link"        href="#"                                ><i class="fas fa-money-check-alt"style="width:16px;font-size:.8rem"></i>Payroll & TDS</a>
-
-        <div class="sidebar-section">Governance</div>
-        <a class="sidebar-link"        onclick="showModule('gov')"     href="#"><i class="fas fa-gavel"          style="width:16px;font-size:.8rem"></i>Governance</a>
-        <a class="sidebar-link"        href="#"                                ><i class="fas fa-scroll"         style="width:16px;font-size:.8rem"></i>Board Meetings</a>
-        <a class="sidebar-link"        href="#"                                ><i class="fas fa-vote-yea"        style="width:16px;font-size:.8rem"></i>Resolutions</a>
-
-        <div class="sidebar-section">Platform</div>
-        <a class="sidebar-link"        href="#"                                ><i class="fas fa-utensils"       style="width:16px;font-size:.8rem"></i>HORECA Catalogue</a>
-        <a class="sidebar-link"        href="#"                                ><i class="fas fa-file-contract"  style="width:16px;font-size:.8rem"></i>Contracts</a>
-        <a class="sidebar-link"        onclick="showModule('bi')"      href="#"><i class="fas fa-chart-pie"      style="width:16px;font-size:.8rem"></i>BI & Reports</a>
-        <a class="sidebar-link"        href="#"                                ><i class="fas fa-plug"           style="width:16px;font-size:.8rem"></i>Integrations</a>
-        <a class="sidebar-link"        href="#"                                ><i class="fas fa-lock"           style="width:16px;font-size:.8rem"></i>Security & Audit</a>
-        <a class="sidebar-link"        href="#"                                ><i class="fas fa-cog"            style="width:16px;font-size:.8rem"></i>System Config</a>
-      </nav>
-
-      <div style="padding:1rem;border-top:1px solid rgba(255,255,255,.07)">
-        <a href="/admin" class="sidebar-link" style="font-size:.72rem"><i class="fas fa-sign-out-alt" style="width:16px"></i>Sign Out</a>
-      </div>
-    </aside>
-
-    <!-- MAIN AREA -->
-    <div style="flex:1;display:flex;flex-direction:column;min-width:0">
-
-      <!-- Top Bar -->
-      <header style="background:#111;border-bottom:1px solid rgba(255,255,255,.07);padding:.875rem 1.75rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
-        <div style="display:flex;align-items:center;gap:1.5rem">
-          <h1 id="moduleTitle" style="font-size:.95rem;font-weight:600;color:#fff">Admin Dashboard</h1>
-          <span id="moduleDesc" style="font-size:.72rem;color:rgba(255,255,255,.3)">India Gully Enterprise Platform v2024.12</span>
+      <div style="display:flex;align-items:center;gap:.875rem;">
+        <div style="background:rgba(21,128,61,.08);border:1px solid rgba(21,128,61,.2);padding:.3rem .75rem;display:flex;align-items:center;gap:.4rem;">
+          <div style="width:6px;height:6px;background:#15803d;border-radius:50%;"></div>
+          <span style="font-size:.72rem;color:#15803d;font-weight:600;">All Systems Live</span>
         </div>
-        <div style="display:flex;align-items:center;gap:1rem">
-          <button style="background:none;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);padding:.4rem .875rem;font-size:.72rem;cursor:pointer;font-family:inherit" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(255,255,255,.5)'">
-            <i class="fas fa-bell" style="margin-right:.375rem"></i>Alerts (3)
-          </button>
-          <div style="width:32px;height:32px;background:var(--gold);display:flex;align-items:center;justify-content:center">
-            <span style="font-size:.7rem;font-weight:700;color:#fff">SA</span>
+        <div style="width:34px;height:34px;background:linear-gradient(135deg,#6B1A1A,#8B2A2A);display:flex;align-items:center;justify-content:center;">
+          <i class="fas fa-shield-alt" style="color:var(--gold);font-size:.7rem;"></i>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:2rem;">
+      <!-- Finance KPIs -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;">
+        ${[
+          { label:'Revenue MTD',      value:'₹28.4L', sub:'↑ 12% vs last month', c:'var(--gold)' },
+          { label:'Receivables',      value:'₹14.2L', sub:'3 invoices outstanding', c:'#1d4ed8' },
+          { label:'GST Liability',    value:'₹4.1L',  sub:'Due by 20th Jan', c:'#dc2626' },
+          { label:'Bank Balance',     value:'₹67.8L', sub:'All accounts · HDFC', c:'#15803d' },
+        ].map(s => `
+        <div class="am">
+          <div style="font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.625rem;">${s.label}</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:${s.c};line-height:1;margin-bottom:.3rem;">${s.value}</div>
+          <div style="font-size:.72rem;color:var(--ink-faint);">${s.sub}</div>
+        </div>
+        `).join('')}
+      </div>
+
+      <!-- HR KPIs -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;">
+        ${[
+          { label:'Total Headcount', value:'24',   sub:'3 on leave today',       c:'var(--ink)' },
+          { label:'Attendance Today',value:'91%',  sub:'22 present, 2 absent',   c:'#15803d' },
+          { label:'Payroll This Month',value:'₹18.5L', sub:'Processed on 1st',  c:'#7c3aed' },
+          { label:'Open Requisitions',value:'2',   sub:'1 real estate, 1 admin', c:'#d97706' },
+        ].map(s => `
+        <div class="am">
+          <div style="font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.625rem;">${s.label}</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:${s.c};line-height:1;margin-bottom:.3rem;">${s.value}</div>
+          <div style="font-size:.72rem;color:var(--ink-faint);">${s.sub}</div>
+        </div>
+        `).join('')}
+      </div>
+
+      <!-- MODULE GRID -->
+      <div style="margin-bottom:2rem;">
+        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.15rem;color:var(--ink);margin-bottom:1rem;">Platform Modules</h2>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.875rem;">
+          ${modules.map(m => `
+          <a href="${m.link}" style="background:#fff;border:1px solid var(--border);padding:1.25rem;display:flex;flex-direction:column;gap:.625rem;transition:border-color .2s,box-shadow .2s;cursor:pointer;" onmouseover="this.style.borderColor='${m.color}';this.style.boxShadow='0 4px 16px rgba(0,0,0,.08)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+            <div style="width:36px;height:36px;background:${m.color};display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-${m.icon}" style="color:#fff;font-size:.75rem;"></i>
+            </div>
+            <div>
+              <div style="font-size:.85rem;font-weight:600;color:var(--ink);margin-bottom:.2rem;">${m.label}</div>
+              <div style="font-size:.72rem;color:var(--ink-faint);">${m.desc}</div>
+            </div>
+          </a>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- RECENT ACTIVITY & GOVERNANCE ALERTS -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <!-- Audit Log -->
+        <div style="background:#fff;border:1px solid var(--border);">
+          <div style="padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+            <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:.95rem;color:var(--ink);">Recent Audit Log</h3>
+            <span style="font-size:.68rem;color:var(--ink-faint);">Live</span>
           </div>
-        </div>
-      </header>
-
-      <!-- MODULE CONTENT -->
-      <div style="flex:1;overflow:auto;padding:2rem">
-
-        <!-- ── DEFAULT / OVERVIEW ── -->
-        <div id="mod-default">
-
-          <!-- KPI Row -->
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem">
+          <div style="padding:.5rem 0;">
             ${[
-              { icon:'fa-chart-line',         val:'₹42.3 Cr',  lab:'Revenue YTD',         trend:'+18% YOY',  color:'rgba(184,150,12,.15)' },
-              { icon:'fa-file-invoice-dollar', val:'₹12.8 Cr',  lab:'Outstanding AR',      trend:'6 invoices', color:'rgba(239,68,68,.12)' },
-              { icon:'fa-users',               val:'18',         lab:'Active Employees',    trend:'3 joining',  color:'rgba(59,130,246,.1)' },
-              { icon:'fa-folder-open',         val:'6',          lab:'Active Mandates',     trend:'₹8,815 Cr',  color:'rgba(22,163,74,.1)' },
-            ].map(s => `
-            <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);padding:1.5rem">
-              <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem">
-                <div style="width:38px;height:38px;background:${s.color};border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center">
-                  <i class="fas ${s.icon}" style="color:var(--gold);font-size:.8rem"></i>
-                </div>
-                <span style="font-size:.68rem;color:rgba(255,255,255,.3);font-weight:500">${s.trend}</span>
+              { user:'admin',       action:'CMS: Updated homepage hero banner',          time:'2 min ago',  type:'edit' },
+              { user:'portal/client', action:'Login: CL-001 from 103.x.x.x',           time:'14 min ago', type:'login' },
+              { user:'hr-admin',    action:'Payroll: January payroll approved',          time:'1 hr ago',   type:'approve' },
+              { user:'admin',       action:'User: akm@indiagully.com profile updated',   time:'3 hr ago',   type:'edit' },
+              { user:'portal/board', action:'Board Meeting BM-2024-04 minutes uploaded', time:'5 hr ago',   type:'upload' },
+            ].map(log => `
+            <div style="padding:.625rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:.75rem;">
+              <div style="width:6px;height:6px;border-radius:50%;background:${log.type==='login'?'#15803d':log.type==='approve'?'var(--gold)':log.type==='upload'?'#1d4ed8':'var(--ink-faint)'};margin-top:.35rem;flex-shrink:0;"></div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:.78rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${log.action}</div>
+                <div style="font-size:.68rem;color:var(--ink-faint);">${log.user} · ${log.time}</div>
               </div>
-              <div class="f-serif" style="font-size:1.75rem;color:#fff;font-weight:400">${s.val}</div>
-              <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-top:.25rem;letter-spacing:.06em">${s.lab}</div>
             </div>
             `).join('')}
           </div>
-
-          <!-- Finance + HR Row -->
-          <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:1.5rem;margin-bottom:2rem" class="admin-2col">
-
-            <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
-              <div style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between">
-                <h2 style="font-size:.875rem;font-weight:600;color:#fff">Finance Overview</h2>
-                <span class="badge badge-green">Live</span>
-              </div>
-              <div style="padding:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem">
-                ${[
-                  { lab:'Revenue MTD',     val:'₹4.2 Cr' },
-                  { lab:'Receivables',      val:'₹12.8 Cr' },
-                  { lab:'GST Liability',    val:'₹1.1 Cr' },
-                  { lab:'Bank Balance',     val:'₹8.4 Cr' },
-                ].map(f => `
-                <div style="padding:1rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)">
-                  <div style="font-size:.68rem;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.375rem">${f.lab}</div>
-                  <div class="f-serif" style="font-size:1.25rem;color:var(--gold);font-weight:400">${f.val}</div>
-                </div>
-                `).join('')}
-              </div>
-            </div>
-
-            <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
-              <div style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.07)">
-                <h2 style="font-size:.875rem;font-weight:600;color:#fff">HR Overview</h2>
-              </div>
-              <div style="padding:1.5rem;display:flex;flex-direction:column;gap:.875rem">
-                ${[
-                  { lab:'Headcount',        val:'18' },
-                  { lab:'Attendance Today', val:'16/18' },
-                  { lab:'Leave Requests',   val:'2 Pending' },
-                  { lab:'Next Payroll',     val:'Jan 1, 2025' },
-                ].map(h => `
-                <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:.875rem;border-bottom:1px solid rgba(255,255,255,.05)">
-                  <span style="font-size:.8rem;color:rgba(255,255,255,.4)">${h.lab}</span>
-                  <span style="font-size:.85rem;font-weight:600;color:#fff">${h.val}</span>
-                </div>
-                `).join('')}
-              </div>
-            </div>
-          </div>
-
-          <!-- CMS Quick Edit -->
-          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);margin-bottom:1.5rem">
-            <div style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between">
-              <h2 style="font-size:.875rem;font-weight:600;color:#fff">CMS Quick Edit</h2>
-              <span style="font-size:.72rem;color:rgba(255,255,255,.3)">Zero-code content management</span>
-            </div>
-            <div style="padding:1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.875rem">
-              ${[
-                { page:'Homepage Hero', status:'Published', lastEdit:'Dec 20, 2024' },
-                { page:'About Page', status:'Published', lastEdit:'Dec 18, 2024' },
-                { page:'Active Mandates', status:'Published', lastEdit:'Dec 15, 2024' },
-                { page:'Services Pages', status:'Published', lastEdit:'Dec 12, 2024' },
-                { page:'HORECA Catalogue', status:'Published', lastEdit:'Dec 10, 2024' },
-                { page:'Insights / Blog', status:'Published', lastEdit:'Dec 8, 2024' },
-              ].map(p => `
-              <div style="padding:1rem;border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between">
-                <div>
-                  <div style="font-size:.82rem;color:#fff;font-weight:500">${p.page}</div>
-                  <div style="font-size:.68rem;color:rgba(255,255,255,.25);margin-top:.2rem">${p.lastEdit}</div>
-                </div>
-                <button style="font-size:.68rem;font-weight:600;letter-spacing:.08em;color:var(--gold);background:none;border:1px solid rgba(184,150,12,.3);padding:.3rem .75rem;cursor:pointer;text-transform:uppercase;font-family:inherit" onmouseover="this.style.background='var(--gold)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--gold)'">Edit</button>
-              </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- Audit Log -->
-          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
-            <div style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.07)">
-              <h2 style="font-size:.875rem;font-weight:600;color:#fff">Audit Log — Recent Activity</h2>
-            </div>
-            <div style="overflow-x:auto">
-              <table class="ig-table">
-                <thead><tr><th>Timestamp</th><th>User</th><th>Module</th><th>Action</th><th>IP</th></tr></thead>
-                <tbody>
-                  ${[
-                    ['2024-12-20 14:32:11','akm@indiagully.com','Mandate CMS','Updated mandate status: Entertainment Maharashtra → Phase 2','103.x.x.x'],
-                    ['2024-12-20 11:18:44','admin','Finance ERP','Invoice IG-2024-0041 created for Demo Client','182.x.x.x'],
-                    ['2024-12-19 16:05:22','pavan@indiagully.com','HR ERP','Approved leave request — Emp ID: IG-EMP-0012','103.x.x.x'],
-                    ['2024-12-19 09:45:03','admin','System Config','RBAC policy updated — Board Portal access rules modified','182.x.x.x'],
-                    ['2024-12-18 18:22:51','amit.jhingan@indiagully.com','Mandate CMS','New mandate enquiry received — Heritage Portfolio Rajasthan','59.x.x.x'],
-                  ].map(([ts, user, mod, action, ip]) => `
-                  <tr>
-                    <td class="caption" style="font-family:monospace">${ts}</td>
-                    <td style="font-size:.8rem;color:var(--gold)">${user}</td>
-                    <td><span class="badge badge-dark">${mod}</span></td>
-                    <td style="font-size:.8rem;color:rgba(255,255,255,.7)">${action}</td>
-                    <td class="caption" style="font-family:monospace">${ip}</td>
-                  </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
 
+        <!-- Governance Alerts -->
+        <div style="background:#fff;border:1px solid var(--border);">
+          <div style="padding:1rem 1.5rem;border-bottom:1px solid var(--border);">
+            <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:.95rem;color:var(--ink);">Governance &amp; Compliance</h3>
+          </div>
+          <div style="padding:.5rem 0;">
+            ${[
+              { icon:'check-circle', c:'#15803d', label:'Board Meeting BM-2024-04',            sub:'Minutes signed & uploaded · Jan 10' },
+              { icon:'clock',        c:'#d97706', label:'AGM 2024 — 30 days to deadline',       sub:'Documents in preparation · Due Mar 31' },
+              { icon:'check-circle', c:'#15803d', label:'MBP-1 & DIR-8 Declarations',          sub:'All 3 directors current · Dec 2024' },
+              { icon:'exclamation',  c:'#dc2626', label:'GST Filing — GSTR-1 Due Jan 11',       sub:'Invoices: 12 confirmed, 2 pending' },
+              { icon:'check-circle', c:'#15803d', label:'TDS Challans — Q3 FY25',               sub:'Filed Dec 31 · ₹1.2L deposited' },
+            ].map(a => `
+            <div style="padding:.75rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.875rem;">
+              <i class="fas fa-${a.icon}" style="color:${a.c};font-size:.85rem;flex-shrink:0;"></i>
+              <div>
+                <div style="font-size:.8rem;font-weight:500;color:var(--ink);">${a.label}</div>
+                <div style="font-size:.7rem;color:var(--ink-faint);">${a.sub}</div>
+              </div>
+            </div>
+            `).join('')}
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-
-  <script>
-  function showModule(mod) {
-    // In a real implementation, this would show different module panels
-    var titles = {
-      cms: 'CMS & Content Management',
-      users: 'User Management & RBAC',
-      workflow: 'Workflows & Approvals',
-      finance: 'Finance ERP',
-      hr: 'HR ERP',
-      gov: 'Governance & Compliance',
-      bi: 'BI & Reporting',
-    };
-    if(titles[mod]) {
-      document.getElementById('moduleTitle').textContent = titles[mod];
-    }
-    // Mark active
-    document.querySelectorAll('.sidebar-link').forEach(function(l){ l.classList.remove('active'); });
-    event.currentTarget.classList.add('active');
-    event.preventDefault();
-  }
-  </script>
-
-  <style>
-  @media(max-width:900px){ .admin-2col{grid-template-columns:1fr!important} }
-  </style>
-  `
-  return c.html(layout('Admin Dashboard', content, { noNav: true, noFooter: true }))
-})
+  </main>
+</div>`
+}
 
 export default app
