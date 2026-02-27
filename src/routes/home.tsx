@@ -274,11 +274,13 @@ app.get('/', (c) => {
     <!-- Logo grid with fallback text logos -->
     <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);margin-bottom:2.5rem;">
       ${HOSPITALITY_BRANDS.map((b: any) => `
-      <div style="background:#fff;padding:1.5rem 1.25rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90px;gap:.625rem;transition:background .2s;" onmouseover="this.style.background='var(--parch)'" onmouseout="this.style.background='#fff'">
-        <img src="${b.logo}" alt="${b.name}" style="height:28px;width:auto;object-fit:contain;filter:grayscale(100%);opacity:.65;transition:all .25s;"
-             onmouseover="this.style.filter='grayscale(0)';this.style.opacity='1'" onmouseout="this.style.filter='grayscale(100%)';this.style.opacity='.65'"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <div style="display:none;font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);text-align:center;">${b.name}</div>
+      <div style="background:#fff;padding:1.25rem .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90px;gap:.5rem;transition:background .2s;cursor:default;" onmouseover="this.style.background='var(--parch)'" onmouseout="this.style.background='#fff'">
+        <img src="${b.svg}" alt="${b.name}" style="width:100px;height:40px;object-fit:contain;display:block;"
+             onerror="this.onerror=null;this.src='';this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div style="display:none;width:100px;height:40px;background:${b.color};align-items:center;justify-content:center;border-radius:2px;">
+          <span style="font-size:.6rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff;text-align:center;padding:0 4px;">${b.name}</span>
+        </div>
+        <div style="font-size:.55rem;color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase;text-align:center;">${b.cat}</div>
       </div>`).join('')}
     </div>
 
@@ -300,12 +302,13 @@ app.get('/', (c) => {
 
     <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);margin-bottom:2.5rem;">
       ${RETAIL_BRANDS.map((b: any) => `
-      <div style="background:#fff;padding:1.5rem 1.25rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90px;gap:.625rem;transition:background .2s;" onmouseover="this.style.background='var(--parch)'" onmouseout="this.style.background='#fff'">
-        <img src="${b.logo}" alt="${b.name}" style="height:28px;width:auto;object-fit:contain;filter:grayscale(100%);opacity:.65;transition:all .25s;"
-             onmouseover="this.style.filter='grayscale(0)';this.style.opacity='1'" onmouseout="this.style.filter='grayscale(100%)';this.style.opacity='.65'"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <div style="display:none;font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);text-align:center;">${b.name}</div>
-        <div style="font-size:.58rem;color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase;">${b.cat}</div>
+      <div style="background:#fff;padding:1.25rem .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90px;gap:.5rem;transition:background .2s;cursor:default;" onmouseover="this.style.background='var(--parch)'" onmouseout="this.style.background='#fff'">
+        <img src="${b.svg}" alt="${b.name}" style="width:100px;height:40px;object-fit:contain;display:block;"
+             onerror="this.onerror=null;this.src='';this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div style="display:none;width:100px;height:40px;background:#1a1a1a;align-items:center;justify-content:center;border-radius:2px;">
+          <span style="font-size:.6rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff;text-align:center;padding:0 4px;">${b.name}</span>
+        </div>
+        <div style="font-size:.55rem;color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase;text-align:center;">${b.cat}</div>
       </div>`).join('')}
     </div>
 
@@ -328,10 +331,13 @@ app.get('/', (c) => {
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
         ${ADVISORY_PARTNERS.slice(0,4).map((p: any) => `
         <div style="border:1px solid var(--border);padding:1.5rem;text-align:center;transition:border-color .25s,box-shadow .25s;" onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 8px 24px rgba(0,0,0,.07)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
-          <img src="${p.logo}" alt="${p.name}" style="height:32px;width:auto;object-fit:contain;margin:0 auto .875rem;filter:grayscale(100%);opacity:.7;transition:all .25s;"
-               onmouseover="this.style.filter='grayscale(0)';this.style.opacity='1'" onmouseout="this.style.filter='grayscale(100%)';this.style.opacity='.7'"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-          <div style="display:none;font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);margin-bottom:.5rem;">${p.name}</div>
+          <div style="display:flex;align-items:center;justify-content:center;margin-bottom:.875rem;min-height:40px;">
+            <img src="${p.svg}" alt="${p.name}" style="width:110px;height:40px;object-fit:contain;display:block;"
+                 onerror="this.onerror=null;this.src='';this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div style="display:none;width:110px;height:40px;background:${p.color};align-items:center;justify-content:center;border-radius:2px;">
+              <span style="font-size:.75rem;font-weight:800;letter-spacing:.06em;color:${p.textColor || '#fff'};text-align:center;">${p.abbr}</span>
+            </div>
+          </div>
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">${p.name}</div>
           <div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:.25rem;">${p.abbr}</div>
           <div style="font-size:.68rem;color:var(--ink-muted);margin-top:.3rem;">${p.sub}</div>
@@ -343,9 +349,13 @@ app.get('/', (c) => {
     <div style="display:flex;justify-content:center;">
       ${ADVISORY_PARTNERS.slice(4).map((p: any) => `
       <div style="border:1px solid var(--border);padding:1.5rem 2.5rem;text-align:center;transition:border-color .25s,box-shadow .25s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-        <img src="${p.logo}" alt="${p.name}" style="height:32px;width:auto;object-fit:contain;margin:0 auto .875rem;filter:grayscale(100%);opacity:.7;transition:all .25s;"
-             onmouseover="this.style.filter='grayscale(0)';this.style.opacity='1'" onmouseout="this.style.filter='grayscale(100%)';this.style.opacity='.7'"
-             onerror="this.style.display='none'">
+        <div style="display:flex;align-items:center;justify-content:center;margin-bottom:.875rem;min-height:40px;">
+          <img src="${p.svg}" alt="${p.name}" style="width:110px;height:40px;object-fit:contain;display:block;"
+               onerror="this.onerror=null;this.src='';this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div style="display:none;width:110px;height:40px;background:${p.color};align-items:center;justify-content:center;border-radius:2px;">
+            <span style="font-size:.75rem;font-weight:800;letter-spacing:.06em;color:${p.textColor || '#fff'};text-align:center;">${p.abbr}</span>
+          </div>
+        </div>
         <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">${p.name}</div>
         <div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:.25rem;">${p.abbr}</div>
         <div style="font-size:.68rem;color:var(--ink-muted);margin-top:.3rem;">${p.sub}</div>
@@ -400,7 +410,7 @@ app.get('/', (c) => {
       </div>
       <div style="display:flex;flex-direction:column;gap:1rem;">
         ${[
-          { name:'Arun Manikonda',  title:'Managing Director',      sub:'Director on Board & KMP',   init:'AM', ph:'+91 98108 89134', em:'akm@indiagully.com', bio:'Founding Director with 20+ years across hospitality, real estate and entertainment.' },
+          { name:'Arun Manikonda',  title:'Managing Director',      sub:'Director on Board & KMP',   init:'AM', ph:'+91 8988 988 988', em:'akm@indiagully.com', bio:'Founding Director with 20+ years across hospitality, real estate and entertainment.' },
           { name:'Pavan Manikonda', title:'Executive Director',      sub:'Director on Board & KMP',   init:'PM', ph:'+91 62825 56067', em:'pavan@indiagully.com', bio:'Drives operations and business development across HORECA, hotel management and new verticals.' },
           { name:'Amit Jhingan',    title:'President, Real Estate',  sub:'Key Managerial Personnel',  init:'AJ', ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com', bio:'Real Estate Vertical Head. Specialist in retail leasing, commercial transactions and entertainment city advisory.' },
         ].map(p => `

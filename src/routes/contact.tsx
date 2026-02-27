@@ -121,7 +121,7 @@ app.get('/', (c) => {
         <div style="background:var(--ink);padding:2rem;">
           <p class="eyebrow-lt" style="margin-bottom:1.25rem;">Leadership Direct</p>
           ${[
-            { name:'Arun Manikonda',  title:'Managing Director',    init:'AM', ph:'+91 98108 89134', em:'akm@indiagully.com' },
+            { name:'Arun Manikonda',  title:'Managing Director',    init:'AM', ph:'+91 8988 988 988', em:'akm@indiagully.com' },
             { name:'Pavan Manikonda', title:'Executive Director',    init:'PM', ph:'+91 62825 56067', em:'pavan@indiagully.com' },
             { name:'Amit Jhingan',    title:'President, Real Estate',init:'AJ', ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com' },
           ].map(p => `
@@ -144,7 +144,7 @@ app.get('/', (c) => {
           <p style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:1rem;">Office &amp; General</p>
           <ul style="list-style:none;display:flex;flex-direction:column;gap:.625rem;">
             <li style="display:flex;gap:.6rem;align-items:flex-start;font-size:.8rem;color:var(--ink-soft);"><i class="fas fa-map-marker-alt" style="color:var(--gold);font-size:.65rem;margin-top:.2rem;flex-shrink:0;width:14px;"></i>New Delhi, India</li>
-            <li><a href="tel:+919810889134" style="display:flex;gap:.6rem;align-items:center;font-size:.8rem;color:var(--ink-soft);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-soft)'"><i class="fas fa-phone" style="color:var(--gold);font-size:.65rem;width:14px;"></i>+91 98108 89134</a></li>
+            <li><a href="tel:+918988988988" style="display:flex;gap:.6rem;align-items:center;font-size:.8rem;color:var(--ink-soft);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-soft)'"><i class="fas fa-phone" style="color:var(--gold);font-size:.65rem;width:14px;"></i>+91 8988 988 988</a></li>
             <li><a href="mailto:info@indiagully.com" style="display:flex;gap:.6rem;align-items:center;font-size:.8rem;color:var(--ink-soft);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-soft)'"><i class="fas fa-envelope" style="color:var(--gold);font-size:.65rem;width:14px;"></i>info@indiagully.com</a></li>
           </ul>
         </div>

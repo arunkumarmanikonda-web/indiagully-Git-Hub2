@@ -128,20 +128,27 @@ app.get('/', (c) => {
 
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:1000px;margin:0 auto;">
       ${[
-        { name:'Arun Manikonda',  title:'Managing Director',       role:'Director on Board & KMP',        phone:'+91 9810889134', email:'akm@indiagully.com',          init:'AM', bio:"Arun leads India Gully's strategic direction and client relationships, bringing deep expertise in multi-vertical enterprise advisory across hospitality, retail and real estate. As Managing Director and Director on Board, he oversees all major mandates and institutional partnerships." },
-        { name:'Pavan Manikonda', title:'Executive Director',       role:'Director on Board & KMP',        phone:'+91 6282556067', email:'pavan@indiagully.com',        init:'PM', bio:"Pavan drives operational excellence and business development across India Gully's advisory verticals. As Executive Director and Director on Board, he leads execution across hospitality management, brand on-boarding and project delivery mandates." },
-        { name:'Amit Jhingan',    title:'President, Real Estate',   role:'Key Managerial Personnel (KMP)', phone:'+91 9899993543', email:'amit.jhingan@indiagully.com', init:'AJ', bio:"Amit leads India Gully's Real Estate advisory vertical — overseeing transaction advisory mandates, investment sales, asset management and real estate brokerage across commercial, hospitality and mixed-use assets nationwide." },
+        { name:'Arun Manikonda',  title:'Managing Director',       role:'Director on Board & KMP',        phone:'+91 8988 988 988', email:'akm@indiagully.com',          init:'AM', photo:'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80', bio:"Arun leads India Gully's strategic direction and client relationships, bringing deep expertise in multi-vertical enterprise advisory across hospitality, retail and real estate. As Managing Director and Director on Board, he oversees all major mandates and institutional partnerships." },
+        { name:'Pavan Manikonda', title:'Executive Director',       role:'Director on Board & KMP',        phone:'+91 6282556067', email:'pavan@indiagully.com',        init:'PM', photo:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80', bio:"Pavan drives operational excellence and business development across India Gully's advisory verticals. As Executive Director and Director on Board, he leads execution across hospitality management, brand on-boarding and project delivery mandates." },
+        { name:'Amit Jhingan',    title:'President, Real Estate',   role:'Key Managerial Personnel (KMP)', phone:'+91 9899993543', email:'amit.jhingan@indiagully.com', init:'AJ', photo:'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80', bio:"Amit leads India Gully's Real Estate advisory vertical — overseeing transaction advisory mandates, investment sales, asset management and real estate brokerage across commercial, hospitality and mixed-use assets nationwide." },
       ].map(p => `
       <div class="card" style="overflow:hidden;">
-        <div style="background:var(--ink);padding:2rem;text-align:center;position:relative;overflow:hidden;">
-          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,rgba(184,150,12,.1) 0%,transparent 60%);"></div>
-          <div style="position:relative;">
-            <div style="width:68px;height:68px;background:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
-              <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;font-weight:700;">${p.init}</span>
+        <div style="background:var(--ink);padding:0;text-align:center;position:relative;overflow:hidden;">
+          <div style="position:relative;width:100%;height:220px;overflow:hidden;">
+            <img src="${p.photo}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;transition:transform .4s;" 
+                 onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'"
+                 onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div style="display:none;width:100%;height:220px;background:var(--ink);align-items:center;justify-content:center;">
+              <div style="width:80px;height:80px;background:var(--gold);display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:#fff;font-weight:700;">${p.init}</span>
+              </div>
             </div>
-            <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.15rem;color:#fff;margin-bottom:.25rem;">${p.name}</h3>
-            <p style="font-size:.8rem;color:var(--gold);margin-bottom:.25rem;">${p.title}</p>
-            <p class="caption-lt">${p.role}</p>
+            <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.75) 100%);pointer-events:none;"></div>
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:1.25rem;text-align:center;">
+              <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:#fff;margin-bottom:.2rem;text-shadow:0 1px 4px rgba(0,0,0,.5);">${p.name}</h3>
+              <p style="font-size:.78rem;color:var(--gold);margin-bottom:.15rem;">${p.title}</p>
+              <p style="font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);">${p.role}</p>
+            </div>
           </div>
         </div>
         <div style="padding:1.5rem;">

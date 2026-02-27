@@ -5,6 +5,12 @@ const app = new Hono()
 
 // Admin Login
 app.get('/', (c) => {
+  const error = c.req.query('error') || ''
+  const errorBanner = error ? `
+  <div style="background:#fef2f2;border-bottom:1px solid #fecaca;padding:.875rem 1.5rem;display:flex;gap:.6rem;align-items:flex-start;">
+    <i class="fas fa-exclamation-circle" style="color:#dc2626;font-size:.75rem;margin-top:.15rem;flex-shrink:0;"></i>
+    <p style="font-size:.78rem;color:#991b1b;">${error}</p>
+  </div>` : ''
   const content = `
 <div style="min-height:100vh;background:linear-gradient(135deg,#050505 0%,#100808 50%,#050505 100%);display:flex;align-items:center;justify-content:center;padding:2rem;">
   <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;"></div>
@@ -34,6 +40,7 @@ app.get('/', (c) => {
           <strong>2FA Code:</strong> <code style="background:#fef3c7;padding:1px 5px;border-radius:2px;font-size:.72rem;">000000</code></p>
         </div>
       </div>
+      ${errorBanner}
 
       <!-- Form -->
       <div style="padding:2rem;">

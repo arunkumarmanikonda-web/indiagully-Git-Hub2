@@ -77,7 +77,13 @@ function loginPage(opts: {
   demoId: string
   demoPass: string
   demoOtp?: string
+  error?: string
 }) {
+  const errorBanner = opts.error ? `
+  <div style="background:#fef2f2;border-bottom:1px solid #fecaca;padding:.875rem 1.5rem;display:flex;gap:.6rem;align-items:flex-start;">
+    <i class="fas fa-exclamation-circle" style="color:#dc2626;font-size:.75rem;margin-top:.15rem;flex-shrink:0;"></i>
+    <p style="font-size:.78rem;color:#991b1b;">${opts.error}</p>
+  </div>` : ''
   return `
 <div style="min-height:100vh;background:linear-gradient(135deg,#080808 0%,#141414 100%);display:flex;align-items:center;justify-content:center;padding:2rem 1.5rem;">
   <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.04) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;"></div>
@@ -103,6 +109,7 @@ function loginPage(opts: {
           <strong>Password:</strong> <code style="background:#fef3c7;padding:1px 5px;border-radius:2px;font-size:.72rem;">${opts.demoPass}</code>${opts.demoOtp ? `<br><strong>OTP/2FA:</strong> <code style="background:#fef3c7;padding:1px 5px;border-radius:2px;font-size:.72rem;">${opts.demoOtp}</code>` : ''}</p>
         </div>
       </div>
+      ${errorBanner}
 
       <!-- Form -->
       <div style="padding:2rem;">
@@ -156,32 +163,44 @@ function loginPage(opts: {
 </div>`
 }
 
-app.get('/client', (c) => c.html(layout('Client Portal', loginPage({
-  portal: 'client', title: 'Client Portal', subtitle: 'Advisory Services Platform',
-  accentColor: '#B8960C', icon: 'user-tie',
-  idLabel: 'Client ID or Email', idPlaceholder: 'Client ID or your@email.com',
-  demoId: 'demo@indiagully.com',
-  demoPass: 'Client@IG2024',
-  demoOtp: '000000',
-}), { noNav: true, noFooter: true })))
+app.get('/client', (c) => {
+  const error = c.req.query('error') || ''
+  return c.html(layout('Client Portal', loginPage({
+    portal: 'client', title: 'Client Portal', subtitle: 'Advisory Services Platform',
+    accentColor: '#B8960C', icon: 'user-tie',
+    idLabel: 'Client ID or Email', idPlaceholder: 'Client ID or your@email.com',
+    demoId: 'demo@indiagully.com',
+    demoPass: 'Client@IG2024',
+    demoOtp: '000000',
+    error,
+  }), { noNav: true, noFooter: true }))
+})
 
-app.get('/employee', (c) => c.html(layout('Employee Portal', loginPage({
-  portal: 'employee', title: 'Employee Portal', subtitle: 'HR & Operations Platform',
-  accentColor: '#1A3A6B', icon: 'users',
-  idLabel: 'Employee ID', idPlaceholder: 'IG-EMP-XXXX',
-  demoId: 'IG-EMP-0001',
-  demoPass: 'Emp@IG2024',
-  demoOtp: '000000',
-}), { noNav: true, noFooter: true })))
+app.get('/employee', (c) => {
+  const error = c.req.query('error') || ''
+  return c.html(layout('Employee Portal', loginPage({
+    portal: 'employee', title: 'Employee Portal', subtitle: 'HR & Operations Platform',
+    accentColor: '#1A3A6B', icon: 'users',
+    idLabel: 'Employee ID', idPlaceholder: 'IG-EMP-XXXX',
+    demoId: 'IG-EMP-0001',
+    demoPass: 'Emp@IG2024',
+    demoOtp: '000000',
+    error,
+  }), { noNav: true, noFooter: true }))
+})
 
-app.get('/board', (c) => c.html(layout('Board & KMP Portal', loginPage({
-  portal: 'board', title: 'Board & KMP Portal', subtitle: 'Governance & Compliance Platform',
-  accentColor: '#1E1E1E', icon: 'gavel',
-  idLabel: 'Director DIN or KMP ID', idPlaceholder: 'DIN XXXXXXXX or IG-KMP-XXXX',
-  demoId: 'IG-KMP-0001',
-  demoPass: 'Board@IG2024',
-  demoOtp: '000000',
-}), { noNav: true, noFooter: true })))
+app.get('/board', (c) => {
+  const error = c.req.query('error') || ''
+  return c.html(layout('Board & KMP Portal', loginPage({
+    portal: 'board', title: 'Board & KMP Portal', subtitle: 'Governance & Compliance Platform',
+    accentColor: '#1E1E1E', icon: 'gavel',
+    idLabel: 'Director DIN or KMP ID', idPlaceholder: 'DIN XXXXXXXX or IG-KMP-XXXX',
+    demoId: 'IG-KMP-0001',
+    demoPass: 'Board@IG2024',
+    demoOtp: '000000',
+    error,
+  }), { noNav: true, noFooter: true }))
+})
 
 // Password reset
 app.get('/reset', (c) => {
@@ -320,6 +339,166 @@ function clientDashboard() {
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  </main>
+</div>`
+}
+
+// Employee Dashboard
+app.get('/employee/dashboard', (c) => {
+  return c.html(layout('Employee Portal', employeeDashboard(), { noNav: true, noFooter: true }))
+})
+
+function employeeDashboard() {
+  return `
+<div style="display:flex;height:100vh;overflow:hidden;background:#f7f7f7;">
+  <aside style="width:240px;flex-shrink:0;background:#1A3A6B;display:flex;flex-direction:column;min-height:100vh;">
+    <div style="padding:1.25rem;border-bottom:1px solid rgba(255,255,255,.1);">
+      <div class="f-serif" style="color:#fff;font-size:.95rem;letter-spacing:.06em;">INDIA GULLY</div>
+      <div style="font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:#93c5fd;margin-top:2px;">Employee Portal</div>
+    </div>
+    <nav style="flex:1;padding:.75rem;overflow-y:auto;">
+      ${[
+        { icon:'tachometer-alt',  label:'Dashboard',     active:true  },
+        { icon:'calendar-check',  label:'Attendance',    active:false },
+        { icon:'umbrella-beach',  label:'Leave',         active:false },
+        { icon:'money-check-alt', label:'Payslips',      active:false },
+        { icon:'file-invoice',    label:'Form-16',       active:false },
+        { icon:'book-open',       label:'Policies',      active:false },
+        { icon:'address-book',    label:'Directory',     active:false },
+        { icon:'user-cog',        label:'My Profile',    active:false },
+      ].map(item => `
+      <a href="#" class="sb-lk ${item.active ? 'on' : ''}">
+        <i class="fas fa-${item.icon}" style="width:16px;font-size:.75rem;text-align:center;"></i>${item.label}
+      </a>`).join('')}
+    </nav>
+    <div style="padding:.75rem;border-top:1px solid rgba(255,255,255,.1);">
+      <a href="/" class="sb-lk"><i class="fas fa-sign-out-alt" style="width:16px;font-size:.75rem;text-align:center;"></i>Sign Out</a>
+    </div>
+  </aside>
+  <main style="flex:1;overflow-y:auto;">
+    <div style="background:#fff;border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:var(--ink);">Employee Dashboard</h2>
+        <p style="font-size:.72rem;color:var(--ink-muted);">Welcome back. Today: ${new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</p>
+      </div>
+      <div style="width:34px;height:34px;background:#1A3A6B;display:flex;align-items:center;justify-content:center;">
+        <span style="font-family:'DM Serif Display',Georgia,serif;font-size:.8rem;color:#fff;font-weight:700;">EE</span>
+      </div>
+    </div>
+    <div style="padding:2rem;">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem;">
+        ${[
+          { label:'Leave Balance',     value:'12',    sub:'Days available',      icon:'umbrella-beach', color:'#1A3A6B' },
+          { label:'Attendance MTD',    value:'96%',   sub:'Present days',        icon:'calendar-check', color:'#16a34a' },
+          { label:'Pending Approvals', value:'1',     sub:'Leave pending',       icon:'clock',          color:'#d97706' },
+          { label:'Payroll Month',     value:'Feb',   sub:'2025 — Processed',    icon:'money-check-alt',color:'#7c3aed' },
+        ].map(s => `
+        <div class="am">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;">
+            <span style="font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);">${s.label}</span>
+            <div style="width:32px;height:32px;background:${s.color};display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-${s.icon}" style="color:#fff;font-size:.65rem;"></i>
+            </div>
+          </div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;line-height:1;color:var(--ink);margin-bottom:.25rem;">${s.value}</div>
+          <div style="font-size:.72rem;color:var(--ink-muted);">${s.sub}</div>
+        </div>`).join('')}
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin-bottom:1rem;">Recent Notices</h3>
+        ${[
+          { date:'27 Feb 2025', title:'Q1 2025 Performance Reviews — Schedule Released',      type:'HR' },
+          { date:'20 Feb 2025', title:'Office Closure — Holi 2025 (14th March)',              type:'Holiday' },
+          { date:'15 Feb 2025', title:'Updated Travel & Expense Reimbursement Policy',        type:'Policy' },
+        ].map(n => `
+        <div style="padding:.875rem 0;border-bottom:1px solid var(--border);display:flex;gap:1rem;align-items:flex-start;">
+          <span style="font-size:.68rem;color:var(--ink-muted);white-space:nowrap;margin-top:.15rem;">${n.date}</span>
+          <div>
+            <span style="font-size:.85rem;font-weight:500;color:var(--ink);">${n.title}</span>
+            <span style="margin-left:.5rem;font-size:.65rem;background:#dbeafe;color:#1d4ed8;padding:1px 6px;border-radius:2px;font-weight:600;">${n.type}</span>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </main>
+</div>`
+}
+
+// Board & KMP Dashboard
+app.get('/board/dashboard', (c) => {
+  return c.html(layout('Board & KMP Portal', boardDashboard(), { noNav: true, noFooter: true }))
+})
+
+function boardDashboard() {
+  return `
+<div style="display:flex;height:100vh;overflow:hidden;background:#f7f7f7;">
+  <aside style="width:240px;flex-shrink:0;background:#1E1E1E;display:flex;flex-direction:column;min-height:100vh;">
+    <div style="padding:1.25rem;border-bottom:1px solid rgba(255,255,255,.07);">
+      <div class="f-serif" style="color:#fff;font-size:.95rem;letter-spacing:.06em;">INDIA GULLY</div>
+      <div style="font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:2px;">Board & KMP</div>
+    </div>
+    <nav style="flex:1;padding:.75rem;overflow-y:auto;">
+      ${[
+        { icon:'tachometer-alt', label:'Dashboard',       active:true  },
+        { icon:'gavel',          label:'Board Meetings',  active:false },
+        { icon:'vote-yea',       label:'Voting',          active:false },
+        { icon:'book',           label:'Statutory Reg.',  active:false },
+        { icon:'file-alt',       label:'Board Packs',     active:false },
+        { icon:'chart-bar',      label:'Finance Reports', active:false },
+        { icon:'shield-alt',     label:'Compliance',      active:false },
+      ].map(item => `
+      <a href="#" class="sb-lk ${item.active ? 'on' : ''}">
+        <i class="fas fa-${item.icon}" style="width:16px;font-size:.75rem;text-align:center;"></i>${item.label}
+      </a>`).join('')}
+    </nav>
+    <div style="padding:.75rem;border-top:1px solid rgba(255,255,255,.07);">
+      <a href="/" class="sb-lk"><i class="fas fa-sign-out-alt" style="width:16px;font-size:.75rem;text-align:center;"></i>Sign Out</a>
+    </div>
+  </aside>
+  <main style="flex:1;overflow-y:auto;">
+    <div style="background:#fff;border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:var(--ink);">Board & KMP Dashboard</h2>
+        <p style="font-size:.72rem;color:var(--ink-muted);">Governance & Compliance · India Gully Enterprise Platform</p>
+      </div>
+      <div style="width:34px;height:34px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;">
+        <i class="fas fa-gavel" style="color:var(--gold);font-size:.75rem;"></i>
+      </div>
+    </div>
+    <div style="padding:2rem;">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem;">
+        ${[
+          { label:'Next Board Meeting', value:'Mar 15',  sub:'2025 — Scheduled',       icon:'calendar',   color:'#1E1E1E' },
+          { label:'Pending Resolutions',value:'2',       sub:'For approval',            icon:'vote-yea',   color:'#d97706' },
+          { label:'Open Compliance',    value:'0',       sub:'All compliant',           icon:'check-circle',color:'#16a34a' },
+          { label:'DIN Status',         value:'Active',  sub:'All directors valid',     icon:'id-card',    color:'#2563eb' },
+        ].map(s => `
+        <div class="am">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;">
+            <span style="font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);">${s.label}</span>
+            <div style="width:32px;height:32px;background:${s.color};display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-${s.icon}" style="color:#fff;font-size:.65rem;"></i>
+            </div>
+          </div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;line-height:1;color:var(--ink);margin-bottom:.25rem;">${s.value}</div>
+          <div style="font-size:.72rem;color:var(--ink-muted);">${s.sub}</div>
+        </div>`).join('')}
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin-bottom:1rem;">Upcoming Compliance Calendar</h3>
+        ${[
+          { date:'15 Mar 2025', event:'Board Meeting — Q1 Review',                    status:'Scheduled' },
+          { date:'31 Mar 2025', event:'Annual Accounts Filing (Form AOC-4)',           status:'Due' },
+          { date:'30 Jun 2025', event:'Annual Return Filing (Form MGT-7)',             status:'Upcoming' },
+          { date:'30 Sep 2025', event:'Secretarial Audit (Form MR-3)',                 status:'Upcoming' },
+        ].map(n => `
+        <div style="padding:.875rem 0;border-bottom:1px solid var(--border);display:flex;gap:1rem;align-items:center;">
+          <span style="font-size:.72rem;color:var(--ink-muted);white-space:nowrap;min-width:90px;">${n.date}</span>
+          <span style="font-size:.85rem;color:var(--ink);flex:1;">${n.event}</span>
+          <span style="font-size:.68rem;padding:2px 8px;border-radius:2px;font-weight:600;background:${n.status==='Scheduled'?'#dcfce7':n.status==='Due'?'#fef9c3':'#f1f5f9'};color:${n.status==='Scheduled'?'#166534':n.status==='Due'?'#854d0e':'#475569'};">${n.status}</span>
+        </div>`).join('')}
       </div>
     </div>
   </main>

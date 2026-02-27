@@ -22,7 +22,7 @@ export const META = {
   gstin: '07XXXXXX000XXX',
   address: 'New Delhi, India',
   email: 'info@indiagully.com',
-  phone: '+91 98108 89134',
+  phone: '+91 8988 988 988',
   website: 'https://indiagully.com',
 }
 
@@ -32,9 +32,11 @@ export const TEAM = [
     name: 'Arun Manikonda',
     title: 'Managing Director',
     designation: 'Director on Board & KMP',
-    phone: '+91 9810889134',
+    phone: '+91 8988 988 988',
     email: 'akm@indiagully.com',
     initials: 'AM',
+    // Professional portrait — verified Unsplash ID
+    photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80',
     bio: 'Founding Director with 20+ years across hospitality, real estate and entertainment. Leads all strategic advisory mandates and institutional client relationships.',
   },
   {
@@ -45,6 +47,8 @@ export const TEAM = [
     phone: '+91 6282556067',
     email: 'pavan@indiagully.com',
     initials: 'PM',
+    // Professional portrait — verified Unsplash ID
+    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80',
     bio: 'Drives operations and business development across HORECA, hotel management and new vertical expansion. Board Director and KMP.',
   },
   {
@@ -55,6 +59,8 @@ export const TEAM = [
     phone: '+91 9899993543',
     email: 'amit.jhingan@indiagully.com',
     initials: 'AJ',
+    // Professional portrait — verified Unsplash ID
+    photo: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80',
     bio: 'Chief Marketing Officer and Real Estate Vertical Head. Specialist in retail leasing, commercial transactions, entertainment city advisory and investor-grade deal structuring.',
   },
 ]
