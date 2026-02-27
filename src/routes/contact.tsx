@@ -13,39 +13,42 @@ app.get('/', (c) => {
 <div style="background:var(--ink);padding:7rem 0 5rem;position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.05) 1px,transparent 1px);background-size:72px 72px;"></div>
   <div class="wrap" style="position:relative;">
-    <div style="max-width:680px;" class="fu">
+    <div style="max-width:660px;" class="fu">
       <div class="gr-lt"></div>
-      <p class="eyebrow" style="margin-bottom:.875rem;">Contact &amp; Enquiries</p>
+      <p class="eyebrow" style="margin-bottom:.875rem;">Contact &amp; RFQ</p>
       <h1 class="h1" style="margin-bottom:1.5rem;">Let's Work<br><em style="color:var(--gold);font-style:italic;">Together</em></h1>
-      <p class="lead-lt" style="max-width:520px;">Submit a mandate enquiry, request an information memorandum, arrange a HORECA quote or contact our leadership team directly. We respond within 24 hours.</p>
+      <p class="lead-lt" style="max-width:520px;">Submit a mandate enquiry, HORECA RFQ or general inquiry. Our leadership team reviews all submissions within 24 hours.</p>
     </div>
   </div>
 </div>
 
-<!-- MAIN CONTENT -->
-<div class="sec-pc">
+<!-- CONTACT BODY -->
+<div class="sec-wh">
   <div class="wrap">
-    <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:4rem;align-items:start;">
+    <div style="display:grid;grid-template-columns:3fr 2fr;gap:4.5rem;align-items:start;">
 
-      <!-- ENQUIRY FORM -->
+      <!-- FORM -->
       <div>
         <div class="gr"></div>
-        <p class="eyebrow" style="margin-bottom:.75rem;">Mandate Enquiry</p>
-        <h2 class="h2" style="margin-bottom:2rem;">Submit Your Enquiry</h2>
+        <p class="eyebrow" style="margin-bottom:.75rem;">Submit an Enquiry</p>
+        <h2 class="h2" style="margin-bottom:1.75rem;">Mandate &amp; Advisory<br>Enquiry Form</h2>
 
         <form class="ig-form" method="POST" action="/api/enquiry" style="display:flex;flex-direction:column;gap:1.25rem;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          ${mandate ? `<input type="hidden" name="mandate_ref" value="${mandate}">` : ''}
+          ${service ? `<input type="hidden" name="service_ref" value="${service}">` : ''}
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
             <div>
-              <label class="ig-lbl">Full Name *</label>
-              <input type="text" name="name" class="ig-inp" required placeholder="Your full name">
+              <label class="ig-lbl">First Name *</label>
+              <input type="text" name="first_name" class="ig-inp" required placeholder="First name">
             </div>
             <div>
-              <label class="ig-lbl">Organisation *</label>
-              <input type="text" name="organisation" class="ig-inp" required placeholder="Company / fund name">
+              <label class="ig-lbl">Last Name *</label>
+              <input type="text" name="last_name" class="ig-inp" required placeholder="Last name">
             </div>
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
             <div>
               <label class="ig-lbl">Email Address *</label>
               <input type="email" name="email" class="ig-inp" required placeholder="your@email.com">
@@ -57,140 +60,124 @@ app.get('/', (c) => {
           </div>
 
           <div>
+            <label class="ig-lbl">Organisation / Company</label>
+            <input type="text" name="company" class="ig-inp" placeholder="Developer, Fund, Family Office, Operator…">
+          </div>
+
+          <div>
             <label class="ig-lbl">Enquiry Type *</label>
-            <select name="type" class="ig-inp" required>
-              <option value="">Select enquiry type</option>
-              <option value="mandate" ${mandate ? 'selected' : ''}>Investment Mandate Enquiry</option>
-              <option value="real-estate" ${service === 'real-estate' ? 'selected' : ''}>Real Estate Advisory</option>
-              <option value="retail" ${service === 'retail' ? 'selected' : ''}>Retail &amp; Leasing Strategy</option>
-              <option value="hospitality" ${service === 'hospitality' ? 'selected' : ''}>Hospitality Management</option>
-              <option value="entertainment" ${service === 'entertainment' ? 'selected' : ''}>Entertainment Advisory</option>
-              <option value="debt" ${service === 'debt' ? 'selected' : ''}>Debt &amp; Special Situations</option>
-              <option value="horeca">HORECA Procurement</option>
+            <select name="enquiry_type" class="ig-inp" required>
+              <option value="">Select type of enquiry</option>
+              <option value="mandate" ${mandate ? 'selected' : ''}>Mandate / Investment Enquiry</option>
+              <option value="advisory" ${service ? 'selected' : ''}>Advisory Services Enquiry</option>
+              <option value="horeca">HORECA Supply Enquiry</option>
+              <option value="hotel_mgmt">Hotel Management / Brand On-Boarding</option>
+              <option value="retail">Retail Leasing Advisory</option>
               <option value="general">General Enquiry</option>
             </select>
           </div>
 
-          ${mandate ? `
           <div>
-            <label class="ig-lbl">Related Mandate</label>
-            <input type="text" name="mandate" class="ig-inp" value="${mandate}" readonly style="background:var(--parch-dk);cursor:not-allowed;">
+            <label class="ig-lbl">Project / Mandate Location</label>
+            <input type="text" name="location" class="ig-inp" placeholder="City, State or Region">
           </div>
-          ` : ''}
 
           <div>
-            <label class="ig-lbl">Investment / Transaction Scale</label>
+            <label class="ig-lbl">Project Scale / Investment Range</label>
             <select name="scale" class="ig-inp">
-              <option value="">Select range (if applicable)</option>
-              <option>Under ₹10 Crore</option>
-              <option>₹10 Cr – ₹50 Crore</option>
-              <option>₹50 Cr – ₹200 Crore</option>
-              <option>₹200 Cr – ₹500 Crore</option>
-              <option>₹500 Cr – ₹1,000 Crore</option>
-              <option>₹1,000 Crore+</option>
+              <option value="">Select scale</option>
+              <option>Below ₹25 Crores</option>
+              <option>₹25 Cr – ₹100 Cr</option>
+              <option>₹100 Cr – ₹500 Cr</option>
+              <option>₹500 Cr – ₹2,000 Cr</option>
+              <option>Above ₹2,000 Cr</option>
             </select>
           </div>
 
           <div>
-            <label class="ig-lbl">How Did You Hear About Us</label>
-            <select name="source" class="ig-inp">
-              <option value="">Select source</option>
-              <option>Referral / Network</option>
-              <option>Google Search</option>
-              <option>LinkedIn</option>
-              <option>Industry Event</option>
-              <option>Publication / Media</option>
-              <option>Existing Client</option>
-            </select>
+            <label class="ig-lbl">Message / Brief *</label>
+            <textarea name="message" class="ig-inp" required placeholder="Please provide a brief description of your project, mandate or enquiry — including sector, location and stage of development…"></textarea>
           </div>
 
           <div>
-            <label class="ig-lbl">Your Message / Requirements *</label>
-            <textarea name="message" class="ig-inp" required placeholder="Describe your project, mandate or enquiry in detail. Include location, scale, timeline and what you're looking for from India Gully."></textarea>
+            <label style="display:flex;align-items:flex-start;gap:.6rem;cursor:pointer;font-size:.78rem;color:var(--ink-soft);">
+              <input type="checkbox" name="nda_consent" required style="accent-color:var(--gold);margin-top:.15rem;flex-shrink:0;">
+              I understand that all information shared with India Gully is subject to mutual confidentiality and will not be disclosed to third parties without consent.
+            </label>
           </div>
 
-          <div style="display:flex;align-items:flex-start;gap:.625rem;">
-            <input type="checkbox" name="consent" id="consent" required style="accent-color:var(--gold);margin-top:.2rem;flex-shrink:0;">
-            <label for="consent" style="font-size:.75rem;color:var(--ink-muted);cursor:pointer;line-height:1.6;">I confirm that I am submitting this enquiry in good faith and understand that India Gully will maintain confidentiality of all information shared. I consent to being contacted by the India Gully team.</label>
-          </div>
-
-          <button type="submit" class="btn btn-g" style="width:100%;justify-content:center;padding:.875rem;">
-            <i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Submit Enquiry
+          <button type="submit" class="btn btn-g" style="width:100%;justify-content:center;padding:1rem;font-size:.82rem;">
+            <i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Submit Mandate Enquiry
           </button>
-          <p style="font-size:.7rem;color:var(--ink-faint);text-align:center;">We respond within 24 business hours. All enquiries are strictly confidential.</p>
+
+          <p style="font-size:.7rem;color:var(--ink-muted);line-height:1.65;text-align:center;">All enquiries are treated with strict confidentiality. Our leadership team reviews all submissions within 24 hours.</p>
         </form>
       </div>
 
-      <!-- CONTACT INFO SIDEBAR -->
-      <div style="display:flex;flex-direction:column;gap:1.5rem;">
+      <!-- SIDEBAR INFO -->
+      <div style="display:flex;flex-direction:column;gap:1.25rem;">
 
-        <!-- Company -->
+        <!-- Leadership Contacts -->
         <div style="background:var(--ink);padding:2rem;">
-          <p class="eyebrow-lt" style="margin-bottom:1.25rem;">India Gully</p>
-          <p style="font-size:.78rem;color:rgba(255,255,255,.35);line-height:1.75;margin-bottom:1.25rem;">Vivacious Entertainment and Hospitality Pvt. Ltd.<br>New Delhi, India</p>
-          <div style="display:flex;flex-direction:column;gap:.75rem;">
-            <a href="tel:+919810889134" style="display:flex;align-items:center;gap:.625rem;font-size:.825rem;color:rgba(255,255,255,.5);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'">
-              <i class="fas fa-phone" style="color:var(--gold);width:14px;font-size:.68rem;"></i>+91 98108 89134
-            </a>
-            <a href="mailto:info@indiagully.com" style="display:flex;align-items:center;gap:.625rem;font-size:.825rem;color:rgba(255,255,255,.5);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'">
-              <i class="fas fa-envelope" style="color:var(--gold);width:14px;font-size:.68rem;"></i>info@indiagully.com
-            </a>
-          </div>
-        </div>
-
-        <!-- Leadership Direct -->
-        <div style="background:#fff;border:1px solid var(--border);padding:1.75rem;">
-          <p style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:1.25rem;">Leadership Direct</p>
-          <div style="display:flex;flex-direction:column;gap:1.25rem;">
-            ${[
-              { name:'Arun Manikonda',  title:'Managing Director',     ph:'+91 9810889134', em:'akm@indiagully.com',          init:'AM' },
-              { name:'Pavan Manikonda', title:'Executive Director',     ph:'+91 6282556067', em:'pavan@indiagully.com',        init:'PM' },
-              { name:'Amit Jhingan',    title:'President, Real Estate', ph:'+91 9899993543', em:'amit.jhingan@indiagully.com', init:'AJ' },
-            ].map(p => `
-            <div style="display:flex;gap:.875rem;align-items:center;padding-bottom:1.25rem;border-bottom:1px solid var(--border);" class="last:border-0 last:pb-0">
-              <div style="width:40px;height:40px;background:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <span style="font-family:'DM Serif Display',Georgia,serif;font-size:.85rem;color:var(--gold);font-weight:700;">${p.init}</span>
-              </div>
-              <div style="flex:1;min-width:0;">
-                <div style="font-size:.825rem;font-weight:600;color:var(--ink);margin-bottom:.1rem;">${p.name}</div>
-                <div class="caption" style="margin-bottom:.3rem;">${p.title}</div>
-                <a href="tel:${p.ph}" style="display:block;font-size:.72rem;color:var(--ink-muted);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'">${p.ph}</a>
-                <a href="mailto:${p.em}" style="display:block;font-size:.72rem;color:var(--ink-muted);transition:color .2s;overflow:hidden;text-overflow:ellipsis;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'">${p.em}</a>
-              </div>
+          <p class="eyebrow-lt" style="margin-bottom:1.25rem;">Leadership Direct</p>
+          ${[
+            { name:'Arun Manikonda',  title:'Managing Director',    init:'AM', ph:'+91 98108 89134', em:'akm@indiagully.com' },
+            { name:'Pavan Manikonda', title:'Executive Director',    init:'PM', ph:'+91 62825 56067', em:'pavan@indiagully.com' },
+            { name:'Amit Jhingan',    title:'President, Real Estate',init:'AJ', ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com' },
+          ].map(p => `
+          <div style="display:flex;align-items:center;gap:1rem;padding:.875rem 0;border-bottom:1px solid rgba(255,255,255,.06);">
+            <div style="width:38px;height:38px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-family:'DM Serif Display',Georgia,serif;font-size:.85rem;color:#fff;font-weight:700;">${p.init}</span>
             </div>
-            `).join('')}
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:.85rem;font-weight:600;color:#fff;margin-bottom:.1rem;">${p.name}</div>
+              <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-bottom:.35rem;">${p.title}</div>
+              <a href="tel:${p.ph.replace(/\s/g,'')}" style="font-size:.72rem;color:rgba(255,255,255,.35);display:block;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.35)'">${p.ph}</a>
+              <a href="mailto:${p.em}" style="font-size:.72rem;color:rgba(255,255,255,.35);display:block;word-break:break-all;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.35)'">${p.em}</a>
+            </div>
           </div>
+          `).join('')}
         </div>
 
-        <!-- Portal Links -->
-        <div style="background:var(--parch-dk);border:1px solid var(--border);padding:1.5rem;">
-          <p style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:1rem;">Secure Portals</p>
+        <!-- Office Info -->
+        <div style="border:1px solid var(--border);padding:1.5rem;">
+          <p style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:1rem;">Office &amp; General</p>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:.625rem;">
+            <li style="display:flex;gap:.6rem;align-items:flex-start;font-size:.8rem;color:var(--ink-soft);"><i class="fas fa-map-marker-alt" style="color:var(--gold);font-size:.65rem;margin-top:.2rem;flex-shrink:0;width:14px;"></i>New Delhi, India</li>
+            <li><a href="tel:+919810889134" style="display:flex;gap:.6rem;align-items:center;font-size:.8rem;color:var(--ink-soft);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-soft)'"><i class="fas fa-phone" style="color:var(--gold);font-size:.65rem;width:14px;"></i>+91 98108 89134</a></li>
+            <li><a href="mailto:info@indiagully.com" style="display:flex;gap:.6rem;align-items:center;font-size:.8rem;color:var(--ink-soft);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-soft)'"><i class="fas fa-envelope" style="color:var(--gold);font-size:.65rem;width:14px;"></i>info@indiagully.com</a></li>
+          </ul>
+        </div>
+
+        <!-- Portals -->
+        <div style="background:var(--parch);border:1px solid var(--border);padding:1.25rem;">
+          <p style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.875rem;">Enterprise Portals</p>
           <div style="display:flex;flex-direction:column;gap:.5rem;">
             ${[
-              { href:'/portal/client',   icon:'user-tie',   label:'Client Portal',   sub:'Proposals, invoices, documents' },
-              { href:'/portal/employee', icon:'users',      label:'Employee Portal', sub:'HR, attendance, payslips' },
-              { href:'/portal/board',    icon:'gavel',      label:'Board & KMP',     sub:'Governance, meetings, financials' },
+              { href:'/portal/client',   icon:'user-tie',  label:'Client Portal' },
+              { href:'/portal/employee', icon:'users',     label:'Employee Portal' },
+              { href:'/portal/board',    icon:'gavel',     label:'Board & KMP Portal' },
             ].map(p => `
-            <a href="${p.href}" style="display:flex;align-items:center;gap:.75rem;padding:.625rem .875rem;border:1px solid var(--border);background:#fff;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-              <i class="fas fa-${p.icon}" style="color:var(--gold);font-size:.7rem;width:14px;flex-shrink:0;"></i>
-              <div>
-                <div style="font-size:.78rem;font-weight:600;color:var(--ink);">${p.label}</div>
-                <div class="caption">${p.sub}</div>
-              </div>
-              <i class="fas fa-arrow-right" style="color:var(--ink-faint);font-size:.6rem;margin-left:auto;"></i>
+            <a href="${p.href}" style="display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--ink-soft);padding:.5rem .625rem;border:1px solid var(--border);background:#fff;transition:all .2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--ink-soft)'">
+              <i class="fas fa-${p.icon}" style="color:var(--gold);font-size:.65rem;width:14px;"></i>${p.label}
+              <i class="fas fa-arrow-right" style="margin-left:auto;font-size:.6rem;"></i>
             </a>
             `).join('')}
           </div>
         </div>
 
+        <!-- Disclaimer -->
+        <div style="background:rgba(184,150,12,.05);border:1px solid rgba(184,150,12,.15);padding:1.125rem;">
+          <p style="font-size:.7rem;color:var(--ink-muted);line-height:1.7;"><i class="fas fa-shield-alt" style="color:var(--gold);margin-right:.4rem;"></i>All information submitted is handled with strict confidentiality under our privacy policy and mutual NDA framework.</p>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 `
-  return c.html(layout('Contact & Enquiries', content, {
-    description: "Contact India Gully — submit a mandate enquiry, request an IM, or arrange a HORECA quote. Our leadership team responds within 24 hours."
+  return c.html(layout('Contact & Enquiry', content, {
+    description: 'Contact India Gully — submit a mandate enquiry, HORECA RFQ or advisory request. Our leadership team responds within 24 hours.'
   }))
 })
 
