@@ -497,5 +497,75 @@ const SCRIPTS = `
     });
   });
 
+  /* ── MODAL SYSTEM ─────────────────────────────────────────────────────────
+     Usage:
+       openModal('modal-id')   — shows the overlay + panel
+       closeModal('modal-id')  — hides it
+     Each modal must have:
+       <div id="modal-id" class="ig-modal">
+         <div class="ig-modal-box"> … <button onclick="closeModal('modal-id')">×</button> </div>
+       </div>
+  ──────────────────────────────────────────────────────────────────────── */
+  window.openModal = function(id){
+    var m = document.getElementById(id);
+    if(m){ m.style.display='flex'; document.body.style.overflow='hidden'; }
+  };
+  window.closeModal = function(id){
+    var m = document.getElementById(id);
+    if(m){ m.style.display='none'; document.body.style.overflow=''; }
+  };
+  // Close on backdrop click
+  document.addEventListener('click', function(e){
+    if(e.target && (e.target as HTMLElement).classList.contains('ig-modal')){
+      (e.target as HTMLElement).style.display='none';
+      document.body.style.overflow='';
+    }
+  });
+
+  /* ── TOAST NOTIFICATIONS ──────────────────────────────────────────────── */
+  window.igToast = function(msg, type){
+    var el = document.createElement('div');
+    el.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;background:'+(type==='error'?'#dc2626':type==='warn'?'#d97706':'#15803d')+';color:#fff;padding:.75rem 1.25rem;font-size:.82rem;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,.25);max-width:360px;line-height:1.5;display:flex;align-items:center;gap:.6rem;';
+    el.innerHTML = '<i class="fas fa-'+(type==='error'?'exclamation-circle':type==='warn'?'exclamation-triangle':'check-circle')+'"></i>' + msg;
+    document.body.appendChild(el);
+    setTimeout(function(){ el.style.transition='opacity .4s'; el.style.opacity='0'; setTimeout(function(){ el.remove(); },400); }, 3500);
+  };
+
+  /* ── INLINE PANEL TOGGLE ──────────────────────────────────────────────── */
+  window.togglePanel = function(id){
+    var p = document.getElementById(id);
+    if(!p) return;
+    var isHidden = p.style.display === 'none' || p.style.display === '';
+    p.style.display = isHidden ? 'block' : 'none';
+  };
+
+  /* ── CONFIRM ACTION ───────────────────────────────────────────────────── */
+  window.igConfirm = function(msg, cb){
+    var overlay = document.createElement('div');
+    overlay.style.cssText='position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;';
+    overlay.innerHTML='<div style="background:#fff;padding:2rem;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3);">'
+      +'<p style="font-size:.95rem;color:#111;margin-bottom:1.5rem;line-height:1.6;">'+msg+'</p>'
+      +'<div style="display:flex;gap:.75rem;justify-content:flex-end;">'
+      +'<button id="igcNo" style="padding:.5rem 1.25rem;background:#f1f5f9;border:1px solid #e2e8f0;font-size:.82rem;cursor:pointer;font-weight:500;">Cancel</button>'
+      +'<button id="igcYes" style="padding:.5rem 1.25rem;background:#B8960C;color:#fff;border:none;font-size:.82rem;cursor:pointer;font-weight:600;letter-spacing:.05em;">Confirm</button>'
+      +'</div></div>';
+    document.body.appendChild(overlay);
+    overlay.querySelector('#igcNo')!.addEventListener('click',function(){ overlay.remove(); });
+    overlay.querySelector('#igcYes')!.addEventListener('click',function(){ overlay.remove(); if(cb) cb(); });
+  };
+
 })();
-</script>`
+</script>
+<style>
+/* ── MODAL OVERLAY ──────────────────────────────── */
+.ig-modal{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:1rem;}
+.ig-modal-box{background:#fff;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.3);}
+.ig-modal-box.wide{max-width:860px;}
+.ig-modal-hd{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.ig-modal-bd{padding:1.5rem;}
+.ig-modal-ft{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:.75rem;justify-content:flex-end;}
+.ig-modal-close{background:none;border:none;cursor:pointer;color:var(--ink-muted);font-size:1rem;padding:.25rem;line-height:1;}
+.ig-modal-close:hover{color:var(--ink);}
+/* SLIDE PANEL */
+.ig-panel{display:none;background:var(--parch-dk);border:1px solid var(--border);padding:1.5rem;margin-top:1rem;}
+</style>`

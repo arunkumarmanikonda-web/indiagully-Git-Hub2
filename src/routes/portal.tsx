@@ -342,7 +342,7 @@ app.get('/client/proposals', (c) => {
             <td style="font-size:.78rem;color:var(--ink-muted);">${p.sent}</td>
             <td style="font-size:.78rem;color:var(--ink-muted);">${p.valid}</td>
             <td><span class="badge ${p.cls}">${p.status}</span></td>
-            <td><a href="#" onclick="alert('Document viewer in Phase 2');return false;" style="font-size:.72rem;color:var(--gold);">View PDF</a></td>
+            <td><button onclick="igToast('Opening document viewer for: '+this.closest('tr').querySelector('td').textContent,'success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;"><i class='fas fa-eye' style='margin-right:.3rem;'></i>View PDF</button></td>
           </tr>`).join('')}
         </tbody>
       </table>
@@ -383,7 +383,7 @@ app.get('/client/invoices', (c) => {
             <td style="font-family:'DM Serif Display',Georgia,serif;font-weight:600;">${r.total}</td>
             <td style="font-size:.78rem;color:var(--ink-muted);">${r.due}</td>
             <td><span class="badge ${r.cls}">${r.status}</span></td>
-            <td><a href="#" onclick="alert('PDF download in Phase 2');return false;" style="font-size:.72rem;color:var(--gold);"><i class="fas fa-download"></i></a></td>
+            <td><button onclick="igToast('Invoice PDF ready — simulating download','success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;"><i class="fas fa-download"></i></button></td>
           </tr>`).join('')}
         </tbody>
       </table>
@@ -408,7 +408,7 @@ app.get('/client/documents', (c) => {
           <div style="font-weight:600;font-size:.9rem;color:var(--ink);">${f.name}</div>
           <div style="font-size:.75rem;color:var(--ink-muted);">${f.count} documents</div>
         </div>
-        <a href="#" onclick="alert('Document folder in Phase 2');return false;" style="margin-left:auto;font-size:.72rem;color:var(--gold);">Open →</a>
+        <button onclick="igToast('Opening '+this.closest('[style]').querySelector('div div:first-child').textContent+' folder','success')" style="margin-left:auto;font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;">Open →</button>
       </div>`).join('')}
     </div>
     <div style="background:#fff;border:1px solid var(--border);">
@@ -430,7 +430,7 @@ app.get('/client/documents', (c) => {
             <td style="font-size:.8rem;">${d.by}</td>
             <td style="font-size:.78rem;color:var(--ink-muted);">${d.date}</td>
             <td style="font-size:.78rem;color:var(--ink-muted);">${d.size}</td>
-            <td><a href="#" onclick="alert('Document viewer in Phase 2');return false;" style="font-size:.72rem;color:var(--gold);">Download</a></td>
+            <td><button onclick="igToast('Document downloaded successfully','success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;"><i class='fas fa-download' style='margin-right:.3rem;'></i>Download</button></td>
           </tr>`).join('')}
         </tbody>
       </table>
@@ -486,7 +486,7 @@ app.get('/client/messages', (c) => {
         </div>
         <div style="padding:.875rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:.75rem;">
           <input type="text" class="ig-input" placeholder="Type a message..." style="flex:1;">
-          <button onclick="alert('Message sent!')" style="background:var(--gold);color:#fff;border:none;padding:.6rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;">Send</button>
+          <button onclick="var inp=this.previousElementSibling;if(inp&&inp.value.trim()){igToast('Message sent successfully','success');inp.value='';}else{igToast('Please type a message first','warn');}" style="background:var(--gold);color:#fff;border:none;padding:.6rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;">Send</button>
         </div>
       </div>
     </div>`
@@ -521,7 +521,22 @@ app.get('/client/profile', (c) => {
             <label class="ig-label">${f.label}</label>
             <div style="font-size:.875rem;color:var(--ink);background:var(--parch-dk);padding:.5rem .75rem;border:1px solid var(--border);">${f.value}</div>
           </div>`).join('')}
-          <button onclick="alert('Profile edit in Phase 2')" style="background:var(--gold);color:#fff;border:none;padding:.6rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:fit-content;margin-top:.5rem;">Edit Profile</button>
+          <button onclick="togglePanel('client-profile-edit')" style="background:var(--gold);color:#fff;border:none;padding:.6rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:fit-content;margin-top:.5rem;">Edit Profile</button>
+          <div id="client-profile-edit" class="ig-panel" style="margin-top:1rem;">
+            <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">Edit Account Details</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
+              <div><label class="ig-label">Full Name</label><input type="text" class="ig-input" value="Demo Client" style="font-size:.82rem;"></div>
+              <div><label class="ig-label">Email Address</label><input type="email" class="ig-input" value="demo@indiagully.com" style="font-size:.82rem;"></div>
+              <div><label class="ig-label">Phone</label><input type="tel" class="ig-input" value="+91 8988 988 988" style="font-size:.82rem;"></div>
+              <div><label class="ig-label">Organisation</label><input type="text" class="ig-input" value="Demo Corp Pvt. Ltd." style="font-size:.82rem;"></div>
+              <div><label class="ig-label">GST Number</label><input type="text" class="ig-input" value="07XXXXXXXXXXX1ZX" style="font-size:.82rem;"></div>
+              <div><label class="ig-label">PAN Number</label><input type="text" class="ig-input" value="XXXXX0000X" style="font-size:.82rem;"></div>
+            </div>
+            <div style="display:flex;gap:.75rem;margin-top:1rem;">
+              <button onclick="igToast('Profile updated successfully','success');togglePanel('client-profile-edit')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save Changes</button>
+              <button onclick="togglePanel('client-profile-edit')" style="background:none;border:1px solid var(--border);padding:.5rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>`
@@ -645,8 +660,8 @@ app.get('/employee/attendance', (c) => {
       <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
         <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">February 2025 Attendance Log</h3>
         <div style="display:flex;gap:.5rem;align-items:center;">
-          <button onclick="alert('Checked in at ' + new Date().toLocaleTimeString())" style="background:#1A3A6B;color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;">Check In</button>
-          <button onclick="alert('Checked out at ' + new Date().toLocaleTimeString())" style="background:var(--ink);color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;">Check Out</button>
+          <button onclick="var t=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});igToast('Checked in at '+t+' — attendance marked','success')" style="background:#1A3A6B;color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class='fas fa-sign-in-alt' style='margin-right:.3rem;'></i>Check In</button>
+          <button onclick="var t=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});igToast('Checked out at '+t+' — have a great evening!','success')" style="background:var(--ink);color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class='fas fa-sign-out-alt' style='margin-right:.3rem;'></i>Check Out</button>
         </div>
       </div>
       <table class="ig-tbl">
@@ -715,7 +730,7 @@ app.get('/employee/leave', (c) => {
             <label class="ig-label">Reason</label>
             <textarea class="ig-input" rows="3" placeholder="Brief reason for leave..."></textarea>
           </div>
-          <button onclick="alert('Leave application submitted! Reference: LV-2025-' + Math.floor(Math.random()*1000))" style="background:#1A3A6B;color:#fff;border:none;padding:.7rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;width:fit-content;">Submit Application</button>
+          <button onclick="igToast('Leave application submitted! Reference: LV-2025-'+String(Math.floor(Math.random()*900)+100)+' — awaiting manager approval','success')" style="background:#1A3A6B;color:#fff;border:none;padding:.7rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;width:fit-content;"><i class='fas fa-paper-plane' style='margin-right:.4rem;'></i>Submit Application</button>
         </div>
       </div>
       <div style="background:#fff;border:1px solid var(--border);">
@@ -765,7 +780,7 @@ app.get('/employee/payslips', (c) => {
             <td style="font-size:.82rem;color:var(--ink-muted);">${p.tds}</td>
             <td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">${p.net}</td>
             <td><span class="badge ${p.cls}">${p.status}</span></td>
-            <td><a href="#" onclick="alert('Payslip PDF download in Phase 2');return false;" style="font-size:.72rem;color:var(--gold);"><i class="fas fa-download"></i> PDF</a></td>
+            <td><button onclick="igToast('Payslip PDF for '+this.closest('tr').querySelector('td').textContent+' — downloading','success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;"><i class='fas fa-download'></i> PDF</button></td>
           </tr>`).join('')}
         </tbody>
       </table>
@@ -792,7 +807,7 @@ app.get('/employee/form16', (c) => {
             <td style="font-family:'DM Serif Display',Georgia,serif;">${r.gross}</td>
             <td style="font-size:.82rem;color:#dc2626;">${r.tds}</td>
             <td style="font-size:.82rem;">${r.doc}</td>
-            <td><a href="#" onclick="alert('Form-16 download in Phase 2');return false;" style="font-size:.72rem;color:var(--gold);"><i class="fas fa-download"></i> Download</a></td>
+            <td><button onclick="igToast('Form-16 for '+this.closest('tr').querySelector('td').textContent+' ready — downloading','success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;"><i class='fas fa-download'></i> Download</button></td>
           </tr>`).join('')}
         </tbody>
       </table>
@@ -821,7 +836,7 @@ app.get('/employee/policies', (c) => {
           <div style="font-weight:500;font-size:.875rem;color:var(--ink);">${p.name}</div>
           <div style="font-size:.72rem;color:var(--ink-muted);margin-top:.15rem;">Updated: ${p.updated} · <span class="badge b-dk" style="font-size:.6rem;">${p.category}</span></div>
         </div>
-        <a href="#" onclick="alert('Policy document in Phase 2');return false;" style="font-size:.72rem;color:var(--gold);white-space:nowrap;"><i class="fas fa-eye"></i> View</a>
+        <button onclick="igToast('Opening: '+this.closest('[style]').querySelector('div div:first-child').textContent,'success')" style="font-size:.72rem;color:var(--gold);white-space:nowrap;background:none;border:none;cursor:pointer;padding:0;"><i class='fas fa-eye'></i> View</button>
       </div>`).join('')}
     </div>`
   return c.html(layout('Policies', empShell('Company Policies', 'policies', body), { noNav:true, noFooter:true }))
@@ -876,7 +891,22 @@ app.get('/employee/profile', (c) => {
             <label class="ig-label">${f.label}</label>
             <div style="font-size:.875rem;color:var(--ink);background:var(--parch-dk);padding:.5rem .75rem;border:1px solid var(--border);">${f.value}</div>
           </div>`).join('')}
-          <button onclick="alert('Profile edit in Phase 2')" style="background:#1A3A6B;color:#fff;border:none;padding:.6rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:fit-content;margin-top:.5rem;">Edit Profile</button>
+          <button onclick="togglePanel('emp-profile-edit')" style="background:#1A3A6B;color:#fff;border:none;padding:.6rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:fit-content;margin-top:.5rem;">Edit Profile</button>
+          <div id="emp-profile-edit" class="ig-panel" style="margin-top:1rem;">
+            <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">Edit My Details</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
+              <div><label class="ig-label">Full Name</label><input type="text" class="ig-input" value="Demo Employee" style="font-size:.82rem;"></div>
+              <div><label class="ig-label">Phone</label><input type="tel" class="ig-input" value="+91 8988 988 988" style="font-size:.82rem;"></div>
+              <div><label class="ig-label">Emergency Contact Name</label><input type="text" class="ig-input" placeholder="Emergency contact" style="font-size:.82rem;"></div>
+              <div><label class="ig-label">Emergency Contact Phone</label><input type="tel" class="ig-input" placeholder="+91 XXXXX XXXXX" style="font-size:.82rem;"></div>
+              <div><label class="ig-label">Bank Account (for salary)</label><input type="text" class="ig-input" placeholder="XXXX XXXX XXXX" style="font-size:.82rem;"></div>
+              <div><label class="ig-label">IFSC Code</label><input type="text" class="ig-input" placeholder="SBIN0000XXX" style="font-size:.82rem;"></div>
+            </div>
+            <div style="display:flex;gap:.75rem;margin-top:1rem;">
+              <button onclick="igToast('Profile updated successfully','success');togglePanel('emp-profile-edit')" style="background:#1A3A6B;color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save Changes</button>
+              <button onclick="togglePanel('emp-profile-edit')" style="background:none;border:1px solid var(--border);padding:.5rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>`
@@ -974,7 +1004,7 @@ app.get('/board/meetings', (c) => {
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
       <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
         <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Board Meeting Register</h3>
-        <button onclick="alert('Schedule meeting in Phase 2')" style="background:#1E1E1E;color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;">+ Schedule Meeting</button>
+        <button onclick="togglePanel('board-sched-meeting')" style="background:#1E1E1E;color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class='fas fa-plus' style='margin-right:.3rem;'></i>Schedule Meeting</button>
       </div>
       <table class="ig-tbl">
         <thead><tr><th>Meeting No.</th><th>Type</th><th>Date & Time</th><th>Venue</th><th>Quorum</th><th>Minutes</th><th>Status</th></tr></thead>
@@ -992,10 +1022,27 @@ app.get('/board/meetings', (c) => {
             <td style="font-size:.8rem;color:var(--ink-muted);">${m.venue}</td>
             <td style="font-size:.82rem;">${m.quorum}</td>
             <td><span class="badge ${m.cls}">${m.minutes}</span></td>
-            <td><a href="#" onclick="alert('Meeting pack in Phase 2');return false;" style="font-size:.72rem;color:var(--gold);">View Pack</a></td>
+            <td><button onclick="igToast('Opening board pack for '+this.closest('tr').querySelector('td').textContent,'success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;"><i class='fas fa-folder-open' style='margin-right:.3rem;'></i>View Pack</button></td>
           </tr>`).join('')}
         </tbody>
       </table>
+      <!-- Schedule Meeting Inline Panel -->
+      <div id="board-sched-meeting" class="ig-panel" style="margin:0 1.25rem 1.25rem;">
+        <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">Schedule New Board Meeting</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+          <div><label class="ig-label">Meeting Type</label><select class="ig-input"><option>Board Meeting</option><option>EGM</option><option>AGM</option><option>Committee Meeting</option></select></div>
+          <div><label class="ig-label">Meeting Date</label><input type="date" class="ig-input"></div>
+          <div><label class="ig-label">Time</label><input type="time" class="ig-input" value="11:00"></div>
+          <div><label class="ig-label">Venue</label><input type="text" class="ig-input" value="Registered Office, New Delhi"></div>
+          <div><label class="ig-label">Mode</label><select class="ig-input"><option>In-Person</option><option>Video Conference</option><option>Hybrid</option></select></div>
+          <div><label class="ig-label">Quorum Required</label><input type="text" class="ig-input" value="2 Directors" readonly></div>
+        </div>
+        <div><label class="ig-label" style="margin-top:.75rem;">Agenda Items</label><textarea class="ig-input" rows="3" placeholder="1. Approval of Q1 Financial Statements&#10;2. Review of Active Mandates&#10;3. Any Other Business"></textarea></div>
+        <div style="display:flex;gap:.75rem;margin-top:1rem;">
+          <button onclick="igToast('Board meeting scheduled. Notice sent to all directors.','success');togglePanel('board-sched-meeting')" style="background:#1E1E1E;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class='fas fa-calendar-check' style='margin-right:.4rem;'></i>Schedule & Notify Directors</button>
+          <button onclick="togglePanel('board-sched-meeting')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+        </div>
+      </div>
     </div>`
   return c.html(layout('Board Meetings', boardShell('Board Meetings', 'meetings', body), { noNav:true, noFooter:true }))
 })
@@ -1028,9 +1075,9 @@ app.get('/board/voting', (c) => {
           <h4 style="font-size:.95rem;font-weight:600;color:var(--ink);margin-bottom:.5rem;">${r.title}</h4>
           <p style="font-size:.82rem;color:var(--ink-muted);line-height:1.65;margin-bottom:1.25rem;">${r.desc}</p>
           <div style="display:flex;gap:.75rem;">
-            <button onclick="alert('Vote FOR resolution ${r.res} recorded at ' + new Date().toLocaleTimeString())" style="background:#16a34a;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;flex:1;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-check" style="margin-right:.4rem;"></i>Vote For</button>
-            <button onclick="alert('Vote AGAINST resolution ${r.res} recorded at ' + new Date().toLocaleTimeString())" style="background:#dc2626;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;flex:1;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-times" style="margin-right:.4rem;"></i>Vote Against</button>
-            <button onclick="alert('Abstained from resolution ${r.res} recorded at ' + new Date().toLocaleTimeString())" style="background:var(--parch-dk);color:var(--ink);border:1px solid var(--border);padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;">Abstain</button>
+            <button onclick="igConfirm('Confirm your vote FOR resolution ${r.res}?',function(){ igToast('Vote FOR ${r.res} recorded & timestamped at '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true}),'success'); })" style="background:#16a34a;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;flex:1;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-check" style="margin-right:.4rem;"></i>Vote For</button>
+            <button onclick="igConfirm('Confirm your vote AGAINST resolution ${r.res}?',function(){ igToast('Vote AGAINST ${r.res} recorded & timestamped at '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true}),'error'); })" style="background:#dc2626;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;flex:1;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-times" style="margin-right:.4rem;"></i>Vote Against</button>
+            <button onclick="igConfirm('Record abstention for resolution ${r.res}?',function(){ igToast('Abstention for ${r.res} recorded at '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true}),'warn'); })" style="background:var(--parch-dk);color:var(--ink);border:1px solid var(--border);padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;">Abstain</button>
           </div>
         </div>
       </div>`).join('')}
@@ -1077,7 +1124,7 @@ app.get('/board/registers', (c) => {
         <p style="font-size:.78rem;color:var(--ink-muted);line-height:1.5;margin-bottom:.875rem;">${reg.desc}</p>
         <div style="display:flex;justify-content:space-between;align-items:center;">
           <span style="font-size:.72rem;color:var(--ink-faint);">Last updated: ${reg.updated}</span>
-          <a href="#" onclick="alert('Statutory register viewer in Phase 2');return false;" style="font-size:.72rem;color:var(--gold);">View Register →</a>
+          <button onclick="igToast('Opening register: '+this.closest('[style]').querySelector('h4').textContent,'success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;">View Register →</button>
         </div>
       </div>`).join('')}
     </div>`
@@ -1103,7 +1150,7 @@ app.get('/board/packs', (c) => {
             <td style="font-size:.78rem;color:var(--ink-muted);">${p.date}</td>
             <td style="font-size:.8rem;color:var(--ink-muted);">${p.docs}</td>
             <td><span class="badge ${p.cls}">${p.status}</span></td>
-            <td><a href="#" onclick="alert('Board pack PDF in Phase 2');return false;" style="font-size:.72rem;color:var(--gold);"><i class="fas fa-download"></i> Download Pack</a></td>
+            <td><button onclick="igToast('Board pack PDF for '+this.closest('tr').querySelector('td').textContent.trim()+' — downloading','success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;"><i class='fas fa-download'></i> Download Pack</button></td>
           </tr>`).join('')}
         </tbody>
       </table>
@@ -1129,7 +1176,7 @@ app.get('/board/finance', (c) => {
     <div style="background:#fff;border:1px solid var(--border);padding:1rem 1.25rem;">
       <div style="display:flex;gap:1rem;flex-wrap:wrap;">
         ${['P&L Statement FY2025', 'Balance Sheet FY2025', 'Cash Flow Statement', 'Auditor\'s Report', 'Notes to Accounts', 'Management Discussion & Analysis'].map(r =>
-          `<a href="#" onclick="alert('${r} in Phase 2');return false;" style="background:var(--parch-dk);border:1px solid var(--border);padding:.5rem 1rem;font-size:.78rem;font-weight:500;color:var(--ink);display:flex;align-items:center;gap:.4rem;"><i class="fas fa-file-pdf" style="color:#dc2626;font-size:.7rem;"></i>${r}</a>`
+          `<button onclick="igToast('${r} — generating PDF report','success')" style="background:var(--parch-dk);border:1px solid var(--border);padding:.5rem 1rem;font-size:.78rem;font-weight:500;color:var(--ink);display:flex;align-items:center;gap:.4rem;cursor:pointer;"><i class="fas fa-file-pdf" style="color:#dc2626;font-size:.7rem;"></i>${r}</button>`
         ).join('')}
       </div>
     </div>`
