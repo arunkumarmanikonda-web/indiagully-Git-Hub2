@@ -444,11 +444,11 @@ app.get('/client/messages', (c) => {
       <div style="background:#fff;border:1px solid var(--border);overflow-y:auto;">
         <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);font-size:.82rem;font-weight:600;color:var(--ink);">Conversations</div>
         ${[
-          { name:'Arun Manikonda', role:'Managing Director', msg:'Please review the updated proposal...', time:'10:30 AM', unread:1, color:'#B8960C' },
-          { name:'Amit Jhingan',   role:'President, Real Estate', msg:'Site visit confirmed for Thursday...', time:'Yesterday', unread:0, color:'#4f46e5' },
-          { name:'Finance Team',   role:'Billing & Accounts', msg:'Invoice INV-2025-002 is due...', time:'2 days ago', unread:0, color:'#16a34a' },
+          { name:'Arun Manikonda', role:'Managing Director', msg:'Please review the updated proposal...', time:'10:30 AM', unread:1, color:'#B8960C', id:'conv-akm' },
+          { name:'Amit Jhingan',   role:'President, Real Estate', msg:'Site visit confirmed for Thursday...', time:'Yesterday', unread:0, color:'#4f46e5', id:'conv-aj' },
+          { name:'Finance Team',   role:'Billing & Accounts', msg:'Invoice INV-2025-002 is due...', time:'2 days ago', unread:0, color:'#16a34a', id:'conv-fin' },
         ].map(c => `
-        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);cursor:pointer;display:flex;gap:.75rem;" onmouseover="this.style.background='var(--parch-dk)'" onmouseout="this.style.background='transparent'">
+        <div id="${c.id}" onclick="igSwitchConv(this,'${c.name}','${c.color}')" style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);cursor:pointer;display:flex;gap:.75rem;${c.id==='conv-akm'?'background:var(--parch-dk);':''}" onmouseover="if(this.style.background!=='var(--parch-dk)')this.style.background='var(--parch-dk)'" onmouseout="if(this.id!==document.getElementById('msg-active-conv').value)this.style.background=''">
           <div style="width:36px;height:36px;background:${c.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Serif Display',Georgia,serif;color:#fff;font-size:.8rem;">${c.name[0]}</div>
           <div style="flex:1;min-width:0;">
             <div style="display:flex;justify-content:space-between;margin-bottom:.15rem;">
@@ -457,18 +457,19 @@ app.get('/client/messages', (c) => {
             </div>
             <div style="font-size:.72rem;color:var(--ink-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.msg}</div>
           </div>
-          ${c.unread ? `<div style="width:18px;height:18px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#fff;font-weight:700;flex-shrink:0;">${c.unread}</div>` : ''}
+          ${c.unread ? `<div id="badge-${c.id}" style="width:18px;height:18px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#fff;font-weight:700;flex-shrink:0;">${c.unread}</div>` : ''}
         </div>`).join('')}
       </div>
+      <input type="hidden" id="msg-active-conv" value="conv-akm">
       <div style="background:#fff;border:1px solid var(--border);display:flex;flex-direction:column;">
-        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;">
-          <div style="width:36px;height:36px;background:#B8960C;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',Georgia,serif;color:#fff;">A</div>
+        <div id="msg-header" style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;">
+          <div id="msg-hdr-avatar" style="width:36px;height:36px;background:#B8960C;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',Georgia,serif;color:#fff;">A</div>
           <div>
-            <div style="font-size:.875rem;font-weight:600;color:var(--ink);">Arun Manikonda</div>
+            <div id="msg-hdr-name" style="font-size:.875rem;font-weight:600;color:var(--ink);">Arun Manikonda</div>
             <div style="font-size:.72rem;color:var(--ink-muted);">Managing Director · akm@indiagully.com</div>
           </div>
         </div>
-        <div style="flex:1;padding:1.25rem;overflow-y:auto;display:flex;flex-direction:column;gap:1rem;">
+        <div id="msg-thread" style="flex:1;padding:1.25rem;overflow-y:auto;display:flex;flex-direction:column;gap:1rem;">
           <div style="display:flex;gap:.75rem;">
             <div style="width:30px;height:30px;background:#B8960C;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',Georgia,serif;color:#fff;font-size:.75rem;flex-shrink:0;">A</div>
             <div style="background:var(--parch-dk);padding:.75rem 1rem;max-width:75%;">
@@ -485,11 +486,45 @@ app.get('/client/messages', (c) => {
           </div>
         </div>
         <div style="padding:.875rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:.75rem;">
-          <input type="text" class="ig-input" placeholder="Type a message..." style="flex:1;">
-          <button onclick="var inp=this.previousElementSibling;if(inp&&inp.value.trim()){igToast('Message sent successfully','success');inp.value='';}else{igToast('Please type a message first','warn');}" style="background:var(--gold);color:#fff;border:none;padding:.6rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;">Send</button>
+          <input id="msg-input" type="text" class="ig-input" placeholder="Type a message..." style="flex:1;" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();igSendMsg();}">
+          <button onclick="igSendMsg()" style="background:var(--gold);color:#fff;border:none;padding:.6rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;"><i class="fas fa-paper-plane" style="margin-right:.3rem;font-size:.7rem;"></i>Send</button>
         </div>
       </div>
-    </div>`
+    </div>
+    <script>
+    function igSendMsg(){
+      var inp = document.getElementById('msg-input');
+      var msg = inp.value.trim();
+      if(!msg){ igToast('Please type a message first','warn'); return; }
+      var thread = document.getElementById('msg-thread');
+      var div = document.createElement('div');
+      div.style.cssText = 'display:flex;gap:.75rem;flex-direction:row-reverse;animation:fadeUp .3s ease';
+      var t = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
+      div.innerHTML = '<div style="width:30px;height:30px;background:var(--ink);display:flex;align-items:center;justify-content:center;font-family:\'DM Serif Display\',Georgia,serif;color:var(--gold);font-size:.75rem;flex-shrink:0;">C</div>'
+        +'<div style="background:var(--ink);padding:.75rem 1rem;max-width:75%;">'
+        +'<p style="font-size:.85rem;color:#fff;line-height:1.6;">'+msg+'</p>'
+        +'<span style="font-size:.68rem;color:rgba(255,255,255,.4);">'+t+' · Just now</span></div>';
+      thread.appendChild(div);
+      thread.scrollTop = thread.scrollHeight;
+      inp.value = '';
+      igToast('Message sent to '+document.getElementById('msg-hdr-name').textContent,'success');
+      // Remove unread badge
+      var badge = document.getElementById('badge-'+document.getElementById('msg-active-conv').value);
+      if(badge) badge.remove();
+    }
+    function igSwitchConv(el, name, color){
+      // Update active state
+      document.querySelectorAll('[id^="conv-"]').forEach(function(c){ c.style.background=''; });
+      el.style.background = 'var(--parch-dk)';
+      document.getElementById('msg-active-conv').value = el.id;
+      document.getElementById('msg-hdr-name').textContent = name;
+      document.getElementById('msg-hdr-avatar').textContent = name[0];
+      document.getElementById('msg-hdr-avatar').style.background = color;
+      // Remove unread badge
+      var badge = document.getElementById('badge-'+el.id);
+      if(badge) badge.remove();
+    }
+    </script>`
   return c.html(layout('Messages', clientShell('Messages', 'messages', body), { noNav:true, noFooter:true }))
 })
 
@@ -657,16 +692,20 @@ app.get('/employee/attendance', (c) => {
       </div>`).join('')}
     </div>
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
-      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">February 2025 Attendance Log</h3>
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">February 2025 Attendance Log</h3>
+          <div id="att-clock" style="font-size:.75rem;color:var(--ink-muted);margin-top:.15rem;"></div>
+        </div>
         <div style="display:flex;gap:.5rem;align-items:center;">
-          <button onclick="var t=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});igToast('Checked in at '+t+' — attendance marked','success')" style="background:#1A3A6B;color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class='fas fa-sign-in-alt' style='margin-right:.3rem;'></i>Check In</button>
-          <button onclick="var t=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});igToast('Checked out at '+t+' — have a great evening!','success')" style="background:var(--ink);color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class='fas fa-sign-out-alt' style='margin-right:.3rem;'></i>Check Out</button>
+          <div id="att-status" style="font-size:.72rem;color:var(--ink-muted);padding:.25rem .75rem;border:1px solid var(--border);background:var(--parch-dk);">Status: Not checked in</div>
+          <button id="checkin-btn" onclick="igAttendance('in')" style="background:#1A3A6B;color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class='fas fa-sign-in-alt' style='margin-right:.3rem;'></i>Check In</button>
+          <button id="checkout-btn" onclick="igAttendance('out')" style="background:var(--ink);color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;opacity:.5;pointer-events:none;"><i class='fas fa-sign-out-alt' style='margin-right:.3rem;'></i>Check Out</button>
         </div>
       </div>
       <table class="ig-tbl">
         <thead><tr><th>Date</th><th>Day</th><th>Check In</th><th>Check Out</th><th>Hours</th><th>Status</th></tr></thead>
-        <tbody>
+        <tbody id="att-tbody">
           ${[
             { date:'27 Feb', day:'Thu', in:'09:12 AM', out:'07:14 PM', hrs:'10h 2m',  ok:true  },
             { date:'26 Feb', day:'Wed', in:'09:05 AM', out:'06:55 PM', hrs:'9h 50m',  ok:true  },
@@ -685,7 +724,72 @@ app.get('/employee/attendance', (c) => {
           </tr>`).join('')}
         </tbody>
       </table>
-    </div>`
+    </div>
+    <script>
+    (function(){
+      var checkedIn = false;
+      var checkInTime = null;
+      // Live clock
+      function updateClock(){
+        var now = new Date();
+        document.getElementById('att-clock').textContent = 'Today: '+now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+' · '+now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      window.igAttendance = function(type){
+        var now = new Date();
+        var tStr = now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
+        var inBtn = document.getElementById('checkin-btn');
+        var outBtn = document.getElementById('checkout-btn');
+        var statusEl = document.getElementById('att-status');
+        if(type === 'in'){
+          if(checkedIn){ igToast('You are already checked in at '+checkInTime,'warn'); return; }
+          checkedIn = true;
+          checkInTime = tStr;
+          inBtn.style.opacity = '.5';
+          inBtn.style.pointerEvents = 'none';
+          outBtn.style.opacity = '1';
+          outBtn.style.pointerEvents = 'auto';
+          statusEl.textContent = 'Checked in at ' + tStr;
+          statusEl.style.color = '#15803d';
+          statusEl.style.borderColor = '#16a34a';
+          igToast('Checked in at '+tStr+' — attendance marked for today','success');
+          // Add today to table
+          var tbody = document.getElementById('att-tbody');
+          var tr = document.createElement('tr');
+          tr.style.background = '#f0fdf4';
+          tr.innerHTML = '<td style="font-size:.82rem;font-weight:500;">Today</td>'
+            +'<td style="font-size:.8rem;color:var(--ink-muted);">'+now.toLocaleDateString('en-IN',{weekday:'short'})+'</td>'
+            +'<td style="font-size:.82rem;color:#15803d;font-weight:600;">'+tStr+'</td>'
+            +'<td style="font-size:.82rem;color:var(--ink-muted);">—</td>'
+            +'<td style="font-size:.82rem;color:var(--ink-muted);">In progress</td>'
+            +'<td><span class="badge b-gr">Present</span></td>';
+          tbody.insertBefore(tr, tbody.firstChild);
+        } else {
+          if(!checkedIn){ igToast('Please check in first before checking out','warn'); return; }
+          checkedIn = false;
+          inBtn.style.opacity = '1';
+          inBtn.style.pointerEvents = 'auto';
+          outBtn.style.opacity = '.5';
+          outBtn.style.pointerEvents = 'none';
+          statusEl.textContent = 'Checked out at ' + tStr;
+          statusEl.style.color = '#b91c1c';
+          statusEl.style.borderColor = '#dc2626';
+          igToast('Checked out at '+tStr+' — have a great evening!','success');
+          // Update today row
+          var rows = document.getElementById('att-tbody').querySelectorAll('tr');
+          if(rows[0]){
+            rows[0].cells[3].textContent = tStr;
+            rows[0].cells[3].style.color = '#15803d';
+            rows[0].cells[3].style.fontWeight = '600';
+            rows[0].cells[4].textContent = 'Logged';
+            rows[0].style.background = '';
+          }
+        }
+      };
+    })();
+    </script>`
   return c.html(layout('Attendance', empShell('Attendance', 'attendance', body), { noNav:true, noFooter:true }))
 })
 
@@ -710,33 +814,40 @@ app.get('/employee/leave', (c) => {
         <div style="display:flex;flex-direction:column;gap:.875rem;">
           <div>
             <label class="ig-label">Leave Type</label>
-            <select class="ig-input">
-              <option>Casual Leave</option>
-              <option>Sick Leave</option>
-              <option>Earned Leave</option>
+            <select id="lv-type" class="ig-input" onchange="igCalcDays()">
+              <option value="Casual">Casual Leave (10 days remaining)</option>
+              <option value="Sick">Sick Leave (12 days remaining)</option>
+              <option value="Earned">Earned Leave (12 days remaining)</option>
             </select>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
             <div>
               <label class="ig-label">From Date</label>
-              <input type="date" class="ig-input" value="2025-03-10">
+              <input type="date" id="lv-from" class="ig-input" onchange="igCalcDays()">
             </div>
             <div>
               <label class="ig-label">To Date</label>
-              <input type="date" class="ig-input" value="2025-03-12">
+              <input type="date" id="lv-to" class="ig-input" onchange="igCalcDays()">
             </div>
           </div>
+          <div id="lv-days-display" style="display:none;background:#f0fdf4;border:1px solid #86efac;padding:.6rem .875rem;font-size:.82rem;color:#15803d;font-weight:600;"></div>
+          <div id="lv-error-display" style="display:none;background:#fef2f2;border:1px solid #fecaca;padding:.6rem .875rem;font-size:.82rem;color:#b91c1c;font-weight:600;"></div>
           <div>
             <label class="ig-label">Reason</label>
-            <textarea class="ig-input" rows="3" placeholder="Brief reason for leave..."></textarea>
+            <textarea id="lv-reason" class="ig-input" rows="3" placeholder="Brief reason for leave request..."></textarea>
           </div>
-          <button onclick="igToast('Leave application submitted! Reference: LV-2025-'+String(Math.floor(Math.random()*900)+100)+' — awaiting manager approval','success')" style="background:#1A3A6B;color:#fff;border:none;padding:.7rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;width:fit-content;"><i class='fas fa-paper-plane' style='margin-right:.4rem;'></i>Submit Application</button>
+          <div>
+            <label class="ig-label">Leave Contact (optional)</label>
+            <input type="text" id="lv-contact" class="ig-input" placeholder="Who to contact in your absence">
+          </div>
+          <button onclick="igSubmitLeave()" style="background:#1A3A6B;color:#fff;border:none;padding:.7rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;width:fit-content;display:flex;align-items:center;gap:.4rem;"><i class='fas fa-paper-plane'></i>Submit Application</button>
         </div>
       </div>
       <div style="background:#fff;border:1px solid var(--border);">
         <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
           <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Leave History</h3>
         </div>
+        <div id="lv-history-list">
         <table class="ig-tbl">
           <thead><tr><th>Dates</th><th>Type</th><th>Days</th><th>Status</th></tr></thead>
           <tbody>
@@ -753,8 +864,58 @@ app.get('/employee/leave', (c) => {
             </tr>`).join('')}
           </tbody>
         </table>
+        </div>
       </div>
-    </div>`
+    </div>
+    <script>
+    function igCalcDays(){
+      var from = document.getElementById('lv-from').value;
+      var to   = document.getElementById('lv-to').value;
+      var disp = document.getElementById('lv-days-display');
+      var err  = document.getElementById('lv-error-display');
+      disp.style.display = 'none';
+      err.style.display  = 'none';
+      if(!from || !to) return;
+      var d1 = new Date(from), d2 = new Date(to);
+      if(d2 < d1){ err.textContent='To Date cannot be before From Date'; err.style.display='block'; return; }
+      var diff = Math.round((d2-d1)/(1000*60*60*24))+1;
+      disp.textContent = diff + ' day(s) requested. Working days will be calculated by HR.';
+      disp.style.display = 'block';
+    }
+    function igSubmitLeave(){
+      var from   = document.getElementById('lv-from').value;
+      var to     = document.getElementById('lv-to').value;
+      var reason = document.getElementById('lv-reason').value.trim();
+      var err    = document.getElementById('lv-error-display');
+      err.style.display = 'none';
+      if(!from)  { err.textContent='Please select a From Date'; err.style.display='block'; return; }
+      if(!to)    { err.textContent='Please select a To Date'; err.style.display='block'; return; }
+      if(!reason){ err.textContent='Please provide a reason for your leave request'; err.style.display='block'; return; }
+      var d1 = new Date(from), d2 = new Date(to);
+      if(d2 < d1){ err.textContent='To Date cannot be before From Date'; err.style.display='block'; return; }
+      var ref = 'LV-2025-'+String(Math.floor(Math.random()*900)+100);
+      var type = document.getElementById('lv-type').value;
+      var diff = Math.round((d2-d1)/(1000*60*60*24))+1;
+      igToast('Leave application submitted! Ref: '+ref+' — '+diff+' day(s) pending approval','success');
+      // Add to history
+      var tbody = document.querySelector('#lv-history-list table tbody');
+      var tr = document.createElement('tr');
+      tr.style.background = '#fffbeb';
+      var fromFmt = d1.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+      var toFmt   = d2.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+      tr.innerHTML = '<td style="font-size:.8rem;">'+(from===to?fromFmt:fromFmt+' – '+toFmt)+'</td>'
+        +'<td><span class="badge b-dk">'+type+'</span></td>'
+        +'<td style="font-size:.82rem;">'+diff+'</td>'
+        +'<td><span class="badge b-g">Pending</span></td>';
+      tbody.insertBefore(tr, tbody.firstChild);
+      // Reset form
+      document.getElementById('lv-from').value='';
+      document.getElementById('lv-to').value='';
+      document.getElementById('lv-reason').value='';
+      document.getElementById('lv-contact').value='';
+      document.getElementById('lv-days-display').style.display='none';
+    }
+    </script>`
   return c.html(layout('Leave', empShell('Leave Management', 'leave', body), { noNav:true, noFooter:true }))
 })
 
@@ -1062,22 +1223,25 @@ app.get('/board/voting', (c) => {
           desc:'Board resolution to recommend re-appointment of Pipara & Co. as statutory auditors for FY 2025-26 to the shareholders.',
           date:'15 Mar 2025', type:'Special Resolution',
         },
-      ].map(r => `
-      <div style="background:#fff;border:1px solid #fde68a;">
+      ].map((r,i) => `
+      <div id="res-card-${i}" style="background:#fff;border:1px solid #fde68a;">
         <div style="background:#fffbeb;padding:1rem 1.25rem;border-bottom:1px solid #fde68a;display:flex;justify-content:space-between;align-items:flex-start;">
           <div>
             <span style="font-size:.72rem;font-weight:600;color:#92400e;">${r.res}</span>
             <span style="margin-left:.75rem;font-size:.68rem;background:#fef3c7;color:#92400e;padding:1px 6px;border-radius:2px;font-weight:600;">${r.type}</span>
           </div>
-          <span style="font-size:.72rem;color:var(--ink-muted);">Meeting: ${r.date}</span>
+          <div style="display:flex;align-items:center;gap:.75rem;">
+            <span style="font-size:.72rem;color:var(--ink-muted);">Meeting: ${r.date}</span>
+            <div id="res-voted-${i}" style="display:none;padding:.25rem .75rem;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;"></div>
+          </div>
         </div>
         <div style="padding:1.25rem;">
           <h4 style="font-size:.95rem;font-weight:600;color:var(--ink);margin-bottom:.5rem;">${r.title}</h4>
           <p style="font-size:.82rem;color:var(--ink-muted);line-height:1.65;margin-bottom:1.25rem;">${r.desc}</p>
-          <div style="display:flex;gap:.75rem;">
-            <button onclick="igConfirm('Confirm your vote FOR resolution ${r.res}?',function(){ igToast('Vote FOR ${r.res} recorded & timestamped at '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true}),'success'); })" style="background:#16a34a;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;flex:1;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-check" style="margin-right:.4rem;"></i>Vote For</button>
-            <button onclick="igConfirm('Confirm your vote AGAINST resolution ${r.res}?',function(){ igToast('Vote AGAINST ${r.res} recorded & timestamped at '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true}),'error'); })" style="background:#dc2626;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;flex:1;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-times" style="margin-right:.4rem;"></i>Vote Against</button>
-            <button onclick="igConfirm('Record abstention for resolution ${r.res}?',function(){ igToast('Abstention for ${r.res} recorded at '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true}),'warn'); })" style="background:var(--parch-dk);color:var(--ink);border:1px solid var(--border);padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;">Abstain</button>
+          <div id="res-actions-${i}" style="display:flex;gap:.75rem;">
+            <button onclick="igVote(${i},'for','${r.res}')" style="background:#16a34a;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;flex:1;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-check" style="margin-right:.4rem;"></i>Vote For</button>
+            <button onclick="igVote(${i},'against','${r.res}')" style="background:#dc2626;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;flex:1;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-times" style="margin-right:.4rem;"></i>Vote Against</button>
+            <button onclick="igVote(${i},'abstain','${r.res}')" style="background:var(--parch-dk);color:var(--ink);border:1px solid var(--border);padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;">Abstain</button>
           </div>
         </div>
       </div>`).join('')}
@@ -1085,7 +1249,7 @@ app.get('/board/voting', (c) => {
       <div style="background:#fff;border:1px solid var(--border);">
         <table class="ig-tbl">
           <thead><tr><th>Resolution #</th><th>Title</th><th>Date</th><th>Type</th><th>Result</th></tr></thead>
-          <tbody>
+          <tbody id="passed-res-tbody">
             ${[
               { res:'RES-2025-001', title:'Approval of Audited Accounts FY 2024', date:'05 Jan 2025', type:'Ordinary', result:'Passed Unanimously' },
               { res:'RES-2025-002', title:'Board Fee Revision for FY 2025',        date:'15 Jan 2025', type:'Ordinary', result:'Passed Unanimously' },
@@ -1101,7 +1265,31 @@ app.get('/board/voting', (c) => {
           </tbody>
         </table>
       </div>
-    </div>`
+    </div>
+    <script>
+    function igVote(idx, type, resId){
+      var labels = {for:{text:'Voted For',bg:'#16a34a',badge:'b-gr',icon:'check',toast:'success'},against:{text:'Voted Against',bg:'#dc2626',badge:'b-re',icon:'times',toast:'error'},abstain:{text:'Abstained',bg:'#d97706',badge:'b-g',icon:'minus',toast:'warn'}};
+      var lbl = labels[type];
+      igConfirm('Confirm your vote '+type.toUpperCase()+' on resolution '+resId+'?', function(){
+        var t = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
+        // Update card
+        var card = document.getElementById('res-card-'+idx);
+        card.style.border = '1px solid '+(type==='for'?'#86efac':type==='against'?'#fca5a5':'#fde68a');
+        card.style.background = (type==='for'?'#f0fdf4':type==='against'?'#fef2f2':'#fffbeb');
+        // Show voted badge
+        var badge = document.getElementById('res-voted-'+idx);
+        badge.textContent = lbl.text + ' at ' + t;
+        badge.style.cssText = 'background:'+lbl.bg+';color:#fff;padding:.25rem .75rem;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;';
+        badge.style.display = 'block';
+        // Disable action buttons
+        var actions = document.getElementById('res-actions-'+idx);
+        actions.style.opacity = '.4';
+        actions.style.pointerEvents = 'none';
+        // Toast
+        igToast('Vote '+type.toUpperCase()+' on '+resId+' recorded & timestamped at '+t, lbl.toast);
+      });
+    }
+    </script>`
   return c.html(layout('Voting', boardShell('Voting & Resolutions', 'voting', body), { noNav:true, noFooter:true }))
 })
 

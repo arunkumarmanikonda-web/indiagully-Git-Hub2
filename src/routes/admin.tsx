@@ -243,50 +243,113 @@ app.get('/users', (c) => {
   <div id="add-user-panel" class="ig-panel" style="margin-bottom:1.5rem;">
     <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin-bottom:1rem;">Create New User</h4>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-      <div><label class="ig-label">Full Name</label><input type="text" class="ig-input" placeholder="Full Name"></div>
-      <div><label class="ig-label">Email Address</label><input type="email" class="ig-input" placeholder="user@indiagully.com"></div>
-      <div><label class="ig-label">Role</label><select class="ig-input"><option>Client</option><option>Employee</option><option>KMP</option><option>Director</option><option>Admin</option></select></div>
-      <div><label class="ig-label">Portal Access</label><select class="ig-input"><option>Client</option><option>Employee</option><option>Board & KMP</option><option>Admin</option></select></div>
+      <div><label class="ig-label">Full Name</label><input type="text" id="new-user-name" class="ig-input" placeholder="Full Name"></div>
+      <div><label class="ig-label">Email Address</label><input type="email" id="new-user-email" class="ig-input" placeholder="user@indiagully.com"></div>
+      <div><label class="ig-label">Role</label><select id="new-user-role" class="ig-input"><option>Client</option><option>Employee</option><option>KMP</option><option>Director</option><option>Admin</option></select></div>
+      <div><label class="ig-label">Portal Access</label><select id="new-user-portal" class="ig-input"><option>Client</option><option>Employee</option><option>Board & KMP</option><option>Admin</option></select></div>
       <div><label class="ig-label">Temporary Password</label><input type="text" class="ig-input" value="TempPass@2025!" readonly></div>
       <div><label class="ig-label">Force Password Reset?</label><select class="ig-input"><option>Yes — on first login</option><option>No</option></select></div>
     </div>
     <div style="display:flex;gap:.75rem;margin-top:1rem;">
-      <button onclick="igToast('User created! Welcome email sent.','success');togglePanel('add-user-panel')" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Create User</button>
+      <button onclick="igCreateUser()" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Create User</button>
       <button onclick="togglePanel('add-user-panel')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Edit User Floating Panel -->
+  <div id="edit-user-panel" class="ig-panel" style="margin-bottom:1.5rem;display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <h4 id="edit-user-title" style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);">Edit User</h4>
+      <button onclick="document.getElementById('edit-user-panel').style.display='none'" style="background:none;border:none;cursor:pointer;color:var(--ink-muted);font-size:1rem;"><i class="fas fa-times"></i></button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.875rem;">
+      <div><label class="ig-label">Full Name</label><input type="text" id="eu-name" class="ig-input" style="font-size:.82rem;"></div>
+      <div><label class="ig-label">Email</label><input type="email" id="eu-email" class="ig-input" style="font-size:.82rem;"></div>
+      <div><label class="ig-label">Role</label><select id="eu-role" class="ig-input" style="font-size:.82rem;"><option>Super Admin</option><option>Director</option><option>KMP</option><option>Client</option><option>Employee</option></select></div>
+    </div>
+    <div style="display:flex;gap:.75rem;margin-top:.875rem;">
+      <button onclick="igSaveUser()" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Save Changes</button>
+      <button onclick="document.getElementById('edit-user-panel').style.display='none'" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
     </div>
   </div>
 
   <!-- User Table -->
   <div style="background:#fff;border:1px solid var(--border);">
     <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">All Users</h3></div>
-    <table class="ig-tbl"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Portal</th><th>Last Login</th><th>Status</th><th>Actions</th></tr></thead><tbody>
-    ${users.map((u,i)=>`<tr>
-      <td style="font-weight:500;">${u.name}</td>
+    <table class="ig-tbl" id="users-table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Portal</th><th>Last Login</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+    ${users.map((u,i)=>`<tr id="user-row-${i}">
+      <td id="user-name-${i}" style="font-weight:500;">${u.name}</td>
       <td style="font-size:.8rem;">${u.email}</td>
-      <td><span class="badge b-dk">${u.role}</span></td>
+      <td id="user-role-badge-${i}"><span class="badge b-dk">${u.role}</span></td>
       <td style="font-size:.8rem;color:var(--ink-muted);">${u.portal}</td>
       <td style="font-size:.78rem;color:var(--ink-muted);">${u.login}</td>
-      <td><span class="badge ${u.active?'b-gr':'b-re'}">${u.active?'Active':'Inactive'}</span></td>
+      <td id="user-status-${i}"><span class="badge ${u.active?'b-gr':'b-re'}">${u.active?'Active':'Inactive'}</span></td>
       <td style="display:flex;gap:.5rem;flex-wrap:wrap;">
-        <button onclick="togglePanel('edit-user-${i}')" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--gold);">Edit</button>
+        <button onclick="igEditUser(${i},'${u.name}','${u.email}','${u.role}')" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--gold);">Edit</button>
         <button onclick="igConfirm('Send password reset email to ${u.email}?',function(){ igToast('Reset email sent to ${u.email}','success'); })" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);">Reset PW</button>
-        ${u.active?`<button onclick="igConfirm('Deactivate ${u.name}?',function(){ igToast('${u.name} deactivated','warn'); })" style="background:none;border:1px solid #fecaca;padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:#dc2626;">Deactivate</button>`:''}
+        ${u.active?`<button onclick="igToggleUser(${i},'${u.name}',false)" style="background:none;border:1px solid #fecaca;padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:#dc2626;">Deactivate</button>`:`<button onclick="igToggleUser(${i},'${u.name}',true)" style="background:none;border:1px solid #86efac;padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:#15803d;">Activate</button>`}
       </td>
-    </tr>
-    <tr id="edit-user-${i}" style="display:none;"><td colspan="7" style="background:var(--parch-dk);padding:1.25rem;">
-      <h4 style="font-size:.78rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.875rem;">Edit — ${u.name}</h4>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.875rem;">
-        <div><label class="ig-label">Full Name</label><input type="text" class="ig-input" value="${u.name}" style="font-size:.82rem;"></div>
-        <div><label class="ig-label">Email</label><input type="email" class="ig-input" value="${u.email}" style="font-size:.82rem;"></div>
-        <div><label class="ig-label">Role</label><select class="ig-input" style="font-size:.82rem;"><option ${u.role==='Super Admin'?'selected':''}>Super Admin</option><option ${u.role==='Director'?'selected':''}>Director</option><option ${u.role==='KMP'?'selected':''}>KMP</option><option ${u.role==='Client'?'selected':''}>Client</option><option ${u.role==='Employee'?'selected':''}>Employee</option></select></div>
-      </div>
-      <div style="display:flex;gap:.75rem;margin-top:.875rem;">
-        <button onclick="igToast('User ${u.name} updated','success');this.closest('tr').style.display='none'" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Save Changes</button>
-        <button onclick="this.closest('tr').style.display='none'" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
-      </div>
-    </td></tr>`).join('')}
+    </tr>`).join('')}
     </tbody></table>
-  </div>`
+  </div>
+  <script>
+  var igEditIdx = -1;
+  function igEditUser(idx, name, email, role){
+    igEditIdx = idx;
+    document.getElementById('edit-user-title').textContent = 'Edit — ' + name;
+    document.getElementById('eu-name').value = name;
+    document.getElementById('eu-email').value = email;
+    document.getElementById('eu-role').value = role;
+    var panel = document.getElementById('edit-user-panel');
+    panel.style.display = 'block';
+    panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  function igSaveUser(){
+    if(igEditIdx < 0) return;
+    var name = document.getElementById('eu-name').value.trim();
+    var role = document.getElementById('eu-role').value;
+    if(!name){ igToast('Name cannot be empty','warn'); return; }
+    document.getElementById('user-name-'+igEditIdx).textContent = name;
+    document.getElementById('user-role-badge-'+igEditIdx).innerHTML = '<span class="badge b-dk">'+role+'</span>';
+    document.getElementById('edit-user-panel').style.display = 'none';
+    igToast(name+' updated successfully','success');
+  }
+  function igToggleUser(idx, name, activate){
+    igConfirm((activate?'Activate':'Deactivate')+' user '+name+'?',function(){
+      var cell = document.getElementById('user-status-'+idx);
+      if(cell) cell.innerHTML = activate?'<span class="badge b-gr">Active</span>':'<span class="badge b-re">Inactive</span>';
+      igToast(name+(activate?' activated':' deactivated'), activate?'success':'warn');
+    });
+  }
+  function igCreateUser(){
+    var name  = document.getElementById('new-user-name').value.trim();
+    var email = document.getElementById('new-user-email').value.trim();
+    var role  = document.getElementById('new-user-role').value;
+    var portal = document.getElementById('new-user-portal').value;
+    if(!name || !email){ igToast('Name and email are required','warn'); return; }
+    if(!email.includes('@')){ igToast('Please enter a valid email address','warn'); return; }
+    igToast('User '+name+' created! Welcome email sent to '+email,'success');
+    togglePanel('add-user-panel');
+    // Add to table
+    var tbody = document.querySelector('#users-table tbody');
+    var idx = document.querySelectorAll('#users-table tbody tr').length;
+    var tr = document.createElement('tr');
+    tr.id = 'user-row-'+idx;
+    tr.innerHTML = '<td id="user-name-'+idx+'" style="font-weight:500;">'+name+'</td>'
+      +'<td style="font-size:.8rem;">'+email+'</td>'
+      +'<td id="user-role-badge-'+idx+'"><span class="badge b-dk">'+role+'</span></td>'
+      +'<td style="font-size:.8rem;color:var(--ink-muted);">'+portal+'</td>'
+      +'<td style="font-size:.78rem;color:var(--ink-muted);">Just now</td>'
+      +'<td id="user-status-'+idx+'"><span class="badge b-gr">Active</span></td>'
+      +'<td style="display:flex;gap:.5rem;">'
+      +'<button onclick="igEditUser('+idx+',\''+name+'\',\''+email+'\',\''+role+'\')" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--gold);">Edit</button>'
+      +'<button onclick="igToggleUser('+idx+',\''+name+'\',false)" style="background:none;border:1px solid #fecaca;padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:#dc2626;">Deactivate</button>'
+      +'</td>';
+    tbody.appendChild(tr);
+    document.getElementById('new-user-name').value='';
+    document.getElementById('new-user-email').value='';
+  }
+  </script>`
   return c.html(layout('User Management', adminShell('User Management', 'users', body), {noNav:true,noFooter:true}))
 })
 
@@ -346,21 +409,27 @@ app.get('/finance', (c) => {
     <button onclick="togglePanel('new-inv-panel')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;letter-spacing:.07em;text-transform:uppercase;display:inline-flex;align-items:center;gap:.4rem;"><i class="fas fa-plus"></i>Create New Invoice</button>
   </div>
   <div id="new-inv-panel" class="ig-panel" style="margin-bottom:1.5rem;">
-    <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">New Invoice</h4>
+    <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">New Invoice — <span id="inv-num-preview">INV-2025-004</span></h4>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
       <div><label class="ig-label">Client Name</label><select class="ig-input"><option>Demo Client Corp</option><option>Rajasthan Hotels Pvt Ltd</option><option>Mumbai Mall Pvt Ltd</option></select></div>
-      <div><label class="ig-label">Invoice Date</label><input type="date" class="ig-input" value="2025-02-27"></div>
-      <div><label class="ig-label">Due Date</label><input type="date" class="ig-input" value="2025-03-27"></div>
-      <div><label class="ig-label">Description</label><input type="text" class="ig-input" placeholder="Advisory Retainer — Feb 2025"></div>
-      <div><label class="ig-label">Amount (excl. GST) ₹</label><input type="number" class="ig-input" placeholder="0.00" id="inv-amt" oninput="document.getElementById('inv-gst').value=(this.value*0.18).toFixed(2);document.getElementById('inv-total').value=(this.value*1.18).toFixed(2)"></div>
+      <div><label class="ig-label">Invoice Date</label><input type="date" class="ig-input" id="inv-date" value="2025-02-27"></div>
+      <div><label class="ig-label">Due Date</label><input type="date" class="ig-input" id="inv-due" value="2025-03-27"></div>
+      <div style="grid-column:span 3"><label class="ig-label">Description of Services</label><input type="text" class="ig-input" id="inv-desc" placeholder="Advisory Retainer — Feb 2025"></div>
+      <div><label class="ig-label">Amount (excl. GST) ₹</label><input type="number" class="ig-input" placeholder="0.00" id="inv-amt" oninput="var a=parseFloat(this.value)||0;document.getElementById('inv-gst').value=(a*0.18).toFixed(2);document.getElementById('inv-total').value=(a*1.18).toFixed(2);document.getElementById('inv-cgst').textContent='₹'+(a*0.09).toFixed(2);document.getElementById('inv-sgst').textContent='₹'+(a*0.09).toFixed(2);document.getElementById('inv-total-disp').textContent='₹'+(a*1.18).toFixed(2);"></div>
       <div><label class="ig-label">GST @ 18% ₹</label><input type="number" class="ig-input" id="inv-gst" placeholder="0.00" readonly></div>
       <div><label class="ig-label">Total Amount ₹</label><input type="number" class="ig-input" id="inv-total" placeholder="0.00" readonly style="font-weight:700;color:var(--gold);"></div>
       <div><label class="ig-label">HSN/SAC Code</label><input type="text" class="ig-input" value="998313" placeholder="998313"></div>
       <div><label class="ig-label">Payment Terms</label><select class="ig-input"><option>Net 30 Days</option><option>Net 15 Days</option><option>Immediate</option></select></div>
+      <div style="padding:1rem;background:var(--parch-dk);border:1px solid var(--border);">
+        <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">GST Breakup</div>
+        <div style="font-size:.78rem;color:var(--ink-muted);">CGST (9%): <span id="inv-cgst" style="color:var(--ink);font-weight:600;">₹0.00</span></div>
+        <div style="font-size:.78rem;color:var(--ink-muted);">SGST (9%): <span id="inv-sgst" style="color:var(--ink);font-weight:600;">₹0.00</span></div>
+        <div style="font-size:.82rem;color:var(--ink);font-weight:600;margin-top:.3rem;border-top:1px solid var(--border);padding-top:.3rem;">Total: <span id="inv-total-disp">₹0.00</span></div>
+      </div>
     </div>
     <div style="display:flex;gap:.75rem;margin-top:1rem;">
-      <button onclick="igToast('Invoice INV-2025-00'+(Math.floor(Math.random()*9)+4)+' created & emailed to client','success');togglePanel('new-inv-panel')" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Create & Send Invoice</button>
-      <button onclick="igToast('Draft saved','success')" style="background:var(--ink);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save as Draft</button>
+      <button onclick="igCreateInvoice()" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-paper-plane" style="margin-right:.4rem;"></i>Create & Send Invoice</button>
+      <button onclick="igToast('Draft saved as '+document.getElementById(\'inv-num-preview\').textContent,'success')" style="background:var(--ink);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save as Draft</button>
       <button onclick="togglePanel('new-inv-panel')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
     </div>
   </div>
@@ -369,20 +438,20 @@ app.get('/finance', (c) => {
     <!-- Invoices -->
     <div style="background:#fff;border:1px solid var(--border);">
       <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Invoice Register</h3></div>
-      <table class="ig-tbl"><thead><tr><th>Invoice</th><th>Client</th><th>Amount</th><th>Due</th><th>Status</th><th>Action</th></tr></thead><tbody>
+      <table class="ig-tbl" id="inv-register-table"><thead><tr><th>Invoice</th><th>Client</th><th>Amount</th><th>Due</th><th>Status</th><th>Action</th></tr></thead><tbody>
         ${[
           {inv:'INV-2025-001',client:'Demo Client',amount:'₹2.5L',due:'15 Mar',status:'Paid',   cls:'b-gr'},
           {inv:'INV-2025-002',client:'Demo Client',amount:'₹1.8L',due:'28 Feb',status:'Overdue',cls:'b-re'},
           {inv:'INV-2025-003',client:'Pending Corp',amount:'₹3.2L',due:'31 Mar',status:'Draft', cls:'b-dk'},
-        ].map(r=>`<tr>
+        ].map(r=>`<tr id="inv-row-${r.inv.replace(/-/g,'_')}">
           <td style="font-size:.82rem;font-weight:500;color:var(--gold);">${r.inv}</td>
           <td style="font-size:.8rem;">${r.client}</td>
           <td style="font-family:'DM Serif Display',Georgia,serif;">${r.amount}</td>
           <td style="font-size:.78rem;color:var(--ink-muted);">${r.due}</td>
-          <td><span class="badge ${r.cls}">${r.status}</span></td>
+          <td id="status-${r.inv.replace(/-/g,'_')}"><span class="badge ${r.cls}">${r.status}</span></td>
           <td>
-            <button onclick="igToast('Invoice ${r.inv} PDF generated','success')" style="background:none;border:none;cursor:pointer;font-size:.72rem;color:var(--gold);padding:0;"><i class="fas fa-download"></i></button>
-            ${r.status!=='Paid'?`<button onclick="igConfirm('Mark ${r.inv} as Paid?',function(){ igToast('${r.inv} marked as Paid','success'); })" style="background:none;border:none;cursor:pointer;font-size:.68rem;color:#16a34a;padding:0;margin-left:.5rem;">Mark Paid</button>`:''}
+            <button onclick="igToast('${r.inv} PDF generated — simulating download','success')" style="background:none;border:none;cursor:pointer;font-size:.72rem;color:var(--gold);padding:0;margin-right:.5rem;"><i class="fas fa-download"></i></button>
+            ${r.status!=='Paid'?`<button onclick="igMarkPaid('${r.inv.replace(/-/g,'_')}')" style="background:none;border:none;cursor:pointer;font-size:.68rem;color:#16a34a;padding:0;">Mark Paid</button>`:''}
           </td>
         </tr>`).join('')}
       </tbody></table>
@@ -391,7 +460,7 @@ app.get('/finance', (c) => {
     <div style="background:#fff;border:1px solid var(--border);">
       <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
         <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GST Summary — Feb 2025</h3>
-        <button onclick="igToast('GSTR-3B filed for February 2025','success')" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File GSTR-3B</button>
+        <button onclick="igConfirm('File GSTR-3B for February 2025? This action is irreversible.',function(){ igToast('GSTR-3B filed successfully for February 2025','success'); this.textContent='Filed ✓'; })" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File GSTR-3B</button>
       </div>
       <div style="padding:1.25rem;">
         ${[
@@ -414,7 +483,58 @@ app.get('/finance', (c) => {
         `<button onclick="igToast('${r} generated — check Downloads','success')" style="background:var(--parch-dk);border:1px solid var(--border);padding:.5rem 1rem;font-size:.78rem;font-weight:500;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:.4rem;"><i class="fas fa-file-alt" style="color:var(--gold);font-size:.7rem;"></i>${r}</button>`
       ).join('')}
     </div>
-  </div>`
+  </div>
+  <script>
+  var igInvCounter = 4;
+  function igUpdateInvNum(){
+    var n = 'INV-2025-00'+igInvCounter;
+    var el = document.getElementById('inv-num-preview');
+    if(el) el.textContent = n;
+    return n;
+  }
+  function igCreateInvoice(){
+    var desc = document.getElementById('inv-desc').value.trim();
+    var amt  = document.getElementById('inv-amt').value;
+    if(!desc){ igToast('Please enter a description of services','warn'); return; }
+    if(!amt || parseFloat(amt) <= 0){ igToast('Please enter a valid invoice amount','warn'); return; }
+    var num = igUpdateInvNum();
+    igInvCounter++;
+    igToast(num+' created & emailed to client','success');
+    togglePanel('new-inv-panel');
+    // Add to table
+    var tbody = document.querySelector('#inv-register-table tbody');
+    var tr = document.createElement('tr');
+    tr.id = 'inv-row-'+num.replace(/-/g,'_');
+    var total = (parseFloat(amt)*1.18).toFixed(0);
+    var totalLakh = (total/100000).toFixed(1);
+    var due = document.getElementById('inv-due').value;
+    var dueFmt = due ? new Date(due).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : '—';
+    tr.innerHTML = '<td style="font-size:.82rem;font-weight:500;color:var(--gold);">'+num+'</td>'
+      +'<td style="font-size:.8rem;">'+document.querySelector(\'#new-inv-panel select\').value+'</td>'
+      +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+totalLakh+'L</td>'
+      +'<td style="font-size:.78rem;color:var(--ink-muted);">'+dueFmt+'</td>'
+      +'<td id="status-'+num.replace(/-/g,'_')+'"><span class="badge b-g">Sent</span></td>'
+      +'<td><button onclick="igMarkPaid(\''+num.replace(/-/g,'_')+'\')" style="background:none;border:none;cursor:pointer;font-size:.68rem;color:#16a34a;padding:0;">Mark Paid</button></td>';
+    tbody.insertBefore(tr, tbody.firstChild);
+    // Reset form
+    document.getElementById('inv-desc').value='';
+    document.getElementById('inv-amt').value='';
+    document.getElementById('inv-gst').value='';
+    document.getElementById('inv-total').value='';
+    igUpdateInvNum();
+  }
+  function igMarkPaid(invId){
+    igConfirm('Mark this invoice as Paid? This will update the ledger.',function(){
+      var cell = document.getElementById('status-'+invId);
+      if(cell){ cell.innerHTML = '<span class="badge b-gr">Paid</span>'; }
+      // Remove the mark paid button
+      var row = document.getElementById('inv-row-'+invId);
+      if(row){ var btn = row.querySelector('[onclick*="igMarkPaid"]'); if(btn) btn.remove(); }
+      igToast('Invoice marked as Paid. Ledger updated.','success');
+    });
+  }
+  igUpdateInvNum();
+  </script>`
   return c.html(layout('Finance ERP', adminShell('Finance ERP', 'finance', body), {noNav:true,noFooter:true}))
 })
 

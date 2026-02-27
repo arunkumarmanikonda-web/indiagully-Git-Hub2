@@ -535,23 +535,46 @@ const SCRIPTS = `
   window.togglePanel = function(id){
     var p = document.getElementById(id);
     if(!p) return;
-    var isHidden = p.style.display === 'none' || p.style.display === '';
-    p.style.display = isHidden ? 'block' : 'none';
+    // For elements hidden by CSS class, getComputedStyle gives 'none'
+    var computed = window.getComputedStyle(p).display;
+    var isHidden = computed === 'none';
+    if(isHidden){
+      // Set appropriate display type: table-row for TR elements, block for others
+      p.style.display = (p.tagName === 'TR') ? 'table-row' : 'block';
+    } else {
+      p.style.display = 'none';
+    }
   };
 
   /* ── CONFIRM ACTION ───────────────────────────────────────────────────── */
   window.igConfirm = function(msg, cb){
+    var uid = 'igc_'+Date.now();
     var overlay = document.createElement('div');
-    overlay.style.cssText='position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;';
-    overlay.innerHTML='<div style="background:#fff;padding:2rem;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3);">'
-      +'<p style="font-size:.95rem;color:#111;margin-bottom:1.5rem;line-height:1.6;">'+msg+'</p>'
+    overlay.style.cssText='position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:1rem;';
+    overlay.innerHTML='<div style="background:#fff;padding:2rem;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35);">'
+      +'<div style="display:flex;align-items:flex-start;gap:.875rem;margin-bottom:1.5rem;">'
+      +'<div style="width:40px;height:40px;background:#fffbeb;border:1.5px solid #fde68a;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
+      +'<i class="fas fa-exclamation-triangle" style="color:#d97706;font-size:.9rem;"></i></div>'
+      +'<p style="font-size:.9rem;color:#111;line-height:1.65;padding-top:.2rem;">'+msg+'</p></div>'
       +'<div style="display:flex;gap:.75rem;justify-content:flex-end;">'
-      +'<button id="igcNo" style="padding:.5rem 1.25rem;background:#f1f5f9;border:1px solid #e2e8f0;font-size:.82rem;cursor:pointer;font-weight:500;">Cancel</button>'
-      +'<button id="igcYes" style="padding:.5rem 1.25rem;background:#B8960C;color:#fff;border:none;font-size:.82rem;cursor:pointer;font-weight:600;letter-spacing:.05em;">Confirm</button>'
+      +'<button id="'+uid+'No" style="padding:.55rem 1.25rem;background:#f1f5f9;border:1px solid #e2e8f0;font-size:.82rem;cursor:pointer;font-weight:500;color:#444;">Cancel</button>'
+      +'<button id="'+uid+'Yes" style="padding:.55rem 1.25rem;background:#B8960C;color:#fff;border:none;font-size:.82rem;cursor:pointer;font-weight:600;letter-spacing:.05em;">Confirm</button>'
       +'</div></div>';
     document.body.appendChild(overlay);
-    overlay.querySelector('#igcNo')!.addEventListener('click',function(){ overlay.remove(); });
-    overlay.querySelector('#igcYes')!.addEventListener('click',function(){ overlay.remove(); if(cb) cb(); });
+    overlay.querySelector('#'+uid+'No').addEventListener('click',function(){ overlay.remove(); });
+    overlay.querySelector('#'+uid+'Yes').addEventListener('click',function(){ overlay.remove(); if(cb) cb(); });
+    // Close on backdrop
+    overlay.addEventListener('click',function(e){ if(e.target===overlay){ overlay.remove(); } });
+  };
+
+  /* ── FILE DOWNLOAD SIMULATION ─────────────────────────────────────────── */
+  window.igDownload = function(filename, msg){
+    igToast(msg || ('Downloading '+filename+' …'), 'success');
+  };
+
+  /* ── VIEW PDF SIMULATION ──────────────────────────────────────────────── */
+  window.igViewPDF = function(filename, msg){
+    igToast(msg || ('Opening '+filename+' in viewer …'), 'success');
   };
 
 })();
