@@ -3,366 +3,301 @@ import { layout } from '../lib/layout'
 
 const app = new Hono()
 
+// ── ADMIN LOGIN ──────────────────────────────────────────────────────────────
 app.get('/', (c) => {
   const content = `
-  <section class="min-h-screen flex items-center justify-center py-16" style="background:linear-gradient(135deg,#0A0A0A,#1A0A0A,#0A0A0A);">
-    <div class="absolute inset-0 opacity-5" style="background-image:linear-gradient(rgba(197,160,40,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(197,160,40,.2) 1px,transparent 1px);background-size:40px 40px;"></div>
-    <div class="relative max-w-md w-full mx-4">
-      <div class="bg-white" style="box-shadow:0 40px 100px rgba(0,0,0,.8);">
-        <!-- Header -->
-        <div class="p-8 text-center" style="background:linear-gradient(135deg,#1A0A0A,#2D0A0A);">
-          <div class="w-16 h-16 flex items-center justify-center mx-auto mb-4" style="background:rgba(197,160,40,.2);border:2px solid rgba(197,160,40,.4);">
-            <i class="fas fa-shield-alt text-gold text-2xl"></i>
-          </div>
-          <div class="text-white font-serif text-2xl font-bold mb-1">Super Admin Console</div>
-          <div class="text-xs text-gray-400 uppercase tracking-widest mt-2">India Gully Enterprise Platform</div>
-          <div class="flex items-center justify-center gap-3 mt-4 text-xs">
-            <span class="text-red-400 font-semibold uppercase tracking-wider">⚠ Restricted Access</span>
-          </div>
-        </div>
-        
-        <!-- Login Form -->
-        <div class="p-8">
-          <form class="ig-form space-y-5" method="POST" action="/api/auth/admin">
-            <div>
-              <label class="ig-label">Admin Username</label>
-              <input type="text" name="username" class="ig-input" required placeholder="admin@indiagully.com" autocomplete="off">
-            </div>
-            <div>
-              <label class="ig-label">Admin Password</label>
-              <input type="password" name="password" class="ig-input" required placeholder="••••••••••••••••">
-            </div>
-            <div>
-              <label class="ig-label">2FA Authentication Code</label>
-              <input type="text" name="totp" class="ig-input" required placeholder="6-digit TOTP" maxlength="6" autocomplete="off">
-            </div>
-            <button type="submit" class="w-full py-3 font-semibold text-white text-sm uppercase tracking-wider transition-all" style="background:#6B3A1A;letter-spacing:.1em;">
-              <i class="fas fa-shield-alt mr-2"></i>Authenticate & Enter
-            </button>
-          </form>
-          
-          <div class="mt-6 pt-5 border-t border-ig-border space-y-2 text-xs text-center text-gray-400">
-            <p>All admin actions are logged with timestamp, IP and user identity.</p>
-            <p>Unauthorised access is a criminal offence under IT Act 2000.</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="mt-6 text-center">
-        <a href="/" class="text-gray-600 hover:text-white text-sm transition-colors flex items-center justify-center gap-2">
-          <i class="fas fa-arrow-left text-xs"></i>Return to India Gully Website
-        </a>
-      </div>
-    </div>
-  </section>`
-  return c.html(layout('Super Admin', content, { noNav: true }))
-})
+  <div style="min-height:100vh;background:#080808;display:flex;align-items:center;justify-content:center;padding:2rem">
+    <div style="width:100%;max-width:420px">
 
-// Admin Dashboard
-app.get('/dashboard', (c) => {
-  return c.html(layout('Admin Dashboard', adminDashboard(), { noNav: true, bodyClass: 'bg-gray-100' }))
-})
+      <div style="text-align:center;margin-bottom:2.5rem">
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);margin-bottom:1.5rem">
+          <i class="fas fa-shield-alt" style="color:#ef4444;font-size:1.1rem"></i>
+        </div>
+        <div style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(239,68,68,.6);margin-bottom:1.25rem">SUPER ADMIN — RESTRICTED ACCESS</div>
+        <h1 class="f-serif" style="font-size:1.75rem;color:#fff;font-weight:400;margin-bottom:.625rem">Admin Console</h1>
+        <p style="font-size:.8rem;color:rgba(255,255,255,.3);line-height:1.7">India Gully Enterprise Platform. Authorised personnel only. All access is logged and monitored.</p>
+      </div>
 
-function adminDashboard() {
-  const modules = [
-    { icon:'globe', label:'CMS', desc:'Edit all website content, banners, SEO', color:'bg-gold', link:'#cms' },
-    { icon:'users', label:'User Management', desc:'Create, manage & deactivate users', color:'bg-blue-700', link:'#users' },
-    { icon:'sitemap', label:'Workflow Engine', desc:'Approval flows, escalations, triggers', color:'bg-purple-700', link:'#workflows' },
-    { icon:'chart-bar', label:'Finance ERP', desc:'Vouchers, GST, P&L, Balance Sheet', color:'bg-green-700', link:'#finance' },
-    { icon:'user-friends', label:'HR ERP', desc:'Payroll, attendance, leave, TDS', color:'bg-yellow-700', link:'#hr' },
-    { icon:'gavel', label:'Governance', desc:'Board meetings, minutes, registers', color:'bg-red-800', link:'#governance' },
-    { icon:'boxes', label:'HORECA Inventory', desc:'SKUs, quotes, procurement', color:'bg-teal-700', link:'#horeca' },
-    { icon:'file-signature', label:'Contracts', desc:'Templates, clauses, e-sign', color:'bg-indigo-700', link:'#contracts' },
-    { icon:'plug', label:'Integrations', desc:'Vyapar, GST Portal, email, WhatsApp', color:'bg-orange-700', link:'#integrations' },
-    { icon:'chart-pie', label:'BI & Reports', desc:'Board dashboards, finance, HR analytics', color:'bg-pink-700', link:'#bi' },
-    { icon:'cog', label:'System Config', desc:'Branding, SMTP, storage, API keys', color:'bg-gray-700', link:'#config' },
-    { icon:'shield-alt', label:'Security & Audit', desc:'Access logs, permissions, RBAC matrix', color:'bg-red-700', link:'#security' },
-  ]
-  
-  return `
-  <div class="flex h-screen overflow-hidden">
-    <!-- SIDEBAR -->
-    <aside class="w-64 flex-shrink-0 flex flex-col" style="background:#0A0A0A;min-height:100vh;">
-      <div class="p-5 border-b border-gray-900">
-        <div class="flex items-center gap-2">
-          <i class="fas fa-shield-alt text-gold"></i>
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);padding:2.5rem">
+        <form id="adminForm" onsubmit="handleAdmin(event)" style="display:flex;flex-direction:column;gap:1.25rem">
           <div>
-            <div class="font-serif text-white font-bold text-sm">Super Admin</div>
-            <div class="text-xs text-gray-500">India Gully Platform</div>
+            <label class="ig-label" style="color:rgba(255,255,255,.35)">Admin Username</label>
+            <input type="text" id="adminUser" class="ig-input" placeholder="admin" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#fff" required>
           </div>
-        </div>
+          <div>
+            <label class="ig-label" style="color:rgba(255,255,255,.35)">Password</label>
+            <input type="password" id="adminPass" class="ig-input" placeholder="••••••••••••" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#fff" required>
+          </div>
+          <div>
+            <label class="ig-label" style="color:rgba(255,255,255,.35)">TOTP Code (6-digit)</label>
+            <input type="text" id="adminOtp" class="ig-input" placeholder="000000" maxlength="6" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#fff;letter-spacing:.25em;font-size:1.1rem" required>
+          </div>
+          <div id="adminErr" style="display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);padding:.75rem;font-size:.8rem;color:#fca5a5;text-align:center"></div>
+          <button type="submit" id="adminBtn" class="btn btn-gold" style="justify-content:center;padding:.875rem">
+            <i class="fas fa-shield-alt" style="margin-right:.5rem;font-size:.75rem"></i>Access Admin Console
+          </button>
+        </form>
       </div>
-      
-      <nav class="flex-1 p-3 overflow-y-auto">
-        <div class="text-xs text-gray-600 uppercase tracking-widest px-3 py-2 mb-1">Platform</div>
-        ${[
-          { i:'tachometer-alt', l:'Dashboard', active:true },
-          { i:'globe', l:'CMS Editor', active:false },
-          { i:'users', l:'User Management', active:false },
-          { i:'sitemap', l:'Workflows', active:false },
-        ].map(n => `<a href="#" class="flex items-center gap-3 px-3 py-2 text-xs ${n.active ? 'bg-gold text-white' : 'text-gray-500 hover:text-white hover:bg-gray-900'} transition-colors mb-0.5">${n.i ? `<i class="fas fa-${n.i} w-3.5"></i>` : ''}${n.l}</a>`).join('')}
-        
-        <div class="text-xs text-gray-600 uppercase tracking-widest px-3 py-2 mb-1 mt-3">ERP</div>
-        ${[
-          { i:'chart-bar', l:'Finance ERP', active:false },
-          { i:'user-friends', l:'HR ERP', active:false },
-          { i:'gavel', l:'Governance', active:false },
-          { i:'boxes', l:'HORECA Mgmt', active:false },
-          { i:'file-signature', l:'Contracts', active:false },
-        ].map(n => `<a href="#" class="flex items-center gap-3 px-3 py-2 text-xs text-gray-500 hover:text-white hover:bg-gray-900 transition-colors mb-0.5"><i class="fas fa-${n.i} w-3.5"></i>${n.l}</a>`).join('')}
-        
-        <div class="text-xs text-gray-600 uppercase tracking-widest px-3 py-2 mb-1 mt-3">System</div>
-        ${[
-          { i:'chart-pie', l:'BI & Reports', active:false },
-          { i:'plug', l:'Integrations', active:false },
-          { i:'cog', l:'System Config', active:false },
-          { i:'shield-alt', l:'Security', active:false },
-        ].map(n => `<a href="#" class="flex items-center gap-3 px-3 py-2 text-xs text-gray-500 hover:text-white hover:bg-gray-900 transition-colors mb-0.5"><i class="fas fa-${n.i} w-3.5"></i>${n.l}</a>`).join('')}
+
+      <p style="text-align:center;font-size:.72rem;color:rgba(255,255,255,.18);margin-top:1.25rem">
+        Unauthorised access is a criminal offence under the IT Act, 2000 · All sessions are logged<br>
+        <a href="/portal" style="color:rgba(255,255,255,.25);text-decoration:none">← Back to Portal Hub</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+  function handleAdmin(e) {
+    e.preventDefault();
+    var btn = document.getElementById('adminBtn');
+    var err = document.getElementById('adminErr');
+    err.style.display = 'none';
+    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="margin-right:.5rem"></i>Verifying…';
+    btn.disabled = true;
+    setTimeout(function() {
+      var u = document.getElementById('adminUser').value;
+      var p = document.getElementById('adminPass').value;
+      var o = document.getElementById('adminOtp').value;
+      if(u && p.length >= 4 && o.length === 6) {
+        window.location.href = '/admin/dashboard';
+      } else {
+        err.textContent = 'Invalid credentials. Access denied.';
+        err.style.display = 'block';
+        btn.innerHTML = '<i class="fas fa-shield-alt" style="margin-right:.5rem;font-size:.75rem"></i>Access Admin Console';
+        btn.disabled = false;
+      }
+    }, 1400);
+  }
+  </script>
+  `
+  return c.html(layout('Super Admin', content, { noNav: true, noFooter: true, bodyClass: '' }))
+})
+
+// ── ADMIN DASHBOARD ──────────────────────────────────────────────────────────
+app.get('/dashboard', (c) => {
+  const content = `
+  <div style="display:flex;min-height:100vh;background:#0A0A0A">
+
+    <!-- SIDEBAR -->
+    <aside style="width:256px;background:#111;border-right:1px solid rgba(255,255,255,.07);flex-shrink:0;display:flex;flex-direction:column;overflow-y:auto">
+      <div style="padding:1.5rem;border-bottom:1px solid rgba(255,255,255,.07)">
+        <div class="f-serif" style="color:#fff;font-size:.95rem;letter-spacing:.06em">INDIA GULLY</div>
+        <div style="font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:2px">Super Admin Console</div>
+        <div style="font-size:.6rem;color:rgba(239,68,68,.5);margin-top:.5rem;font-weight:600;letter-spacing:.1em">● LIVE ENVIRONMENT</div>
+      </div>
+
+      <nav style="flex:1;padding:1rem .75rem">
+        <div class="sidebar-section">Content</div>
+        <a class="sidebar-link active" onclick="showModule('cms')"    href="#"><i class="fas fa-edit"            style="width:16px;font-size:.8rem"></i>CMS & Content</a>
+        <a class="sidebar-link"        onclick="showModule('users')"  href="#"><i class="fas fa-users-cog"       style="width:16px;font-size:.8rem"></i>User Management</a>
+        <a class="sidebar-link"        onclick="showModule('workflow')"href="#"><i class="fas fa-project-diagram"style="width:16px;font-size:.8rem"></i>Workflows & Approvals</a>
+
+        <div class="sidebar-section">Finance ERP</div>
+        <a class="sidebar-link"        onclick="showModule('finance')" href="#"><i class="fas fa-chart-line"     style="width:16px;font-size:.8rem"></i>Finance Dashboard</a>
+        <a class="sidebar-link"        href="#"                                ><i class="fas fa-receipt"        style="width:16px;font-size:.8rem"></i>Vouchers & GL</a>
+        <a class="sidebar-link"        href="#"                                ><i class="fas fa-percent"        style="width:16px;font-size:.8rem"></i>GST Reports</a>
+        <a class="sidebar-link"        href="#"                                ><i class="fas fa-file-invoice-dollar" style="width:16px;font-size:.8rem"></i>Invoices & Payments</a>
+
+        <div class="sidebar-section">HR ERP</div>
+        <a class="sidebar-link"        onclick="showModule('hr')"      href="#"><i class="fas fa-user-friends"  style="width:16px;font-size:.8rem"></i>HR Dashboard</a>
+        <a class="sidebar-link"        href="#"                                ><i class="fas fa-calendar-check" style="width:16px;font-size:.8rem"></i>Attendance & Leave</a>
+        <a class="sidebar-link"        href="#"                                ><i class="fas fa-money-check-alt"style="width:16px;font-size:.8rem"></i>Payroll & TDS</a>
+
+        <div class="sidebar-section">Governance</div>
+        <a class="sidebar-link"        onclick="showModule('gov')"     href="#"><i class="fas fa-gavel"          style="width:16px;font-size:.8rem"></i>Governance</a>
+        <a class="sidebar-link"        href="#"                                ><i class="fas fa-scroll"         style="width:16px;font-size:.8rem"></i>Board Meetings</a>
+        <a class="sidebar-link"        href="#"                                ><i class="fas fa-vote-yea"        style="width:16px;font-size:.8rem"></i>Resolutions</a>
+
+        <div class="sidebar-section">Platform</div>
+        <a class="sidebar-link"        href="#"                                ><i class="fas fa-utensils"       style="width:16px;font-size:.8rem"></i>HORECA Catalogue</a>
+        <a class="sidebar-link"        href="#"                                ><i class="fas fa-file-contract"  style="width:16px;font-size:.8rem"></i>Contracts</a>
+        <a class="sidebar-link"        onclick="showModule('bi')"      href="#"><i class="fas fa-chart-pie"      style="width:16px;font-size:.8rem"></i>BI & Reports</a>
+        <a class="sidebar-link"        href="#"                                ><i class="fas fa-plug"           style="width:16px;font-size:.8rem"></i>Integrations</a>
+        <a class="sidebar-link"        href="#"                                ><i class="fas fa-lock"           style="width:16px;font-size:.8rem"></i>Security & Audit</a>
+        <a class="sidebar-link"        href="#"                                ><i class="fas fa-cog"            style="width:16px;font-size:.8rem"></i>System Config</a>
       </nav>
-      
-      <div class="p-3 border-t border-gray-900">
-        <a href="/" class="flex items-center gap-2 text-xs text-gray-600 hover:text-white transition-colors px-3 py-2">
-          <i class="fas fa-sign-out-alt"></i>Logout
-        </a>
+
+      <div style="padding:1rem;border-top:1px solid rgba(255,255,255,.07)">
+        <a href="/admin" class="sidebar-link" style="font-size:.72rem"><i class="fas fa-sign-out-alt" style="width:16px"></i>Sign Out</a>
       </div>
     </aside>
-    
-    <!-- MAIN -->
-    <main class="flex-1 overflow-y-auto bg-gray-100">
+
+    <!-- MAIN AREA -->
+    <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+
       <!-- Top Bar -->
-      <div class="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between sticky top-0 z-10">
-        <div>
-          <h1 class="font-serif text-xl font-bold text-ig-dark">Admin Dashboard</h1>
-          <p class="text-xs text-gray-400">India Gully Enterprise Platform · v2024.12</p>
+      <header style="background:#111;border-bottom:1px solid rgba(255,255,255,.07);padding:.875rem 1.75rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+        <div style="display:flex;align-items:center;gap:1.5rem">
+          <h1 id="moduleTitle" style="font-size:.95rem;font-weight:600;color:#fff">Admin Dashboard</h1>
+          <span id="moduleDesc" style="font-size:.72rem;color:rgba(255,255,255,.3)">India Gully Enterprise Platform v2024.12</span>
         </div>
-        <div class="flex items-center gap-3 text-sm">
-          <span class="badge badge-green text-xs">All Systems Operational</span>
-          <div class="w-8 h-8 bg-gold flex items-center justify-center">
-            <span class="text-white text-xs font-bold">SA</span>
+        <div style="display:flex;align-items:center;gap:1rem">
+          <button style="background:none;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);padding:.4rem .875rem;font-size:.72rem;cursor:pointer;font-family:inherit" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(255,255,255,.5)'">
+            <i class="fas fa-bell" style="margin-right:.375rem"></i>Alerts (3)
+          </button>
+          <div style="width:32px;height:32px;background:var(--gold);display:flex;align-items:center;justify-content:center">
+            <span style="font-size:.7rem;font-weight:700;color:#fff">SA</span>
           </div>
         </div>
+      </header>
+
+      <!-- MODULE CONTENT -->
+      <div style="flex:1;overflow:auto;padding:2rem">
+
+        <!-- ── DEFAULT / OVERVIEW ── -->
+        <div id="mod-default">
+
+          <!-- KPI Row -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem">
+            ${[
+              { icon:'fa-chart-line',         val:'₹42.3 Cr',  lab:'Revenue YTD',         trend:'+18% YOY',  color:'rgba(184,150,12,.15)' },
+              { icon:'fa-file-invoice-dollar', val:'₹12.8 Cr',  lab:'Outstanding AR',      trend:'6 invoices', color:'rgba(239,68,68,.12)' },
+              { icon:'fa-users',               val:'18',         lab:'Active Employees',    trend:'3 joining',  color:'rgba(59,130,246,.1)' },
+              { icon:'fa-folder-open',         val:'6',          lab:'Active Mandates',     trend:'₹8,815 Cr',  color:'rgba(22,163,74,.1)' },
+            ].map(s => `
+            <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);padding:1.5rem">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem">
+                <div style="width:38px;height:38px;background:${s.color};border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center">
+                  <i class="fas ${s.icon}" style="color:var(--gold);font-size:.8rem"></i>
+                </div>
+                <span style="font-size:.68rem;color:rgba(255,255,255,.3);font-weight:500">${s.trend}</span>
+              </div>
+              <div class="f-serif" style="font-size:1.75rem;color:#fff;font-weight:400">${s.val}</div>
+              <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-top:.25rem;letter-spacing:.06em">${s.lab}</div>
+            </div>
+            `).join('')}
+          </div>
+
+          <!-- Finance + HR Row -->
+          <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:1.5rem;margin-bottom:2rem" class="admin-2col">
+
+            <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
+              <div style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between">
+                <h2 style="font-size:.875rem;font-weight:600;color:#fff">Finance Overview</h2>
+                <span class="badge badge-green">Live</span>
+              </div>
+              <div style="padding:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                ${[
+                  { lab:'Revenue MTD',     val:'₹4.2 Cr' },
+                  { lab:'Receivables',      val:'₹12.8 Cr' },
+                  { lab:'GST Liability',    val:'₹1.1 Cr' },
+                  { lab:'Bank Balance',     val:'₹8.4 Cr' },
+                ].map(f => `
+                <div style="padding:1rem;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)">
+                  <div style="font-size:.68rem;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.375rem">${f.lab}</div>
+                  <div class="f-serif" style="font-size:1.25rem;color:var(--gold);font-weight:400">${f.val}</div>
+                </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
+              <div style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.07)">
+                <h2 style="font-size:.875rem;font-weight:600;color:#fff">HR Overview</h2>
+              </div>
+              <div style="padding:1.5rem;display:flex;flex-direction:column;gap:.875rem">
+                ${[
+                  { lab:'Headcount',        val:'18' },
+                  { lab:'Attendance Today', val:'16/18' },
+                  { lab:'Leave Requests',   val:'2 Pending' },
+                  { lab:'Next Payroll',     val:'Jan 1, 2025' },
+                ].map(h => `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:.875rem;border-bottom:1px solid rgba(255,255,255,.05)">
+                  <span style="font-size:.8rem;color:rgba(255,255,255,.4)">${h.lab}</span>
+                  <span style="font-size:.85rem;font-weight:600;color:#fff">${h.val}</span>
+                </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- CMS Quick Edit -->
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);margin-bottom:1.5rem">
+            <div style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between">
+              <h2 style="font-size:.875rem;font-weight:600;color:#fff">CMS Quick Edit</h2>
+              <span style="font-size:.72rem;color:rgba(255,255,255,.3)">Zero-code content management</span>
+            </div>
+            <div style="padding:1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.875rem">
+              ${[
+                { page:'Homepage Hero', status:'Published', lastEdit:'Dec 20, 2024' },
+                { page:'About Page', status:'Published', lastEdit:'Dec 18, 2024' },
+                { page:'Active Mandates', status:'Published', lastEdit:'Dec 15, 2024' },
+                { page:'Services Pages', status:'Published', lastEdit:'Dec 12, 2024' },
+                { page:'HORECA Catalogue', status:'Published', lastEdit:'Dec 10, 2024' },
+                { page:'Insights / Blog', status:'Published', lastEdit:'Dec 8, 2024' },
+              ].map(p => `
+              <div style="padding:1rem;border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between">
+                <div>
+                  <div style="font-size:.82rem;color:#fff;font-weight:500">${p.page}</div>
+                  <div style="font-size:.68rem;color:rgba(255,255,255,.25);margin-top:.2rem">${p.lastEdit}</div>
+                </div>
+                <button style="font-size:.68rem;font-weight:600;letter-spacing:.08em;color:var(--gold);background:none;border:1px solid rgba(184,150,12,.3);padding:.3rem .75rem;cursor:pointer;text-transform:uppercase;font-family:inherit" onmouseover="this.style.background='var(--gold)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--gold)'">Edit</button>
+              </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Audit Log -->
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
+            <div style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.07)">
+              <h2 style="font-size:.875rem;font-weight:600;color:#fff">Audit Log — Recent Activity</h2>
+            </div>
+            <div style="overflow-x:auto">
+              <table class="ig-table">
+                <thead><tr><th>Timestamp</th><th>User</th><th>Module</th><th>Action</th><th>IP</th></tr></thead>
+                <tbody>
+                  ${[
+                    ['2024-12-20 14:32:11','akm@indiagully.com','Mandate CMS','Updated mandate status: Entertainment Maharashtra → Phase 2','103.x.x.x'],
+                    ['2024-12-20 11:18:44','admin','Finance ERP','Invoice IG-2024-0041 created for Demo Client','182.x.x.x'],
+                    ['2024-12-19 16:05:22','pavan@indiagully.com','HR ERP','Approved leave request — Emp ID: IG-EMP-0012','103.x.x.x'],
+                    ['2024-12-19 09:45:03','admin','System Config','RBAC policy updated — Board Portal access rules modified','182.x.x.x'],
+                    ['2024-12-18 18:22:51','amit.jhingan@indiagully.com','Mandate CMS','New mandate enquiry received — Heritage Portfolio Rajasthan','59.x.x.x'],
+                  ].map(([ts, user, mod, action, ip]) => `
+                  <tr>
+                    <td class="caption" style="font-family:monospace">${ts}</td>
+                    <td style="font-size:.8rem;color:var(--gold)">${user}</td>
+                    <td><span class="badge badge-dark">${mod}</span></td>
+                    <td style="font-size:.8rem;color:rgba(255,255,255,.7)">${action}</td>
+                    <td class="caption" style="font-family:monospace">${ip}</td>
+                  </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
       </div>
-      
-      <div class="p-8">
-        <!-- System Health -->
-        <div class="grid grid-cols-6 gap-4 mb-8">
-          ${[
-            { l:'Website', v:'Online', c:'green' },
-            { l:'Client Portal', v:'Active', c:'green' },
-            { l:'Employee Portal', v:'Active', c:'green' },
-            { l:'Board Portal', v:'Active', c:'green' },
-            { l:'Finance ERP', v:'Synced', c:'green' },
-            { l:'CMS Cache', v:'Valid', c:'green' },
-          ].map(s => `
-          <div class="bg-white border border-gray-200 p-4 text-center">
-            <div class="text-xs text-gray-400 mb-1">${s.l}</div>
-            <div class="flex items-center justify-center gap-1.5">
-              <div class="w-2 h-2 rounded-full bg-${s.c}-500"></div>
-              <span class="text-xs font-semibold text-${s.c}-600">${s.v}</span>
-            </div>
-          </div>
-          `).join('')}
-        </div>
-        
-        <!-- Quick Stats -->
-        <div class="grid grid-cols-4 gap-6 mb-8">
-          ${[
-            { l:'Total Enquiries', v:'47', icon:'envelope', color:'bg-gold' },
-            { l:'Active Users', v:'12', icon:'users', color:'bg-blue-600' },
-            { l:'Open Workflows', v:'8', icon:'tasks', color:'bg-purple-600' },
-            { l:'Pending Approvals', v:'3', icon:'check-circle', color:'bg-orange-600' },
-          ].map(s => `
-          <div class="bg-white border border-gray-200 p-5">
-            <div class="flex items-center justify-between mb-3">
-              <div class="text-xs text-gray-400 uppercase tracking-wider">${s.l}</div>
-              <div class="w-8 h-8 ${s.color} flex items-center justify-center">
-                <i class="fas fa-${s.icon} text-white text-xs"></i>
-              </div>
-            </div>
-            <div class="font-serif text-3xl font-bold text-ig-dark">${s.v}</div>
-          </div>
-          `).join('')}
-        </div>
-        
-        <!-- Module Grid -->
-        <h2 class="font-serif text-2xl font-bold text-ig-dark mb-6">Platform Modules</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-          ${modules.map(m => `
-          <a href="${m.link}" class="bg-white border border-gray-200 p-5 hover:border-gold hover:shadow-lg transition-all group cursor-pointer block">
-            <div class="w-10 h-10 ${m.color} flex items-center justify-center mb-3">
-              <i class="fas fa-${m.icon} text-white text-sm"></i>
-            </div>
-            <h3 class="font-semibold text-ig-dark text-sm mb-1 group-hover:text-gold transition-colors">${m.label}</h3>
-            <p class="text-gray-400 text-xs leading-tight">${m.desc}</p>
-          </a>
-          `).join('')}
-        </div>
-        
-        <!-- Recent Activity Log -->
-        <div class="bg-white border border-gray-200">
-          <div class="p-5 border-b border-gray-200 flex items-center justify-between">
-            <h3 class="font-serif font-bold text-ig-dark">Recent System Activity</h3>
-            <span class="text-xs text-gray-400">Audit Log</span>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full ig-table">
-              <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Module</th><th>IP</th><th>Status</th></tr></thead>
-              <tbody>
-                ${[
-                  { time:'09:42', user:'akm@indiagully.com', action:'Login', module:'Board Portal', ip:'103.x.x.x', status:'Success' },
-                  { time:'09:38', user:'info@indiagully.com', action:'New Enquiry', module:'Contact Form', ip:'122.x.x.x', status:'Received' },
-                  { time:'09:25', user:'admin', action:'CMS Update', module:'Home Page', ip:'localhost', status:'Published' },
-                  { time:'09:15', user:'pavan@indiagully.com', action:'Login', module:'Employee Portal', ip:'117.x.x.x', status:'Success' },
-                  { time:'08:55', user:'amit.jhingan@indiagully.com', action:'Document View', module:'Client Portal', ip:'103.x.x.x', status:'Logged' },
-                ].map(row => `
-                <tr>
-                  <td class="text-xs text-gray-400">${row.time}</td>
-                  <td class="text-xs font-medium text-ig-dark">${row.user}</td>
-                  <td class="text-xs">${row.action}</td>
-                  <td class="text-xs text-gray-500">${row.module}</td>
-                  <td class="text-xs text-gray-400">${row.ip}</td>
-                  <td><span class="badge badge-green text-xs">${row.status}</span></td>
-                </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        
-        <!-- CMS Quick Edit Panel -->
-        <div id="cms" class="mt-8 bg-white border border-gray-200">
-          <div class="p-5 border-b border-gray-200">
-            <h3 class="font-serif font-bold text-ig-dark flex items-center gap-2"><i class="fas fa-globe text-gold"></i> CMS — Quick Content Edit</h3>
-          </div>
-          <div class="p-6">
-            <div class="grid md:grid-cols-2 gap-6">
-              ${[
-                { section:'Hero Tagline', value:'Celebrating Desiness Across Every Vertical', field:'hero_tagline' },
-                { section:'Hero Subtitle', value:'India\'s premier multi-vertical advisory firm', field:'hero_subtitle' },
-                { section:'About Blurb', value:'Born and built in India — multi-vertical enterprise advisory firm', field:'about_blurb' },
-                { section:'Contact CTA', value:'Submit Mandate or Service Enquiry', field:'contact_cta' },
-              ].map(f => `
-              <div>
-                <label class="ig-label">${f.section}</label>
-                <div class="flex gap-2">
-                  <input type="text" name="${f.field}" class="ig-input flex-1 text-sm" value="${f.value}">
-                  <button class="btn-gold px-4 py-2 text-xs flex-shrink-0">Save</button>
-                </div>
-              </div>
-              `).join('')}
-            </div>
-            <div class="mt-6 flex gap-3">
-              <button class="btn-gold">Publish All Changes</button>
-              <button class="btn-outline-gold">Preview Changes</button>
-              <button class="btn-dark">Rollback to Last Version</button>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Finance ERP Panel -->
-        <div id="finance" class="mt-8 bg-white border border-gray-200">
-          <div class="p-5 border-b border-gray-200">
-            <h3 class="font-serif font-bold text-ig-dark flex items-center gap-2"><i class="fas fa-chart-bar text-green-600"></i> Finance ERP — Quick Overview</h3>
-          </div>
-          <div class="p-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              ${[
-                { l:'Total Revenue MTD', v:'₹12.4L', trend:'+18%' },
-                { l:'Outstanding Receivables', v:'₹5.1L', trend:'-5%' },
-                { l:'GST Payable', v:'₹2.2L', trend:'' },
-                { l:'Bank Balance', v:'₹28.7L', trend:'+3%' },
-              ].map(m => `
-              <div class="bg-ig-cream border border-ig-border p-4">
-                <div class="text-xs text-gray-400 mb-1">${m.l}</div>
-                <div class="font-serif text-2xl font-bold text-ig-dark">${m.v}</div>
-                ${m.trend ? `<div class="text-xs text-green-600 mt-1">${m.trend} MoM</div>` : ''}
-              </div>
-              `).join('')}
-            </div>
-            <div class="flex gap-3">
-              <button class="btn-gold text-xs">Create Voucher</button>
-              <button class="btn-outline-gold text-xs">View P&L</button>
-              <button class="btn-dark text-xs">GST Report</button>
-              <button class="btn-dark text-xs">Trial Balance</button>
-            </div>
-          </div>
-        </div>
-        
-        <!-- HR ERP Panel -->
-        <div id="hr" class="mt-8 bg-white border border-gray-200">
-          <div class="p-5 border-b border-gray-200">
-            <h3 class="font-serif font-bold text-ig-dark flex items-center gap-2"><i class="fas fa-user-friends text-yellow-600"></i> HR ERP — Quick Overview</h3>
-          </div>
-          <div class="p-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              ${[
-                { l:'Total Employees', v:'24', icon:'users' },
-                { l:'Present Today', v:'21', icon:'check-circle' },
-                { l:'Leave Requests', v:'3', icon:'calendar' },
-                { l:'Pending Payroll', v:'Dec 2024', icon:'money-bill' },
-              ].map(m => `
-              <div class="bg-ig-cream border border-ig-border p-4">
-                <div class="text-xs text-gray-400 mb-2">${m.l}</div>
-                <div class="font-serif text-2xl font-bold text-ig-dark">${m.v}</div>
-              </div>
-              `).join('')}
-            </div>
-            <div class="flex gap-3">
-              <button class="btn-gold text-xs">Add Employee</button>
-              <button class="btn-outline-gold text-xs">Run Payroll</button>
-              <button class="btn-dark text-xs">Attendance Report</button>
-              <button class="btn-dark text-xs">Form-16 Status</button>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Governance Panel -->
-        <div id="governance" class="mt-8 bg-white border border-gray-200">
-          <div class="p-5 border-b border-gray-200">
-            <h3 class="font-serif font-bold text-ig-dark flex items-center gap-2"><i class="fas fa-gavel text-red-700"></i> Governance — Board & Compliance</h3>
-          </div>
-          <div class="p-6">
-            <div class="grid md:grid-cols-2 gap-6 mb-6">
-              <div>
-                <h4 class="font-semibold text-ig-dark text-sm mb-3">Upcoming Board Events</h4>
-                ${[
-                  { type:'Board Meeting', date:'Jan 10, 2025', status:'Scheduled' },
-                  { type:'AGM (Annual)', date:'Mar 30, 2025', status:'Planned' },
-                  { type:'ROC Filing MBP-1', date:'Dec 31, 2024', status:'Due' },
-                ].map(e => `
-                <div class="flex items-center justify-between py-2 border-b border-ig-border text-sm">
-                  <span class="font-medium text-ig-dark">${e.type}</span>
-                  <span class="text-gray-400 text-xs">${e.date}</span>
-                  <span class="badge badge-gold text-xs">${e.status}</span>
-                </div>
-                `).join('')}
-              </div>
-              <div>
-                <h4 class="font-semibold text-ig-dark text-sm mb-3">Director KYC Status</h4>
-                ${[
-                  { name:'Arun Manikonda', din:'XXXXXXXX', status:'Current' },
-                  { name:'Pavan Manikonda', din:'XXXXXXXX', status:'Current' },
-                ].map(d => `
-                <div class="flex items-center justify-between py-2 border-b border-ig-border text-sm">
-                  <span class="font-medium text-ig-dark">${d.name}</span>
-                  <span class="text-xs text-gray-400">DIN: ${d.din}</span>
-                  <span class="badge badge-green text-xs">${d.status}</span>
-                </div>
-                `).join('')}
-              </div>
-            </div>
-            <div class="flex gap-3">
-              <button class="btn-gold text-xs">Call Board Meeting</button>
-              <button class="btn-outline-gold text-xs">Create Agenda</button>
-              <button class="btn-dark text-xs">ROC Tracker</button>
-              <button class="btn-dark text-xs">Minute Book</button>
-            </div>
-          </div>
-        </div>
-        
-      </div>
-    </main>
-  </div>`
-}
+    </div>
+  </div>
+
+  <script>
+  function showModule(mod) {
+    // In a real implementation, this would show different module panels
+    var titles = {
+      cms: 'CMS & Content Management',
+      users: 'User Management & RBAC',
+      workflow: 'Workflows & Approvals',
+      finance: 'Finance ERP',
+      hr: 'HR ERP',
+      gov: 'Governance & Compliance',
+      bi: 'BI & Reporting',
+    };
+    if(titles[mod]) {
+      document.getElementById('moduleTitle').textContent = titles[mod];
+    }
+    // Mark active
+    document.querySelectorAll('.sidebar-link').forEach(function(l){ l.classList.remove('active'); });
+    event.currentTarget.classList.add('active');
+    event.preventDefault();
+  }
+  </script>
+
+  <style>
+  @media(max-width:900px){ .admin-2col{grid-template-columns:1fr!important} }
+  </style>
+  `
+  return c.html(layout('Admin Dashboard', content, { noNav: true, noFooter: true }))
+})
 
 export default app

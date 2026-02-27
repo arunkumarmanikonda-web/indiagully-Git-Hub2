@@ -8,142 +8,174 @@ const SERVICES = [
     id: 'real-estate',
     icon: '🏛️',
     name: 'Real Estate Advisory',
-    tagline: 'Transaction Advisory & Asset Management',
-    desc: 'Strategic advice across the hospitality and commercial real estate value chain — from site selection and development planning to asset management, lease structuring and divestment advisory. India Gully acts exclusively as Transaction Advisor on all real estate mandates.',
-    offerings: ['Site selection & acquisition advisory','Asset valuation & portfolio review','Development strategy & operator selection','Lease structuring & tenant mix','Asset divestment & exit advisory','Commercial due diligence','Investment Information Memoranda','NDA-based mandate execution'],
-    highlight: 'Transaction advisors to ₹2,100 Cr+ Mumbai MMR retail hub',
+    tagline: 'Transaction advisory, site selection & asset management',
+    desc: 'We advise developers, investors and family offices on the full real estate lifecycle — from site selection and feasibility to transaction structuring, asset management and divestment.',
+    items: ['Site identification & due diligence','Development strategy & feasibility','Transaction advisory & deal structuring','Asset valuation & appraisal','Commercial lease structuring','Investment sales & divestment','Portfolio management','Regulatory & compliance advisory'],
+    highlights: [
+      { v:'₹2,100 Cr', l:'Entertainment & Retail Hub, Mumbai MMR — 85% pre-leased' },
+      { v:'₹620 Cr',   l:'6-Property Heritage Hotel Portfolio, Rajasthan — 72% TTM occupancy' },
+    ],
   },
   {
     id: 'retail',
     icon: '🛍️',
     name: 'Retail & Leasing Strategy',
-    tagline: 'Mall Strategy · Brand Mix · Fit-Out Coordination',
-    desc: 'We develop creative retail concepts, positioning and brand mix strategies — creating value-added partnerships between landlords and tenants that drive footfall, sales and sustainable retail success across India\'s malls and mixed-use developments.',
-    offerings: ['Market research & demand assessment','Retail strategy & brand mix planning','Anchor & in-line leasing execution','Space design & architectural zoning','Tenant fit-out coordination','Signage & interactive media planning','Property management setup','Off-plan to opening support'],
-    highlight: '30+ retail brand relationships including H&M, Zara, PVR, Starbucks',
+    tagline: 'Brand mix, anchor structuring & fit-out coordination',
+    desc: 'We help mall developers, mixed-use destination owners and retail brands maximise the value of their physical retail space through strategic brand mix, leasing negotiation and operational setup.',
+    items: ['Retail market research & gap analysis','Brand mix strategy & category planning','Anchor & inline tenant leasing','Lease term structuring & negotiation','Fit-out coordination & design review','Signage & wayfinding strategy','Mall operations consultancy','Retail franchise expansion advisory'],
+    highlights: [
+      { v:'30+',  l:'Retail brand relationships across fashion, F&B and entertainment' },
+      { v:'15 Cities', l:'Desi Brand retail franchise expansion mandate — ₹45 Cr capex' },
+    ],
   },
   {
     id: 'hospitality',
     icon: '🏨',
     name: 'Hospitality Management',
-    tagline: 'Pre-Opening · Brand On-Boarding · Full Management',
-    desc: 'Strategic and turnkey management consultants to hotels across India — from pre-opening planning and brand on-boarding to full hotel management, operations advisory and revenue strategy. Our deep relationships with 20+ hospitality brands give every project the right brand fit.',
-    offerings: ['Pre-opening planning & management','Brand identification & on-boarding','Full hotel management contracts','Revenue & yield management','Staff recruitment & training','FF&E & OS&E procurement','Mock-up room execution','Asset management advisory'],
-    highlight: '15+ hotel projects across Marriott, Radisson, Cygnett, Regenta brands',
+    tagline: 'Hotel management, brand on-boarding & PMC',
+    desc: 'From pre-opening planning to brand management contracts, India Gully provides end-to-end hospitality advisory — connecting developers with the right brands and ensuring seamless hotel launches.',
+    items: ['Pre-opening planning & management','Brand selection & on-boarding','Hotel management advisory','Revenue management & yield strategy','Staff recruitment & training','FF&E / OS&E procurement','Mock-up room execution','Asset advisory & repositioning'],
+    highlights: [
+      { v:'15+',  l:'Hotel projects managed and advised across India' },
+      { v:'20+',  l:'Hospitality brand relationships — Marriott to Lemon Tree' },
+    ],
   },
   {
     id: 'entertainment',
     icon: '🎡',
     name: 'Entertainment Advisory',
-    tagline: 'Theme Parks · FECs · Integrated Destinations',
-    desc: 'Specialised advisory for leisure, entertainment and theme park projects — one of our most distinctive capabilities, with landmark engagements including integrated entertainment destinations with investment scales of ₹1,200 Cr to ₹4,500 Cr.',
-    offerings: ['Concept development & master planning','Commercial & financial feasibility','Operator selection & contract structuring','Attraction & experience design advisory','Revenue optimisation strategies','Integrated destination planning','Family Entertainment Centres (FECs)','Indoor & outdoor entertainment'],
-    highlight: 'Co-advisors to ₹4,500 Cr integrated entertainment destination in Maharashtra',
+    tagline: 'Theme parks, FECs & integrated destinations',
+    desc: 'India Gully advises on large-format entertainment destinations — from concept development and operator selection to financial feasibility, project management and revenue optimisation.',
+    items: ['Concept development & master planning','Entertainment operator identification','Financial feasibility & business plan','Technology & AV systems advisory','Attraction design & programming','Revenue mix & yield optimisation','Integrated destination planning','Project management & commissioning'],
+    highlights: [
+      { v:'₹4,500 Cr', l:'Integrated Entertainment Destination, Maharashtra — Phase 1 approved' },
+      { v:'₹1,200 Cr+', l:'Entertainment City, Noida NCR — co-advised with Bhutani Group' },
+    ],
   },
   {
     id: 'debt',
     icon: '⚖️',
     name: 'Debt & Special Situations',
-    tagline: 'Structured Debt · Distressed Assets · Special Mandates',
-    desc: 'Advisory on structured debt transactions, distressed asset resolution and special situation mandates in the hospitality, retail and real estate sectors. We bring deep sector knowledge to complex financial situations requiring both transactional and operational expertise.',
-    offerings: ['Structured debt advisory','Distressed asset identification & resolution','One-time settlement (OTS) advisory','Asset reconstruction & turnaround','Lender negotiations & restructuring','NCLT/IBC advisory support','Special purpose mandates','Financial due diligence'],
-    highlight: 'Experienced in IBC/NCLT hospitality asset resolutions',
+    tagline: 'Structured debt advisory & distressed asset resolution',
+    desc: 'We advise on structured debt arrangements, distressed asset turnarounds and special situation mandates — working with lenders, investors and promoters to maximise recovery and enterprise value.',
+    items: ['Structured debt arrangement','Distressed asset resolution','IBC / NCLT process advisory','Asset monetisation','Debt restructuring & renegotiation','Promoter advisory','Lender advisory & due diligence','Special situation fund advisory'],
+    highlights: [
+      { v:'IBC', l:'IBC / NCLT process advisory for hotel and real estate assets' },
+      { v:'Multi-sector', l:'Cross-vertical debt advisory leveraging hospitality, real estate and retail expertise' },
+    ],
   },
 ]
 
 app.get('/', (c) => {
   const content = `
-  <!-- SERVICES HERO -->
-  <section class="relative py-32 bg-ig-dark overflow-hidden">
-    <div class="absolute inset-0 opacity-5" style="background-image:linear-gradient(rgba(197,160,40,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(197,160,40,.3) 1px,transparent 1px);background-size:80px 80px;"></div>
-    <div class="relative max-w-7xl mx-auto px-6">
-      <div class="max-w-3xl">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="h-px w-12 bg-gold"></div>
-          <span class="text-gold text-xs font-semibold tracking-widest uppercase">Advisory Verticals</span>
-        </div>
-        <h1 class="font-serif text-5xl lg:text-7xl font-bold text-white mb-6">Strategy, Management<br>&amp; <em class="text-gold font-display">Execution</em>.<br>All Under One Roof.</h1>
-        <p class="text-gray-400 text-xl leading-relaxed">From hotel management and retail leasing to HORECA procurement and entertainment advisory — we are end-to-end partners for India's hospitality and real estate ecosystem.</p>
+
+<!-- SERVICES HERO -->
+<div style="background:var(--ink);padding:7rem 0 5rem;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.05) 1px,transparent 1px);background-size:72px 72px;"></div>
+  <div class="wrap" style="position:relative;">
+    <div style="max-width:700px;" class="fu">
+      <div class="gr-lt"></div>
+      <p class="eyebrow" style="margin-bottom:.875rem;">Advisory Services</p>
+      <h1 class="h1" style="margin-bottom:1.5rem;">Five Verticals.<br><em style="color:var(--gold);font-style:italic;">One Partner.</em></h1>
+      <p class="lead-lt" style="max-width:560px;margin-bottom:2rem;">Institutional-grade advisory across Real Estate, Retail, Hospitality, Entertainment and Debt — delivered by domain specialists with deep India market knowledge.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+        ${SERVICES.map(s => `<a href="#${s.id}" class="btn btn-ghost" style="padding:.45rem 1rem;font-size:.72rem;">${s.name}</a>`).join('')}
       </div>
     </div>
-  </section>
-
-  <!-- SERVICE NAV TABS -->
-  <div class="sticky top-20 z-40 bg-white border-b border-ig-border">
-    <div class="max-w-7xl mx-auto px-6 flex overflow-x-auto">
-      <a href="#real-estate" class="service-tab flex-shrink-0 px-6 py-4 text-sm font-medium text-gray-500 hover:text-gold border-b-2 border-transparent hover:border-gold transition-all">Real Estate</a>
-      <a href="#retail" class="service-tab flex-shrink-0 px-6 py-4 text-sm font-medium text-gray-500 hover:text-gold border-b-2 border-transparent hover:border-gold transition-all">Retail & Leasing</a>
-      <a href="#hospitality" class="service-tab flex-shrink-0 px-6 py-4 text-sm font-medium text-gray-500 hover:text-gold border-b-2 border-transparent hover:border-gold transition-all">Hospitality</a>
-      <a href="#entertainment" class="service-tab flex-shrink-0 px-6 py-4 text-sm font-medium text-gray-500 hover:text-gold border-b-2 border-transparent hover:border-gold transition-all">Entertainment</a>
-      <a href="#debt" class="service-tab flex-shrink-0 px-6 py-4 text-sm font-medium text-gray-500 hover:text-gold border-b-2 border-transparent hover:border-gold transition-all">Debt & Special</a>
-      <a href="/horeca" class="service-tab flex-shrink-0 px-6 py-4 text-sm font-medium text-gold border-b-2 border-gold transition-all">HORECA Solutions →</a>
-    </div>
   </div>
+</div>
 
-  <!-- SERVICE SECTIONS -->
-  ${SERVICES.map((s, i) => `
-  <section id="${s.id}" class="py-24 ${i % 2 === 0 ? 'bg-white' : 'bg-ig-cream'}">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="grid lg:grid-cols-2 gap-16 items-start">
-        <div>
-          <div class="text-6xl mb-6">${s.icon}</div>
-          <div class="gold-line">
-            <span class="text-xs text-gold tracking-widest uppercase font-semibold">${s.tagline}</span>
-          </div>
-          <h2 class="font-serif text-4xl lg:text-5xl font-bold text-ig-dark mt-3 mb-5">${s.name}</h2>
-          <p class="text-gray-500 text-lg leading-relaxed mb-8">${s.desc}</p>
-          
-          <div class="bg-ig-dark p-6 mb-8">
-            <div class="flex items-start gap-3">
-              <i class="fas fa-star text-gold mt-1"></i>
-              <div>
-                <div class="text-xs text-gray-500 uppercase tracking-wider mb-1">Track Record Highlight</div>
-                <p class="text-white font-medium text-sm">${s.highlight}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="flex gap-4">
-            <a href="/contact?service=${s.id}" class="btn-gold inline-block">Enquire About This Service</a>
-            <a href="/listings" class="btn-outline-gold inline-block">View Mandates</a>
+<!-- SERVICES DETAIL -->
+${SERVICES.map((s, i) => `
+<div id="${s.id}" class="${i%2===0 ? 'sec-wh' : 'sec-pd'}">
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:5fr 4fr;gap:4.5rem;align-items:start;">
+      <!-- Left -->
+      <div>
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+          <span style="font-size:2.25rem;">${s.icon}</span>
+          <div>
+            <p class="eyebrow">Advisory Vertical</p>
           </div>
         </div>
-        
-        <div>
-          <h3 class="font-serif text-2xl font-bold text-ig-dark mb-6">Service Scope</h3>
-          <div class="grid grid-cols-1 gap-3">
-            ${s.offerings.map((o, j) => `
-            <div class="flex items-center gap-4 p-4 border border-ig-border hover:border-gold transition-colors group">
-              <div class="w-8 h-8 bg-gold flex items-center justify-center flex-shrink-0">
-                <span class="text-white text-xs font-bold">${String(j+1).padStart(2,'0')}</span>
-              </div>
-              <span class="text-gray-700 text-sm group-hover:text-ig-dark transition-colors font-medium">${o}</span>
+        <h2 class="h2" style="margin-bottom:.75rem;">${s.name}</h2>
+        <p style="font-size:.85rem;color:var(--gold);font-weight:500;letter-spacing:.04em;margin-bottom:1.25rem;">${s.tagline}</p>
+        <p class="lead" style="margin-bottom:2rem;">${s.desc}</p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
+          ${s.items.map(item => `
+          <div style="display:flex;align-items:flex-start;gap:.6rem;padding:.625rem .875rem;background:var(--parch);border:1px solid var(--border);">
+            <i class="fas fa-check" style="color:var(--gold);font-size:.65rem;margin-top:.28rem;flex-shrink:0;"></i>
+            <span style="font-size:.8rem;color:var(--ink-soft);">${item}</span>
+          </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- Right -->
+      <div>
+        <div style="background:var(--ink);padding:2rem;margin-bottom:1.5rem;">
+          <p class="eyebrow-lt" style="margin-bottom:1.25rem;">Track Record</p>
+          <div style="display:flex;flex-direction:column;gap:1rem;">
+            ${s.highlights.map(h => `
+            <div style="padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.07);">
+              <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:var(--gold);line-height:1;margin-bottom:.35rem;">${h.v}</div>
+              <p class="body-lt" style="font-size:.8rem;">${h.l}</p>
             </div>
             `).join('')}
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-  `).join('')}
 
-  <!-- CTA -->
-  <section class="py-24 bg-ig-dark">
-    <div class="max-w-4xl mx-auto px-6 text-center">
-      <div class="gold-line-center mb-6">
-        <span class="text-xs text-gold tracking-widest uppercase font-semibold">Let's Work Together</span>
-      </div>
-      <h2 class="font-serif text-4xl lg:text-5xl font-bold text-white mb-5">Have a Mandate to Discuss?</h2>
-      <p class="text-gray-400 text-xl mb-10">Our team is ready to assess your requirement and structure the right advisory engagement.</p>
-      <div class="flex flex-wrap gap-4 justify-center">
-        <a href="/contact" class="btn-gold inline-block">Submit Mandate Enquiry</a>
-        <a href="/horeca" class="btn-outline-gold inline-block">HORECA Solutions</a>
+        <div style="border:1px solid var(--border);padding:1.5rem;">
+          <p style="font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.875rem;">Submit an Enquiry</p>
+          <p class="body" style="margin-bottom:1.25rem;font-size:.8rem;">Interested in this advisory vertical? Reach out to discuss your mandate.</p>
+          <a href="/contact?service=${s.id}" class="btn btn-g" style="width:100%;justify-content:center;">Discuss This Mandate</a>
+        </div>
       </div>
     </div>
-  </section>
-  `
+  </div>
+</div>
+`).join('')}
+
+<!-- HORECA CTA -->
+<div class="sec-md">
+  <div class="wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
+    <div>
+      <div class="gr-lt"></div>
+      <p class="eyebrow" style="margin-bottom:.75rem;">HORECA Solutions</p>
+      <h2 class="h2-lt" style="margin-bottom:1.25rem;">Complete Supply<br>Chain for Hotels</h2>
+      <p class="lead-lt" style="margin-bottom:2rem;">Kitchen equipment, FF&E, OS&E, linens, uniforms and guest amenities — procured to spec, delivered on schedule.</p>
+      <a href="/horeca" class="btn btn-g">Explore HORECA Solutions</a>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.06);">
+      ${['FF&amp;E Procurement','OS&amp;E Sourcing','Kitchen Equipment','Linen &amp; Tableware','Uniforms','Guest Amenities','Turnkey Supply','Ongoing Contracts'].map(item => `
+      <div style="padding:1.25rem;background:rgba(255,255,255,.02);">
+        <i class="fas fa-check" style="color:var(--gold);font-size:.65rem;margin-right:.5rem;"></i>
+        <span style="font-size:.78rem;color:rgba(255,255,255,.5);">${item}</span>
+      </div>
+      `).join('')}
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="sec-dk" style="position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(184,150,12,.05) 0%,transparent 70%);"></div>
+  <div class="wrap" style="text-align:center;max-width:720px;margin:0 auto;position:relative;">
+    <div class="gr-c"></div>
+    <p class="eyebrow-lt" style="margin-bottom:.75rem;">Work With Us</p>
+    <h2 class="h2-lt" style="margin-bottom:1.25rem;">Ready to Engage<br>India Gully?</h2>
+    <p class="lead-lt" style="max-width:520px;margin:0 auto 2.5rem;">Submit a mandate enquiry and our leadership team will respond within 24 hours.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:.875rem;justify-content:center;">
+      <a href="/contact" class="btn btn-g">Submit a Mandate Enquiry</a>
+      <a href="/listings" class="btn btn-ghost-g">View Active Mandates</a>
+    </div>
+  </div>
+</div>
+
+`
   return c.html(layout('Advisory Services', content, {
-    description: 'India Gully advisory services — Real Estate, Retail Leasing, Hospitality Management, Entertainment Advisory, Debt & Special Situations and HORECA Solutions.'
+    description: "India Gully advisory services — Real Estate, Retail & Leasing, Hospitality Management, Entertainment Advisory, Debt & Special Situations, HORECA Solutions."
   }))
 })
 

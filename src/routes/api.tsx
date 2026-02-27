@@ -2,148 +2,116 @@ import { Hono } from 'hono'
 
 const app = new Hono()
 
-// Health check
-app.get('/health', (c) => {
-  return c.json({ 
-    status: 'operational', 
-    platform: 'India Gully Enterprise Platform',
-    version: '2024.12',
-    timestamp: new Date().toISOString()
-  })
-})
+// ── HEALTH ───────────────────────────────────────────────────────────────────
+app.get('/health', (c) => c.json({
+  status: 'ok',
+  platform: 'India Gully Enterprise Platform',
+  version: '2024.12',
+  timestamp: new Date().toISOString(),
+  routes: [
+    'GET /',
+    'GET /about',
+    'GET /services',
+    'GET /horeca',
+    'GET /listings',
+    'GET /listings/:id',
+    'GET /insights',
+    'GET /insights/:id',
+    'GET /contact',
+    'GET /portal',
+    'GET /portal/client',
+    'GET /portal/client/dashboard',
+    'GET /portal/employee',
+    'GET /portal/employee/dashboard',
+    'GET /portal/board',
+    'GET /portal/board/dashboard',
+    'GET /admin',
+    'GET /admin/dashboard',
+    'POST /api/enquiry',
+    'POST /api/horeca-enquiry',
+    'POST /api/subscribe',
+    'GET /api/health',
+  ]
+}))
 
-// Enquiry submission
+// ── MANDATE ENQUIRY ───────────────────────────────────────────────────────────
 app.post('/enquiry', async (c) => {
   try {
     const body = await c.req.parseBody()
-    const enquiryData = {
-      id: `ENQ-${Date.now()}`,
-      type: body.type || body.enquiry_type || 'general',
-      name: body.name,
-      email: body.email,
-      phone: body.phone,
-      org: body.org,
-      message: body.message,
-      vertical: body.vertical,
-      mandate: body.premandate || body.mandate,
-      service: body.preservice || body.service,
-      scale: body.scale,
-      timestamp: new Date().toISOString(),
+    const { name, email, phone, org, type, message, mandate, sectors, nda_consent } = body as Record<string, string>
+
+    if (!name || !email) {
+      return c.json({ success: false, error: 'Name and email are required' }, 400)
     }
-    
-    // In production: store to D1, send notification email
-    console.log('New enquiry:', JSON.stringify(enquiryData))
-    
-    return c.json({ 
-      success: true, 
-      id: enquiryData.id,
-      message: 'Enquiry received. We will respond within 1 business day.',
+
+    // Log enquiry (in production, save to D1 and send email)
+    console.log('[ENQUIRY]', { name, email, phone, org, type, mandate, timestamp: new Date().toISOString() })
+
+    return c.json({
+      success: true,
+      message: 'Enquiry received. Our team will respond within 24 business hours.',
+      ref: `IG-ENQ-${Date.now()}`,
     })
   } catch (err) {
-    return c.json({ success: false, error: 'Submission failed. Please try again.' }, 500)
+    return c.json({ success: false, error: 'Failed to process enquiry' }, 500)
   }
 })
 
-// Subscribe
+// ── HORECA ENQUIRY ────────────────────────────────────────────────────────────
+app.post('/horeca-enquiry', async (c) => {
+  try {
+    const body = await c.req.parseBody()
+    const { name, email, phone, org, project_type, details } = body as Record<string, string>
+
+    if (!name || !email) {
+      return c.json({ success: false, error: 'Name and email are required' }, 400)
+    }
+
+    console.log('[HORECA]', { name, email, org, project_type, timestamp: new Date().toISOString() })
+
+    return c.json({
+      success: true,
+      message: 'HORECA enquiry received. Our procurement team will prepare a scope within 48 hours.',
+      ref: `IG-HORECA-${Date.now()}`,
+    })
+  } catch (err) {
+    return c.json({ success: false, error: 'Failed to process HORECA enquiry' }, 500)
+  }
+})
+
+// ── NEWSLETTER SUBSCRIBE ──────────────────────────────────────────────────────
 app.post('/subscribe', async (c) => {
   try {
     const body = await c.req.parseBody()
-    return c.json({ success: true, message: 'Subscribed to India Gully Insights.' })
-  } catch (err) {
-    return c.json({ success: false, error: 'Subscription failed.' }, 500)
-  }
-})
+    const { name, email } = body as Record<string, string>
 
-// Insight access request
-app.post('/insight-request', async (c) => {
-  try {
-    const body = await c.req.parseBody()
-    return c.json({ success: true, message: 'Access request received.' })
-  } catch (err) {
-    return c.json({ success: false, error: 'Request failed.' }, 500)
-  }
-})
-
-// Auth - Login (stub)
-app.post('/auth/login', async (c) => {
-  try {
-    const body = await c.req.parseBody()
-    const portal = body.portal as string
-    
-    // In production: validate credentials against D1, issue JWT, set session
-    // For demo: always redirect to appropriate dashboard
-    const dashboards: Record<string, string> = {
-      client: '/portal/client/dashboard',
-      employee: '/portal/employee',
-      board: '/portal/board',
+    if (!email) {
+      return c.json({ success: false, error: 'Email is required' }, 400)
     }
-    
-    return c.json({ 
-      success: false, 
-      error: 'Authentication system requires backend database configuration. Please contact admin@indiagully.com',
-      redirect: dashboards[portal] || '/portal'
-    }, 401)
-  } catch (err) {
-    return c.json({ success: false, error: 'Login failed.' }, 500)
-  }
-})
 
-// Auth - Admin (stub)
-app.post('/auth/admin', async (c) => {
-  return c.json({ success: false, error: 'Admin authentication requires secure backend configuration.' }, 401)
-})
+    console.log('[SUBSCRIBE]', { name, email, timestamp: new Date().toISOString() })
 
-// Auth - Reset (stub)
-app.post('/auth/reset', async (c) => {
-  try {
-    const body = await c.req.parseBody()
-    return c.json({ success: true, message: `Password reset instructions sent to ${body.email}` })
-  } catch (err) {
-    return c.json({ success: false, error: 'Reset failed.' }, 500)
-  }
-})
-
-// CMS Content API (GET)
-app.get('/cms/content/:key', (c) => {
-  const key = c.req.param('key')
-  // In production: fetch from D1 CMS table
-  return c.json({ key, value: null, updated: null })
-})
-
-// CMS Content API (POST) - Admin only
-app.post('/cms/content', async (c) => {
-  // In production: validate admin JWT, update D1 CMS table, invalidate cache
-  return c.json({ success: false, error: 'Authentication required.' }, 401)
-})
-
-// Finance API (protected)
-app.get('/finance/summary', (c) => {
-  return c.json({ success: false, error: 'Authentication required.' }, 401)
-})
-
-// HR API (protected)
-app.get('/hr/employees', (c) => {
-  return c.json({ success: false, error: 'Authentication required.' }, 401)
-})
-
-// Governance API (protected)
-app.get('/governance/meetings', (c) => {
-  return c.json({ success: false, error: 'Authentication required.' }, 401)
-})
-
-// HORECA Quote API
-app.post('/horeca/quote', async (c) => {
-  try {
-    const body = await c.req.parseBody()
-    const quoteId = `QT-${Date.now()}`
-    return c.json({ 
-      success: true, 
-      quoteId,
-      message: 'Quote request received. Our HORECA team will revert within 24 hours.',
+    return c.json({
+      success: true,
+      message: 'You have been subscribed to the India Gully Research Bulletin.',
     })
   } catch (err) {
-    return c.json({ success: false, error: 'Quote submission failed.' }, 500)
+    return c.json({ success: false, error: 'Subscription failed' }, 500)
   }
 })
+
+// ── LISTINGS API ──────────────────────────────────────────────────────────────
+app.get('/listings', (c) => c.json({
+  total: 6,
+  pipeline_value: '₹8,815 Cr',
+  listings: [
+    { id:'entertainment-maharashtra', title:'Integrated Entertainment Destination', location:'Maharashtra', value:'₹4,500 Cr', sector:'Entertainment', status:'Active' },
+    { id:'retail-hub-mumbai', title:'Entertainment & Retail Hub', location:'Mumbai MMR', value:'₹2,100 Cr', sector:'Real Estate', status:'Active' },
+    { id:'heritage-rajasthan', title:'6-Property Heritage Hotel Portfolio', location:'Rajasthan', value:'₹620 Cr', sector:'Heritage', status:'Under Negotiation' },
+    { id:'luxury-resorts-pan-india', title:'5-Property Luxury Resort Rollout', location:'Rajasthan · Goa · Kerala', value:'₹350 Cr', sector:'Hospitality', status:'Feasibility' },
+    { id:'entertainment-ncr-bhutani', title:'Entertainment City — Delhi NCR', location:'Noida, Delhi NCR', value:'₹1,200 Cr+', sector:'Entertainment', status:'Active' },
+    { id:'desi-brand-retail', title:'Desi Brand — 15-City Retail Expansion', location:'Tier 1 & 2 Cities', value:'₹45 Cr', sector:'Retail', status:'Active' },
+  ]
+}))
 
 export default app

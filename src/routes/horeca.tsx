@@ -4,216 +4,223 @@ import { layout } from '../lib/layout'
 const app = new Hono()
 
 const CATEGORIES = [
-  { id:'ffe', icon:'🛋️', name:'FF&E', full:'Furniture, Fixtures & Equipment', items:['Guestroom Furniture (beds, wardrobes, writing desks)','Lobby & Public Area Seating','Restaurant & Banquet Furniture','Outdoor & Pool Furniture','Spa & Wellness Equipment','Reception & Front Desk Counters'] },
-  { id:'ose', icon:'🧳', name:'OS&E', full:'Operating Supplies & Equipment', items:['Guestroom Amenities & Toiletries','Minibar & In-Room Supplies','Housekeeping Trolleys & Equipment','Key Card Systems & Door Hardware','Signage & Wayfinding','Safety & Security Equipment'] },
-  { id:'kitchen', icon:'🍳', name:'Kitchen & Catering', full:'Kitchen Equipment & Catering', items:['Commercial Kitchen Equipment (ovens, fryers, grills)','Cold Storage & Refrigeration Systems','Dishwashing & Warewashing Systems','Food Preparation Equipment','Bar Equipment & Ice Machines','Banquet & Catering Trolleys'] },
-  { id:'linen', icon:'🛏️', name:'Linen & Soft Furnishings', full:'Linen, Towelling & Soft Furnishings', items:['Bed Linen & Duvet Covers','Bath Towels, Bath Mats & Robes','Curtains, Drapes & Blackouts','Cushions, Pillows & Throws','Table Linen & Napkins','Pool & Spa Towels'] },
-  { id:'tableware', icon:'🍽️', name:'Tableware', full:'Tableware, Crockery & Glassware', items:['Fine Dining Crockery & Bone China','Cutlery, Flatware & Silverware','Glassware & Bar Accessories','Serving Platters & Chafing Dishes','Tea & Coffee Service Sets','Buffet Display Equipment'] },
-  { id:'uniforms', icon:'👔', name:'Uniforms', full:'Uniforms & Staff Apparel', items:['Front Office & Reception Uniforms','Food & Beverage Service Uniforms','Housekeeping & Laundry Uniforms','Kitchen & Chef Uniforms','Security & Concierge Uniforms','Customised & Branded Uniforms'] },
-  { id:'amenities', icon:'🧴', name:'Guest Amenities', full:'Guest Amenities & Toiletries', items:['Branded Toiletry Sets','Shampoo, Conditioner & Soap','Dental & Shaving Kits','Sewing & Vanity Kits','Slippers & Shower Caps','Eco-Friendly / Sustainable Options'] },
-  { id:'technology', icon:'📺', name:'Technology & AV', full:'Technology & AV Systems', items:['Smart Room Control Systems','In-Room Entertainment (TV, IPTV)','Conference & Boardroom AV','WiFi Infrastructure & Networking','CCTV & Access Control','Energy Management Systems'] },
+  { icon:'🍳', name:'Kitchen Equipment',     desc:'Commercial kitchens, cooking ranges, ovens, fryers, refrigeration systems and ventilation — specified to brand standards and local compliance.' },
+  { icon:'🛏️', name:'FF&E Procurement',      desc:'Furniture, Fixtures & Equipment — beds, seating, casegoods, soft furnishings, lighting and all guestroom and public area FF&E.' },
+  { icon:'🧴', name:'OS&E & Guest Amenities',desc:"Operating Supplies & Equipment — toiletries, minibar, stationery, amenity kits, laundry supplies, housekeeping consumables and branded guest amenities." },
+  { icon:'🍽️', name:'Linen & Tableware',     desc:'Bed linen, bath linen, restaurant tableware, glassware, flatware, napery and F&B service equipment to hotel-grade specifications.' },
+  { icon:'👔', name:'Uniforms & Workwear',   desc:'Branded uniforms for all departments — front office, F&B, housekeeping, engineering and management — including design, tailoring and supply.' },
+  { icon:'📺', name:'Technology & AV',       desc:'GRMS, POS, property management systems integration, in-room entertainment, digital signage, background music and AV systems.' },
+  { icon:'🧹', name:'Housekeeping Supplies', desc:'Cleaning chemicals, equipment, trolleys, laundry supplies and housekeeping consumables — maintained under service contracts.' },
+  { icon:'📦', name:'Turnkey Procurement',   desc:'Full turnkey supply coordination for hotel pre-openings — single vendor accountability from specification to site delivery and installation sign-off.' },
+]
+
+const STEPS = [
+  { n:'01', title:'Requirement Specification', desc:'We work with your project team and brand standards consultant to prepare complete FF&E, OS&E and kitchen equipment specifications.' },
+  { n:'02', title:'Vendor Identification & Quoting', desc:'Our procurement network sources competitive quotes from approved vendors. We manage the RFQ, comparison and vendor selection process.' },
+  { n:'03', title:'Quality & Compliance',     desc:'Samples reviewed against brand standards. All items validated for quality, fire safety certification and compliance before approval.' },
+  { n:'04', title:'Delivery & Installation',  desc:'Coordinated delivery schedules aligned with your construction programme. Installation supervision and punch-list sign-off included.' },
 ]
 
 app.get('/', (c) => {
   const content = `
-  <!-- HORECA HERO -->
-  <section class="relative py-32 bg-ig-dark overflow-hidden">
-    <div class="absolute inset-0 opacity-5" style="background-image:linear-gradient(rgba(197,160,40,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(197,160,40,.3) 1px,transparent 1px);background-size:80px 80px;"></div>
-    <div class="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
-      <div>
-        <div class="flex items-center gap-3 mb-6">
-          <div class="h-px w-12 bg-gold"></div>
-          <span class="text-gold text-xs font-semibold tracking-widest uppercase">HORECA Solutions</span>
-        </div>
-        <h1 class="font-serif text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight">Complete HORECA<br><em class="text-gold font-display">Supply Solutions</em></h1>
-        <p class="text-gray-400 text-xl leading-relaxed mb-8">Hotel, Restaurant & Catering supplies — FF&E, OS&E, kitchen equipment, linen, tableware and more. End-to-end procurement from specification to delivery for hotels and F&B projects across India.</p>
-        <div class="flex gap-4">
-          <a href="#enquire" class="btn-gold inline-block">Request a Quote</a>
-          <a href="#categories" class="btn-outline-gold inline-block">Browse Categories</a>
+
+<!-- HORECA HERO -->
+<div style="background:var(--ink);padding:7rem 0 5rem;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.05) 1px,transparent 1px);background-size:72px 72px;"></div>
+  <div class="wrap" style="position:relative;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
+      <div class="fu">
+        <div class="gr-lt"></div>
+        <p class="eyebrow" style="margin-bottom:.875rem;">HORECA Solutions</p>
+        <h1 class="h1" style="margin-bottom:1.5rem;">End-to-End<br><em style="color:var(--gold);font-style:italic;">HORECA</em><br><span style="font-size:.6em;font-weight:300;color:rgba(255,255,255,.5);">Supply &amp; Procurement</span></h1>
+        <p class="lead-lt" style="max-width:480px;margin-bottom:2rem;">Kitchen equipment, FF&amp;E, OS&amp;E, linens, uniforms and guest amenities — procured to brand specification, delivered on schedule for hotels and F&amp;B operators across India.</p>
+        <div style="display:flex;gap:.875rem;flex-wrap:wrap;">
+          <a href="#quote" class="btn btn-g">Request a Quote</a>
+          <a href="/contact" class="btn btn-ghost">General Enquiry</a>
         </div>
       </div>
-      
-      <div class="grid grid-cols-2 gap-3">
-        ${['Competitive Pricing','Approved Vendor Network','Project-Based Procurement','Ongoing Supply Contracts','Pan-India Delivery','Pre-Opening Specialists','FF&E Specification','Brand-Compliant Supply'].map(f => `
-        <div class="flex items-center gap-3 p-4 border border-gray-700 hover:border-gold transition-colors">
-          <i class="fas fa-check text-gold text-xs"></i>
-          <span class="text-gray-300 text-sm">${f}</span>
+      <div class="fu2" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.07);">
+        ${[
+          { n:'₹500 Cr+', l:'Procurement Facilitated' },
+          { n:'15+',      l:'Hotel Projects Supplied' },
+          { n:'100+',     l:'Vendor Relationships' },
+          { n:'Pan-India',l:'Delivery Network' },
+        ].map(s => `
+        <div style="background:rgba(255,255,255,.03);padding:1.75rem;text-align:center;">
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:var(--gold);line-height:1;">${s.n}</div>
+          <div class="caption-lt" style="margin-top:.4rem;">${s.l}</div>
         </div>
         `).join('')}
       </div>
-    </div>
-  </section>
-
-  <!-- USP STRIP -->
-  <div class="bg-gold py-8">
-    <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-      <div><div class="font-serif text-2xl font-bold text-black">15+</div><div class="text-black text-xs uppercase tracking-widest opacity-70">Hotel Projects Supplied</div></div>
-      <div><div class="font-serif text-2xl font-bold text-black">Pan-India</div><div class="text-black text-xs uppercase tracking-widest opacity-70">Delivery Network</div></div>
-      <div><div class="font-serif text-2xl font-bold text-black">8</div><div class="text-black text-xs uppercase tracking-widest opacity-70">Supply Categories</div></div>
-      <div><div class="font-serif text-2xl font-bold text-black">₹0</div><div class="text-black text-xs uppercase tracking-widest opacity-70">Hidden Costs. Ever.</div></div>
     </div>
   </div>
+</div>
 
-  <!-- CATEGORIES -->
-  <section id="categories" class="py-24 bg-white">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-16">
-        <div class="gold-line-center">
-          <span class="text-xs text-gold tracking-widest uppercase font-semibold">Supply Categories</span>
-        </div>
-        <h2 class="font-serif text-4xl lg:text-5xl font-bold text-ig-dark mt-3 mb-4">Everything Your Hotel Needs,<br>From One Trusted Partner</h2>
-        <p class="text-gray-500 text-lg max-w-2xl mx-auto">We source from approved vendors across India and internationally — providing specification, procurement management and logistics for hotel pre-openings, renovations and ongoing operations.</p>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        ${CATEGORIES.map(cat => `
-        <div class="border border-ig-border hover:border-gold transition-all duration-300 group">
-          <div class="p-6 border-b border-ig-border bg-ig-cream group-hover:bg-gold group-hover:bg-opacity-5 transition-colors">
-            <div class="flex items-center gap-4">
-              <div class="text-4xl">${cat.icon}</div>
-              <div>
-                <h3 class="font-serif text-xl font-bold text-ig-dark group-hover:text-gold transition-colors">${cat.name}</h3>
-                <p class="text-xs text-gray-500">${cat.full}</p>
-              </div>
-              <a href="/contact?service=horeca-${cat.id}" class="ml-auto btn-outline-gold text-xs py-2 px-4 flex-shrink-0">Request Catalogue</a>
-            </div>
-          </div>
-          <div class="p-6">
-            <ul class="grid grid-cols-1 gap-2">
-              ${cat.items.map(item => `
-              <li class="flex items-center gap-2 text-sm text-gray-600">
-                <i class="fas fa-angle-right text-gold text-xs flex-shrink-0"></i>
-                ${item}
-              </li>
-              `).join('')}
-            </ul>
-          </div>
-        </div>
-        `).join('')}
-      </div>
+<!-- SUPPLY CATEGORIES -->
+<div class="sec-wh">
+  <div class="wrap">
+    <div style="text-align:center;max-width:580px;margin:0 auto 3.5rem;">
+      <div class="gr-c"></div>
+      <p class="eyebrow" style="margin-bottom:.75rem;">What We Supply</p>
+      <h2 class="h2">Eight Categories.<br>One Procurement Partner.</h2>
     </div>
-  </section>
 
-  <!-- HOW IT WORKS -->
-  <section class="py-24 bg-ig-dark">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-16">
-        <div class="gold-line-center">
-          <span class="text-xs text-gold tracking-widest uppercase font-semibold">Our Process</span>
-        </div>
-        <h2 class="font-serif text-4xl font-bold text-white mt-3">How HORECA Procurement Works</h2>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;">
+      ${CATEGORIES.map(cat => `
+      <div class="card card-lift" style="padding:1.75rem;">
+        <div style="font-size:2rem;margin-bottom:1rem;">${cat.icon}</div>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin-bottom:.6rem;">${cat.name}</h3>
+        <p class="body" style="font-size:.8rem;">${cat.desc}</p>
       </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px" style="background:rgba(255,255,255,.05);">
-        ${[
-          { step:'01', title:'Requirements Brief', desc:'You share your project brief, brand standards, quantities, timelines and budget parameters with our procurement team.' },
-          { step:'02', title:'Specification & Sourcing', desc:'We prepare detailed specifications, identify approved vendors, and obtain competitive quotes from our verified supplier network.' },
-          { step:'03', title:'Quote & Approval', desc:'We present a branded, GST-enabled quotation with full item-by-item breakdown. Revisions and approvals managed digitally.' },
-          { step:'04', title:'Delivery & Handover', desc:'Pan-India logistics coordination, site delivery, quality inspection and handover documentation. Ongoing supply contracts available.' },
-        ].map(s => `
-        <div class="p-8 hover:bg-white hover:bg-opacity-5 transition-colors" style="background:rgba(255,255,255,.02);">
-          <div class="font-serif text-5xl font-bold text-gold opacity-30 mb-4">${s.step}</div>
-          <h3 class="font-serif text-xl font-semibold text-white mb-3">${s.title}</h3>
-          <p class="text-gray-400 text-sm leading-relaxed">${s.desc}</p>
-        </div>
-        `).join('')}
-      </div>
+      `).join('')}
     </div>
-  </section>
+  </div>
+</div>
 
-  <!-- QUOTE REQUEST FORM -->
-  <section id="enquire" class="py-24 bg-ig-cream">
-    <div class="max-w-4xl mx-auto px-6">
-      <div class="text-center mb-12">
-        <div class="gold-line-center">
-          <span class="text-xs text-gold tracking-widest uppercase font-semibold">Get a Quote</span>
-        </div>
-        <h2 class="font-serif text-4xl font-bold text-ig-dark mt-3 mb-4">Request a HORECA Supply Quotation</h2>
-        <p class="text-gray-500">Fill in your requirements and we will revert within 24 business hours with a detailed quotation.</p>
-      </div>
-      
-      <div class="bg-white border border-ig-border p-8">
-        <form class="ig-form" method="POST" action="/api/enquiry">
-          <input type="hidden" name="type" value="horeca">
-          <div class="grid md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <label class="ig-label">Your Name *</label>
-              <input type="text" name="name" class="ig-input" required placeholder="Full Name">
-            </div>
-            <div>
-              <label class="ig-label">Organisation *</label>
-              <input type="text" name="org" class="ig-input" required placeholder="Company / Hotel Name">
-            </div>
-            <div>
-              <label class="ig-label">Email Address *</label>
-              <input type="email" name="email" class="ig-input" required placeholder="you@company.com">
-            </div>
-            <div>
-              <label class="ig-label">Phone Number *</label>
-              <input type="tel" name="phone" class="ig-input" required placeholder="+91 XXXXX XXXXX">
-            </div>
-          </div>
-          
-          <div class="mb-6">
-            <label class="ig-label">Supply Categories Required *</label>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-2">
-              ${CATEGORIES.map(cat => `
-              <label class="flex items-center gap-2 cursor-pointer p-3 border border-ig-border hover:border-gold transition-colors text-sm">
-                <input type="checkbox" name="categories[]" value="${cat.id}" class="accent-gold">
-                <span>${cat.icon} ${cat.name}</span>
-              </label>
-              `).join('')}
-            </div>
-          </div>
-          
-          <div class="grid md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <label class="ig-label">Project Type</label>
-              <select name="projectType" class="ig-input">
-                <option value="">Select Project Type</option>
-                <option>Hotel Pre-Opening</option>
-                <option>Hotel Renovation / Refurbishment</option>
-                <option>Restaurant / F&B Setup</option>
-                <option>Banquet / Events Venue</option>
-                <option>Ongoing Supply Contract</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div>
-              <label class="ig-label">Approximate Budget</label>
-              <select name="budget" class="ig-input">
-                <option value="">Select Range</option>
-                <option>Under ₹25 Lakhs</option>
-                <option>₹25 L — ₹1 Cr</option>
-                <option>₹1 Cr — ₹5 Cr</option>
-                <option>₹5 Cr — ₹20 Cr</option>
-                <option>₹20 Cr+</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="mb-6">
-            <label class="ig-label">Project Details</label>
-            <textarea name="details" class="ig-input" rows="4" placeholder="Describe your project, property type, number of rooms/covers, brand standards, required delivery timeline and any specific requirements..."></textarea>
-          </div>
-          
-          <div class="mb-6">
-            <label class="ig-label">Project Location</label>
-            <input type="text" name="location" class="ig-input" placeholder="City, State">
-          </div>
-          
-          <button type="submit" class="btn-gold w-full">
-            <i class="fas fa-paper-plane mr-2"></i>Submit HORECA Enquiry
-          </button>
-          
-          <p class="text-xs text-gray-400 text-center mt-4">By submitting this form, you agree to be contacted by India Gully's HORECA team. All enquiries are strictly confidential.</p>
-        </form>
-      </div>
+<!-- PROCUREMENT PROCESS -->
+<div class="sec-pd">
+  <div class="wrap">
+    <div style="text-align:center;max-width:580px;margin:0 auto 3.5rem;">
+      <div class="gr-c"></div>
+      <p class="eyebrow" style="margin-bottom:.75rem;">How It Works</p>
+      <h2 class="h2">The India Gully<br>Procurement Process</h2>
     </div>
-  </section>
-  `
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border);">
+      ${STEPS.map((step, i) => `
+      <div style="padding:2.25rem 1.75rem;${i<3?'border-right:1px solid var(--border);':''}background:#fff;transition:background .25s;" onmouseover="this.style.background='var(--gold-pale)'" onmouseout="this.style.background='#fff'">
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:3rem;color:rgba(184,150,12,.2);line-height:1;margin-bottom:1.25rem;">${step.n}</div>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.05rem;color:var(--ink);margin-bottom:.625rem;">${step.title}</h3>
+        <p class="body" style="font-size:.8rem;">${step.desc}</p>
+      </div>
+      `).join('')}
+    </div>
+  </div>
+</div>
+
+<!-- BRAND PARTNERS -->
+<div class="sec-wh">
+  <div class="wrap">
+    <div style="text-align:center;max-width:520px;margin:0 auto 3rem;">
+      <div class="gr-c"></div>
+      <p class="eyebrow" style="margin-bottom:.75rem;">Projects Supplied</p>
+      <h2 class="h2">Hotels We've Supplied</h2>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
+      ${[
+        { brand:'Park Inn by Radisson, Delhi',     type:'FF&E / OS&E · Pre-Opening',     icon:'🔴' },
+        { brand:'Cygnett Style Shubh, Ramnagar',   type:'Kitchen Equipment · OS&E',      icon:'🦢' },
+        { brand:'Regenta Central, Noida',          type:'Full Turnkey Procurement',       icon:'🌸' },
+        { brand:'Villa Hotel, Jim Corbett',        type:'OS&E · Linen · Amenities',       icon:'🌿' },
+        { brand:'Bijolai Palace, Jodhpur',         type:'FF&E Specification & Supply',    icon:'🏰' },
+        { brand:'100-Room Greenfield, Hosur',      type:'Full Pre-Opening Procurement',   icon:'🏗️' },
+      ].map(p => `
+      <div class="card" style="padding:1.5rem;display:flex;align-items:center;gap:1rem;">
+        <span style="font-size:2rem;flex-shrink:0;">${p.icon}</span>
+        <div>
+          <h3 style="font-size:.9rem;font-weight:600;color:var(--ink);margin-bottom:.2rem;">${p.brand}</h3>
+          <p class="caption">${p.type}</p>
+        </div>
+      </div>
+      `).join('')}
+    </div>
+  </div>
+</div>
+
+<!-- QUOTE FORM -->
+<div id="quote" class="sec-dk">
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:4.5rem;align-items:start;">
+      <div>
+        <div class="gr-lt"></div>
+        <p class="eyebrow" style="margin-bottom:.75rem;">Procurement Enquiry</p>
+        <h2 class="h2-lt" style="margin-bottom:1.25rem;">Request a<br>HORECA Quote</h2>
+        <p class="lead-lt" style="margin-bottom:2rem;">Tell us about your project requirements and our procurement team will send you a detailed proposal within 48 hours.</p>
+        <div style="display:flex;flex-direction:column;gap:.875rem;">
+          ${[
+            { icon:'check-circle', text:'Competitive pan-India vendor network' },
+            { icon:'check-circle', text:'Brand standard compliance guaranteed' },
+            { icon:'check-circle', text:'Site delivery & installation coordination' },
+            { icon:'check-circle', text:'Post-supply service support available' },
+          ].map(f => `
+          <div style="display:flex;align-items:center;gap:.75rem;">
+            <i class="fas fa-${f.icon}" style="color:var(--gold);font-size:.85rem;flex-shrink:0;"></i>
+            <span style="font-size:.85rem;color:rgba(255,255,255,.55);">${f.text}</span>
+          </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <form class="ig-form" method="POST" action="/api/horeca-enquiry" style="display:flex;flex-direction:column;gap:1.25rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div>
+            <label class="ig-lbl">Your Name *</label>
+            <input type="text" name="name" class="ig-inp" required placeholder="Full name">
+          </div>
+          <div>
+            <label class="ig-lbl">Organisation *</label>
+            <input type="text" name="organisation" class="ig-inp" required placeholder="Hotel / company name">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div>
+            <label class="ig-lbl">Email *</label>
+            <input type="email" name="email" class="ig-inp" required placeholder="your@email.com">
+          </div>
+          <div>
+            <label class="ig-lbl">Phone *</label>
+            <input type="tel" name="phone" class="ig-inp" required placeholder="+91 XXXXX XXXXX">
+          </div>
+        </div>
+        <div>
+          <label class="ig-lbl">Project Type *</label>
+          <select name="project_type" class="ig-inp" required>
+            <option value="">Select project type</option>
+            <option>New Hotel Pre-Opening</option>
+            <option>Hotel Renovation / Refurbishment</option>
+            <option>Restaurant / F&B Outlet</option>
+            <option>Ongoing Supply Contract</option>
+            <option>One-Time Procurement</option>
+          </select>
+        </div>
+        <div>
+          <label class="ig-lbl">Categories Required *</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.5rem;">
+            ${['Kitchen Equipment','FF&E','OS&E / Amenities','Linen & Tableware','Uniforms','Technology & AV'].map(cat => `
+            <label style="display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:rgba(255,255,255,.5);cursor:pointer;">
+              <input type="checkbox" name="categories" value="${cat}" style="accent-color:var(--gold);"> ${cat}
+            </label>
+            `).join('')}
+          </div>
+        </div>
+        <div>
+          <label class="ig-lbl">Procurement Budget (approx.)</label>
+          <select name="budget" class="ig-inp">
+            <option value="">Select range</option>
+            <option>Under ₹25 Lakhs</option>
+            <option>₹25L – ₹1 Crore</option>
+            <option>₹1 Cr – ₹5 Crore</option>
+            <option>₹5 Cr – ₹25 Crore</option>
+            <option>₹25 Crore+</option>
+          </select>
+        </div>
+        <div>
+          <label class="ig-lbl">Project Details &amp; Requirements</label>
+          <textarea name="details" class="ig-inp" placeholder="Describe your project, timeline and specific requirements…"></textarea>
+        </div>
+        <button type="submit" class="btn btn-g" style="width:100%;justify-content:center;">
+          <i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Send Procurement Enquiry
+        </button>
+        <p style="font-size:.7rem;color:rgba(255,255,255,.25);text-align:center;">We respond within 48 business hours. All enquiries are strictly confidential.</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+`
   return c.html(layout('HORECA Solutions', content, {
-    description: 'India Gully HORECA Solutions — complete FF&E, OS&E, kitchen equipment, linen, tableware and HORECA supply procurement for hotels and restaurants across India.'
+    description: "India Gully HORECA Solutions — end-to-end FF&E, OS&E, kitchen equipment, linen, uniforms and guest amenity procurement for hotels and F&B operators across India."
   }))
 })
 

@@ -3,160 +3,265 @@ import { layout } from '../lib/layout'
 
 const app = new Hono()
 
-const INSIGHTS = [
-  { id:'real-estate-outlook-2024', cat:'Real Estate', tag:'Market Intelligence', title:'Indian Real Estate 2024: The Advisory Mandate Landscape', date:'December 2024', readTime:'8 min', excerpt:'As institutional capital flows back into India\'s hospitality and mixed-use real estate sector, transaction advisory mandates have surged. We analyse deal structures, pricing benchmarks and investor appetite across Tier 1 and 2 cities.' },
-  { id:'hotel-brand-selection', cat:'Hospitality', tag:'Brand Advisory', title:'Choosing the Right Hotel Brand: A Framework for Indian Developers', date:'November 2024', readTime:'12 min', excerpt:'With 35+ international and domestic hotel brands competing for management contracts in India, developers face complex brand selection decisions. Our framework evaluates brand fit, fee structures, FF&E requirements and long-term IRR impact.' },
-  { id:'entertainment-destinations-india', cat:'Entertainment', tag:'Sector Study', title:'India\'s Entertainment Destination Boom: Opportunity & Execution Risks', date:'October 2024', readTime:'10 min', excerpt:'From ₹4,500 Cr integrated entertainment destinations to 10,000 sq ft FECs, India\'s entertainment sector is witnessing unprecedented investment appetite. We assess concept viability, catchment analysis and operator landscape.' },
-  { id:'horeca-procurement', cat:'HORECA', tag:'Operational Guide', title:'Pre-Opening HORECA Procurement: A 36-Point Checklist for Hotel GMs', date:'September 2024', readTime:'6 min', excerpt:'Pre-opening FF&E and OS&E procurement is one of the highest-risk phases of hotel development. This operational guide provides a structured approach to specification, vendor selection, timeline management and quality control.' },
-  { id:'retail-leasing-strategy', cat:'Retail', tag:'Strategy', title:'Retail Leasing Strategy in India 2024: Beyond Anchor Dependency', date:'August 2024', readTime:'9 min', excerpt:'As traditional anchor tenant models face pressure from e-commerce and experience retail, mall developers need a more sophisticated approach to brand mix, zoning and lease structuring. We examine emerging models from our leasing practice.' },
-  { id:'debt-special-situations-hospitality', cat:'Debt & Special Situations', tag:'Advisory Note', title:'Hospitality Asset Distress in India: IBC, NCLT and Value Recovery', date:'July 2024', readTime:'11 min', excerpt:'With a significant stock of stressed hospitality assets emerging from post-pandemic restructuring and IBC proceedings, specialised advisory is critical for lenders, acquirers and resolution professionals navigating these complex situations.' },
+const ARTICLES = [
+  {
+    id: 'india-entertainment-destinations-2024',
+    category: 'Entertainment',
+    title: 'The Rise of Integrated Entertainment Destinations in India',
+    excerpt: 'India\'s entertainment real estate sector is witnessing a structural shift — from standalone multiplexes to fully integrated, experiential destinations that combine theme parks, retail, F&B and hospitality.',
+    author: 'Arun Manikonda',
+    date: 'December 2024',
+    readTime: '8 min read',
+    featured: true,
+  },
+  {
+    id: 'hotel-brand-selection-guide',
+    category: 'Hospitality',
+    title: 'Choosing the Right Hotel Brand: A Developer\'s Guide',
+    excerpt: 'Brand selection is one of the most consequential decisions in hotel development. The wrong brand choice can cost 200-400 bps in RevPAR and impair asset value at exit.',
+    author: 'Pavan Manikonda',
+    date: 'November 2024',
+    readTime: '10 min read',
+    featured: true,
+  },
+  {
+    id: 'mall-leasing-strategy-india',
+    category: 'Retail',
+    title: 'Mall Leasing Strategy in Post-COVID India: What\'s Changed',
+    excerpt: 'The Indian mall sector has undergone fundamental restructuring since 2020. Landlords who adapt their leasing strategy, brand mix and revenue models will outperform peers significantly.',
+    author: 'Amit Jhingan',
+    date: 'October 2024',
+    readTime: '7 min read',
+    featured: true,
+  },
+  {
+    id: 'heritage-hotel-unlocking-value',
+    category: 'Heritage & Hospitality',
+    title: 'Unlocking Value in India\'s Heritage Hotel Portfolio',
+    excerpt: 'India\'s heritage hotel segment — palaces, havelis and colonial estates — remains significantly undervalued versus international peers. We analyse the structural opportunity and advisory framework.',
+    author: 'Arun Manikonda',
+    date: 'September 2024',
+    readTime: '9 min read',
+    featured: false,
+  },
+  {
+    id: 'horeca-procurement-excellence',
+    category: 'HORECA',
+    title: 'Procurement Excellence in Hotel Pre-Openings',
+    excerpt: 'FF&E and OS&E procurement is the most frequently under-planned element of a hotel pre-opening. Cost overruns of 15-40% are common. Here is how to avoid them.',
+    author: 'Pavan Manikonda',
+    date: 'August 2024',
+    readTime: '6 min read',
+    featured: false,
+  },
+  {
+    id: 'debt-special-situations-india',
+    category: 'Debt & Special Situations',
+    title: 'Special Situations in Indian Real Estate: The IBC Opportunity',
+    excerpt: 'The Insolvency and Bankruptcy Code has created a unique window for distressed asset acquisition in Indian real estate and hospitality. A systematic framework for investors.',
+    author: 'Amit Jhingan',
+    date: 'July 2024',
+    readTime: '12 min read',
+    featured: false,
+  },
 ]
 
 app.get('/', (c) => {
+  const [featured, ...rest] = ARTICLES
   const content = `
-  <!-- INSIGHTS HERO -->
-  <section class="relative py-28 bg-ig-dark overflow-hidden">
-    <div class="absolute inset-0 opacity-5" style="background-image:linear-gradient(rgba(197,160,40,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(197,160,40,.3) 1px,transparent 1px);background-size:80px 80px;"></div>
-    <div class="relative max-w-7xl mx-auto px-6">
-      <div class="max-w-3xl">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="h-px w-12 bg-gold"></div>
-          <span class="text-gold text-xs font-semibold tracking-widest uppercase">Thought Leadership</span>
+
+<!-- INSIGHTS HERO -->
+<div style="background:var(--ink);padding:7rem 0 5rem;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.05) 1px,transparent 1px);background-size:72px 72px;"></div>
+  <div class="wrap" style="position:relative;">
+    <div style="max-width:640px;" class="fu">
+      <div class="gr-lt"></div>
+      <p class="eyebrow" style="margin-bottom:.875rem;">Insights &amp; Research</p>
+      <h1 class="h1" style="margin-bottom:1.5rem;">Thought Leadership<br><em style="color:var(--gold);font-style:italic;">by Practitioners</em></h1>
+      <p class="lead-lt" style="max-width:520px;">Market insights, sector analysis and advisory perspectives from India Gully's leadership — grounded in live transaction experience across every vertical we operate in.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURED ARTICLE -->
+<div class="sec-wh">
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:4rem;align-items:center;border:1px solid var(--border);padding:3rem;">
+      <div>
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;">
+          <span class="badge b-g">Featured</span>
+          <span class="eyebrow">${featured.category}</span>
         </div>
-        <h1 class="font-serif text-5xl lg:text-7xl font-bold text-white mb-6">Insights &amp;<br><em class="text-gold font-display">Research</em></h1>
-        <p class="text-gray-400 text-xl leading-relaxed">Market intelligence, sector research and advisory perspectives from India Gully's leadership team — across Real Estate, Hospitality, Retail, Entertainment and HORECA.</p>
+        <h2 class="h2" style="margin-bottom:1.25rem;">${featured.title}</h2>
+        <p class="lead" style="margin-bottom:1.75rem;">${featured.excerpt}</p>
+        <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.75rem;">
+          <div style="display:flex;align-items:center;gap:.5rem;">
+            <div style="width:32px;height:32px;background:var(--ink);display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:.65rem;font-weight:700;color:var(--gold);">AM</span>
+            </div>
+            <span style="font-size:.8rem;color:var(--ink-soft);">${featured.author}</span>
+          </div>
+          <span class="caption">${featured.date} · ${featured.readTime}</span>
+        </div>
+        <a href="/insights/${featured.id}" class="btn btn-dk">Read Article</a>
+      </div>
+      <div style="background:var(--parch-dk);height:280px;display:flex;align-items:center;justify-content:center;">
+        <div style="text-align:center;">
+          <div style="font-size:4rem;margin-bottom:.75rem;">🎡</div>
+          <div style="font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);">${featured.category}</div>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
+</div>
 
-  <!-- INSIGHTS GRID -->
-  <section class="py-20 bg-ig-cream">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        ${INSIGHTS.map(ins => `
-        <article class="bg-white border border-ig-border group card-hover overflow-hidden">
-          <!-- Article Header -->
-          <div class="p-7 border-b border-ig-border bg-ig-dark relative overflow-hidden h-40 flex flex-col justify-end">
-            <div class="absolute inset-0" style="background:linear-gradient(135deg,rgba(197,160,40,.05),transparent);"></div>
-            <div class="relative">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="badge badge-gold text-xs">${ins.tag}</span>
-              </div>
-              <div class="text-xs text-gray-500">${ins.cat}</div>
-            </div>
-          </div>
-          
-          <!-- Article Body -->
-          <div class="p-7">
-            <h2 class="font-serif text-xl font-bold text-ig-dark mb-3 leading-snug group-hover:text-gold transition-colors">${ins.title}</h2>
-            <p class="text-gray-500 text-sm leading-relaxed mb-5">${ins.excerpt}</p>
-            
-            <div class="flex items-center justify-between text-xs text-gray-400">
-              <div class="flex items-center gap-3">
-                <span><i class="fas fa-calendar mr-1 text-gold"></i>${ins.date}</span>
-                <span><i class="fas fa-clock mr-1 text-gold"></i>${ins.readTime} read</span>
-              </div>
-              <a href="/insights/${ins.id}" class="text-gold hover:underline font-semibold flex items-center gap-1">
-                Read <i class="fas fa-arrow-right text-xs"></i>
-              </a>
-            </div>
-          </div>
-        </article>
+<!-- ALL ARTICLES -->
+<div class="sec-pd">
+  <div class="wrap">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3rem;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <div class="gr"></div>
+        <h2 class="h2">Latest Perspectives</h2>
+      </div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        ${['All','Hospitality','Real Estate','Retail','Entertainment','HORECA'].map((cat,i) => `
+        <button onclick="filterArticles('${cat.toLowerCase()}')" id="ac-${cat.toLowerCase()}" class="btn ${i===0?'btn-dk':'btn-dko'}" style="padding:.4rem .9rem;font-size:.7rem;">${cat}</button>
         `).join('')}
       </div>
-      
-      <div class="mt-12 text-center">
-        <div class="bg-white border border-ig-border p-8 max-w-2xl mx-auto">
-          <h3 class="font-serif text-2xl font-bold text-ig-dark mb-3">Subscribe to India Gully Insights</h3>
-          <p class="text-gray-500 text-sm mb-6">Receive our market intelligence reports, sector analyses and mandate updates directly in your inbox.</p>
-          <form class="ig-form flex gap-3" method="POST" action="/api/subscribe">
-            <input type="email" name="email" class="ig-input flex-1" placeholder="your@email.com" required>
-            <button type="submit" class="btn-gold flex-shrink-0">Subscribe</button>
-          </form>
+    </div>
+
+    <div id="articleGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
+      ${rest.map(a => `
+      <article class="card card-lift art-card" data-cat="${a.category.toLowerCase()}" style="overflow:hidden;">
+        <div style="background:var(--parch-dk);height:160px;display:flex;align-items:center;justify-content:center;">
+          <div style="text-align:center;">
+            <div style="font-size:2.5rem;margin-bottom:.5rem;">${a.category === 'Hospitality' ? '🏨' : a.category === 'Retail' ? '🛍️' : a.category === 'HORECA' ? '🍳' : a.category === 'Debt & Special Situations' ? '⚖️' : '🏛️'}</div>
+            <span class="eyebrow">${a.category}</span>
+          </div>
+        </div>
+        <div style="padding:1.5rem;">
+          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem;">
+            <span class="badge b-g">${a.category}</span>
+            <span class="caption">${a.readTime}</span>
+          </div>
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);margin-bottom:.625rem;line-height:1.25;">${a.title}</h3>
+          <p class="body" style="font-size:.8rem;margin-bottom:1.25rem;">${a.excerpt}</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:.78rem;font-weight:600;color:var(--ink);">${a.author}</div>
+              <div class="caption">${a.date}</div>
+            </div>
+            <a href="/insights/${a.id}" class="btn btn-go" style="padding:.4rem .875rem;font-size:.7rem;">Read</a>
+          </div>
+        </div>
+      </article>
+      `).join('')}
+    </div>
+  </div>
+</div>
+
+<!-- SUBSCRIBE -->
+<div class="sec-dk">
+  <div class="wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
+    <div>
+      <div class="gr-lt"></div>
+      <p class="eyebrow" style="margin-bottom:.75rem;">Stay Informed</p>
+      <h2 class="h2-lt" style="margin-bottom:1rem;">Subscribe to<br>India Gully Insights</h2>
+      <p class="lead-lt">Receive our sector research, deal updates and market commentary directly in your inbox — curated for investors, developers and operators.</p>
+    </div>
+    <form class="ig-form" method="POST" action="/api/subscribe" style="display:flex;flex-direction:column;gap:1rem;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
+        <div>
+          <label class="ig-lbl" style="color:rgba(255,255,255,.4);">Name</label>
+          <input type="text" name="name" class="ig-input" required placeholder="Your name" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#fff;">
+        </div>
+        <div>
+          <label class="ig-lbl" style="color:rgba(255,255,255,.4);">Organisation</label>
+          <input type="text" name="org" class="ig-input" placeholder="Company name" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#fff;">
         </div>
       </div>
-    </div>
-  </section>
-  `
+      <div>
+        <label class="ig-lbl" style="color:rgba(255,255,255,.4);">Email Address *</label>
+        <input type="email" name="email" class="ig-input" required placeholder="your@email.com" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#fff;">
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+        ${['Hospitality','Real Estate','Retail','Entertainment','HORECA','Debt & Special'].map(cat => `
+        <label style="display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:rgba(255,255,255,.45);cursor:pointer;">
+          <input type="checkbox" name="topics" value="${cat}" style="accent-color:var(--gold);"> ${cat}
+        </label>
+        `).join('')}
+      </div>
+      <button type="submit" class="btn btn-g" style="width:100%;justify-content:center;">
+        <i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Subscribe to Insights
+      </button>
+      <p style="font-size:.68rem;color:rgba(255,255,255,.2);">No spam. Unsubscribe anytime. Your data is never shared.</p>
+    </form>
+  </div>
+</div>
+
+<script>
+function filterArticles(cat){
+  var cards = document.querySelectorAll('.art-card');
+  var btns  = document.querySelectorAll('[id^="ac-"]');
+  btns.forEach(function(b){ b.classList.remove('btn-dk'); b.classList.add('btn-dko'); });
+  var active = document.getElementById('ac-'+cat);
+  if(active){ active.classList.add('btn-dk'); active.classList.remove('btn-dko'); }
+  cards.forEach(function(card){
+    if(cat==='all' || card.dataset.cat.includes(cat)){
+      card.style.display='';
+    } else {
+      card.style.display='none';
+    }
+  });
+}
+</script>
+`
   return c.html(layout('Insights & Research', content, {
-    description: 'India Gully Insights — market intelligence, sector research and thought leadership across Real Estate, Hospitality, Retail, Entertainment and HORECA.'
+    description: "India Gully Insights — thought leadership, sector research and market commentary across Real Estate, Retail, Hospitality, Entertainment and HORECA by India's leading advisory firm."
   }))
 })
 
+// Article stub
 app.get('/:id', (c) => {
   const id = c.req.param('id')
-  const insight = INSIGHTS.find(i => i.id === id)
-  if (!insight) return c.redirect('/insights')
-  
+  const article = ARTICLES.find(a => a.id === id)
+  if (!article) return c.redirect('/insights')
+
   const content = `
-  <div class="bg-white border-b border-ig-border">
-    <div class="max-w-7xl mx-auto px-6 py-3 text-sm">
-      <a href="/insights" class="text-gray-400 hover:text-gold">← All Insights</a>
-      <span class="text-gray-300 mx-2">/</span>
-      <span class="text-ig-dark">${insight.cat}</span>
+<div style="background:var(--ink);padding:7rem 0 5rem;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.04) 1px,transparent 1px);background-size:72px 72px;"></div>
+  <div class="wrap" style="position:relative;max-width:900px;">
+    <a href="/insights" style="display:inline-flex;align-items:center;gap:.5rem;font-size:.78rem;color:rgba(255,255,255,.4);margin-bottom:2rem;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.4)'"><i class="fas fa-arrow-left" style="font-size:.65rem;"></i>All Insights</a>
+    <span class="badge b-g" style="margin-bottom:1rem;display:inline-block;">${article.category}</span>
+    <h1 class="h1" style="margin-bottom:1.25rem;">${article.title}</h1>
+    <div style="display:flex;align-items:center;gap:1.5rem;">
+      <div style="display:flex;align-items:center;gap:.5rem;">
+        <div style="width:32px;height:32px;background:var(--gold);display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:.6rem;font-weight:800;color:#fff;">${article.author.split(' ').map(n=>n[0]).join('')}</span>
+        </div>
+        <span style="font-size:.8rem;color:rgba(255,255,255,.55);">${article.author}</span>
+      </div>
+      <span class="caption-lt">${article.date} · ${article.readTime}</span>
     </div>
   </div>
-  
-  <section class="py-16 bg-ig-cream">
-    <div class="max-w-4xl mx-auto px-6">
-      <div class="bg-white border border-ig-border p-10">
-        <div class="flex items-center gap-3 mb-5">
-          <span class="badge badge-gold">${insight.tag}</span>
-          <span class="text-xs text-gray-400">${insight.cat}</span>
-          <span class="text-xs text-gray-400">${insight.date}</span>
-          <span class="text-xs text-gray-400">${insight.readTime} read</span>
-        </div>
-        
-        <h1 class="font-serif text-4xl font-bold text-ig-dark mb-6 leading-tight">${insight.title}</h1>
-        
-        <div class="border-l-4 border-gold pl-6 mb-8">
-          <p class="text-lg text-gray-600 font-serif italic leading-relaxed">${insight.excerpt}</p>
-        </div>
-        
-        <div class="prose max-w-none text-gray-600 leading-relaxed space-y-5">
-          <p>India Gully's advisory practice provides privileged access to market intelligence gathered across our active mandate portfolio, brand relationships and institutional network. The insights presented in this article are based on primary research, client engagements and market observations — not publicly available data alone.</p>
-          
-          <p class="text-ig-dark font-semibold">Full Content Available to Registered Users</p>
-          
-          <p>This research paper is available in full to registered India Gully portal users and NDA counterparties. To access the complete article, including our proprietary data, benchmarks and recommendations, please login to the Client Portal or submit your details below.</p>
-        </div>
-        
-        <div class="mt-10 bg-ig-cream border border-ig-border p-6">
-          <h3 class="font-serif text-xl font-bold text-ig-dark mb-4">Access Full Research</h3>
-          <form class="ig-form grid md:grid-cols-3 gap-4" method="POST" action="/api/insight-request">
-            <input type="hidden" name="insight" value="${insight.id}">
-            <div>
-              <label class="ig-label">Name</label>
-              <input type="text" name="name" class="ig-input" placeholder="Your name" required>
-            </div>
-            <div>
-              <label class="ig-label">Email</label>
-              <input type="email" name="email" class="ig-input" placeholder="your@email.com" required>
-            </div>
-            <div class="flex items-end">
-              <button type="submit" class="btn-gold w-full">Request Access</button>
-            </div>
-          </form>
-        </div>
-        
-        <div class="mt-8 pt-8 border-t border-ig-border">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-ig-dark flex items-center justify-center">
-              <span class="font-serif text-gold font-bold">IG</span>
-            </div>
-            <div>
-              <p class="font-semibold text-ig-dark text-sm">India Gully Research</p>
-              <p class="text-xs text-gray-400">Vivacious Entertainment and Hospitality Pvt. Ltd.</p>
-              <p class="text-xs text-gold mt-1">info@indiagully.com</p>
-            </div>
-          </div>
-        </div>
+</div>
+<div class="sec-wh">
+  <div class="wrap" style="max-width:760px;margin:0 auto;">
+    <p class="lead" style="font-size:1.15rem;margin-bottom:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--border);">${article.excerpt}</p>
+    <div style="background:var(--parch);border:1px solid var(--border);padding:2rem;text-align:center;">
+      <i class="fas fa-lock" style="color:var(--gold);font-size:1.5rem;margin-bottom:.875rem;display:block;"></i>
+      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:var(--ink);margin-bottom:.75rem;">Full Article Access</h3>
+      <p class="body" style="max-width:480px;margin:0 auto 1.5rem;">This research article is available to registered subscribers. Subscribe to India Gully Insights for full access to all research and market commentary.</p>
+      <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;">
+        <a href="/insights#subscribe" class="btn btn-g">Subscribe for Access</a>
+        <a href="/contact" class="btn btn-dko">Contact for Enquiries</a>
       </div>
     </div>
-  </section>
-  `
-  return c.html(layout(insight.title, content, {
-    description: insight.excerpt.slice(0, 160)
+  </div>
+</div>
+`
+  return c.html(layout(article.title, content, {
+    description: `${article.title} — ${article.excerpt}`
   }))
 })
 
