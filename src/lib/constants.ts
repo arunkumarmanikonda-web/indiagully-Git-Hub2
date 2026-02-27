@@ -77,48 +77,72 @@ export const STATS = [
 ]
 
 // ── BRAND LOGOS ─────────────────────────────────────────────────────────────
-// Using Clearbit / brand CDNs for logos. These render via <img> with fallback text.
-// Hospitality brands from the corporate presentation
+// All logos are inline SVG — zero external dependencies, always visible.
+// Each svg field is a complete <svg>…</svg> string ready to embed in HTML.
+
+// Helper to make a branded SVG wordmark tile
+// bg=brand colour, text=display name, textColor=text colour, size=font scale
+function svgLogo(name: string, bg: string, textColor: string, fontSize = 11): string {
+  const escaped = name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  // Split long names into two lines at a natural break
+  const words = name.split(' ')
+  let line1 = name, line2 = ''
+  if (words.length >= 3 && name.length > 12) {
+    const mid = Math.ceil(words.length / 2)
+    line1 = words.slice(0, mid).join(' ')
+    line2 = words.slice(mid).join(' ')
+  } else if (words.length === 2 && name.length > 14) {
+    line1 = words[0]; line2 = words[1]
+  }
+  const l1e = line1.replace(/&/g, '&amp;')
+  const l2e = line2.replace(/&/g, '&amp;')
+  const y1 = line2 ? '44%' : '58%'
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="48" viewBox="0 0 120 48"><rect width="120" height="48" fill="${bg}"/><text x="60" y="${y1}" font-family="Georgia,serif" font-size="${fontSize}" font-weight="700" fill="${textColor}" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.5">${l1e}</text>${line2 ? `<text x="60" y="72%" font-family="Georgia,serif" font-size="${fontSize}" font-weight="700" fill="${textColor}" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.5">${l2e}</text>` : ''}</svg>`
+}
+
+function svgToDataUri(svg: string): string {
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg)
+}
+
+// Hospitality brands — proper brand colours
 export const HOSPITALITY_BRANDS = [
-  { name: 'Marriott International', logo: 'https://logo.clearbit.com/marriott.com', color: '#8B0000' },
-  { name: 'Radisson Hotel Group',   logo: 'https://logo.clearbit.com/radissonhotels.com', color: '#D4A017' },
-  { name: 'IHG Hotels & Resorts',   logo: 'https://logo.clearbit.com/ihg.com', color: '#006699' },
-  { name: 'Taj Hotels',             logo: 'https://logo.clearbit.com/tajhotels.com', color: '#8B0000' },
-  { name: 'ITC Hotels',             logo: 'https://logo.clearbit.com/itchotels.com', color: '#B8960C' },
-  { name: 'Lemon Tree Hotels',      logo: 'https://logo.clearbit.com/lemontreehotels.com', color: '#F5A623' },
-  { name: 'Cygnett Hotels',         logo: 'https://logo.clearbit.com/cygnetthotels.com', color: '#1A3A6B' },
-  { name: 'Royal Orchid / Regenta', logo: 'https://logo.clearbit.com/royalorchidhotels.com', color: '#6B0000' },
-  { name: 'Sarovar Hotels',         logo: 'https://logo.clearbit.com/sarovarhotels.com', color: '#C0392B' },
-  { name: 'Pride Hotels',           logo: 'https://logo.clearbit.com/pridehotel.com', color: '#B8960C' },
-  { name: 'Keys Hotels',            logo: 'https://logo.clearbit.com/keyshotels.com', color: '#1A6B3A' },
-  { name: 'Louvre Hotels',          logo: 'https://logo.clearbit.com/louvrehotels.com', color: '#2C3E50' },
+  { name: 'Marriott',        svg: svgToDataUri(svgLogo('MARRIOTT',        '#8B0000', '#fff', 11)),  color: '#8B0000', cat: 'Global Chain' },
+  { name: 'Radisson',        svg: svgToDataUri(svgLogo('RADISSON',        '#003DA5', '#fff', 11)),  color: '#003DA5', cat: 'Global Chain' },
+  { name: 'IHG Hotels',      svg: svgToDataUri(svgLogo('IHG',             '#006399', '#fff', 14)),  color: '#006399', cat: 'Global Chain' },
+  { name: 'Taj Hotels',      svg: svgToDataUri(svgLogo('TAJ HOTELS',      '#1A1A1A', '#C9A84C', 10)), color: '#1A1A1A', cat: 'Indian Luxury' },
+  { name: 'ITC Hotels',      svg: svgToDataUri(svgLogo('ITC HOTELS',      '#2C5F2E', '#FFD700', 10)), color: '#2C5F2E', cat: 'Indian Luxury' },
+  { name: 'Lemon Tree',      svg: svgToDataUri(svgLogo('LEMON TREE',      '#F5A623', '#fff', 10)),  color: '#F5A623', cat: 'Midscale' },
+  { name: 'Cygnett Hotels',  svg: svgToDataUri(svgLogo('CYGNETT',         '#1A3A6B', '#fff', 11)),  color: '#1A3A6B', cat: 'Midscale' },
+  { name: 'Regenta / Royal Orchid', svg: svgToDataUri(svgLogo('REGENTA',  '#6B1A1A', '#fff', 11)), color: '#6B1A1A', cat: 'Midscale' },
+  { name: 'Sarovar Hotels',  svg: svgToDataUri(svgLogo('SAROVAR',         '#C0392B', '#fff', 11)),  color: '#C0392B', cat: 'Midscale' },
+  { name: 'Pride Hotels',    svg: svgToDataUri(svgLogo('PRIDE HOTELS',    '#B8960C', '#fff', 10)),  color: '#B8960C', cat: 'Midscale' },
+  { name: 'Keys Hotels',     svg: svgToDataUri(svgLogo('KEYS HOTELS',     '#1A6B3A', '#fff', 10)),  color: '#1A6B3A', cat: 'Economy' },
+  { name: 'Louvre Hotels',   svg: svgToDataUri(svgLogo('LOUVRE HOTELS',   '#2C3E50', '#E8C96C', 10)), color: '#2C3E50', cat: 'Economy' },
 ]
 
-// Retail brand relationships — from presentation
+// Retail brand relationships
 export const RETAIL_BRANDS = [
-  // Anchor
-  { name: 'Big Bazaar / Future',  logo: 'https://logo.clearbit.com/bigbazaar.com',    cat: 'Anchor' },
-  { name: 'Lifestyle',            logo: 'https://logo.clearbit.com/lifestylestores.com', cat: 'Anchor' },
-  { name: 'Max Fashion',          logo: 'https://logo.clearbit.com/maxfashion.com',   cat: 'Fashion' },
-  { name: 'Westside',             logo: 'https://logo.clearbit.com/westsidestores.com', cat: 'Fashion' },
-  { name: 'H&M',                  logo: 'https://logo.clearbit.com/hm.com',            cat: 'Fashion' },
-  { name: 'Zara',                 logo: 'https://logo.clearbit.com/zara.com',          cat: 'Fashion' },
-  // F&B
-  { name: 'McDonald\'s',          logo: 'https://logo.clearbit.com/mcdonalds.com',    cat: 'F&B' },
-  { name: 'KFC',                  logo: 'https://logo.clearbit.com/kfc.com',           cat: 'F&B' },
-  { name: 'Subway',               logo: 'https://logo.clearbit.com/subway.com',        cat: 'F&B' },
-  { name: 'Starbucks',            logo: 'https://logo.clearbit.com/starbucks.com',     cat: 'F&B' },
-  { name: 'Domino\'s Pizza',      logo: 'https://logo.clearbit.com/dominos.com',       cat: 'F&B' },
-  { name: 'Pizza Hut',            logo: 'https://logo.clearbit.com/pizzahut.com',      cat: 'F&B' },
+  { name: 'Big Bazaar',   svg: svgToDataUri(svgLogo('BIG BAZAAR',  '#E21D26', '#fff', 10)),   cat: 'Anchor' },
+  { name: 'Lifestyle',    svg: svgToDataUri(svgLogo('LIFESTYLE',   '#1A1A1A', '#fff', 10)),    cat: 'Anchor' },
+  { name: 'Max Fashion',  svg: svgToDataUri(svgLogo('MAX',         '#E63946', '#fff', 16)),    cat: 'Fashion' },
+  { name: 'Westside',     svg: svgToDataUri(svgLogo('WESTSIDE',    '#2C2C2C', '#fff', 10)),    cat: 'Fashion' },
+  { name: 'H&M',          svg: svgToDataUri(svgLogo('H&M',         '#E50010', '#fff', 16)),    cat: 'Fashion' },
+  { name: 'Zara',         svg: svgToDataUri(svgLogo('ZARA',        '#1A1A1A', '#fff', 14)),    cat: 'Fashion' },
+  { name: "McDonald's",   svg: svgToDataUri(svgLogo("McDONALD'S",  '#FFC72C', '#DA291C', 9)),  cat: 'F&B' },
+  { name: 'KFC',          svg: svgToDataUri(svgLogo('KFC',         '#F40027', '#fff', 16)),    cat: 'F&B' },
+  { name: 'Subway',       svg: svgToDataUri(svgLogo('SUBWAY',      '#009B48', '#FFC709', 11)), cat: 'F&B' },
+  { name: 'Starbucks',    svg: svgToDataUri(svgLogo('STARBUCKS',   '#00704A', '#fff', 10)),    cat: 'F&B' },
+  { name: "Domino's",     svg: svgToDataUri(svgLogo("DOMINO'S",    '#006491', '#fff', 10)),    cat: 'F&B' },
+  { name: 'Pizza Hut',    svg: svgToDataUri(svgLogo('PIZZA HUT',   '#EE3124', '#fff', 11)),    cat: 'F&B' },
 ]
 
 // Transaction Advisory partners
 export const ADVISORY_PARTNERS = [
-  { name: 'Ernst & Young',    abbr: 'EY',         logo: 'https://logo.clearbit.com/ey.com',          color: '#FFE600', textColor: '#2E2E2E', sub: 'Transaction Advisory' },
-  { name: 'CBRE',             abbr: 'CBRE',        logo: 'https://logo.clearbit.com/cbre.com',        color: '#003087', textColor: '#fff',    sub: 'Real Estate Capital Markets' },
-  { name: 'ANAROCK',          abbr: 'ANAROCK',     logo: 'https://logo.clearbit.com/anarock.com',     color: '#E4003A', textColor: '#fff',    sub: 'Property Consultants' },
-  { name: 'Pipara & Co',      abbr: 'PIPARA',      logo: 'https://logo.clearbit.com/pipara.com',      color: '#1A5276', textColor: '#fff',    sub: 'Chartered Accountants' },
-  { name: 'Resurgent India',  abbr: 'RESURGENT',   logo: 'https://logo.clearbit.com/resurgentindia.com', color: '#1E8449', textColor: '#fff', sub: 'Investment Banking' },
+  { name: 'Ernst & Young',   abbr: 'EY',        svg: svgToDataUri(svgLogo('EY',        '#FFE600', '#2E2E2E', 22)), color: '#FFE600', textColor: '#2E2E2E', sub: 'Transaction Advisory & Assurance' },
+  { name: 'CBRE',            abbr: 'CBRE',       svg: svgToDataUri(svgLogo('CBRE',      '#003087', '#fff', 18)),    color: '#003087', textColor: '#fff',    sub: 'Real Estate & Capital Markets' },
+  { name: 'ANAROCK',         abbr: 'ANAROCK',    svg: svgToDataUri(svgLogo('ANAROCK',   '#E4003A', '#fff', 12)),    color: '#E4003A', textColor: '#fff',    sub: 'Property Consultants' },
+  { name: 'Pipara & Co',     abbr: 'PIPARA',     svg: svgToDataUri(svgLogo('PIPARA',    '#1A5276', '#fff', 13)),    color: '#1A5276', textColor: '#fff',    sub: 'Chartered Accountants' },
+  { name: 'Resurgent India', abbr: 'RESURGENT',  svg: svgToDataUri(svgLogo('RESURGENT', '#1E8449', '#fff', 11)),   color: '#1E8449', textColor: '#fff',    sub: 'Investment Banking' },
 ]
 
 // ── LISTINGS ────────────────────────────────────────────────────────────────
@@ -142,10 +166,10 @@ export const LISTINGS = [
     desc: 'Mega integrated entertainment destination combining a world-class theme park, luxury hotel tower, F&B street and retail mall across 200+ acres in Maharashtra. Phase 1 approved — first-of-its-kind project in India.',
     longDesc: `India's most ambitious integrated entertainment destination — a landmark 200+ acre project in Maharashtra that brings together a world-class theme park, a luxury branded hotel, a curated F&B street and a premium retail mall under one master plan.\n\nPhase 1 is approved and shovel-ready. The project is positioned as India's answer to global destination parks, targeting both domestic and international family tourism. The development model layers entertainment, hospitality and retail for a proven mixed-revenue format with strong yield resilience.\n\nIndia Gully holds an exclusive transaction advisory mandate and is seeking a marquee co-developer, institutional investor or PE fund to partner on this transformational project.`,
     images: [
-      'https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=1200&q=80',
-      'https://images.unsplash.com/photo-1597075562-3a2d5b88cbf1?w=1200&q=80',
-      'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1200&q=80',
-      'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1200&q=80',
+      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&q=80',
+      'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200&q=80',
+      'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1200&q=80',
+      'https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=1200&q=80',
     ],
     specs: {
       'Total Land Area': '200+ Acres',
@@ -185,10 +209,10 @@ export const LISTINGS = [
     desc: 'Premium entertainment and retail hub in Mumbai MMR. 800,000 sq ft GLA, 85% pre-leased with marquee anchor tenants. Cap rate 8.5%+ with strong institutional yield profile.',
     longDesc: `An institutional-grade entertainment and retail hub in Mumbai's Metropolitan Region — 800,000 sq ft of gross leasable area with 85% pre-leasing already secured with marquee anchors across entertainment, fashion and F&B.\n\nThe asset delivers a cap rate of 8.5%+ at current rental levels with significant upside on mark-to-market lease renewals. The retail mix is carefully curated — entertainment anchors drive footfall, inline fashion and F&B convert to spend.\n\nThis is a fully de-risked, income-producing asset opportunity for a core-plus real estate fund, REIT or institutional buyer. India Gully holds the exclusive transaction advisory mandate.`,
     images: [
-      'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=1200&q=80',
       'https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=1200&q=80',
-      'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=1200&q=80',
-      'https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1200&q=80',
+      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&q=80',
+      'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80',
+      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&q=80',
     ],
     specs: {
       'Gross Leasable Area': '800,000 sq ft',
@@ -228,10 +252,10 @@ export const LISTINGS = [
     desc: 'Six heritage hotel properties across Rajasthan — palaces, havelis and colonial estates. 480 keys, 72% TTM occupancy. Rare portfolio acquisition for hospitality-focused investors and HNI family offices.',
     longDesc: `A rare, once-in-a-generation opportunity to acquire a portfolio of six operating heritage hotels across Rajasthan's most coveted leisure destinations — covering heritage palaces, century-old havelis and colonial-era estates.\n\nThe portfolio operates with 480 keys and a trailing twelve-month (TTM) occupancy of 72%, driven by the sustained surge in inbound and domestic heritage tourism. The properties are positioned in the luxury-heritage segment with premium ADR profiles.\n\nThe acquisition can be structured as a full portfolio buyout or asset-by-asset. A marquee international operator flag is available for the right buyer. Suitable for hospitality-focused PE funds, sovereign wealth vehicles or high-conviction family offices.`,
     images: [
-      'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1200&q=80',
-      'https://images.unsplash.com/photo-1609766418204-94aae0ecfdfc?w=1200&q=80',
-      'https://images.unsplash.com/photo-1595389081670-ae38d14572d7?w=1200&q=80',
       'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80',
+      'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1200&q=80',
+      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&q=80',
+      'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1200&q=80',
     ],
     specs: {
       'Number of Properties': '6 Hotels',
@@ -272,9 +296,9 @@ export const LISTINGS = [
     longDesc: `A five-property luxury resort rollout targeting India's three premier leisure destinations — Rajasthan (heritage + desert), Goa (beach) and Kerala (backwaters + wellness).\n\n320 total keys across the five sites. Two sites are shovel-ready with approvals in hand. Marriott International flag is under active negotiation for three properties — the remaining two will carry independent boutique positioning.\n\nProjected IRR of 22–26% based on current market rental data and construction cost assumptions. The opportunity is structured for a development-focused investor to co-promote with the existing landowner, with India Gully providing the full hospitality advisory and brand management layer.`,
     images: [
       'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1200&q=80',
-      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&q=80',
-      'https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=1200&q=80',
       'https://images.unsplash.com/photo-1506059612708-99d6c258160e?w=1200&q=80',
+      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&q=80',
+      'https://images.unsplash.com/photo-1609766418204-94aae0ecfdfc?w=1200&q=80',
     ],
     specs: {
       'Number of Properties': '5 Luxury Resorts',
@@ -314,10 +338,10 @@ export const LISTINGS = [
     desc: '1.5 Mn sq ft entertainment city in Noida NCR co-advised with Bhutani Group. High-footfall location adjacent to upcoming metro corridor. Largest entertainment-led mixed-use in NCR.',
     longDesc: `India Gully co-advises with the Bhutani Group on this landmark 1.5 million square foot entertainment city in Noida, Delhi NCR — positioned as the region's largest entertainment-led mixed-use development.\n\nThe site sits adjacent to an upcoming metro corridor, giving it exceptional connectivity to Delhi NCR's 22 million+ population catchment. The development integrates indoor and outdoor entertainment, a multiplex, F&B destination, branded hotels and a curated retail component.\n\nInvestment is sought from entertainment-sector operators, international attraction brands, hospitality companies and co-development PE capital. The Bhutani Group brings a blue-chip real estate developer pedigree and strong balance sheet to the partnership.`,
     images: [
-      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&q=80',
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&q=80',
-      'https://images.unsplash.com/photo-1583508915901-b5f84c1dcde1?w=1200&q=80',
       'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200&q=80',
+      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&q=80',
+      'https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=1200&q=80',
+      'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1200&q=80',
     ],
     specs: {
       'GLA': '1.5 Million sq ft',
@@ -359,8 +383,8 @@ export const LISTINGS = [
     images: [
       'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&q=80',
       'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=1200&q=80',
-      'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=1200&q=80',
-      'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=1200&q=80',
+      'https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=1200&q=80',
+      'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80',
     ],
     specs: {
       'Target Cities': '15 Tier-1 & Tier-2 Cities',

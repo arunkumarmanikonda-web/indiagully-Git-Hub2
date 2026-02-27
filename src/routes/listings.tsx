@@ -205,13 +205,13 @@ app.get('/:id', (c) => {
     <!-- Thumbnail strip -->
     <div style="position:absolute;bottom:1.25rem;left:50%;transform:translateX(-50%);display:flex;gap:.5rem;z-index:10;">
       ${(l.images || []).map((_: string, i: number) => `
-      <button onclick="detailGo(${i})" data-dslide="${i}" class="d-dot"
+      <button onclick="window.detailGo(${i})" data-dslide="${i}" class="d-dot"
               style="width:${i===0?'36px':'10px'};height:10px;border-radius:5px;background:${i===0?'var(--gold)':'rgba(255,255,255,.35)'};border:none;cursor:pointer;transition:all .3s;padding:0;"></button>`).join('')}
     </div>
 
     <!-- Arrows -->
-    <button onclick="detailGo(detailCur-1)" style="position:absolute;top:50%;left:1.5rem;transform:translateY(-50%);width:44px;height:44px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.3);backdrop-filter:blur(8px);color:#fff;font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:all .2s;" onmouseover="this.style.background='var(--gold)';this.style.borderColor='var(--gold)'" onmouseout="this.style.background='rgba(0,0,0,.3)';this.style.borderColor='rgba(255,255,255,.25)'"><i class="fas fa-chevron-left"></i></button>
-    <button onclick="detailGo(detailCur+1)" style="position:absolute;top:50%;right:1.5rem;transform:translateY(-50%);width:44px;height:44px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.3);backdrop-filter:blur(8px);color:#fff;font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:all .2s;" onmouseover="this.style.background='var(--gold)';this.style.borderColor='var(--gold)'" onmouseout="this.style.background='rgba(0,0,0,.3)';this.style.borderColor='rgba(255,255,255,.25)'"><i class="fas fa-chevron-right"></i></button>
+    <button id="dPrev" data-prev="1" style="position:absolute;top:50%;left:1.5rem;transform:translateY(-50%);width:44px;height:44px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.3);backdrop-filter:blur(8px);color:#fff;font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:all .2s;" onmouseover="this.style.background='var(--gold)';this.style.borderColor='var(--gold)'" onmouseout="this.style.background='rgba(0,0,0,.3)';this.style.borderColor='rgba(255,255,255,.25)'"><i class="fas fa-chevron-left"></i></button>
+    <button id="dNext" data-next="1" style="position:absolute;top:50%;right:1.5rem;transform:translateY(-50%);width:44px;height:44px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.3);backdrop-filter:blur(8px);color:#fff;font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:all .2s;" onmouseover="this.style.background='var(--gold)';this.style.borderColor='var(--gold)'" onmouseout="this.style.background='rgba(0,0,0,.3)';this.style.borderColor='rgba(255,255,255,.25)'"><i class="fas fa-chevron-right"></i></button>
 
     <!-- Photo count -->
     <div style="position:absolute;top:1.25rem;right:1.5rem;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);padding:.3rem .75rem;z-index:10;display:flex;align-items:center;gap:.4rem;">
@@ -431,40 +431,56 @@ app.get('/:id', (c) => {
 
 <!-- Carousel JS -->
 <script>
-var detailCur = 0;
-var detailTrack = document.querySelector('.detail-track');
-var detailTotal = ${(l.images || []).length};
-var dDots = document.querySelectorAll('.d-dot');
-var dImgs = document.querySelectorAll('.detail-img');
-var dCount = document.getElementById('photoCount');
+(function() {
+  function initCarousel() {
+    var detailCur = 0;
+    var detailTrack = document.querySelector('.detail-track');
+    var detailTotal = ${(l.images || []).length};
+    var dDots = document.querySelectorAll('.d-dot');
+    var dImgs = document.querySelectorAll('.detail-img');
+    var dCount = document.getElementById('photoCount');
 
-// Auto-activate first image Ken Burns
-if(dImgs[0]) dImgs[0].style.transform = 'scale(1)';
+    if (!detailTrack || detailTotal < 2) return;
 
-function detailGo(n) {
-  dImgs[detailCur].style.transform = 'scale(1.04)';
-  dDots[detailCur].style.width = '10px';
-  dDots[detailCur].style.background = 'rgba(255,255,255,.35)';
+    // Auto-activate first image Ken Burns
+    if(dImgs[0]) dImgs[0].style.transform = 'scale(1)';
 
-  detailCur = ((n % detailTotal) + detailTotal) % detailTotal;
-  detailTrack.style.transform = 'translateX(-'+(detailCur*100)+'%)';
+    window.detailGo = function(n) {
+      if(dImgs[detailCur]) dImgs[detailCur].style.transform = 'scale(1.04)';
+      if(dDots[detailCur]) { dDots[detailCur].style.width = '10px'; dDots[detailCur].style.background = 'rgba(255,255,255,.35)'; }
 
-  // Ken Burns on active slide
-  dImgs[detailCur].style.transform = 'scale(1)';
-  dDots[detailCur].style.width = '36px';
-  dDots[detailCur].style.background = 'var(--gold)';
-  if(dCount) dCount.textContent = (detailCur+1) + ' / ' + detailTotal;
-}
+      detailCur = ((n % detailTotal) + detailTotal) % detailTotal;
+      detailTrack.style.transform = 'translateX(-'+(detailCur*100)+'%)';
 
-// Auto-advance every 4s
-var dTimer = setInterval(function(){ detailGo(detailCur+1); }, 4000);
-detailTrack.addEventListener('mouseenter', function(){ clearInterval(dTimer); });
-detailTrack.addEventListener('mouseleave', function(){ dTimer = setInterval(function(){ detailGo(detailCur+1); }, 4000); });
+      // Ken Burns on active slide
+      if(dImgs[detailCur]) dImgs[detailCur].style.transform = 'scale(1)';
+      if(dDots[detailCur]) { dDots[detailCur].style.width = '36px'; dDots[detailCur].style.background = 'var(--gold)'; }
+      if(dCount) dCount.textContent = (detailCur+1) + ' / ' + detailTotal;
+    };
 
-// Touch swipe
-var dtx = 0;
-detailTrack.addEventListener('touchstart', function(e){ dtx = e.touches[0].clientX; }, {passive:true});
-detailTrack.addEventListener('touchend', function(e){ var dx = e.changedTouches[0].clientX - dtx; if(Math.abs(dx) > 40) detailGo(detailCur + (dx < 0 ? 1 : -1)); }, {passive:true});
+    // Arrow buttons
+    var prevBtn = document.getElementById('dPrev');
+    var nextBtn = document.getElementById('dNext');
+    if(prevBtn) prevBtn.onclick = function(){ window.detailGo(detailCur-1); };
+    if(nextBtn) nextBtn.onclick = function(){ window.detailGo(detailCur+1); };
+
+    // Auto-advance every 5s
+    var dTimer = setInterval(function(){ window.detailGo(detailCur+1); }, 5000);
+    detailTrack.addEventListener('mouseenter', function(){ clearInterval(dTimer); });
+    detailTrack.addEventListener('mouseleave', function(){ dTimer = setInterval(function(){ window.detailGo(detailCur+1); }, 5000); });
+
+    // Touch swipe
+    var dtx = 0;
+    detailTrack.addEventListener('touchstart', function(e){ dtx = e.touches[0].clientX; }, {passive:true});
+    detailTrack.addEventListener('touchend', function(e){ var dx = e.changedTouches[0].clientX - dtx; if(Math.abs(dx) > 40) window.detailGo(detailCur + (dx < 0 ? 1 : -1)); }, {passive:true});
+  }
+
+  if(document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCarousel);
+  } else {
+    initCarousel();
+  }
+})();
 </script>
 `
 

@@ -15,7 +15,7 @@ const SLIDES = [
     sub: "India Gully is India's premier multi-vertical advisory firm — bringing institutional rigour to Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions.",
     cta1: { text: 'View Active Mandates', href: '/listings' },
     cta2: { text: 'Submit Mandate', href: '/contact' },
-    img: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1600&q=85',
+    img: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1600&q=85',
   },
   {
     bg: 'linear-gradient(135deg,#040408 0%,#080412 100%)',
@@ -26,7 +26,7 @@ const SLIDES = [
     sub: '200+ acres. Theme Park, Luxury Hotel & Retail Mall. Phase 1 approved. Exclusive transaction advisory mandate. First-of-its-kind project in India.',
     cta1: { text: 'View This Mandate', href: '/listings/entertainment-maharashtra' },
     cta2: { text: 'Request Brochure', href: '/contact' },
-    img: 'https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=1600&q=85',
+    img: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1600&q=85',
   },
   {
     bg: 'linear-gradient(135deg,#040a04 0%,#060f08 100%)',
@@ -48,7 +48,7 @@ const SLIDES = [
     sub: 'Mall developers, mixed-use destinations and retail brands trust India Gully for brand mix strategy, anchor leasing, fit-out coordination and franchise roll-out.',
     cta1: { text: 'Retail & Leasing Practice', href: '/services#retail' },
     cta2: { text: 'Submit a Leasing Enquiry', href: '/contact' },
-    img: 'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=1600&q=85',
+    img: 'https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=1600&q=85',
   },
 ]
 
