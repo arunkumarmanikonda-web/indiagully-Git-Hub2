@@ -471,18 +471,22 @@ const SCRIPTS = `
     track.addEventListener('touchend',   function(e){ var dx = e.changedTouches[0].clientX - sx; if(Math.abs(dx)>45) go(cur+(dx<0?1:-1)); }, {passive:true});
   }
 
-  /* FORM UX */
+  /* FORM UX — AJAX handler for enquiry/subscribe forms only.
+     Auth forms (/api/auth/*) submit natively so the browser follows the redirect. */
   document.querySelectorAll('.ig-form').forEach(function(form){
+    var action = form.getAttribute('action') || '';
+    // Skip auth forms — let browser handle redirect natively
+    if(action.indexOf('/api/auth') !== -1) return;
     form.addEventListener('submit', async function(e){
       e.preventDefault();
       var btn = form.querySelector('[type=submit]');
       if(!btn) return;
       var orig = btn.innerHTML;
-      btn.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="margin-right:.4rem;"></i>Sending…';
+      btn.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="margin-right:.4rem;"></i>Sending\u2026';
       btn.disabled = true;
       try {
         var fd = new FormData(form);
-        var res = await fetch(form.getAttribute('action')||'/api/enquiry',{method:'POST',body:fd});
+        var res = await fetch(action || '/api/enquiry', {method:'POST', body:fd});
         btn.innerHTML = '<i class="fas fa-check" style="margin-right:.4rem;"></i>Submitted \u2014 We will be in touch';
         btn.style.cssText += ';background:#15803d!important;border-color:#15803d!important;';
         setTimeout(function(){ btn.innerHTML=orig; btn.disabled=false; btn.style.background=''; btn.style.borderColor=''; }, 4500);
