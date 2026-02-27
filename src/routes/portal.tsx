@@ -293,30 +293,76 @@ app.get('/client/dashboard', (c) => {
 
 app.get('/client/mandates', (c) => {
   const body = `
-    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
-      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">All Mandates</h3>
-        <a href="/contact" style="background:var(--gold);color:#fff;padding:.35rem .875rem;font-size:.72rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;">+ Submit New</a>
-      </div>
-      <table class="ig-tbl">
-        <thead><tr><th>Mandate ID</th><th>Project Name</th><th>Sector</th><th>Value</th><th>Advisor</th><th>Start Date</th><th>Status</th></tr></thead>
-        <tbody>
-          ${[
-            { id:'MND-001', name:'Retail Leasing — Mumbai',      sector:'Real Estate',   value:'₹2,100 Cr', advisor:'Amit Jhingan',   start:'01 Jan 2025', status:'Active',      cls:'b-gr' },
-            { id:'MND-002', name:'Hotel Pre-Opening PMC',        sector:'Hospitality',   value:'₹45 Cr',    advisor:'Arun Manikonda', start:'15 Feb 2025', status:'In Progress', cls:'b-g'  },
-            { id:'MND-003', name:'Entertainment Feasibility',    sector:'Entertainment', value:'₹4,500 Cr', advisor:'Arun Manikonda', start:'01 Mar 2025', status:'Review',      cls:'b-bl' },
-          ].map(m => `
-          <tr>
-            <td style="font-size:.78rem;font-weight:600;color:var(--gold);">${m.id}</td>
-            <td style="font-weight:500;">${m.name}</td>
-            <td><span class="badge b-dk">${m.sector}</span></td>
-            <td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">${m.value}</td>
-            <td style="font-size:.82rem;">${m.advisor}</td>
-            <td style="font-size:.78rem;color:var(--ink-muted);">${m.start}</td>
-            <td><span class="badge ${m.cls}">${m.status}</span></td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+      ${[
+        { label:'Active Mandates',   value:'3',          color:'#B8960C'  },
+        { label:'Pipeline Value',    value:'₹6,645 Cr',  color:'#16a34a' },
+        { label:'Avg. Progress',     value:'62%',        color:'#2563eb' },
+      ].map(s => `
+      <div class="am">
+        <div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:${s.color};">${s.value}</div>
+      </div>`).join('')}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      ${[
+        { id:'MND-001', name:'Retail Leasing — Mumbai',      sector:'Real Estate',   value:'₹2,100 Cr', advisor:'Amit Jhingan',    start:'01 Jan 2025', status:'Active',      cls:'b-gr', progress:75,
+          milestones:[{done:true,label:'Engagement Signed'},{done:true,label:'Site Survey'},{done:true,label:'Shortlisting'},{done:false,label:'LOI Exchange'},{done:false,label:'Execution'}] },
+        { id:'MND-002', name:'Hotel Pre-Opening PMC',         sector:'Hospitality',   value:'₹45 Cr',    advisor:'Arun Manikonda', start:'15 Feb 2025', status:'In Progress', cls:'b-g',  progress:45,
+          milestones:[{done:true,label:'Scope Finalised'},{done:true,label:'Team Deployed'},{done:false,label:'Pre-opening Check'},{done:false,label:'Staff Training'},{done:false,label:'Soft Opening'}] },
+        { id:'MND-003', name:'Entertainment Feasibility',     sector:'Entertainment', value:'₹4,500 Cr', advisor:'Arun Manikonda', start:'01 Mar 2025', status:'Review',      cls:'b-bl', progress:20,
+          milestones:[{done:true,label:'NDA Executed'},{done:false,label:'Site Visits'},{done:false,label:'Feasibility Study'},{done:false,label:'Report'},{done:false,label:'Activation'}] },
+      ].map((m,mi) => `
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1.25rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;">
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">
+              <span style="font-size:.75rem;font-weight:700;color:var(--gold);">${m.id}</span>
+              <span class="badge b-dk">${m.sector}</span>
+              <span class="badge ${m.cls}">${m.status}</span>
+            </div>
+            <h4 style="font-size:.95rem;font-weight:600;color:var(--ink);margin-bottom:.25rem;">${m.name}</h4>
+            <div style="font-size:.78rem;color:var(--ink-muted);">Advisor: ${m.advisor} · Started: ${m.start}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:var(--gold);">${m.value}</div>
+            <div style="font-size:.68rem;color:var(--ink-muted);">Mandate Value</div>
+          </div>
+        </div>
+        <div style="padding:0 1.25rem .75rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:.3rem;">
+            <span style="font-size:.68rem;font-weight:600;color:var(--ink-muted);">PROGRESS</span>
+            <span style="font-size:.72rem;font-weight:700;color:var(--gold);">${m.progress}%</span>
+          </div>
+          <div style="background:var(--parch-dk);height:6px;border-radius:3px;overflow:hidden;">
+            <div style="background:var(--gold);height:100%;width:${m.progress}%;border-radius:3px;"></div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding:.875rem 1.25rem;display:flex;gap:0;overflow-x:auto;">
+          ${m.milestones.map((ms,msi)=>`
+          <div style="display:flex;align-items:center;flex:1;min-width:80px;">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;">
+              <div style="width:20px;height:20px;border-radius:50%;background:${ms.done?'var(--gold)':'var(--parch-dk)'};border:2px solid ${ms.done?'var(--gold)':'var(--border)'};display:flex;align-items:center;justify-content:center;">
+                ${ms.done?'<i class="fas fa-check" style="color:#fff;font-size:.45rem;"></i>':''}
+              </div>
+              <div style="font-size:.6rem;text-align:center;color:${ms.done?'var(--ink)':'var(--ink-muted)'};font-weight:${ms.done?'600':'400'};line-height:1.3;">${ms.label}</div>
+            </div>
+            ${msi < m.milestones.length-1 ? `<div style="height:2px;background:${ms.done?'var(--gold)':'var(--border)'};flex:1;margin-bottom:1.4rem;min-width:8px;"></div>` : ''}
+          </div>`).join('')}
+        </div>
+        <div style="padding:.75rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:.5rem;">
+          <button onclick="togglePanel('mnd-update-${mi}')" style="font-size:.72rem;color:var(--gold);background:none;border:1px solid var(--border);padding:.3rem .75rem;cursor:pointer;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-comments" style="font-size:.6rem;"></i>Request Update</button>
+          <button onclick="igToast('Mandate brief PDF for ${m.id} downloaded','success')" style="font-size:.72rem;color:var(--ink-muted);background:none;border:1px solid var(--border);padding:.3rem .75rem;cursor:pointer;"><i class="fas fa-download" style="font-size:.6rem;margin-right:.3rem;"></i>Download Brief</button>
+        </div>
+        <div id="mnd-update-${mi}" class="ig-panel" style="margin:0 1.25rem 1.25rem;">
+          <label class="ig-label">Request / Query for ${m.id}</label>
+          <textarea class="ig-input" id="mnd-msg-${mi}" rows="3" placeholder="e.g. Please share latest status update..."></textarea>
+          <div style="display:flex;gap:.5rem;margin-top:.75rem;">
+            <button onclick="(function(){var msg=document.getElementById('mnd-msg-${mi}').value.trim();if(!msg){igToast('Please enter your request','warn');return;}igToast('Request for ${m.id} sent. Response within 24 hours.','success');document.getElementById('mnd-msg-${mi}').value='';togglePanel('mnd-update-${mi}');})()" style="background:var(--gold);color:#fff;border:none;padding:.4rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Send Request</button>
+            <button onclick="togglePanel('mnd-update-${mi}')" style="background:none;border:1px solid var(--border);padding:.4rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+          </div>
+        </div>
+      </div>`).join('')}
     </div>`
   return c.html(layout('My Mandates', clientShell('My Mandates', 'mandates', body), { noNav:true, noFooter:true }))
 })
@@ -324,29 +370,48 @@ app.get('/client/mandates', (c) => {
 app.get('/client/proposals', (c) => {
   const body = `
     <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
         <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Proposals & Engagement Letters</h3>
+        <div style="font-size:.72rem;color:var(--ink-muted);">Pending signature: <span style="font-weight:700;color:#d97706;">1 document</span></div>
       </div>
       <table class="ig-tbl">
-        <thead><tr><th>Document</th><th>Type</th><th>Date Sent</th><th>Valid Until</th><th>Status</th><th>Action</th></tr></thead>
+        <thead><tr><th>Document</th><th>Type</th><th>Date Sent</th><th>Valid Until</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
           ${[
-            { doc:'Advisory Proposal — Q1 2025',     type:'Proposal',           sent:'01 Jan 2025', valid:'31 Mar 2025', status:'Accepted',  cls:'b-gr' },
-            { doc:'Hotel PMC Engagement Letter',      type:'Engagement Letter',  sent:'10 Feb 2025', valid:'10 Mar 2025', status:'Signed',    cls:'b-gr' },
-            { doc:'Entertainment Feasibility Scope',  type:'Scope Letter',       sent:'20 Feb 2025', valid:'20 Mar 2025', status:'Pending',   cls:'b-g'  },
-            { doc:'Revised Fee Proposal — FY 2026',   type:'Proposal',           sent:'25 Feb 2025', valid:'25 Mar 2025', status:'Under Review', cls:'b-bl' },
-          ].map(p => `
+            { doc:'Advisory Proposal — Q1 2025',     type:'Proposal',           sent:'01 Jan 2025', valid:'31 Mar 2025', status:'Accepted',     cls:'b-gr', canSign:false },
+            { doc:'Hotel PMC Engagement Letter',      type:'Engagement Letter',  sent:'10 Feb 2025', valid:'10 Mar 2025', status:'Signed',       cls:'b-gr', canSign:false },
+            { doc:'Entertainment Feasibility Scope',  type:'Scope Letter',       sent:'20 Feb 2025', valid:'20 Mar 2025', status:'Pending Sign', cls:'b-g',  canSign:true  },
+            { doc:'Revised Fee Proposal — FY 2026',   type:'Proposal',           sent:'25 Feb 2025', valid:'25 Mar 2025', status:'Under Review', cls:'b-bl', canSign:false },
+          ].map((p,pi) => `
           <tr>
             <td style="font-weight:500;">${p.doc}</td>
             <td><span class="badge b-dk">${p.type}</span></td>
             <td style="font-size:.78rem;color:var(--ink-muted);">${p.sent}</td>
             <td style="font-size:.78rem;color:var(--ink-muted);">${p.valid}</td>
-            <td><span class="badge ${p.cls}">${p.status}</span></td>
-            <td><button onclick="igToast('Opening document viewer for: '+this.closest('tr').querySelector('td').textContent,'success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;"><i class='fas fa-eye' style='margin-right:.3rem;'></i>View PDF</button></td>
+            <td id="prop-status-${pi}"><span class="badge ${p.cls}">${p.status}</span></td>
+            <td style="display:flex;gap:.4rem;flex-wrap:wrap;">
+              <button onclick="igToast('Opening PDF viewer for: ${p.doc}','success')" style="font-size:.72rem;color:var(--gold);background:none;border:1px solid var(--border);padding:.22rem .55rem;cursor:pointer;"><i class='fas fa-eye' style='margin-right:.3rem;'></i>View</button>
+              <button onclick="igToast('${p.doc} downloaded','success')" style="font-size:.72rem;color:var(--ink-muted);background:none;border:1px solid var(--border);padding:.22rem .55rem;cursor:pointer;"><i class='fas fa-download'></i></button>
+              ${p.canSign ? `<button id="sign-btn-${pi}" onclick="igSignProposal(${pi},'${p.doc}')" style="background:#1A3A6B;color:#fff;border:none;padding:.22rem .75rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.3rem;"><i class='fas fa-pen-nib' style='font-size:.6rem;'></i>e-Sign</button>` : ''}
+            </td>
           </tr>`).join('')}
         </tbody>
       </table>
-    </div>`
+    </div>
+    <script>
+    function igSignProposal(idx, docName){
+      igConfirm('Sign the document electronically?<br><br><strong>'+docName+'</strong><br><br>By confirming, you agree to digitally sign this document. This action is legally binding.', function(){
+        var btn = document.getElementById('sign-btn-'+idx);
+        if(btn){ btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>'; btn.disabled = true; }
+        setTimeout(function(){
+          var cell = document.getElementById('prop-status-'+idx);
+          if(cell) cell.innerHTML = '<span class="badge b-gr">Signed</span>';
+          if(btn) btn.remove();
+          igToast(docName+' signed electronically. Confirmation sent to akm@indiagully.com','success');
+        }, 1500);
+      });
+    }
+    </script>`
   return c.html(layout('Proposals', clientShell('Proposals', 'proposals', body), { noNav:true, noFooter:true }))
 })
 
@@ -1295,24 +1360,41 @@ app.get('/board/voting', (c) => {
 
 app.get('/board/registers', (c) => {
   const body = `
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;">
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:1.5rem;">
       ${[
-        { name:'Register of Directors (MGT-7)',        desc:'Names, DINs, shareholding, appointments & resignations',           entries:2,  updated:'15 Jan 2025' },
-        { name:'Register of KMPs',                     desc:'KMP details, appointment dates, remuneration',                     entries:3,  updated:'15 Jan 2025' },
-        { name:'Register of Members',                  desc:'Shareholder names, addresses, shareholding pattern',               entries:2,  updated:'05 Jan 2025' },
-        { name:'Register of Charges (CHG-7)',          desc:'All charges created, modified or satisfied',                       entries:0,  updated:'01 Jan 2025' },
-        { name:'Register of Contracts (AOC-2)',        desc:'Related party transactions requiring board approval',              entries:4,  updated:'15 Feb 2025' },
-        { name:'Register of Investments',              desc:'All investments made by the company',                              entries:0,  updated:'01 Jan 2025' },
-      ].map(reg => `
+        { name:'Register of Directors (MGT-7)',        desc:'Names, DINs, shareholding, appointments & resignations',           entries:2,  updated:'15 Jan 2025',
+          data:[{col:'Name',v:'Arun Manikonda'},{col:'DIN',v:'XXXXXXXX'},{col:'Designation',v:'Managing Director'},{col:'Date of Appointment',v:'01 Apr 2017'},{col:'Shareholding',v:'50%'}] },
+        { name:'Register of KMPs',                     desc:'KMP details, appointment dates, remuneration',                     entries:3,  updated:'15 Jan 2025',
+          data:[{col:'Name',v:'Pavan Manikonda'},{col:'Designation',v:'Executive Director'},{col:'Date of Appointment',v:'01 Apr 2017'},{col:'Remuneration (FY2025)',v:'₹1,50,000 p.m.'}] },
+        { name:'Register of Members',                  desc:'Shareholder names, addresses, shareholding pattern',               entries:2,  updated:'05 Jan 2025',
+          data:[{col:'Shareholder 1',v:'Arun Manikonda — 50%'},{col:'Shareholder 2',v:'Pavan Manikonda — 50%'},{col:'Total Paid-up Capital',v:'₹1,00,000'},{col:'Face Value',v:'₹10 per share'}] },
+        { name:'Register of Charges (CHG-7)',          desc:'All charges created, modified or satisfied',                       entries:0,  updated:'01 Jan 2025',
+          data:[{col:'Status',v:'No charges registered'},{col:'Lenders',v:'Nil'},{col:'Secured Assets',v:'Nil'}] },
+        { name:'Register of Contracts (AOC-2)',        desc:'Related party transactions requiring board approval',              entries:4,  updated:'15 Feb 2025',
+          data:[{col:'Transaction 1',v:'Directors Remuneration FY2025'},{col:'Transaction 2',v:'Inter-company loan (if any)'},{col:'Transaction 3',v:'Premises lease agreement'},{col:'Approval Status',v:'Board Approved'}] },
+        { name:'Register of Investments',              desc:'All investments made by the company',                              entries:0,  updated:'01 Jan 2025',
+          data:[{col:'Status',v:'No investments as of date'},{col:'Subsidiaries',v:'Nil'},{col:'Associates',v:'Nil'}] },
+      ].map((reg,ri) => `
       <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem;">
           <h4 style="font-size:.875rem;font-weight:600;color:var(--ink);line-height:1.4;">${reg.name}</h4>
           <span style="font-size:.68rem;font-weight:600;color:var(--gold);white-space:nowrap;margin-left:.5rem;">${reg.entries} entries</span>
         </div>
         <p style="font-size:.78rem;color:var(--ink-muted);line-height:1.5;margin-bottom:.875rem;">${reg.desc}</p>
-        <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.625rem;">
           <span style="font-size:.72rem;color:var(--ink-faint);">Last updated: ${reg.updated}</span>
-          <button onclick="igToast('Opening register: '+this.closest('[style]').querySelector('h4').textContent,'success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;">View Register →</button>
+          <div style="display:flex;gap:.5rem;">
+            <button onclick="togglePanel('reg-view-${ri}')" style="font-size:.72rem;color:var(--gold);background:none;border:1px solid var(--border);padding:.25rem .625rem;cursor:pointer;">View Entries</button>
+            <button onclick="igToast('${reg.name} PDF downloaded','success')" style="font-size:.72rem;color:var(--ink-muted);background:none;border:1px solid var(--border);padding:.25rem .625rem;cursor:pointer;"><i class="fas fa-download" style="font-size:.6rem;"></i></button>
+          </div>
+        </div>
+        <div id="reg-view-${ri}" class="ig-panel">
+          <div style="font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">${reg.name} — Entries</div>
+          ${reg.data.map(d=>`<div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border);"><span style="font-size:.78rem;color:var(--ink-muted);">${d.col}</span><span style="font-size:.82rem;color:var(--ink);font-weight:500;">${d.v}</span></div>`).join('')}
+          <div style="display:flex;gap:.5rem;margin-top:.875rem;">
+            <button onclick="igToast('Entry added to ${reg.name}','success')" style="background:var(--gold);color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.3rem;font-size:.6rem;"></i>Add Entry</button>
+            <button onclick="togglePanel('reg-view-${ri}')" style="background:none;border:1px solid var(--border);padding:.35rem .875rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Close</button>
+          </div>
         </div>
       </div>`).join('')}
     </div>`
@@ -1321,27 +1403,69 @@ app.get('/board/registers', (c) => {
 
 app.get('/board/packs', (c) => {
   const body = `
-    <div style="background:#fff;border:1px solid var(--border);">
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
       <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
         <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Board Meeting Packs & Minutes</h3>
       </div>
-      <table class="ig-tbl">
-        <thead><tr><th>Meeting</th><th>Date</th><th>Documents Included</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody>
-          ${[
-            { meeting:'BM-2025-03 — March Board Meeting', date:'15 Mar 2025', docs:'Agenda, Q1 Financials, Resolutions Draft', status:'Upcoming', cls:'b-g' },
-            { meeting:'BM-2025-02 — January Board Meeting', date:'15 Jan 2025', docs:'Minutes, Financial Statements, Audit Report', status:'Final',    cls:'b-gr' },
-            { meeting:'BM-2025-01 — January EGM',           date:'05 Jan 2025', docs:'EGM Notice, Proxy Form, Voting Results',    status:'Final',    cls:'b-gr' },
-          ].map(p => `
-          <tr>
-            <td style="font-weight:500;">${p.meeting}</td>
-            <td style="font-size:.78rem;color:var(--ink-muted);">${p.date}</td>
-            <td style="font-size:.8rem;color:var(--ink-muted);">${p.docs}</td>
-            <td><span class="badge ${p.cls}">${p.status}</span></td>
-            <td><button onclick="igToast('Board pack PDF for '+this.closest('tr').querySelector('td').textContent.trim()+' — downloading','success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;"><i class='fas fa-download'></i> Download Pack</button></td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
+      ${[
+        { meeting:'BM-2025-03 — March Board Meeting',  date:'15 Mar 2025', status:'Upcoming', cls:'b-g',
+          files:[
+            {name:'Board Meeting Notice.pdf',           type:'Notice',      size:'0.3 MB'},
+            {name:'Q1 2025 Financial Statements.pdf',   type:'Finance',     size:'2.1 MB'},
+            {name:'Proposed Resolutions RES-003.pdf',   type:'Resolution',  size:'0.4 MB'},
+            {name:'Management Discussion & Analysis.pdf',type:'Report',     size:'1.5 MB'},
+          ]},
+        { meeting:'BM-2025-02 — January Board Meeting', date:'15 Jan 2025', status:'Final', cls:'b-gr',
+          files:[
+            {name:'Board Meeting Minutes — Approved.pdf', type:'Minutes',   size:'0.8 MB'},
+            {name:'FY2025 Q2 Financial Statements.pdf',   type:'Finance',   size:'1.9 MB'},
+            {name:'Auditor Report Q2.pdf',                type:'Audit',     size:'1.2 MB'},
+            {name:'Director Attendance Register.pdf',     type:'Register',  size:'0.2 MB'},
+          ]},
+        { meeting:'BM-2025-01 — January EGM',           date:'05 Jan 2025', status:'Final', cls:'b-gr',
+          files:[
+            {name:'EGM Notice & Agenda.pdf',              type:'Notice',    size:'0.3 MB'},
+            {name:'Proxy Form.pdf',                       type:'Form',      size:'0.1 MB'},
+            {name:'Voting Results.pdf',                   type:'Voting',    size:'0.2 MB'},
+          ]},
+      ].map((p,pi) => `
+      <div style="border-bottom:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:.875rem;">
+            <div style="width:36px;height:36px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-folder" style="color:var(--gold);font-size:.75rem;"></i>
+            </div>
+            <div>
+              <div style="font-weight:500;font-size:.875rem;color:var(--ink);">${p.meeting}</div>
+              <div style="font-size:.72rem;color:var(--ink-muted);">${p.date} · ${p.files.length} documents</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;">
+            <span class="badge ${p.cls}">${p.status}</span>
+            <button onclick="togglePanel('pack-${pi}')" style="font-size:.72rem;color:var(--gold);background:none;border:1px solid var(--border);padding:.3rem .75rem;cursor:pointer;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-folder-open" style="font-size:.6rem;"></i>Open Pack</button>
+            <button onclick="igToast('Downloading full pack for ${p.meeting}','success')" style="font-size:.72rem;color:var(--ink-muted);background:none;border:1px solid var(--border);padding:.3rem .6rem;cursor:pointer;"><i class="fas fa-download" style="font-size:.6rem;"></i></button>
+          </div>
+        </div>
+        <div id="pack-${pi}" class="ig-panel" style="margin:0 1.25rem 1.25rem;background:#fafaf8;">
+          <div style="font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">Documents in this Pack</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            ${p.files.map(f=>`
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:.5rem .75rem;background:#fff;border:1px solid var(--border);">
+              <div style="display:flex;align-items:center;gap:.625rem;">
+                <i class="fas fa-file-pdf" style="color:#dc2626;font-size:.75rem;"></i>
+                <div>
+                  <div style="font-size:.82rem;font-weight:500;color:var(--ink);">${f.name}</div>
+                  <div style="font-size:.68rem;color:var(--ink-muted);">${f.type} · ${f.size}</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:.4rem;">
+                <button onclick="igToast('Opening ${f.name} in viewer','success')" style="background:none;border:1px solid var(--border);padding:.22rem .55rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-eye"></i> View</button>
+                <button onclick="igToast('${f.name} downloaded','success')" style="background:none;border:1px solid var(--border);padding:.22rem .55rem;font-size:.65rem;cursor:pointer;color:var(--ink-muted);"><i class="fas fa-download"></i></button>
+              </div>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>`).join('')}
     </div>`
   return c.html(layout('Board Packs', boardShell('Board Packs & Minutes', 'packs', body), { noNav:true, noFooter:true }))
 })

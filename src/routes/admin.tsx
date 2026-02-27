@@ -97,56 +97,119 @@ app.get('/', (c) => {
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
 app.get('/dashboard', (c) => {
   const body = `
-  <div style="margin-bottom:1.5rem;">
-    <h3 style="font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:1rem;">Finance Overview</h3>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;">
-      ${[
-        {label:'Revenue MTD',  value:'₹12.4L', trend:'↑ +8.3%',         icon:'chart-line', c:'#16a34a'},
-        {label:'Receivables',  value:'₹34.8L', trend:'3 invoices due',   icon:'receipt',    c:'#d97706'},
-        {label:'GST Payable',  value:'₹2.1L',  trend:'CGST+SGST',       icon:'percent',    c:'#dc2626'},
-        {label:'Bank Balance', value:'₹56.2L', trend:'3 accounts',       icon:'university', c:'#2563eb'},
-      ].map(s=>`<div class="am"><div style="display:flex;justify-content:space-between;margin-bottom:.625rem;"><span style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);">${s.label}</span><i class="fas fa-${s.icon}" style="color:${s.c};font-size:.7rem;"></i></div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--ink);line-height:1;margin-bottom:.3rem;">${s.value}</div><div style="font-size:.7rem;color:${s.c};">${s.trend}</div></div>`).join('')}
+  <!-- Alert Banner -->
+  <div style="background:#fffbeb;border:1px solid #fde68a;padding:.75rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem;">
+    <i class="fas fa-exclamation-triangle" style="color:#d97706;font-size:.85rem;flex-shrink:0;"></i>
+    <div style="flex:1;">
+      <span style="font-size:.82rem;font-weight:600;color:#92400e;">3 items require your attention: </span>
+      <span style="font-size:.82rem;color:#78350f;">1 overdue invoice (INV-2025-002 · ₹1.8L) · Annual Accounts Filing due 31 Mar 2025 · EY Advisory Retainer expiring in 2 days</span>
     </div>
+    <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;color:#92400e;font-size:.85rem;flex-shrink:0;"><i class="fas fa-times"></i></button>
   </div>
-  <div style="margin-bottom:1.5rem;">
-    <h3 style="font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:1rem;">HR Overview</h3>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;">
-      ${[
-        {label:'Total Headcount',    value:'3',   trend:'Active employees',  icon:'users'},
-        {label:"Today's Attendance", value:'3',   trend:'100% present',      icon:'check-circle'},
-        {label:'Leave Pending',      value:'0',   trend:'No pending leaves', icon:'calendar'},
-        {label:'Payroll Status',     value:'Feb', trend:'2025 — Processed',  icon:'money-bill'},
-      ].map(s=>`<div class="am"><div style="display:flex;justify-content:space-between;margin-bottom:.625rem;"><span style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);">${s.label}</span><i class="fas fa-${s.icon}" style="color:var(--ink-faint);font-size:.7rem;"></i></div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--ink);line-height:1;margin-bottom:.3rem;">${s.value}</div><div style="font-size:.7rem;color:var(--ink-muted);">${s.trend}</div></div>`).join('')}
-    </div>
+
+  <!-- Quick Actions -->
+  <div style="display:flex;gap:.75rem;margin-bottom:1.75rem;flex-wrap:wrap;">
+    <a href="/admin/finance" style="display:inline-flex;align-items:center;gap:.4rem;background:var(--gold);color:#fff;padding:.55rem 1.1rem;font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;"><i class="fas fa-plus" style="font-size:.65rem;"></i>Create Invoice</a>
+    <a href="/admin/hr" style="display:inline-flex;align-items:center;gap:.4rem;background:#1A3A6B;color:#fff;padding:.55rem 1.1rem;font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;"><i class="fas fa-user-plus" style="font-size:.65rem;"></i>Add Employee</a>
+    <a href="/admin/governance" style="display:inline-flex;align-items:center;gap:.4rem;background:#1E1E1E;color:#fff;padding:.55rem 1.1rem;font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;"><i class="fas fa-calendar-plus" style="font-size:.65rem;"></i>Schedule Meeting</a>
+    <a href="/admin/contracts" style="display:inline-flex;align-items:center;gap:.4rem;background:#4f46e5;color:#fff;padding:.55rem 1.1rem;font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;"><i class="fas fa-file-signature" style="font-size:.65rem;"></i>New Contract</a>
+    <a href="/admin/reports" style="display:inline-flex;align-items:center;gap:.4rem;border:1px solid var(--border);color:var(--ink-soft);padding:.55rem 1.1rem;font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;text-decoration:none;background:#fff;"><i class="fas fa-chart-pie" style="font-size:.65rem;color:var(--gold);"></i>Generate Report</a>
   </div>
-  <h3 style="font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:1rem;">Platform Modules</h3>
+
+  <!-- KPI Row -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+    ${[
+      {label:'Revenue MTD',  value:'₹12.4L', trend:'↑ +8.3% vs last month', icon:'chart-line', c:'#16a34a', href:'/admin/finance'},
+      {label:'Receivables',  value:'₹34.8L', trend:'3 invoices outstanding', icon:'receipt',    c:'#d97706', href:'/admin/finance'},
+      {label:'GST Payable',  value:'₹2.1L',  trend:'Due 20 Mar · CGST+SGST', icon:'percent',   c:'#dc2626', href:'/admin/finance'},
+      {label:'Bank Balance', value:'₹56.2L', trend:'Across 3 accounts',       icon:'university', c:'#2563eb', href:'/admin/finance'},
+    ].map(s=>`<a href="${s.href}" style="text-decoration:none;"><div class="am" style="cursor:pointer;transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'"><div style="display:flex;justify-content:space-between;margin-bottom:.625rem;"><span style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);">${s.label}</span><i class="fas fa-${s.icon}" style="color:${s.c};font-size:.7rem;"></i></div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--ink);line-height:1;margin-bottom:.3rem;">${s.value}</div><div style="font-size:.7rem;color:${s.c};">${s.trend}</div></div></a>`).join('')}
+  </div>
+
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem;">
     ${[
-      {id:'cms',        icon:'globe',          label:'CMS',           desc:'Edit website content, banners, SEO',    color:'#B8960C'},
-      {id:'users',      icon:'users',          label:'User Management',desc:'Create, manage users & assign roles',  color:'#2563eb'},
-      {id:'finance',    icon:'chart-bar',      label:'Finance ERP',   desc:'Vouchers, GST, P&L, reconciliation',   color:'#16a34a'},
-      {id:'hr',         icon:'user-friends',   label:'HR ERP',        desc:'Payroll, attendance, leave, TDS',      color:'#d97706'},
-      {id:'governance', icon:'gavel',          label:'Governance',    desc:'Board meetings, minutes, registers',   color:'#dc2626'},
-      {id:'horeca',     icon:'boxes',          label:'HORECA',        desc:'SKUs, catalogue, quotes, procurement', color:'#0d9488'},
-      {id:'contracts',  icon:'file-signature', label:'Contracts',     desc:'Templates, clause library, e-sign',   color:'#4f46e5'},
-      {id:'security',   icon:'shield-alt',     label:'Security Audit',desc:'Access logs, RBAC, IP whitelist',      color:'#9f1239'},
-    ].map(m=>`<a href="/admin/${m.id}" style="background:#fff;border:1px solid var(--border);padding:1.25rem;display:block;text-decoration:none;transition:border-color .2s,box-shadow .2s;" onmouseover="this.style.borderColor='${m.color}';this.style.boxShadow='0 4px 16px rgba(0,0,0,.07)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'"><div style="width:36px;height:36px;background:${m.color};display:flex;align-items:center;justify-content:center;margin-bottom:.875rem;"><i class="fas fa-${m.icon}" style="color:#fff;font-size:.75rem;"></i></div><div style="font-size:.85rem;font-weight:600;color:var(--ink);margin-bottom:.25rem;">${m.label}</div><div style="font-size:.72rem;color:var(--ink-muted);line-height:1.5;">${m.desc}</div></a>`).join('')}
+      {label:'Total Headcount',    value:'3',   trend:'All active employees', icon:'users',        href:'/admin/hr'},
+      {label:"Today's Attendance", value:'3/3', trend:'100% present today',   icon:'check-circle', href:'/admin/hr'},
+      {label:'Active Contracts',   value:'6',   trend:'1 expiring soon',      icon:'file-signature',href:'/admin/contracts'},
+      {label:'Open Mandates',      value:'3',   trend:'₹6,645 Cr pipeline',   icon:'briefcase',    href:'/portal/client/mandates'},
+    ].map(s=>`<a href="${s.href}" style="text-decoration:none;"><div class="am" style="cursor:pointer;transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'"><div style="display:flex;justify-content:space-between;margin-bottom:.625rem;"><span style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);">${s.label}</span><i class="fas fa-${s.icon}" style="color:var(--ink-faint);font-size:.7rem;"></i></div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--ink);line-height:1;margin-bottom:.3rem;">${s.value}</div><div style="font-size:.7rem;color:var(--ink-muted);">${s.trend}</div></div></a>`).join('')}
   </div>
-  <div style="background:#fff;border:1px solid var(--border);">
-    <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Recent Audit Log</h3>
-      <a href="/admin/security" style="font-size:.72rem;color:var(--gold);">View Full Log →</a>
+
+  <!-- Main Grid: Modules + Activity -->
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+    <div>
+      <h3 style="font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:1rem;">Platform Modules</h3>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.875rem;">
+        ${[
+          {id:'cms',        icon:'globe',          label:'CMS',           desc:'Pages, SEO, banners',   color:'#B8960C', badge:''},
+          {id:'users',      icon:'users',          label:'Users',         desc:'Roles & permissions',   color:'#2563eb', badge:'8'},
+          {id:'finance',    icon:'chart-bar',      label:'Finance ERP',   desc:'Invoices, GST, P&L',    color:'#16a34a', badge:'1'},
+          {id:'hr',         icon:'user-friends',   label:'HR ERP',        desc:'Payroll, leave, TDS',   color:'#d97706', badge:''},
+          {id:'governance', icon:'gavel',          label:'Governance',    desc:'Board, resolutions',    color:'#dc2626', badge:'2'},
+          {id:'horeca',     icon:'boxes',          label:'HORECA',        desc:'SKUs, quotes, orders',  color:'#0d9488', badge:'3'},
+          {id:'contracts',  icon:'file-signature', label:'Contracts',     desc:'Templates, e-sign',     color:'#4f46e5', badge:'1'},
+          {id:'security',   icon:'shield-alt',     label:'Security',      desc:'Logs, RBAC, whitelist', color:'#9f1239', badge:'3'},
+        ].map(m=>`<a href="/admin/${m.id}" style="background:#fff;border:1px solid var(--border);padding:1.1rem;display:block;text-decoration:none;transition:border-color .2s,box-shadow .2s;position:relative;" onmouseover="this.style.borderColor='${m.color}';this.style.boxShadow='0 4px 16px rgba(0,0,0,.07)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">${m.badge?`<span style="position:absolute;top:.6rem;right:.6rem;background:${m.color};color:#fff;font-size:.55rem;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;">${m.badge}</span>`:''}<div style="width:32px;height:32px;background:${m.color};display:flex;align-items:center;justify-content:center;margin-bottom:.75rem;"><i class="fas fa-${m.icon}" style="color:#fff;font-size:.7rem;"></i></div><div style="font-size:.82rem;font-weight:600;color:var(--ink);margin-bottom:.2rem;">${m.label}</div><div style="font-size:.68rem;color:var(--ink-muted);line-height:1.4;">${m.desc}</div></a>`).join('')}
+      </div>
     </div>
-    <table class="ig-tbl"><thead><tr><th>Timestamp</th><th>User</th><th>Action</th><th>Module</th><th>IP</th><th>Status</th></tr></thead>
-    <tbody>
+
+    <!-- Activity Feed -->
+    <div>
+      <h3 style="font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:1rem;">Live Activity Feed</h3>
+      <div style="background:#fff;border:1px solid var(--border);">
+        ${[
+          {time:'09:15 AM', user:'superadmin', action:'Logged in to Admin Console',              mod:'Auth',    ok:true},
+          {time:'09:12 AM', user:'akm',        action:'Approved INV-2025-001 (₹2.5L)',           mod:'Finance', ok:true},
+          {time:'08:55 AM', user:'pavan',      action:'Edited Home Page hero content',            mod:'CMS',     ok:true},
+          {time:'Yesterday',user:'Unknown',    action:'2 Failed login attempts blocked',          mod:'Auth',    ok:false},
+          {time:'Yesterday',user:'demo',       action:'Client portal login',                      mod:'Auth',    ok:true},
+          {time:'2d ago',   user:'akm',        action:'New mandate: Entertainment ₹4,500 Cr',    mod:'Listings',ok:true},
+          {time:'2d ago',   user:'pavan',      action:'Board pack uploaded for BM-2025-03',       mod:'Govern.', ok:true},
+          {time:'3d ago',   user:'emp',        action:'Leave application LV-2025-101 submitted',  mod:'HR',      ok:true},
+        ].map(r=>`
+        <div style="padding:.625rem 1rem;border-bottom:1px solid var(--border);display:flex;gap:.625rem;align-items:flex-start;${!r.ok?'background:#fef2f2;':''}">
+          <div style="width:6px;height:6px;border-radius:50%;background:${r.ok?'#16a34a':'#dc2626'};flex-shrink:0;margin-top:.35rem;"></div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:.75rem;color:var(--ink);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.action}</div>
+            <div style="font-size:.65rem;color:var(--ink-muted);margin-top:.1rem;">${r.user} · <span style="font-size:.62rem;background:var(--parch-dk);padding:1px 4px;">${r.mod}</span></div>
+          </div>
+          <div style="font-size:.62rem;color:var(--ink-faint);white-space:nowrap;flex-shrink:0;">${r.time}</div>
+        </div>`).join('')}
+        <div style="padding:.75rem 1rem;">
+          <a href="/admin/security" style="font-size:.72rem;color:var(--gold);display:flex;align-items:center;gap:.3rem;">View Full Audit Log <i class="fas fa-arrow-right" style="font-size:.6rem;"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compliance Alerts -->
+  <div style="background:#fff;border:1px solid var(--border);">
+    <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Upcoming Deadlines & Alerts</h3>
+      <a href="/admin/governance" style="font-size:.72rem;color:var(--gold);">Full Calendar →</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);">
       ${[
-        {ts:'2025-02-27 09:15', user:'superadmin@indiagully.com', action:'Login',           mod:'Auth',    ip:'103.21.x.x', ok:true},
-        {ts:'2025-02-27 09:12', user:'akm@indiagully.com',        action:'Invoice Approved',mod:'Finance', ip:'49.36.x.x',  ok:true},
-        {ts:'2025-02-27 08:55', user:'pavan@indiagully.com',      action:'Page Edit — Home',mod:'CMS',     ip:'49.36.x.x',  ok:true},
-        {ts:'2025-02-26 18:42', user:'Unknown',                   action:'Failed Login',    mod:'Auth',    ip:'185.x.x.x',  ok:false},
-        {ts:'2025-02-26 16:30', user:'akm@indiagully.com',        action:'Mandate Created', mod:'Listings',ip:'49.36.x.x',  ok:true},
-      ].map(r=>`<tr><td style="font-size:.75rem;color:var(--ink-muted);">${r.ts}</td><td style="font-size:.78rem;font-weight:500;">${r.user}</td><td style="font-size:.78rem;">${r.action}</td><td><span class="badge b-dk">${r.mod}</span></td><td style="font-size:.72rem;color:var(--ink-muted);">${r.ip}</td><td><span class="badge ${r.ok?'b-gr':'b-re'}">${r.ok?'OK':'FAIL'}</span></td></tr>`).join('')}
-    </tbody></table>
+        {icon:'calendar-times', color:'#dc2626', label:'Annual Accounts Filing', sub:'Due 31 Mar 2025 · AOC-4', urgency:'Urgent'},
+        {icon:'file-invoice-dollar', color:'#d97706', label:'INV-2025-002 Overdue', sub:'₹1.8L · Demo Client · 28 Feb due', urgency:'Overdue'},
+        {icon:'file-contract',  color:'#d97706', label:'EY Advisory Retainer', sub:'Expiring 31 Mar 2025 · Renew now', urgency:'Expiring'},
+        {icon:'gavel',          color:'#1E1E1E', label:'Board Meeting BM-2025-03', sub:'Scheduled 15 Mar 2025 · 11:00 AM', urgency:'Scheduled'},
+        {icon:'percent',        color:'#2563eb', label:'GSTR-3B Filing', sub:'Due 20 Mar 2025 · ₹2.1L payable', urgency:'Due Soon'},
+        {icon:'users',          color:'#16a34a', label:'March Payroll Run', sub:'Process by 28 Mar 2025 · 3 employees', urgency:'Upcoming'},
+      ].map(a=>`
+      <div style="padding:1rem 1.25rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:.625rem;margin-bottom:.5rem;">
+          <div style="width:32px;height:32px;background:${a.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-${a.icon}" style="color:#fff;font-size:.65rem;"></i>
+          </div>
+          <div>
+            <div style="font-size:.82rem;font-weight:600;color:var(--ink);">${a.label}</div>
+            <div style="font-size:.68rem;color:var(--ink-muted);">${a.sub}</div>
+          </div>
+        </div>
+        <span style="font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${a.color};">${a.urgency}</span>
+      </div>`).join('')}
+    </div>
   </div>`
   return c.html(layout('Admin Dashboard', adminShell('Dashboard Overview', 'dashboard', body), {noNav:true,noFooter:true}))
 })
@@ -181,14 +244,28 @@ app.get('/cms', (c) => {
       <div id="cms-panel-${i}" class="ig-panel" style="margin-top:1rem;">
         <h4 style="font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:1rem;letter-spacing:.06em;text-transform:uppercase;">${p.page} — Content Editor</h4>
         <div style="display:flex;flex-direction:column;gap:.875rem;">
-          <div><label class="ig-label">Page Title / H1</label><input type="text" class="ig-input" value="${p.page}" style="font-size:.875rem;"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
+            <div><label class="ig-label">Page Title / H1</label><input type="text" class="ig-input" value="${p.page.replace(' Page','')}" style="font-size:.875rem;"></div>
+            <div><label class="ig-label">URL Slug</label><input type="text" class="ig-input" value="${p.slug}" style="font-size:.875rem;"></div>
+          </div>
+          <div><label class="ig-label">Meta Title (SEO)</label><input type="text" class="ig-input" value="${p.page.replace(' Page','')} — India Gully · Celebrating Desiness" style="font-size:.82rem;"></div>
           <div><label class="ig-label">Meta Description</label><textarea class="ig-input" rows="2" style="font-size:.82rem;min-height:60px;">India Gully — ${p.page.replace(' Page','')} section. Advisory services across Real Estate, Retail, Hospitality and Entertainment.</textarea></div>
           <div><label class="ig-label">Hero Headline</label><input type="text" class="ig-input" value="Celebrating Desiness" style="font-size:.875rem;"></div>
           <div><label class="ig-label">Hero Subheading</label><textarea class="ig-input" rows="2" style="font-size:.82rem;min-height:60px;">India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality and Entertainment.</textarea></div>
+          <div><label class="ig-label">Page Body Content (HTML allowed)</label><textarea class="ig-input" rows="4" style="font-size:.78rem;font-family:monospace;min-height:80px;" placeholder="<p>Page content here...</p>"></textarea></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
+            <div><label class="ig-label">OG Image URL</label><input type="text" class="ig-input" value="https://india-gully.pages.dev/static/og.jpg" style="font-size:.78rem;"></div>
+            <div><label class="ig-label">Status</label><select class="ig-input" style="font-size:.82rem;"><option>Published</option><option>Draft</option><option>Scheduled</option></select></div>
+          </div>
+          <div style="background:#fffbeb;border:1px solid #fde68a;padding:.75rem;font-size:.75rem;color:#78350f;display:flex;align-items:center;gap:.5rem;">
+            <i class="fas fa-info-circle" style="color:#d97706;"></i>
+            Last saved by <strong>${p.editor}</strong> on ${p.lastEdit}. Changes will go live immediately on save.
+          </div>
           <div style="display:flex;gap:.75rem;">
-            <button onclick="igToast('${p.page} saved successfully ✓','success');togglePanel('cms-panel-${i}')" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save Changes</button>
-            <button onclick="igToast('Draft saved','success')" style="background:var(--ink);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save Draft</button>
-            <button onclick="togglePanel('cms-panel-${i}')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+            <button onclick="igCmsSave(${i},'${p.page}')" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.4rem;"><i class="fas fa-save" style="font-size:.65rem;"></i>Publish Changes</button>
+            <button onclick="igToast('${p.page} saved as draft','success')" style="background:var(--ink);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save Draft</button>
+            <a href="${p.slug}" target="_blank" style="display:inline-flex;align-items:center;gap:.3rem;font-size:.78rem;color:var(--ink-muted);padding:.55rem 1.25rem;border:1px solid var(--border);">Preview <i class="fas fa-external-link-alt" style="font-size:.6rem;"></i></a>
+            <button onclick="togglePanel('cms-panel-${i}')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Close</button>
           </div>
         </div>
       </div>
@@ -214,7 +291,25 @@ app.get('/cms', (c) => {
         <td><button onclick="igToast('SEO for ${r.page} saved','success')" style="background:var(--gold);color:#fff;border:none;padding:.3rem .6rem;font-size:.68rem;font-weight:600;cursor:pointer;">Save</button></td>
       </tr>`).join('')}
     </tbody></table>
-  </div>`
+  </div>
+  <script>
+  function igCmsSave(idx, pageName){
+    var btn = event.currentTarget;
+    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="margin-right:.4rem;font-size:.65rem;"></i>Publishing…';
+    btn.disabled = true;
+    setTimeout(function(){
+      btn.innerHTML = '<i class="fas fa-check" style="margin-right:.4rem;font-size:.65rem;"></i>Published ✓';
+      btn.style.background = '#15803d';
+      igToast(pageName + ' published successfully. Changes are now live.', 'success');
+      setTimeout(function(){
+        btn.innerHTML = '<i class="fas fa-save" style="margin-right:.4rem;font-size:.65rem;"></i>Publish Changes';
+        btn.style.background = 'var(--gold)';
+        btn.disabled = false;
+        togglePanel('cms-panel-'+idx);
+      }, 2500);
+    }, 1200);
+  }
+  </script>`
   return c.html(layout('CMS', adminShell('Content Management System', 'cms', body), {noNav:true,noFooter:true}))
 })
 
@@ -731,15 +826,63 @@ app.get('/horeca', (c) => {
   <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
       <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Quick Quote Builder</h3>
-      <button onclick="igToast('Quote PDF generated and ready to send','success')" style="background:#0d9488;color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;">Generate Quote PDF</button>
+      <div style="display:flex;gap:.5rem;">
+        <button onclick="igHorecaCalcQuote()" style="background:#0d9488;color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-calculator" style="font-size:.6rem;"></i>Calculate Estimate</button>
+        <button onclick="igHorecaGenPDF()" style="background:var(--ink);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-file-pdf" style="font-size:.6rem;"></i>Generate Quote PDF</button>
+      </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-      <div><label class="ig-label">Project Name / Hotel</label><input type="text" class="ig-input" placeholder="e.g. Bijolai Palace, Jodhpur" style="font-size:.82rem;"></div>
-      <div><label class="ig-label">No. of Rooms</label><input type="number" class="ig-input" placeholder="100" style="font-size:.82rem;"></div>
-      <div><label class="ig-label">Categories Required</label><select class="ig-input" multiple style="font-size:.82rem;height:80px;">${cats.map(c=>`<option>${c.cat}</option>`).join('')}</select></div>
-      <div><label class="ig-label">Delivery Timeline</label><select class="ig-input" style="font-size:.82rem;"><option>30 Days</option><option>45 Days</option><option>60 Days</option><option>90 Days</option></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
+      <div><label class="ig-label">Project Name / Hotel</label><input type="text" id="qt-project" class="ig-input" placeholder="e.g. Bijolai Palace, Jodhpur" style="font-size:.82rem;"></div>
+      <div><label class="ig-label">No. of Rooms</label><input type="number" id="qt-rooms" class="ig-input" placeholder="100" style="font-size:.82rem;" oninput="igHorecaCalcQuote()"></div>
+      <div><label class="ig-label">Hotel Star Category</label><select id="qt-star" class="ig-input" style="font-size:.82rem;" onchange="igHorecaCalcQuote()"><option value="3">3 Star</option><option value="4">4 Star</option><option value="5" selected>5 Star</option></select></div>
+      <div><label class="ig-label">Categories Required</label><select id="qt-cats" class="ig-input" multiple style="font-size:.82rem;height:80px;" onchange="igHorecaCalcQuote()">${cats.map(c=>`<option value="${c.skus}" selected>${c.cat}</option>`).join('')}</select></div>
+      <div><label class="ig-label">Delivery Timeline</label><select id="qt-delivery" class="ig-input" style="font-size:.82rem;"><option>30 Days</option><option>45 Days</option><option selected>60 Days</option><option>90 Days</option></select></div>
+      <div style="background:var(--parch-dk);border:1px solid var(--border);padding:1rem;">
+        <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.625rem;">Estimate Preview</div>
+        <div id="qt-estimate" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:var(--gold);">₹0</div>
+        <div id="qt-breakdown" style="font-size:.72rem;color:var(--ink-muted);margin-top:.25rem;">Enter rooms and categories</div>
+      </div>
     </div>
-  </div>`
+    <div id="qt-items-list" style="display:none;background:#f0fdf4;border:1px solid #86efac;padding:.875rem;margin-top:.5rem;">
+      <div style="font-size:.72rem;font-weight:600;color:#15803d;margin-bottom:.5rem;">Quote Line Items:</div>
+      <div id="qt-items-content" style="font-size:.75rem;color:var(--ink);"></div>
+    </div>
+  </div>
+  <script>
+  function igHorecaCalcQuote(){
+    var rooms = parseInt(document.getElementById('qt-rooms').value) || 0;
+    var star  = parseInt(document.getElementById('qt-star').value) || 5;
+    var cats  = Array.from(document.getElementById('qt-cats').selectedOptions);
+    var ratePerRoom = star === 5 ? 85000 : star === 4 ? 55000 : 35000;
+    var total = rooms * ratePerRoom * cats.length / 8;
+    var el = document.getElementById('qt-estimate');
+    var bd = document.getElementById('qt-breakdown');
+    var itemsDiv = document.getElementById('qt-items-list');
+    var itemsContent = document.getElementById('qt-items-content');
+    if(rooms > 0 && cats.length > 0){
+      var lakh = total / 100000;
+      el.textContent = lakh >= 100 ? '₹'+(lakh/100).toFixed(2)+' Cr' : '₹'+lakh.toFixed(1)+'L';
+      bd.textContent = rooms+' rooms · '+cats.length+' categories · '+star+' Star standard';
+      itemsDiv.style.display = 'block';
+      itemsContent.innerHTML = cats.map(function(c){
+        var catTotal = rooms * ratePerRoom / 8;
+        var catLakh = (catTotal/100000).toFixed(1);
+        return '<div style="display:flex;justify-content:space-between;padding:.2rem 0;border-bottom:1px solid #d1fae5;">'+
+          '<span>'+c.text+'</span><span style="font-weight:600;">₹'+catLakh+'L</span></div>';
+      }).join('')+'<div style="display:flex;justify-content:space-between;padding:.4rem 0;font-weight:700;font-size:.82rem;"><span>TOTAL (excl. GST)</span><span style="color:var(--gold);">'+el.textContent+'</span></div>';
+    } else {
+      el.textContent = '₹0';
+      bd.textContent = 'Enter rooms and select categories';
+      itemsDiv.style.display = 'none';
+    }
+  }
+  function igHorecaGenPDF(){
+    var project = document.getElementById('qt-project').value.trim();
+    if(!project){ igToast('Please enter a project name','warn'); return; }
+    var est = document.getElementById('qt-estimate').textContent;
+    igToast('Quote PDF for '+project+' ('+est+') generated — ready to download','success');
+  }
+  </script>`
   return c.html(layout('HORECA Inventory', adminShell('HORECA Inventory Management', 'horeca', body), {noNav:true,noFooter:true}))
 })
 

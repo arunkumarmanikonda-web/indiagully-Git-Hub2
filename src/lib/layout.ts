@@ -237,6 +237,36 @@ textarea.ig-input{resize:vertical;min-height:130px}
 /* ── ADMIN METRIC ───────────────────────────── */
 .am{background:#fff;border:1px solid var(--border);padding:1.5rem 1.75rem}
 
+/* ── SIDEBAR NOTIFICATION BADGE ─────────────── */
+.sb-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;background:var(--gold);color:#fff;font-size:.55rem;font-weight:700;border-radius:9px;margin-left:auto;}
+.sb-dot{width:7px;height:7px;border-radius:50%;background:#ef4444;margin-left:auto;flex-shrink:0;}
+
+/* ── PROGRESS BAR ───────────────────────────── */
+.ig-progress-track{background:var(--parch-dk);height:6px;border-radius:3px;overflow:hidden;}
+.ig-progress-fill{height:100%;border-radius:3px;transition:width .6s ease;}
+
+/* ── STATUS PILL ────────────────────────────── */
+.status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:.4rem;flex-shrink:0;}
+
+/* ── TOOLTIP ────────────────────────────────── */
+[data-tip]{position:relative;}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:rgba(10,10,10,.92);color:#fff;padding:.3rem .625rem;font-size:.68rem;white-space:nowrap;border-radius:3px;z-index:999;pointer-events:none;}
+
+/* ── DIVIDER ────────────────────────────────── */
+.ig-hr{border:none;border-top:1px solid var(--border);margin:1.5rem 0;}
+
+/* ── INLINE INFO BOX ────────────────────────── */
+.ig-info{background:#eff6ff;border:1px solid #bfdbfe;padding:.75rem 1rem;font-size:.82rem;color:#1d4ed8;display:flex;align-items:flex-start;gap:.5rem;}
+.ig-warn{background:#fffbeb;border:1px solid #fde68a;padding:.75rem 1rem;font-size:.82rem;color:#92400e;display:flex;align-items:flex-start;gap:.5rem;}
+.ig-danger{background:#fef2f2;border:1px solid #fecaca;padding:.75rem 1rem;font-size:.82rem;color:#991b1b;display:flex;align-items:flex-start;gap:.5rem;}
+.ig-success{background:#f0fdf4;border:1px solid #bbf7d0;padding:.75rem 1rem;font-size:.82rem;color:#15803d;display:flex;align-items:flex-start;gap:.5rem;}
+
+/* ── RESPONSIVE GRID ────────────────────────── */
+@media(max-width:768px){
+  .r-1{grid-template-columns:1fr!important;}
+  .r-2{grid-template-columns:1fr 1fr!important;}
+}
+
 /* ── PRINT ──────────────────────────────────── */
 @media print{#mainNav,footer,.no-print{display:none!important}}
 
