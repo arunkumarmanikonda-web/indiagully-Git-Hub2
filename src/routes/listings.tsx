@@ -39,16 +39,6 @@ app.get('/', (c) => {
   </div>
 </div>
 
-<!-- DISCLAIMER -->
-<div class="sec-pd" style="padding:2rem 0;">
-  <div class="wrap">
-    <div style="background:#fff;border-left:3px solid var(--gold);padding:1rem 1.25rem;display:flex;gap:.75rem;align-items:flex-start;">
-      <i class="fas fa-info-circle" style="color:var(--gold);margin-top:.1rem;font-size:.85rem;flex-shrink:0;"></i>
-      <p style="font-size:.75rem;color:var(--ink-muted);line-height:1.75;"><strong style="color:var(--ink);">Transaction Advisory Disclaimer:</strong> India Gully (Vivacious Entertainment and Hospitality Pvt. Ltd.) acts exclusively as <strong>Transaction Advisor</strong> on all mandates listed herein. We do not hold, own, develop or broker properties in our own capacity. All financial metrics are provided by mandate owners and have not been independently verified. All investment decisions must be independently assessed. Past performance is not indicative of future returns. This is not a public offer or solicitation.</p>
-    </div>
-  </div>
-</div>
-
 <!-- ALL MANDATES GRID -->
 <div class="sec-wh" style="padding-top:3rem;">
   <div class="wrap">
@@ -164,8 +154,8 @@ app.get('/:id', (c) => {
         </div>
 
         <div style="background:var(--parch);border:1px solid var(--border);padding:1.5rem;margin-bottom:2rem;">
-          <p style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">Transaction Advisory Note</p>
-          <p style="font-size:.8rem;color:var(--ink-muted);line-height:1.75;">India Gully acts as exclusive Transaction Advisor on this mandate. Access to detailed Information Memorandum, financial models and site data is subject to execution of a mutual NDA. Please contact our team to proceed.</p>
+          <p style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">NDA & Access</p>
+          <p style="font-size:.8rem;color:var(--ink-muted);line-height:1.75;">Access to the detailed Information Memorandum, financial models and site data is subject to execution of a mutual NDA. Please contact our team to proceed.</p>
         </div>
       </div>
 

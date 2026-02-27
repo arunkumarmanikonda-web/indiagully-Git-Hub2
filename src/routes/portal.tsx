@@ -74,11 +74,14 @@ function loginPage(opts: {
   icon: string
   idLabel: string
   idPlaceholder: string
+  demoId: string
+  demoPass: string
+  demoOtp?: string
 }) {
   return `
 <div style="min-height:100vh;background:linear-gradient(135deg,#080808 0%,#141414 100%);display:flex;align-items:center;justify-content:center;padding:2rem 1.5rem;">
   <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.04) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;"></div>
-  <div style="position:relative;width:100%;max-width:420px;">
+  <div style="position:relative;width:100%;max-width:440px;">
 
     <div style="background:#fff;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.5);">
       <!-- Header -->
@@ -89,6 +92,16 @@ function loginPage(opts: {
         <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;margin-bottom:.25rem;">${opts.title}</h1>
         <p style="font-size:.78rem;color:rgba(255,255,255,.65);">${opts.subtitle}</p>
         <p style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:.5rem;">India Gully Enterprise Platform</p>
+      </div>
+
+      <!-- Demo credentials banner -->
+      <div style="background:#fffbeb;border-bottom:1px solid #fde68a;padding:.875rem 1.5rem;display:flex;gap:.6rem;align-items:flex-start;">
+        <i class="fas fa-key" style="color:#d97706;font-size:.75rem;margin-top:.15rem;flex-shrink:0;"></i>
+        <div>
+          <p style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#92400e;margin-bottom:.3rem;">Demo Access Credentials</p>
+          <p style="font-size:.75rem;color:#78350f;line-height:1.7;"><strong>${opts.idLabel}:</strong> <code style="background:#fef3c7;padding:1px 5px;border-radius:2px;font-size:.72rem;">${opts.demoId}</code><br>
+          <strong>Password:</strong> <code style="background:#fef3c7;padding:1px 5px;border-radius:2px;font-size:.72rem;">${opts.demoPass}</code>${opts.demoOtp ? `<br><strong>OTP/2FA:</strong> <code style="background:#fef3c7;padding:1px 5px;border-radius:2px;font-size:.72rem;">${opts.demoOtp}</code>` : ''}</p>
+        </div>
       </div>
 
       <!-- Form -->
@@ -147,18 +160,27 @@ app.get('/client', (c) => c.html(layout('Client Portal', loginPage({
   portal: 'client', title: 'Client Portal', subtitle: 'Advisory Services Platform',
   accentColor: '#B8960C', icon: 'user-tie',
   idLabel: 'Client ID or Email', idPlaceholder: 'Client ID or your@email.com',
+  demoId: 'demo@indiagully.com',
+  demoPass: 'Client@IG2024',
+  demoOtp: '000000',
 }), { noNav: true, noFooter: true })))
 
 app.get('/employee', (c) => c.html(layout('Employee Portal', loginPage({
   portal: 'employee', title: 'Employee Portal', subtitle: 'HR & Operations Platform',
   accentColor: '#1A3A6B', icon: 'users',
   idLabel: 'Employee ID', idPlaceholder: 'IG-EMP-XXXX',
+  demoId: 'IG-EMP-0001',
+  demoPass: 'Emp@IG2024',
+  demoOtp: '000000',
 }), { noNav: true, noFooter: true })))
 
 app.get('/board', (c) => c.html(layout('Board & KMP Portal', loginPage({
   portal: 'board', title: 'Board & KMP Portal', subtitle: 'Governance & Compliance Platform',
   accentColor: '#1E1E1E', icon: 'gavel',
   idLabel: 'Director DIN or KMP ID', idPlaceholder: 'DIN XXXXXXXX or IG-KMP-XXXX',
+  demoId: 'IG-KMP-0001',
+  demoPass: 'Board@IG2024',
+  demoOtp: '000000',
 }), { noNav: true, noFooter: true })))
 
 // Password reset

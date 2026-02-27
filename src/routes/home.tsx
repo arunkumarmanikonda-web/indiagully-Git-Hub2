@@ -174,12 +174,6 @@ app.get('/', (c) => {
       <a href="/listings" class="btn btn-dk">View All Mandates</a>
     </div>
 
-    <!-- Disclaimer -->
-    <div style="background:#fff;border-left:3px solid var(--gold);padding:1rem 1.25rem;margin-bottom:2rem;display:flex;gap:.75rem;align-items:flex-start;">
-      <i class="fas fa-info-circle" style="color:var(--gold);margin-top:.1rem;font-size:.85rem;flex-shrink:0;"></i>
-      <p style="font-size:.75rem;color:var(--ink-muted);line-height:1.7;"><strong style="color:var(--ink);">Transaction Advisory:</strong> India Gully acts exclusively as Transaction Advisor on all listed mandates. We do not hold, own or develop properties. All investment decisions must be independently assessed. Past performance is not indicative of future returns.</p>
-    </div>
-
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
       ${LISTINGS.filter(l => l.highlight).slice(0,3).map(l => `
       <div class="mc">
@@ -292,9 +286,41 @@ app.get('/', (c) => {
     </div>
 
     <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);">
-      ${['Marriott International','Radisson Hotel Group','IHG Hotels','Taj Hotels','Cygnett Hotels','Regenta / Royal Orchid','Lemon Tree Hotels','Bhutani Group','CBRE','EY Advisory','Ssamman Capital','ITC Hotels'].map(b => `
+      ${['Marriott International','Radisson Hotel Group','IHG Hotels','Taj Hotels','Cygnett Hotels','Regenta / Royal Orchid','Lemon Tree Hotels','Bhutani Group','EY Advisory','CBRE','ANAROCK','Pipara & Co','Resurgent India','ITC Hotels','Louvre Hotels','Sarovar Hotels'].map(b => `
       <div style="background:#fff;padding:1.25rem 1rem;text-align:center;transition:background .2s;" onmouseover="this.style.background='var(--gold-pale)'" onmouseout="this.style.background='#fff'">
         <div style="font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);line-height:1.4;">${b}</div>
+      </div>
+      `).join('')}
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ TRANSACTION ADVISORY PARTNERS -->
+<div class="sec-pd" style="padding-top:4rem;padding-bottom:4rem;">
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start;margin-bottom:3rem;">
+      <div>
+        <div class="gr"></div>
+        <p class="eyebrow" style="margin-bottom:.75rem;">Transaction Advisory</p>
+        <h2 class="h2">Our Advisory<br>Partners</h2>
+      </div>
+      <p class="lead" style="padding-top:2rem;">India Gully collaborates with globally recognised advisory and consulting firms — bringing institutional credibility, financial rigour and sector depth to complex, large-format transaction mandates.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1.25rem;">
+      ${[
+        { name:'Ernst & Young',  abbr:'EY',        sub:'Transaction Advisory & Assurance',  icon:'chart-bar',     color:'#2E2E2E' },
+        { name:'CBRE',           abbr:'CBRE',       sub:'Real Estate & Capital Markets',     icon:'building',      color:'#003087' },
+        { name:'ANAROCK',        abbr:'ANAROCK',    sub:'Property Consultants',              icon:'home',          color:'#E4003A' },
+        { name:'Pipara & Co',    abbr:'PIPARA',     sub:'Chartered Accountants',             icon:'file-invoice',  color:'#1A5276' },
+        { name:'Resurgent India',abbr:'RESURGENT',  sub:'Investment Banking',                icon:'chart-line',    color:'#1E8449' },
+      ].map(p => `
+      <div class="card card-lift" style="padding:1.75rem;text-align:center;">
+        <div style="width:52px;height:52px;background:${p.color};display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+          <i class="fas fa-${p.icon}" style="color:#fff;font-size:.9rem;"></i>
+        </div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.05rem;color:var(--ink);margin-bottom:.3rem;">${p.name}</div>
+        <div style="font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;">${p.abbr}</div>
+        <div style="font-size:.72rem;color:var(--ink-muted);line-height:1.5;">${p.sub}</div>
       </div>
       `).join('')}
     </div>

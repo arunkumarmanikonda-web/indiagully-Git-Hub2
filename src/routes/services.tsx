@@ -20,12 +20,12 @@ const SERVICES = [
     id: 'retail',
     icon: '🛍️',
     name: 'Retail & Leasing Strategy',
-    tagline: 'Brand mix, anchor structuring & fit-out coordination',
-    desc: 'We help mall developers, mixed-use destination owners and retail brands maximise the value of their physical retail space through strategic brand mix, leasing negotiation and operational setup.',
-    items: ['Retail market research & gap analysis','Brand mix strategy & category planning','Anchor & inline tenant leasing','Lease term structuring & negotiation','Fit-out coordination & design review','Signage & wayfinding strategy','Mall operations consultancy','Retail franchise expansion advisory'],
+    tagline: 'Brand mix, anchor structuring, leasing advisory & retail franchise expansion',
+    desc: 'India Gully brings 30+ active retail brand relationships and deep mall-leasing expertise to developers, destination owners and retail brands. We cover every stage — from market research and brand mix strategy to lease negotiation, fit-out coordination and franchise expansion across Tier-1 and Tier-2 cities.',
+    items: ['Retail market research & gap analysis','Brand mix strategy & category planning','Anchor & inline tenant leasing','Lease term structuring & negotiation','Fit-out coordination & design review','Signage & wayfinding strategy','Mall operations consultancy','Retail franchise expansion advisory','F&B & F&B-led destination advisory','Retail sales & channel planning'],
     highlights: [
-      { v:'30+',  l:'Retail brand relationships across fashion, F&B and entertainment' },
-      { v:'15 Cities', l:'Desi Brand retail franchise expansion mandate — ₹45 Cr capex' },
+      { v:'30+',  l:'Retail brand relationships across fashion, F&B and entertainment categories' },
+      { v:'15 Cities', l:'Desi Brand retail franchise expansion mandate — ₹45 Cr capex, 36-month payback' },
     ],
   },
   {
@@ -76,8 +76,8 @@ app.get('/', (c) => {
     <div style="max-width:700px;" class="fu">
       <div class="gr-lt"></div>
       <p class="eyebrow" style="margin-bottom:.875rem;">Advisory Services</p>
-      <h1 class="h1" style="margin-bottom:1.5rem;">Five Verticals.<br><em style="color:var(--gold);font-style:italic;">One Partner.</em></h1>
-      <p class="lead-lt" style="max-width:560px;margin-bottom:2rem;">Institutional-grade advisory across Real Estate, Retail, Hospitality, Entertainment and Debt — delivered by domain specialists with deep India market knowledge.</p>
+      <h1 class="h1" style="margin-bottom:1.5rem;">Six Verticals.<br><em style="color:var(--gold);font-style:italic;">One Partner.</em></h1>
+      <p class="lead-lt" style="max-width:560px;margin-bottom:2rem;">Institutional-grade advisory across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA — delivered by domain specialists with deep India market knowledge.</p>
       <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
         ${SERVICES.map(s => `<a href="#${s.id}" class="btn btn-ghost" style="padding:.45rem 1rem;font-size:.72rem;">${s.name}</a>`).join('')}
       </div>
@@ -136,6 +136,39 @@ ${SERVICES.map((s, i) => `
   </div>
 </div>
 `).join('')}
+
+<!-- TRANSACTION ADVISORY PARTNERS -->
+<div class="sec-wh" style="padding-top:3rem;padding-bottom:3.5rem;">
+  <div class="wrap">
+    <div style="text-align:center;max-width:640px;margin:0 auto 2.75rem;">
+      <div class="gr-c"></div>
+      <p class="eyebrow" style="margin-bottom:.75rem;">Transaction Advisory</p>
+      <h2 class="h2">Our Advisory<br>Partners</h2>
+      <p class="lead" style="margin-top:1rem;max-width:520px;margin-left:auto;margin-right:auto;">India Gully collaborates with globally recognised advisory and consulting firms on transaction advisory mandates, bringing institutional credibility and multi-disciplinary expertise to every deal.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);margin-bottom:2rem;">
+      ${[
+        { name:'Ernst & Young', short:'EY', sub:'Transaction Advisory & Assurance', icon:'chart-bar' },
+        { name:'CBRE',          short:'CBRE', sub:'Real Estate & Capital Markets',   icon:'building' },
+        { name:'ANAROCK',       short:'ANAROCK', sub:'Property Consultants',         icon:'home' },
+        { name:'Pipara & Co',   short:'PIPARA', sub:'Chartered Accountants',         icon:'file-invoice' },
+        { name:'Resurgent India',short:'RESURGENT', sub:'Investment Banking',        icon:'chart-line' },
+      ].map(p => `
+      <div style="background:#fff;padding:2rem 1.5rem;text-align:center;transition:background .2s;" onmouseover="this.style.background='var(--parch)'" onmouseout="this.style.background='#fff'">
+        <div style="width:48px;height:48px;background:var(--ink);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+          <i class="fas fa-${p.icon}" style="color:var(--gold);font-size:.875rem;"></i>
+        </div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);margin-bottom:.3rem;">${p.name}</div>
+        <div style="font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);">${p.sub}</div>
+      </div>
+      `).join('')}
+    </div>
+    <div style="border:1px solid var(--border);padding:1.25rem 1.5rem;display:flex;gap:.75rem;align-items:flex-start;max-width:820px;margin:0 auto;">
+      <i class="fas fa-handshake" style="color:var(--gold);font-size:.85rem;margin-top:.1rem;flex-shrink:0;"></i>
+      <p style="font-size:.78rem;color:var(--ink-muted);line-height:1.75;">India Gully works alongside EY, CBRE, ANAROCK, Pipara &amp; Co and Resurgent India on select transaction advisory mandates where multi-disciplinary expertise — spanning financial due diligence, real estate capital markets, property consultancy, chartered accounting and investment banking — is required for complex, large-format deals.</p>
+    </div>
+  </div>
+</div>
 
 <!-- HORECA CTA -->
 <div class="sec-md">

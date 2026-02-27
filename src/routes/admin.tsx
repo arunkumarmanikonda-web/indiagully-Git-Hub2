@@ -24,6 +24,17 @@ app.get('/', (c) => {
         </div>
       </div>
 
+      <!-- Demo credentials -->
+      <div style="background:#fffbeb;border-bottom:1px solid #fde68a;padding:.875rem 1.5rem;display:flex;gap:.6rem;align-items:flex-start;">
+        <i class="fas fa-key" style="color:#d97706;font-size:.75rem;margin-top:.15rem;flex-shrink:0;"></i>
+        <div>
+          <p style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#92400e;margin-bottom:.3rem;">Demo Access Credentials</p>
+          <p style="font-size:.75rem;color:#78350f;line-height:1.7;"><strong>Username:</strong> <code style="background:#fef3c7;padding:1px 5px;border-radius:2px;font-size:.72rem;">superadmin@indiagully.com</code><br>
+          <strong>Password:</strong> <code style="background:#fef3c7;padding:1px 5px;border-radius:2px;font-size:.72rem;">Admin@IG2024!</code><br>
+          <strong>2FA Code:</strong> <code style="background:#fef3c7;padding:1px 5px;border-radius:2px;font-size:.72rem;">000000</code></p>
+        </div>
+      </div>
+
       <!-- Form -->
       <div style="padding:2rem;">
         <form class="ig-form" method="POST" action="/api/auth/admin" style="display:flex;flex-direction:column;gap:1.1rem;">
