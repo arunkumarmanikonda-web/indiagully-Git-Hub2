@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://d8310d8e.india-gully.pages.dev |
+| **Latest Deploy https://c92f7958.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
@@ -204,7 +204,7 @@ All prior enhancement rounds are live. Key additions:
 
 ---
 
-## 🔍 Deep-Audit Report — v2026.05-F-Round (28 Feb 2026)
+## 🔍 Deep-Audit Report — v2026.06-G-Round (28 Feb 2026)
 
 **Live Report:** https://india-gully.pages.dev/audit
 
