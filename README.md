@@ -10,134 +10,145 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Deployment** | https://cb325b74.india-gully.pages.dev |
-| **Sandbox Preview** | https://3000-i8y68rnahl4h057gpqgck-583b4d74.sandbox.novita.ai |
+| **Latest Deploy** | https://2fd4e7b4.india-gully.pages.dev |
+| **Sandbox Preview** | http://localhost:3000 |
 
 ---
 
-## ✅ Completed Features (Phase 1 — LIVE)
+## ✅ Completed Features
 
-### Corporate Website
-- **Home:** Strategy-led hero, vertical showcase, active mandates, leadership, brand ecosystem, CTA
-- **About:** Vision & mission, company timeline (2017–2024), board & KMP profiles, governance note, company information
+### Phase 1 — Corporate Website (LIVE)
+- **Home:** Strategy-led hero, vertical showcase, active mandates, leadership, brand ecosystem
+- **About:** Vision & mission, company timeline (2017–2024), board & KMP profiles, governance note
 - **Services:** 5 advisory verticals (Real Estate, Retail, Hospitality, Entertainment, Debt & Special Situations)
 - **HORECA Solutions:** 8 supply categories with quote request form
-- **Mandates & Listings:** 6 active mandates in Sotheby's-style (₹4,500 Cr to ₹45 Cr), NDA-gated
-- **Insights:** 6 thought leadership articles (gated access)
+- **Mandates & Listings:** 6 active mandates (₹8,815 Cr total pipeline), NDA-gated
+- **Insights:** 6 thought leadership articles with gated access
 - **Contact:** Mandate enquiry form with 6 enquiry types
+- **Legal Pages:** Privacy Policy, Terms of Use, Disclaimer (`/legal/*`)
 
-### Portals (Login UIs)
-- Portal Selection hub (`/portal`)
-- Client Portal (`/portal/client`) — Client ID + Password + TOTP
-- Employee Portal (`/portal/employee`) — Employee ID + Password + TOTP
-- Board & KMP Portal (`/portal/board`) — Director DIN/ID + Password + TOTP
-- Super Admin Console (`/admin`) — Username + Password + TOTP + Restricted
+### Phase 2–4 — Portal UIs & ERP Modules (LIVE)
 
-### Admin Dashboard
-- System health monitoring (6 module indicators)
-- Quick stats (enquiries, users, workflows, approvals)
-- Platform module grid (12 modules)
-- Audit log (real-time activity)
-- CMS Quick Edit panel
-- Finance ERP overview (revenue MTD, receivables, GST, bank balance)
-- HR ERP overview (headcount, attendance, leave, payroll status)
-- Governance panel (board events, director KYC status)
+#### Portal Logins
+| Portal | URL | Credentials |
+|--------|-----|-------------|
+| Client | `/portal/client` | demo@indiagully.com / Client@IG2024 / OTP: 000000 |
+| Employee | `/portal/employee` | IG-EMP-0001 / Emp@IG2024 / OTP: 000000 |
+| Board & KMP | `/portal/board` | IG-KMP-0001 / Board@IG2024 / OTP: 000000 |
+| Super Admin | `/admin` | superadmin@indiagully.com / Admin@IG2024! / OTP: 000000 |
 
-### API Endpoints
-- `GET /api/health` — System status
-- `POST /api/enquiry` — Public enquiry submission
-- `POST /api/subscribe` — Insights subscription
-- `POST /api/horeca/quote` — HORECA quote request
-- `POST /api/auth/login` — Portal authentication (stub)
-- `POST /api/auth/admin` — Admin authentication (stub)
-- `POST /api/auth/reset` — Password reset (stub)
+#### Client Portal Pages (27 routes)
+- Dashboard, Active Mandates with progress tracker, Proposals with e-sign
+- **Invoices with payment flow** — view modal, payment modal, UTR capture
+- Documents with download simulation, Messages with conversation UI
+- Profile with edit panel
+
+#### Employee Portal Pages
+- Dashboard with notices + quick actions
+- **Attendance** — calendar heatmap, check in/out with live clock, MTD stats
+- Leave management — apply, balance, history
+- **Payslips** — full breakdown modal, **TDS/Tax Estimator** (New Regime FY 2025-26)
+- Form-16, Policies, Directory, Profile
+
+#### Board & KMP Portal
+- Dashboard, Meetings register, Voting with audit trail
+- Statutory registers (expandable), Board packs (collapsible folders)
+- Finance snapshot, Compliance calendar
+
+#### Super Admin Console
+- **Dashboard** — alert banner, 8 KPI cards, quick-action bar, activity feed, compliance grid
+- **CMS** — full page editor with slug, SEO, hero, body HTML, OG image, publish
+- **Users** — 8 user accounts, add/edit/deactivate, role management
+- **Workflows** — 6 automated workflows with step/trigger viewer
+- **Finance ERP** (tabbed):
+  - Invoices with GST calc, auto-number, mark-paid, AR total
+  - **Live P&L Statement** with period selector (Feb, Jan, Dec, FY 2024-25)
+  - Expense ledger with category breakdown + donut
+  - GSTR-3B filing, GST calendar
+  - 9 report types (PDF + Excel export)
+- **HR ERP** (tabbed):
+  - Employee directory with onboarding, profile modal
+  - Today's attendance + MTD summary
+  - **Leave approval/reject flow** with pending queue
+  - **Payroll register** with process workflow + bank transfer file
+  - 6 HR report types
+- **Governance** — board meeting scheduler, compliance calendar, statutory registers
+- **HORECA** — SKU catalogue, quote builder with live calculator, PDF generation
+- **Contracts** (tabbed):
+  - Contract register with e-sign status
+  - **Contract builder** with clause library (12 clauses)
+  - Template library (6 templates)
+  - **E-sign modal** (DocuSign workflow)
+- **Integrations** — 9 services (GST Portal, Vyapar, Gmail, WhatsApp, R2, DocuSign, Zoho, SendGrid, Tally)
+- **BI & Reports** — 9 report types with filters + PDF/Excel download
+- **System Config** — Platform, SMTP, Security settings
+- **Security & Audit** — Audit log, IP whitelist, 2FA stats
+
+### Phase 5 — UX & Interactivity Enhancements (LIVE)
+- **Notification bells** on all portals (Client, Employee, Admin) with dropdown panels
+- **Breadcrumb navigation** in all portal headers
+- **Sidebar badges** showing pending item counts
+- **Admin notification alerts** (5 live alerts)
 
 ---
 
-## 🔧 Features Not Yet Implemented (Phase 2-4)
-
-### Phase 2 — Backend Database
-- [ ] Cloudflare D1 database setup and migrations
-- [ ] JWT authentication with 2FA (TOTP)
-- [ ] Form data persistence (enquiries → D1)
-- [ ] Email notifications (SMTP)
-- [ ] Client portal (live data)
-- [ ] Session management
-
-### Phase 3 — ERP Modules
-- [ ] Finance ERP (vouchers, P&L, Balance Sheet, GST)
-- [ ] HR ERP (payroll, attendance, Form-16)
-- [ ] Board Governance (meetings, voting, minutes)
-- [ ] Contracting Engine (templates, e-sign)
-- [ ] Full CMS drag-drop editor
-
-### Phase 4 — Integrations
-- [ ] Vyapar API/CSV sync
-- [ ] GST Portal filing integration
-- [ ] WhatsApp Business notifications
-- [ ] Cloudflare R2 document storage
-- [ ] DocuSign e-signature abstraction
-
----
-
-## 📋 Route Summary
+## 🔌 API Endpoints
 
 | Method | Route | Description |
 |--------|-------|-------------|
-| GET | `/` | Homepage |
-| GET | `/about` | About India Gully |
-| GET | `/services` | Advisory Verticals |
-| GET | `/horeca` | HORECA Solutions |
-| GET | `/listings` | Active Mandates |
-| GET | `/listings/:id` | Mandate Detail |
-| GET | `/insights` | Thought Leadership |
-| GET | `/insights/:id` | Article Detail |
-| GET | `/contact` | Contact & Enquiry |
-| GET | `/portal` | Portal Selection |
-| GET | `/portal/client` | Client Portal Login |
-| GET | `/portal/employee` | Employee Portal Login |
-| GET | `/portal/board` | Board Portal Login |
-| GET | `/portal/client/dashboard` | Client Dashboard |
-| GET | `/admin` | Admin Login |
-| GET | `/admin/dashboard` | Admin Dashboard |
-| GET | `/api/health` | Health Check |
-| POST | `/api/enquiry` | Submit Enquiry |
-| POST | `/api/subscribe` | Subscribe Insights |
-| POST | `/api/horeca/quote` | HORECA Quote Request |
-| POST | `/api/auth/login` | Portal Auth |
-| POST | `/api/auth/admin` | Admin Auth |
+| GET | `/api/health` | System status & module list |
+| POST | `/api/auth/login` | Portal authentication |
+| POST | `/api/auth/admin` | Admin authentication |
+| POST | `/api/auth/reset` | Password reset |
+| POST | `/api/enquiry` | Public mandate enquiry |
+| POST | `/api/horeca-enquiry` | HORECA quote request |
+| POST | `/api/subscribe` | Newsletter subscription |
+| GET | `/api/listings` | Active mandates JSON |
+| GET | `/api/mandates` | Client mandates with progress |
+| GET | `/api/invoices` | Invoice register with summary |
+| GET | `/api/employees` | Employee directory |
+| GET | `/api/finance/summary` | Finance KPIs |
+| POST | `/api/attendance/checkin` | Attendance mark |
+| POST | `/api/leave/apply` | Leave application |
+
+---
+
+## 📊 Code Metrics
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `src/routes/portal.tsx` | 1,846 | All portal routes (Client, Employee, Board) |
+| `src/routes/admin.tsx` | 1,843 | Super Admin ERP console |
+| `src/routes/api.tsx` | 233 | REST API endpoints |
+| `src/lib/layout.ts` | 624 | Master layout, CSS, navigation |
+| `src/index.tsx` | 135 | App entry, route mounting |
+| **Total** | **4,681** | **525 KB compiled worker** |
 
 ---
 
 ## 🏗️ Data Architecture
 
 ### Data Models
-- Users (portal authentication)
-- Employees (HR, attendance, payroll)
-- Directors (board governance, KYC)
-- Clients (advisory relationships)
-- Mandates (active transaction advisory mandates)
-- Enquiries (inbound leads and requests)
-- Quotes / Invoices / Vouchers (Finance ERP)
-- Board Meetings / Resolutions / Minutes
-- HORECA Catalogue / Quotes
-- CMS Content (all website copy)
-- Audit Logs (immutable activity trail)
+- Users, Employees, Directors, Clients, Mandates, Enquiries
+- Invoices, Vouchers, Expenses, GST Records
+- Board Meetings, Resolutions, Minutes
+- HORECA SKUs, Quotes, Orders
+- CMS Pages, Audit Logs, Workflows, Contracts
 
-### Storage Services
-- **Cloudflare D1:** All relational data (employees, finance, governance, CMS)
-- **Cloudflare KV:** Session tokens, CMS cache, rate limiting
-- **Cloudflare R2:** Documents (board packs, contracts, brochures, payslips)
+### Storage Services (Planned)
+- **Cloudflare D1:** All relational data
+- **Cloudflare KV:** Session tokens, cache
+- **Cloudflare R2:** Documents, contracts, payslips
 
 ---
 
-## 👥 Leadership (Locked)
+## 👥 Leadership
 
 | Name | Role | Contact |
 |------|------|---------|
-| Arun Manikonda | Managing Director (Director on Board & KMP) | akm@indiagully.com · +91 9810889134 |
-| Pavan Manikonda | Executive Director (Director on Board & KMP) | pavan@indiagully.com · +91 6282556067 |
-| Amit Jhingan | President, Real Estate (KMP, Not a Director) | amit.jhingan@indiagully.com · +91 9899993543 |
+| Arun Manikonda | Managing Director | akm@indiagully.com · +91 9810889134 |
+| Pavan Manikonda | Executive Director | pavan@indiagully.com · +91 6282556067 |
+| Amit Jhingan | President, Real Estate | amit.jhingan@indiagully.com · +91 9899993543 |
 
 ---
 
@@ -145,29 +156,32 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 
 - **Platform:** Cloudflare Pages
 - **Project:** india-gully
-- **Branch:** main → Production
-- **Build Command:** `npm run build`
-- **Output Dir:** `dist/`
-- **Tech Stack:** Hono v4 + TypeScript + Cloudflare Workers
+- **Build:** `npm run build` → `dist/`
+- **Tech:** Hono v4 + TypeScript + Cloudflare Workers
 - **Status:** ✅ Active and Live
+
+```bash
+npm install        # Install dependencies
+npm run build      # Build for production
+npx wrangler pages deploy dist --project-name india-gully  # Deploy
+```
 
 ---
 
-## 🛠️ Development
+## 🔮 Remaining Enhancements
 
-```bash
-# Install
-npm install
+### Phase 6 — Backend Database
+- [ ] Cloudflare D1 database setup + migrations
+- [ ] JWT authentication with real 2FA (TOTP via OTPAUTH)
+- [ ] Form data persistence (enquiries, attendance, invoices → D1)
+- [ ] Session management with KV tokens
+- [ ] Email notifications via SMTP
 
-# Local dev
-npm run dev
+### Phase 7 — Integrations
+- [ ] Vyapar CSV/API sync
+- [ ] GST Portal auto-filing
+- [ ] WhatsApp Business notifications
+- [ ] R2 document storage + signed URLs
+- [ ] DocuSign webhook integration
 
-# Build
-npm run build
-
-# Deploy to Cloudflare
-npx wrangler pages deploy dist --project-name india-gully
-```
-
-*Last Updated: December 2024*  
-*Architecture Doc: /ARCHITECTURE.md*
+*Last Updated: February 2025 · Phase 5 Complete*
