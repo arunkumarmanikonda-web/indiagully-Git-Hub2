@@ -17,9 +17,15 @@ function salesShell(pageTitle: string, active: string, body: string) {
   return `
 <div style="display:flex;height:100vh;overflow:hidden;background:#f7f7f7;">
   <aside style="width:220px;flex-shrink:0;background:#0f172a;display:flex;flex-direction:column;overflow-y:auto;">
-    <a href="/admin/sales/dashboard" style="padding:1.25rem;border-bottom:1px solid rgba(255,255,255,.07);display:block;flex-shrink:0;">
-      <div style="font-family:'DM Serif Display',Georgia,serif;color:#fff;font-size:.85rem;letter-spacing:.07em;">INDIA GULLY</div>
-      <div style="font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:#38bdf8;margin-top:2px;">Sales Force Engine</div>
+    <a href="/admin/sales/dashboard" style="padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.07);display:block;flex-shrink:0;">
+      <!-- LOGO: official white-text lockup — read-only, no crop, no AI, lossless -->
+      <img src="/assets/logo-white.png"
+           alt="India Gully"
+           height="28"
+           style="height:28px;width:auto;max-width:180px;object-fit:contain;object-position:left center;display:block;"
+           draggable="false"
+           decoding="async">
+      <div style="font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:#38bdf8;margin-top:4px;">Sales Force Engine</div>
     </a>
     <nav style="flex:1;padding:.5rem;">
       <div style="font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:.5rem .75rem .25rem;">Sales</div>

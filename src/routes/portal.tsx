@@ -11,14 +11,14 @@ app.get('/', (c) => {
   <div style="position:relative;width:100%;max-width:1100px;">
     <div style="text-align:center;margin-bottom:3.5rem;">
       <a href="/" style="display:inline-flex;align-items:center;gap:.75rem;margin-bottom:2.5rem;">
-        <svg width="28" height="34" viewBox="0 0 38 46" fill="none">
-          <path d="M19 2C9 2 2 9.5 2 19.5C2 26.5 5.8 32.5 11.5 36L9 44H29L26.5 36C32.2 32.5 36 26.5 36 19.5C36 9.5 29 2 19 2Z" stroke="#B8960C" stroke-width="1.5" fill="none"/>
-          <path d="M23 8.5C18.5 8.5 15 11.5 14 15.5C13.2 18.5 14.5 21 17 22.5L14.5 27.5C16.5 28.5 18 29 19.5 29C22.5 29 25.5 27.5 27 25C28.5 22.5 28 19.5 25.5 18L27.5 13C26 10 24.5 8.5 23 8.5Z" fill="#B8960C"/>
-        </svg>
-        <div style="line-height:1;">
-          <div class="f-serif" style="color:#fff;font-size:1rem;letter-spacing:.07em;">INDIA GULLY</div>
-          <div style="font-size:.48rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-top:3px;">Enterprise Platform</div>
-        </div>
+        <!-- LOGO: official white-text lockup — read-only, no crop, no AI, lossless -->
+        <img src="/assets/logo-white.png"
+             alt="India Gully"
+             height="36"
+             style="height:36px;width:auto;max-width:200px;object-fit:contain;object-position:left center;display:block;"
+             draggable="false"
+             decoding="async">
+        <div style="font-size:.48rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-top:4px;">Enterprise Platform</div>
       </a>
       <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#fff;margin-bottom:.75rem;">Select Your Portal</h1>
       <p style="font-size:.875rem;color:rgba(255,255,255,.4);">Authorised users only. All access is logged, timestamped and monitored.</p>
@@ -215,9 +215,11 @@ function clientShell(pageTitle: string, active: string, body: string) {
   return `
 <div style="display:flex;height:100vh;overflow:hidden;background:#f7f7f7;">
   <aside style="width:240px;flex-shrink:0;background:var(--ink);display:flex;flex-direction:column;min-height:100vh;">
-    <a href="/portal/client/dashboard" style="padding:1.25rem;border-bottom:1px solid rgba(255,255,255,.07);display:block;">
-      <div class="f-serif" style="color:#fff;font-size:.95rem;letter-spacing:.06em;">INDIA GULLY</div>
-      <div style="font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:2px;">Client Portal</div>
+    <a href="/portal/client/dashboard" style="padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.07);display:block;">
+      <img src="/assets/logo-white.png" alt="India Gully" height="26"
+           style="height:26px;width:auto;max-width:170px;object-fit:contain;object-position:left center;display:block;"
+           draggable="false" decoding="async">
+      <div style="font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:4px;">Client Portal</div>
     </a>
     <nav style="flex:1;padding:.75rem;overflow-y:auto;">
       ${nav.map(i => `
@@ -517,7 +519,13 @@ app.get('/client/invoices', (c) => {
         </div>
         <div style="padding:1.5rem;">
           <div style="display:flex;justify-content:space-between;margin-bottom:1.5rem;">
-            <div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:var(--ink);">India Gully</div><div style="font-size:.72rem;color:var(--ink-muted);margin-top:.15rem;">Vivacious Entertainment & Hospitality Pvt. Ltd.<br>GSTIN: 07AABCV1234F1Z5 · CIN: U74999DL2017PTC320001<br>support@indiagully.com</div></div>
+            <div>
+            <!-- INVOICE LOGO: primary dark-text lockup — read-only, no crop, no AI, lossless -->
+            <img src="/assets/logo-primary.png" alt="India Gully" height="28"
+                 style="height:28px;width:auto;max-width:160px;object-fit:contain;object-position:left center;display:block;margin-bottom:.4rem;"
+                 draggable="false" decoding="async">
+            <div style="font-size:.72rem;color:var(--ink-muted);line-height:1.5;">Vivacious Entertainment &amp; Hospitality Pvt. Ltd.<br>GSTIN: 07AABCV1234F1Z5 · CIN: U74999DL2017PTC320001<br>support@indiagully.com</div>
+          </div>
             <div style="text-align:right;"><div id="inv-number" style="font-size:1rem;font-weight:700;color:var(--gold);"></div><div id="inv-due" style="font-size:.72rem;color:var(--ink-muted);margin-top:.25rem;"></div></div>
           </div>
           <div style="background:var(--parch-dk);padding:.875rem;margin-bottom:1.25rem;font-size:.82rem;"><strong>Bill To:</strong> Demo Client Org · GSTIN: 27AAACN1234D1ZI</div>
@@ -918,9 +926,11 @@ function empShell(pageTitle: string, active: string, body: string) {
   return `
 <div style="display:flex;height:100vh;overflow:hidden;background:#f7f7f7;">
   <aside style="width:240px;flex-shrink:0;background:#1A3A6B;display:flex;flex-direction:column;min-height:100vh;">
-    <a href="/portal/employee/dashboard" style="padding:1.25rem;border-bottom:1px solid rgba(255,255,255,.1);display:block;">
-      <div class="f-serif" style="color:#fff;font-size:.95rem;letter-spacing:.06em;">INDIA GULLY</div>
-      <div style="font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:#93c5fd;margin-top:2px;">Employee Portal</div>
+    <a href="/portal/employee/dashboard" style="padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1);display:block;">
+      <img src="/assets/logo-white.png" alt="India Gully" height="26"
+           style="height:26px;width:auto;max-width:170px;object-fit:contain;object-position:left center;display:block;"
+           draggable="false" decoding="async">
+      <div style="font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:#93c5fd;margin-top:4px;">Employee Portal</div>
     </a>
     <nav style="flex:1;padding:.75rem;overflow-y:auto;">
       ${nav.map(i => `
@@ -1588,9 +1598,11 @@ function boardShell(pageTitle: string, active: string, body: string) {
   return `
 <div style="display:flex;height:100vh;overflow:hidden;background:#f7f7f7;">
   <aside style="width:240px;flex-shrink:0;background:#1E1E1E;display:flex;flex-direction:column;min-height:100vh;">
-    <a href="/portal/board/dashboard" style="padding:1.25rem;border-bottom:1px solid rgba(255,255,255,.07);display:block;">
-      <div class="f-serif" style="color:#fff;font-size:.95rem;letter-spacing:.06em;">INDIA GULLY</div>
-      <div style="font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:2px;">Board & KMP</div>
+    <a href="/portal/board/dashboard" style="padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.07);display:block;">
+      <img src="/assets/logo-white.png" alt="India Gully" height="26"
+           style="height:26px;width:auto;max-width:170px;object-fit:contain;object-position:left center;display:block;"
+           draggable="false" decoding="async">
+      <div style="font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:4px;">Board &amp; KMP</div>
     </a>
     <nav style="flex:1;padding:.75rem;overflow-y:auto;">
       ${nav.map(i => `

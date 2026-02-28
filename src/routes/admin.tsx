@@ -43,9 +43,15 @@ function adminShell(pageTitle: string, active: string, body: string) {
   return `
 <div style="display:flex;height:100vh;overflow:hidden;background:#f7f7f7;">
   <aside style="width:220px;flex-shrink:0;background:#0A0A0A;display:flex;flex-direction:column;overflow-y:auto;">
-    <a href="/admin/dashboard" style="padding:1.25rem;border-bottom:1px solid rgba(255,255,255,.07);display:block;flex-shrink:0;">
-      <div class="f-serif" style="color:#fff;font-size:.85rem;letter-spacing:.07em;">INDIA GULLY</div>
-      <div style="font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:2px;">Super Admin</div>
+    <a href="/admin/dashboard" style="padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.07);display:block;flex-shrink:0;">
+      <!-- LOGO: official white-text lockup — read-only, no crop, no AI, lossless -->
+      <img src="/assets/logo-white.png"
+           alt="India Gully"
+           height="28"
+           style="height:28px;width:auto;max-width:180px;object-fit:contain;object-position:left center;display:block;"
+           draggable="false"
+           decoding="async">
+      <div style="font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:4px;">Super Admin</div>
     </a>
     <nav style="flex:1;padding:.5rem;">${nav}</nav>
     <div style="padding:.5rem;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0;">
@@ -629,6 +635,74 @@ app.get('/cms', (c) => {
         <div style="display:flex;gap:.625rem;">
           <button onclick="igToast('Sitemap regenerated — 12 URLs indexed','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-sync-alt" style="margin-right:.35rem;"></i>Regenerate</button>
           <button onclick="igToast('Sitemap submitted to Google Search Console','success')" style="background:#2563eb;color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fab fa-google" style="margin-right:.35rem;"></i>Submit to Google</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRAND ASSETS — locked, no AI, no optimisation -->
+    <div style="background:#fff;border:1px solid var(--border);margin-top:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Brand Assets</h3>
+          <p style="font-size:.7rem;color:var(--ink-muted);margin-top:.2rem;">Official logo files — locked, read-only. No AI processing, no auto-optimisation, no auto-crop.</p>
+        </div>
+        <span style="background:#fef9c3;border:1px solid #fde68a;color:#92400e;font-size:.62rem;font-weight:700;padding:.25rem .6rem;letter-spacing:.07em;text-transform:uppercase;">🔒 LOCKED</span>
+      </div>
+      <div style="padding:1.25rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+        ${[
+          {label:'Primary Logo',    file:'logo-primary.png',  bg:'#FAF8F3', desc:'Light backgrounds — website, documents, presentations',   w:1024,h:239},
+          {label:'White Logo',      file:'logo-white.png',    bg:'#111111', desc:'Dark backgrounds — sidebar, footer, dark-mode UI',         w:1024,h:239},
+          {label:'Hologram Mark',   file:'logo-hologram.png', bg:'#1a1a2e', desc:'Favicon master — hologram calligraphic mark (do not use as general logo)', w:275,h:424},
+        ].map(a=>`<div style="border:1px solid var(--border);overflow:hidden;">
+          <div style="background:${a.bg};padding:1.5rem;display:flex;align-items:center;justify-content:center;min-height:90px;">
+            <img src="/assets/${a.file}"
+                 alt="${a.label}"
+                 style="max-height:60px;max-width:100%;object-fit:contain;display:block;pointer-events:none;"
+                 draggable="false"
+                 decoding="async">
+          </div>
+          <div style="padding:.875rem;">
+            <div style="font-size:.78rem;font-weight:700;color:var(--ink);margin-bottom:.3rem;">${a.label}</div>
+            <div style="font-size:.68rem;color:var(--ink-muted);line-height:1.5;margin-bottom:.5rem;">${a.desc}</div>
+            <div style="font-size:.62rem;color:var(--ink-faint);font-family:monospace;background:#f8fafc;padding:.25rem .5rem;border:1px solid var(--border);margin-bottom:.625rem;">/assets/${a.file} · ${a.w}×${a.h}px · PNG RGBA · LOCKED</div>
+            <div style="display:flex;gap:.4rem;">
+              <input type="text" value="/assets/${a.file}" readonly
+                     style="flex:1;border:1px solid var(--border);padding:.3rem .5rem;font-size:.68rem;font-family:monospace;color:var(--ink-muted);background:#fafafa;cursor:default;"
+                     title="Asset path — read-only">
+              <button onclick="navigator.clipboard.writeText('/assets/${a.file}').then(()=>igToast('Path copied','success'))"
+                      style="background:var(--gold);color:#fff;border:none;padding:.3rem .625rem;font-size:.68rem;cursor:pointer;"
+                      title="Copy path"><i class="fas fa-copy"></i></button>
+            </div>
+          </div>
+        </div>`).join('')}
+      </div>
+      <!-- Favicon registry -->
+      <div style="padding:0 1.25rem 1.25rem;">
+        <div style="background:#f8fafc;border:1px solid var(--border);padding:.875rem;">
+          <div style="font-size:.75rem;font-weight:700;color:var(--ink);margin-bottom:.625rem;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-globe" style="color:var(--gold);margin-right:.4rem;"></i>Favicon Registry — Multi-size ICO + PNG</div>
+          <div style="display:flex;flex-wrap:wrap;gap:.625rem;">
+            ${[
+              {size:'16×16',  file:'favicon-16.png'},
+              {size:'32×32',  file:'favicon-32.png'},
+              {size:'48×48',  file:'favicon-48.png'},
+              {size:'64×64',  file:'favicon-64.png'},
+              {size:'180×180',file:'apple-touch-icon.png',label:'Apple Touch'},
+              {size:'Multi',  file:'favicon.ico',label:'favicon.ico (16/32/48/64)'},
+            ].map(f=>`<div style="background:#fff;border:1px solid var(--border);padding:.5rem .75rem;display:flex;align-items:center;gap:.5rem;">
+              <img src="/assets/${f.file.includes('apple')||f.file.includes('ico')?'favicon-32.png':f.file}"
+                   alt="${f.size}" width="16" height="16"
+                   style="image-rendering:pixelated;width:16px;height:16px;object-fit:contain;flex-shrink:0;"
+                   draggable="false">
+              <div>
+                <div style="font-size:.68rem;font-weight:700;color:var(--ink);">${f.label||f.size}</div>
+                <div style="font-size:.6rem;font-family:monospace;color:var(--ink-muted);">/assets/${f.file}</div>
+              </div>
+              <span style="margin-left:.25rem;font-size:.55rem;background:#dcfce7;color:#15803d;padding:1px 5px;border-radius:3px;font-weight:700;">LOCKED</span>
+            </div>`).join('')}
+          </div>
+          <div style="margin-top:.75rem;font-size:.68rem;color:var(--ink-muted);line-height:1.6;">
+            <strong>Rules:</strong> Hologram source only · Square-canvas center-fit · Lossless PNG · No SVG conversion · No AI processing · No auto-optimisation · No auto-crop · Disable contrast/background pipeline
+          </div>
         </div>
       </div>
     </div>
