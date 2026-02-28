@@ -185,7 +185,78 @@ app.get('/:id', (c) => {
   const others = LISTINGS.filter((x: any) => x.id !== id).slice(0, 3)
   const ss = statusStyle(l.statusType)
 
+  // G4: NDA acceptance modal — shown if listing requires NDA and user hasn't accepted
+  // Acceptance stored in sessionStorage keyed by mandate ID.
+  // Only the hero image is visible before acceptance; all sensitive detail is blurred/hidden.
+  const ndaModal = l.nda ? `
+<!-- ══ NDA GATE MODAL — G4 ═══════════════════════════════════════════ -->
+<div id="nda-gate" style="position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;padding:1.5rem;background:rgba(8,8,8,.88);backdrop-filter:blur(12px);">
+  <div style="width:100%;max-width:520px;background:#fff;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.6);">
+    <div style="background:var(--ink);padding:2rem;text-align:center;">
+      <div style="width:52px;height:52px;background:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;">
+        <i class="fas fa-file-contract" style="color:#fff;font-size:1.15rem;"></i>
+      </div>
+      <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.4rem;color:#fff;margin-bottom:.35rem;">Confidential Mandate</h2>
+      <p style="font-size:.75rem;color:rgba(255,255,255,.45);">NDA acceptance required to view full details</p>
+    </div>
+    <div style="padding:1.75rem;">
+      <div style="background:#fffbeb;border:1px solid #fde68a;padding:.875rem 1rem;margin-bottom:1.25rem;font-size:.78rem;color:#78350f;line-height:1.7;">
+        <i class="fas fa-exclamation-triangle" style="margin-right:.4rem;color:#d97706;"></i>
+        <strong>${l.title}</strong> is subject to a mutual Non-Disclosure Agreement. The Information Memorandum, financial projections, legal documentation and full mandate details are only accessible to qualified investors who have accepted NDA obligations.
+      </div>
+      <div style="border:1px solid var(--border);padding:1rem;margin-bottom:1.25rem;max-height:160px;overflow-y:auto;font-size:.75rem;color:var(--ink-soft);line-height:1.8;">
+        <p style="font-weight:700;margin-bottom:.5rem;color:var(--ink);">Non-Disclosure Agreement — Key Obligations</p>
+        <ol style="padding-left:1.25rem;margin:0;">
+          <li>All information disclosed about this mandate, including financial data, legal structure, counterparty details and advisory analysis, is strictly confidential.</li>
+          <li>You agree not to disclose, reproduce, distribute or use this information for any purpose other than evaluating a potential investment.</li>
+          <li>This obligation survives termination of any potential transaction and shall continue for a period of 3 years.</li>
+          <li>India Gully Advisory LLP retains exclusive mandate rights. Any direct approach to the underlying counterparty is a breach of this agreement.</li>
+          <li>Breach of this NDA may result in legal action under the Indian Contract Act 1872 and applicable information-technology laws.</li>
+        </ol>
+      </div>
+      <label style="display:flex;align-items:flex-start;gap:.625rem;cursor:pointer;margin-bottom:1.25rem;">
+        <input type="checkbox" id="nda-check" style="accent-color:var(--gold);margin-top:.2rem;flex-shrink:0;">
+        <span style="font-size:.78rem;color:var(--ink-soft);line-height:1.6;">
+          I have read and agree to be bound by the Non-Disclosure Agreement obligations above. I confirm I am a qualified investor, family office or institutional buyer evaluating this opportunity in good faith.
+        </span>
+      </label>
+      <div style="display:flex;gap:.875rem;">
+        <a href="/listings" style="flex:1;padding:.875rem;border:1px solid var(--border);text-align:center;font-size:.75rem;font-weight:600;color:var(--ink-soft);text-decoration:none;transition:all .2s;" onmouseover="this.style.borderColor='var(--ink)'" onmouseout="this.style.borderColor='var(--border)'">
+          <i class="fas fa-arrow-left" style="margin-right:.4rem;font-size:.65rem;"></i>Back to Mandates
+        </a>
+        <button id="nda-accept" onclick="igAcceptNDA('${l.id}')" disabled
+                style="flex:2;padding:.875rem;background:#ccc;color:#fff;border:none;cursor:not-allowed;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;">
+          <i class="fas fa-file-signature" style="margin-right:.5rem;font-size:.72rem;"></i>Accept &amp; View Mandate
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<style>#nda-gate{transition:opacity .3s;}#nda-blurred{transition:filter .5s,opacity .5s;}</style>
+<script>
+(function(){
+  var KEY='ig_nda_${l.id}';
+  var gate=document.getElementById('nda-gate');
+  var check=document.getElementById('nda-check');
+  var btn=document.getElementById('nda-accept');
+  // Already accepted in this session?
+  if(sessionStorage.getItem(KEY)==='accepted'){if(gate){gate.style.display='none';}}
+  // Enable accept button only when checkbox is ticked
+  if(check&&btn){check.addEventListener('change',function(){
+    btn.disabled=!check.checked;
+    btn.style.background=check.checked?'var(--ink)':'#ccc';
+    btn.style.cursor=check.checked?'pointer':'not-allowed';
+  });}
+})();
+function igAcceptNDA(mandateId){
+  sessionStorage.setItem('ig_nda_'+mandateId,'accepted');
+  var gate=document.getElementById('nda-gate');
+  if(gate){gate.style.opacity='0';setTimeout(function(){gate.style.display='none';},300);}
+}
+</script>` : ''
+
   const content = `
+${ndaModal}
 
 <!-- ══ DETAIL HERO ══════════════════════════════════════════════════════ -->
 <div style="background:var(--ink);position:relative;overflow:hidden;">
@@ -346,6 +417,28 @@ app.get('/:id', (c) => {
                 <i class="fas fa-paper-plane" style="margin-right:.5rem;font-size:.7rem;"></i>Request IM & NDA
               </button>
             </form>
+<script>
+/* G5: IM request form — phone validation + honeypot */
+(function(){
+  var f = document.querySelector('.ig-form');
+  if(!f) return;
+  function phoneOk(v){ var c=v.replace(/[\s\-().]/g,''); return /^(\+91|0)?[6-9]\d{9}$/.test(c)||/^\+\d{7,15}$/.test(c); }
+  function showE(inp,msg){ var id='fe-'+inp.name; var e=document.getElementById(id); if(e)e.remove(); var p=document.createElement('p'); p.id=id; p.style.cssText='font-size:.68rem;color:#fca5a5;margin-top:.25rem;'; p.textContent=msg; inp.parentNode.appendChild(p); inp.style.borderColor='#ef4444'; }
+  function clearE(inp){ var e=document.getElementById('fe-'+inp.name); if(e)e.remove(); inp.style.borderColor='rgba(255,255,255,.1)'; }
+  /* Honeypot */
+  var hp=document.createElement('input'); hp.type='text'; hp.name='ig_hp2'; hp.tabIndex=-1; hp.autocomplete='off'; hp.style.cssText='position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;'; f.appendChild(hp);
+  f.addEventListener('submit',function(e){
+    if(hp.value){e.preventDefault();return;}
+    var ok=true;
+    var nameInp=f.querySelector('[name=name]'); if(nameInp){clearE(nameInp);if(nameInp.value.trim().length<2){showE(nameInp,'Enter at least 2 characters.');ok=false;}}
+    var emailInp=f.querySelector('[name=email]'); if(emailInp){clearE(emailInp);if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailInp.value.trim())){showE(emailInp,'Enter a valid email address.');ok=false;}}
+    var phInp=f.querySelector('[name=phone]'); if(phInp&&phInp.value.trim()){clearE(phInp);if(!phoneOk(phInp.value.trim())){showE(phInp,'Enter a valid Indian mobile (+91 XXXXX XXXXX) or international number.');ok=false;}}
+    if(!ok){e.preventDefault();return;}
+    var btn=f.querySelector('button[type=submit]'); if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin" style="margin-right:.5rem;"></i>Sending…';}
+  });
+  var phInp2=f.querySelector('[name=phone]'); if(phInp2){phInp2.addEventListener('blur',function(){if(phInp2.value.trim()&&!phoneOk(phInp2.value.trim())){showE(phInp2,'Enter a valid Indian mobile (+91 XXXXX XXXXX) or international number.');}else{clearE(phInp2);}});}
+})();
+</script>
           </div>
         </div>
 

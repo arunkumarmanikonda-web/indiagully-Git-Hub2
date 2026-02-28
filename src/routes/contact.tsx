@@ -112,6 +112,134 @@ app.get('/', (c) => {
 
           <p style="font-size:.7rem;color:var(--ink-muted);line-height:1.65;text-align:center;">All enquiries are treated with strict confidentiality. Our leadership team reviews all submissions within 24 hours.</p>
         </form>
+
+<script>
+/* G5: Client-side form validation — phone format + spam protection */
+(function(){
+  var form = document.querySelector('.ig-form');
+  if(!form) return;
+
+  /* Inline error helper */
+  function showErr(input, msg){
+    var id = 'err-'+input.name;
+    var existing = document.getElementById(id);
+    if(existing) existing.remove();
+    var el = document.createElement('p');
+    el.id = id;
+    el.style.cssText = 'font-size:.72rem;color:#dc2626;margin-top:.25rem;';
+    el.innerHTML = '<i class="fas fa-exclamation-circle" style="margin-right:.25rem;"></i>' + msg;
+    input.parentNode.appendChild(el);
+    input.style.borderColor = '#dc2626';
+  }
+  function clearErr(input){
+    var el = document.getElementById('err-'+input.name);
+    if(el) el.remove();
+    input.style.borderColor = '';
+  }
+
+  /* Phone validation: Indian mobile (+91 or 0, 10 digits) or international */
+  function validatePhone(val){
+    var cleaned = val.replace(/[\s\-().]/g,'');
+    return /^(\+91|0)?[6-9]\d{9}$/.test(cleaned) || /^\+\d{7,15}$/.test(cleaned);
+  }
+
+  /* Honeypot field (spam protection) — hidden by CSS */
+  var hp = document.createElement('input');
+  hp.type = 'text'; hp.name = 'ig_hp'; hp.tabIndex = -1; hp.autocomplete = 'off';
+  hp.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;';
+  form.appendChild(hp);
+
+  /* Submission rate-limit: max 3 attempts per 10 min */
+  var submitKey = 'ig_contact_submits';
+  var submitWindowKey = 'ig_contact_window';
+
+  form.addEventListener('submit', function(e){
+    var valid = true;
+    var submitBtn = form.querySelector('button[type=submit]');
+
+    /* Honeypot check */
+    if(hp.value){ e.preventDefault(); return; }
+
+    /* Rate limiting */
+    var now = Date.now();
+    var windowStart = parseInt(localStorage.getItem(submitWindowKey)||'0');
+    var submits = parseInt(localStorage.getItem(submitKey)||'0');
+    if(now - windowStart > 10*60*1000){ submits = 0; localStorage.setItem(submitWindowKey, String(now)); }
+    if(submits >= 3){
+      e.preventDefault();
+      var existingRateErr = document.getElementById('rate-limit-err');
+      if(!existingRateErr){
+        var rateEl = document.createElement('div');
+        rateEl.id = 'rate-limit-err';
+        rateEl.style.cssText = 'background:#fef2f2;border:1px solid #fecaca;padding:.75rem 1rem;font-size:.78rem;color:#991b1b;margin-bottom:.5rem;';
+        rateEl.innerHTML = '<i class="fas fa-ban" style="margin-right:.4rem;"></i>Too many submissions. Please wait 10 minutes before trying again.';
+        form.insertBefore(rateEl, submitBtn);
+      }
+      return;
+    }
+
+    /* Name validation */
+    ['first_name','last_name'].forEach(function(n){
+      var inp = form.querySelector('[name='+n+']');
+      if(!inp) return;
+      clearErr(inp);
+      var v = inp.value.trim();
+      if(v.length < 2){ showErr(inp, 'Please enter at least 2 characters.'); valid = false; }
+      else if(/[<>&"'\\]/.test(v)){ showErr(inp, 'Special characters not allowed.'); valid = false; }
+    });
+
+    /* Email validation */
+    var emailInp = form.querySelector('[name=email]');
+    if(emailInp){
+      clearErr(emailInp);
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailInp.value.trim())){
+        showErr(emailInp, 'Please enter a valid email address (e.g. you@example.com).'); valid = false;
+      }
+    }
+
+    /* Phone validation */
+    var phoneInp = form.querySelector('[name=phone]');
+    if(phoneInp && phoneInp.value.trim()){
+      clearErr(phoneInp);
+      if(!validatePhone(phoneInp.value.trim())){
+        showErr(phoneInp, 'Enter a valid Indian mobile (+91 XXXXX XXXXX) or international number.'); valid = false;
+      }
+    }
+
+    /* Message minimum length */
+    var msgInp = form.querySelector('[name=message]');
+    if(msgInp){
+      clearErr(msgInp);
+      if(msgInp.value.trim().length < 20){
+        showErr(msgInp, 'Please provide at least 20 characters in your message.'); valid = false;
+      }
+    }
+
+    if(!valid){ e.preventDefault(); return; }
+
+    /* Increment submit counter */
+    localStorage.setItem(submitKey, String(submits + 1));
+
+    /* Loading state */
+    if(submitBtn){
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="margin-right:.5rem;"></i>Submitting…';
+    }
+  });
+
+  /* Real-time phone hint */
+  var phoneInp2 = form.querySelector('[name=phone]');
+  if(phoneInp2){
+    phoneInp2.addEventListener('blur', function(){
+      if(phoneInp2.value.trim() && !validatePhone(phoneInp2.value.trim())){
+        showErr(phoneInp2, 'Enter a valid Indian mobile (+91 XXXXX XXXXX) or international number.');
+      } else {
+        clearErr(phoneInp2);
+      }
+    });
+  }
+})();
+</script>
       </div>
 
       <!-- SIDEBAR INFO -->

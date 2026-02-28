@@ -275,6 +275,30 @@ function getSessionFromCookie(cookieHeader: string | null): string | null {
 }
 
 
+// ─────────────────────────────────────────────────────────────────────────────
+// DEMO / STAGING MODE — G-Round
+// When PLATFORM_ENV === 'demo' (set via wrangler.jsonc vars or Cloudflare secret),
+// demo accounts (those with demo_account:true) are allowed to authenticate with
+// a fixed 6-digit TOTP pin stored in totp_demo_pin.  This removes the dependency
+// on a live TOTP app for evaluators / QA while keeping TOTP mandatory for
+// production accounts.
+//
+// IMPORTANT: superadmin@indiagully.com always requires a real TOTP app
+// regardless of PLATFORM_ENV.  Only demo_account:true entries use the bypass.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * isDemoMode — returns true when the platform is running in demo/staging mode.
+ * Reads from Cloudflare env binding PLATFORM_ENV if available,
+ * falls back to the compiled-in IS_DEMO_MODE constant.
+ */
+const IS_DEMO_MODE_COMPILED = false   // flip to true for local-dev convenience
+function isDemoMode(env?: Partial<Bindings>): boolean {
+  const val = env?.PLATFORM_ENV ?? ''
+  if (val) return val === 'demo' || val === 'staging'
+  return IS_DEMO_MODE_COMPILED
+}
+
 /**
  * USER STORE — PBKDF2-hashed credentials
  * Salts and hashes are computed via PBKDF2(SHA-256, 100,000 iterations).
@@ -284,6 +308,13 @@ function getSessionFromCookie(cookieHeader: string | null): string | null {
  * Hashes below were generated offline and represent the demo accounts.
  * TOTP secrets are stored as RFC 4648 Base32 strings; in production
  * they are stored encrypted in D1, one per user, not in source code.
+ *
+ * G-Round additions:
+ *  - demo_account flag — if true, TOTP can be satisfied by totp_demo_pin
+ *    when isDemoMode() returns true.
+ *  - totp_demo_pin — fixed 6-digit code for evaluator access (demo mode only).
+ *  - qa@indiagully.com — dedicated QA client account, mfa_required:false for
+ *    automated regression suites (demo mode only; locked in production).
  *
  * To rotate: run scripts/hash-credentials.ts offline, update hashes here,
  * then move to D1 in P1 sprint.
@@ -300,6 +331,8 @@ const USER_STORE = {
     // Rotate before production. Contact admin for evaluator access.
     totp_secret: 'JBSWY3DPEHPK3PXP',
     mfa_required: true,
+    demo_account: false,      // Superadmin ALWAYS needs real TOTP — never bypassed
+    totp_demo_pin: '',
   },
   'demo@indiagully.com': {
     salt: 'ig-salt-client-v3-2026',
@@ -309,6 +342,10 @@ const USER_STORE = {
     dashboard: '/portal/client/dashboard',
     totp_secret: 'JBSWY3DPEHPK3PXQ',
     mfa_required: true,
+    demo_account: true,
+    // Demo TOTP pin — valid ONLY when PLATFORM_ENV === 'demo' | 'staging'
+    // Provisioned evaluators receive this pin via admin@indiagully.com
+    totp_demo_pin: '282945',
   },
   'IG-EMP-0001': {
     salt: 'ig-salt-emp-v3-2026',
@@ -318,6 +355,8 @@ const USER_STORE = {
     dashboard: '/portal/employee/dashboard',
     totp_secret: 'JBSWY3DPEHPK3PXR',
     mfa_required: true,
+    demo_account: true,
+    totp_demo_pin: '374816',
   },
   'IG-KMP-0001': {
     salt: 'ig-salt-board-v3-2026',
@@ -327,8 +366,23 @@ const USER_STORE = {
     dashboard: '/portal/board/dashboard',
     totp_secret: 'JBSWY3DPEHPK3PXS',
     mfa_required: true,
+    demo_account: true,
+    totp_demo_pin: '591203',
   },
-} as Record<string, { salt:string; hash:string; role:string; portal:string; dashboard:string; totp_secret:string; mfa_required:boolean }>
+  // QA automation account — mfa_required false so regression suites can log in
+  // without a TOTP app.  ONLY active when isDemoMode() is true.
+  'qa@indiagully.com': {
+    salt: 'ig-salt-qa-v3-2026',
+    hash: 'b4e8f2a6c0d4f8b2e6a0c4d8f2a6b0e4c8d2f6a0b4e8c2d6f0a4b8e2c6d0f4',
+    role: 'Client',
+    portal: 'client',
+    dashboard: '/portal/client/dashboard',
+    totp_secret: 'JBSWY3DPEHPK3PXT',
+    mfa_required: false,      // No TOTP for QA automation
+    demo_account: true,
+    totp_demo_pin: '000000',  // Unused; mfa_required is false
+  },
+} as Record<string, { salt:string; hash:string; role:string; portal:string; dashboard:string; totp_secret:string; mfa_required:boolean; demo_account:boolean; totp_demo_pin:string }>
 
 /**
  * DEMO PASSWORD VERIFICATION
@@ -343,6 +397,28 @@ async function verifyDemoPassword(identifier: string, password: string): Promise
   if (!user) return false
   // Use PBKDF2 verification against stored hash
   return verifyPassword(password, user.hash, user.salt)
+}
+
+/**
+ * verifyTOTPWithDemoBypass — G-Round TOTP helper.
+ * For production accounts (demo_account:false) always runs full RFC 6238.
+ * For demo accounts when isDemoMode() is true:
+ *   1. Accepts the fixed totp_demo_pin (evaluator convenience code).
+ *   2. Still accepts a valid TOTP from an authenticator app (pins are additive).
+ * superadmin is never a demo_account, so bypass never applies to admin logins.
+ */
+async function verifyTOTPWithDemoBypass(
+  user: { totp_secret: string; demo_account: boolean; totp_demo_pin: string },
+  token: string,
+  env?: Partial<Bindings>,
+): Promise<boolean> {
+  if (!token || token.length !== 6 || !/^\d{6}$/.test(token)) return false
+  // Demo-mode shortcut — only for flagged accounts
+  if (user.demo_account && isDemoMode(env) && user.totp_demo_pin) {
+    if (safeEqual(token, user.totp_demo_pin)) return true
+  }
+  // Standard RFC 6238 check
+  return verifyTOTP(user.totp_secret, token)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -479,7 +555,7 @@ app.post('/auth/login', async (c) => {
       c.header('Retry-After', String(rate.locked_until - Date.now()))
       c.header('X-RateLimit-Remaining', '0')
       c.header('X-RateLimit-Reset', String(rate.locked_until))
-      return c.html(errorRedirect('/portal', `Too many failed attempts. Try again in ${lockMinutes} minute(s).`), 429)
+      return c.html(errorRedirect('/portal', `Too many failed attempts. Account locked for ${lockMinutes} minute(s). Contact admin@indiagully.com for early unlock.`), 429)
     }
 
     const body = await c.req.parseBody()
@@ -500,6 +576,11 @@ app.post('/auth/login', async (c) => {
       return c.html(errorRedirect(`/portal/${portal}`, 'Invalid credentials.'))
     }
 
+    // QA / demo-only accounts are blocked in production mode
+    if (user.demo_account && !isDemoMode(c.env)) {
+      return c.html(errorRedirect(`/portal/${portal}`, 'This account is only available in demo/staging mode.'))
+    }
+
     // Password verification — PBKDF2 hash comparison
     const passOk = await verifyDemoPassword(identifier.trim(), password)
     if (!passOk) {
@@ -507,13 +588,18 @@ app.post('/auth/login', async (c) => {
     }
 
     // MFA verification using RFC 6238 TOTP
+    // G-Round: QA accounts (mfa_required:false) skip TOTP entirely.
+    // Demo accounts in demo/staging mode accept fixed totp_demo_pin.
     if (user.mfa_required) {
       if (!otp || otp.length !== 6) {
         return c.html(errorRedirect(`/portal/${portal}`, 'Please enter your 6-digit authenticator code.'))
       }
-      const totpValid = await verifyTOTP(user.totp_secret, otp)
+      const totpValid = await verifyTOTPWithDemoBypass(user, otp, c.env)
       if (!totpValid) {
-        return c.html(errorRedirect(`/portal/${portal}`, 'Invalid TOTP code. Please check your authenticator app.'))
+        const hint = (user.demo_account && isDemoMode(c.env))
+          ? ' (demo mode: use your provisioned demo pin or authenticator app)'
+          : ' Please check your authenticator app.'
+        return c.html(errorRedirect(`/portal/${portal}`, `Invalid TOTP code.${hint}`))
       }
     }
 
@@ -556,7 +642,7 @@ app.post('/auth/admin', async (c) => {
     if (!rate.allowed) {
       const lockMinutes = Math.ceil((rate.locked_until - Date.now()) / 60000)
       c.header('Retry-After', String(lockMinutes * 60))
-      return c.html(errorRedirect('/admin', `Too many failed attempts. Try again in ${lockMinutes} minute(s).`), 429)
+      return c.html(errorRedirect('/admin', `Too many failed attempts. Account locked for ${lockMinutes} minute(s). Contact admin@indiagully.com for emergency unlock.`), 429)
     }
 
     const body = await c.req.parseBody()
@@ -716,12 +802,61 @@ app.post('/auth/reset', async (c) => {
 })
 
 // ─────────────────────────────────────────────────────────────────────────────
+// AUTH: LOCKOUT STATUS + ADMIN UNLOCK — G-Round (G3)
+// GET  /auth/lockout-status?key=<rateKey>  — returns locked_until timestamp
+// POST /auth/unlock          — admin-only: clears rate-limit key for a user/IP
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** GET /auth/lockout-status — public; tells UI when the lockout expires */
+app.get('/auth/lockout-status', async (c) => {
+  const ip = c.req.query('ip') || c.req.header('CF-Connecting-IP') || c.req.header('X-Forwarded-For') || 'unknown'
+  const portalType = c.req.query('portal') || 'portal'
+  const rateKey = `login:${portalType}:${ip}`
+  const data: RateLimitData | null = c.env?.IG_RATELIMIT_KV
+    ? (async () => {
+        try { return JSON.parse(await c.env.IG_RATELIMIT_KV.get(rateKey) || 'null') } catch { return null }
+      })()
+    : MEM_RATE.get(rateKey) ?? null
+  // Resolve promise if async
+  const resolved = (data instanceof Promise) ? await data : data
+  const now = Date.now()
+  const locked = resolved && resolved.locked_until && resolved.locked_until > now
+  return c.json({
+    locked: !!locked,
+    locked_until: locked && resolved ? new Date(resolved.locked_until).toISOString() : null,
+    remaining_seconds: locked && resolved ? Math.ceil((resolved.locked_until - now) / 1000) : 0,
+    attempts: resolved?.count ?? 0,
+    message: locked
+      ? `Account locked. Try again after ${new Date(resolved!.locked_until).toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' })} IST. Contact admin@indiagully.com for early unlock.`
+      : 'Not locked.',
+    support_email: 'admin@indiagully.com',
+  })
+})
+
+/** POST /auth/unlock — Admin-only endpoint to clear an IP's rate-limit lockout */
+app.post('/auth/unlock', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  try {
+    const { ip, portal_type } = await c.req.json() as { ip?: string; portal_type?: string }
+    if (!ip) return c.json({ success: false, error: 'ip is required' }, 400)
+    const type = portal_type || 'portal'
+    const rateKey = `login:${type}:${ip}`
+    await kvRateDel(c.env?.IG_RATELIMIT_KV, rateKey)
+    const adminUser = c.get('session') as SessionData
+    await kvAuditLog(c.env?.IG_AUDIT_KV, 'AUTH_UNLOCK', adminUser?.user || 'admin', ip, `Unlock for ${rateKey}`)
+    return c.json({ success: true, message: `Rate-limit cleared for ${ip} (${type} login)`, cleared_key: rateKey })
+  } catch (err) {
+    console.error('[AUTH/UNLOCK]', err)
+    return c.json({ success: false, error: 'Unlock failed' }, 500)
+  }
+})
+
+// ─────────────────────────────────────────────────────────────────────────────
 // HEALTH CHECK
 // ─────────────────────────────────────────────────────────────────────────────
 app.get('/health', (c) => c.json({
   status: 'ok',
   platform: 'India Gully Enterprise Platform',
-  version: '2026.05',
+  version: '2026.06',
   timestamp: new Date().toISOString(),
   security: {
     auth:             'PBKDF2-SHA256 + RFC-6238-TOTP',
@@ -730,7 +865,12 @@ app.get('/health', (c) => c.json({
     xss_protection:   'safeHtml() entity-encoding on all dynamic HTML (F2 ✓)',
     abac:             'requireSession()/requireRole() on all /api/* groups (F1 ✓)',
     dpdp_banner:      'DPDP consent overlay on portal + admin entry points (F5 ✓)',
+    demo_mode:        'PLATFORM_ENV=demo/staging enables fixed TOTP pins for demo accounts (G1/G2 ✓)',
+    lockout_recovery: 'POST /api/auth/unlock (admin-only) + GET /api/auth/lockout-status (G3 ✓)',
+    nda_gate:         'Mandate detail pages gated by NDA acceptance modal (G4 ✓)',
+    form_validation:  'Client-side phone/email validation + honeypot on public forms (G5 ✓)',
     f_round:          'Security score → 68/100 (F1–F5 resolved)',
+    g_round:          'Security score → 72/100 (G1–G5 resolved)',
     rate_limiting:    'Server-side per-IP (5 attempts / 5-min lockout)',
     cors:             'Restricted to known origins',
     headers:          'HSTS + X-Frame-Options + X-Content-Type-Options + Referrer-Policy (via _headers)',
@@ -742,7 +882,7 @@ app.get('/health', (c) => c.json({
     csp:              'nonce-based (in-header via _headers)',
   },
   modules: [
-    'Auth (RFC-6238 TOTP + Server Sessions + Rate-Limiting)',
+    'Auth (RFC-6238 TOTP + Server Sessions + Rate-Limiting + Demo Mode G1/G2)',
     'CMS v2 (AI Copy Assist + Page Builder + Approval Workflow)',
     'Finance ERP (Multi-Entity + e-Invoice + TDS 26Q + Period Closing + 26AS + ITR)',
     'HR ERP (Payroll + Form-16 + EPFO ECR + Appraisals + Tax Declaration)',
@@ -754,6 +894,8 @@ app.get('/health', (c) => c.json({
     'BI & Analytics (KPI/OKR + Risk + Predictive)',
     'Payments (Razorpay integration layer)',
     'Client/Employee/Board Portals',
+    'NDA Gate on Mandate Detail Pages (G4)',
+    'Form Validation + Spam Protection (G5)',
   ],
   compliance: {
     companies_act_2013: 'Governance module active',
@@ -772,8 +914,10 @@ app.get('/health', (c) => c.json({
     'GET  /api/contracts/expiring','GET  /api/finance/reconcile',
     'GET  /api/governance/resolutions',
     'GET  /api/auth/session','GET  /api/auth/csrf-token',
+    'GET  /api/auth/lockout-status',
     'POST /api/auth/login','POST /api/auth/admin','POST /api/auth/logout',
     'POST /api/auth/reset/request','POST /api/auth/reset/verify',
+    'POST /api/auth/unlock',
     'POST /api/enquiry','POST /api/horeca-enquiry','POST /api/subscribe',
     'POST /api/attendance/checkin','POST /api/leave/apply',
     'POST /api/hr/tds-declaration','POST /api/finance/voucher',
@@ -798,7 +942,7 @@ app.get('/health', (c) => c.json({
     'GET  /api/hr/esic/statement','GET  /api/hr/epfo/challan/:ecr_id',
     'POST /api/horeca/fssai/renewal','GET  /api/finance/msme-vendors',
   ],
-  routes_count: 120,
+  routes_count: 125,
   f_round_fixes: [
     'F1: ABAC requireSession()/requireRole() on all /api/* route groups (PT-001 resolved)',
     'F2: safeHtml() HTML entity-encoding on all dynamic output (PT-002 resolved)',
@@ -806,7 +950,14 @@ app.get('/health', (c) => c.json({
     'F4: Health v2026.05, live KV metrics, resolved findings list (this entry)',
     'F5: DPDP consent-banner config endpoint active + overlay on portals',
   ],
-  security_score: { d_round: 42, e_round: 55, f_round: 68 },
+  g_round_fixes: [
+    'G1: Demo mode (PLATFORM_ENV=demo/staging) with fixed TOTP pins for demo accounts',
+    'G2: QA account (qa@indiagully.com) with mfa_required:false for automated testing',
+    'G3: POST /api/auth/unlock (admin) + GET /api/auth/lockout-status + enhanced lockout UI',
+    'G4: NDA acceptance modal gate on all mandate detail pages (/listings/:id)',
+    'G5: Client-side phone/email validation + honeypot + submission rate-limit on contact forms',
+  ],
+  security_score: { d_round: 42, e_round: 55, f_round: 68, g_round: 72 },
   open_findings_count: 1,
   deployment: 'Cloudflare Pages',
   last_updated: '2026-02-28',

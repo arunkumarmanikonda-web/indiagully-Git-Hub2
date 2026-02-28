@@ -85,12 +85,12 @@ function loginPage(opts: {
         <i class="fas fa-shield-alt" style="color:#0369a1;font-size:.75rem;margin-top:.15rem;flex-shrink:0;"></i>
         <div>
           <p style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0c4a6e;margin-bottom:.2rem;">2FA Required</p>
-          <p style="font-size:.75rem;color:#0369a1;line-height:1.6;">Open your authenticator app and enter the 6-digit code for <strong>India Gully</strong>. Code refreshes every 30 seconds.<br><a href="/portal/demo-access" style="color:#0369a1;text-decoration:underline;font-size:.72rem;">Demo access guide &rarr;</a></p>
+          <p style="font-size:.75rem;color:#0369a1;line-height:1.6;">Open your authenticator app and enter the 6-digit code for <strong>India Gully</strong>. Code refreshes every 30 seconds.<br><a href="/portal/demo-access" style="color:#0369a1;text-decoration:underline;font-size:.72rem;">Demo access guide &amp; lockout recovery &rarr;</a></p>
         </div>
       </div>
       ${errorBanner}
       <div style="padding:2rem;">
-        <div id="lockout-banner-${opts.portal}" style="display:none;background:#fef2f2;border:1px solid #fecaca;padding:.7rem 1rem;margin-bottom:1rem;font-size:.78rem;color:#991b1b;border-radius:2px;"><i class="fas fa-ban" style="margin-right:.4rem;"></i>Too many failed attempts — account locked for <span id="lockout-timer-${opts.portal}">300</span>s. Please try again later or reset your password.</div>
+        <div id="lockout-banner-${opts.portal}" style="display:none;background:#fef2f2;border:1px solid #fecaca;padding:.7rem 1rem;margin-bottom:1rem;font-size:.78rem;color:#991b1b;border-radius:2px;"><i class="fas fa-ban" style="margin-right:.4rem;"></i>Too many failed attempts — account locked for <span id="lockout-timer-${opts.portal}">300</span>s. <a href="/portal/demo-access#lockout" style="color:#dc2626;text-decoration:underline;">Lockout recovery &rarr;</a> or contact <a href="mailto:admin@indiagully.com" style="color:#dc2626;">admin@indiagully.com</a>.</div>
         <form id="login-form-${opts.portal}" method="POST" action="/api/auth/login" style="display:flex;flex-direction:column;gap:1.1rem;">
           <input type="hidden" name="portal" value="${opts.portal}">
           <input type="hidden" name="csrf" id="csrf-${opts.portal}" value="">
@@ -205,23 +205,92 @@ app.get('/board', (c) => {
   }), { noNav:true, noFooter:true }))
 })
 
-// ── DEMO ACCESS GUIDE — credentials NOT displayed; contact administrator ──────
+// ── DEMO ACCESS GUIDE — G-Round: updated with demo-mode pins and lockout help ──
 app.get('/demo-access', (c) => {
   const content = `
 <div style="min-height:100vh;background:linear-gradient(135deg,#080808 0%,#141414 100%);display:flex;align-items:center;justify-content:center;padding:2rem 1.5rem;">
-  <div style="width:100%;max-width:540px;">
+  <div style="width:100%;max-width:620px;">
     <div style="background:#fff;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.5);">
       <div style="background:#1A3A6B;padding:2rem;text-align:center;">
         <div style="width:48px;height:48px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;"><i class="fas fa-user-shield" style="color:#fff;font-size:1.25rem;"></i></div>
-        <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;margin-bottom:.25rem;">Access Support</h1>
-        <p style="font-size:.75rem;color:rgba(255,255,255,.55);">Enterprise Platform Login Help</p>
+        <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;margin-bottom:.25rem;">Demo Access Guide</h1>
+        <p style="font-size:.75rem;color:rgba(255,255,255,.55);">Evaluator &amp; QA Credentials — G-Round</p>
       </div>
+
+      <!-- Demo environment notice -->
       <div style="background:#f0f9ff;border-bottom:1px solid #bae6fd;padding:.875rem 1.5rem;display:flex;gap:.6rem;">
         <i class="fas fa-info-circle" style="color:#0369a1;font-size:.75rem;margin-top:.2rem;flex-shrink:0;"></i>
-        <p style="font-size:.75rem;color:#0c4a6e;">Credentials are provisioned individually by the system administrator. Passwords and TOTP secrets are never displayed in the portal for security reasons.</p>
+        <p style="font-size:.75rem;color:#0c4a6e;line-height:1.6;">
+          <strong>Demo / Staging Mode:</strong> When the platform is running in <code style="background:#dbeafe;padding:.1rem .3rem;border-radius:2px;">PLATFORM_ENV=demo</code> or <code style="background:#dbeafe;padding:.1rem .3rem;border-radius:2px;">PLATFORM_ENV=staging</code>, demo accounts accept a fixed evaluator TOTP pin in addition to the live authenticator app code. The QA account (<code>qa@indiagully.com</code>) skips TOTP entirely for automated test suites. <strong>Superadmin always requires a real authenticator app.</strong>
+        </p>
       </div>
+
       <div style="padding:1.75rem;">
-        <h3 style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:1rem;">Available Portals</h3>
+        <!-- Demo Credentials Table -->
+        <h3 style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:.875rem;">
+          <i class="fas fa-key" style="margin-right:.4rem;color:var(--gold);"></i>Demo Credentials (Demo/Staging Mode Only)
+        </h3>
+        <div style="overflow-x:auto;margin-bottom:1.5rem;">
+          <table style="width:100%;border-collapse:collapse;font-size:.75rem;">
+            <thead>
+              <tr style="background:#f8f9fa;">
+                <th style="text-align:left;padding:.5rem .75rem;border-bottom:2px solid var(--border);color:var(--ink-muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;">Portal</th>
+                <th style="text-align:left;padding:.5rem .75rem;border-bottom:2px solid var(--border);color:var(--ink-muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;">Identifier</th>
+                <th style="text-align:left;padding:.5rem .75rem;border-bottom:2px solid var(--border);color:var(--ink-muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;">Demo TOTP Pin</th>
+                <th style="text-align:left;padding:.5rem .75rem;border-bottom:2px solid var(--border);color:var(--ink-muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;">Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${[
+                { portal:'Client',   id:'demo@indiagully.com', pin:'282945', role:'Client',   note:'' },
+                { portal:'Employee', id:'IG-EMP-0001',         pin:'374816', role:'Employee', note:'' },
+                { portal:'Board',    id:'IG-KMP-0001',         pin:'591203', role:'Board',    note:'' },
+                { portal:'Client',   id:'qa@indiagully.com',   pin:'—',      role:'Client',   note:'No TOTP (QA automation)' },
+              ].map((r,i) => `
+              <tr style="${i%2===1?'background:#f8f9fa;':''}">
+                <td style="padding:.5rem .75rem;border-bottom:1px solid var(--border);">${r.portal}</td>
+                <td style="padding:.5rem .75rem;border-bottom:1px solid var(--border);font-family:monospace;font-size:.78rem;">${r.id}</td>
+                <td style="padding:.5rem .75rem;border-bottom:1px solid var(--border);font-family:monospace;font-size:.85rem;font-weight:700;color:${r.pin==='—'?'var(--ink-muted)':'#166534'};">${r.pin}</td>
+                <td style="padding:.5rem .75rem;border-bottom:1px solid var(--border);color:var(--ink-muted);">${r.role}${r.note?'<br><span style=\'font-size:.68rem;color:#0369a1;\'>'+r.note+'</span>':''}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+        <div style="background:#fffbeb;border:1px solid #fde68a;padding:.875rem 1rem;font-size:.75rem;color:#78350f;margin-bottom:1.5rem;">
+          <i class="fas fa-exclamation-triangle" style="margin-right:.4rem;"></i>
+          <strong>Passwords:</strong> Contact <a href="mailto:admin@indiagully.com" style="color:#b45309;">admin@indiagully.com</a> for demo passwords. Passwords are provisioned individually and are never displayed on screen. For evaluator access, request a demo-environment login via email.
+        </div>
+
+        <!-- Lockout Recovery -->
+        <h3 style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:.875rem;">
+          <i class="fas fa-lock-open" style="margin-right:.4rem;color:#dc2626;"></i>Account Lockout Recovery
+        </h3>
+        <div style="background:#fef2f2;border:1px solid #fecaca;padding:1rem;margin-bottom:1rem;font-size:.78rem;color:#7f1d1d;line-height:1.8;">
+          <p style="margin-bottom:.5rem;"><strong>After 5 failed login attempts, accounts are locked for 5 minutes (300 seconds).</strong></p>
+          <ul style="padding-left:1.25rem;margin:0;">
+            <li>Wait for the countdown timer on the login page to reach zero, then retry.</li>
+            <li>For immediate unlock, email <a href="mailto:admin@indiagully.com" style="color:#dc2626;">admin@indiagully.com</a> or call <strong>+91 8988 988 988</strong>.</li>
+            <li>Super Admins can also use the admin panel: <strong>Security &rarr; Auth Locks</strong> or call <code style="background:#fee2e2;padding:.1rem .3rem;">POST /api/auth/unlock</code>.</li>
+            <li>If the error says your TOTP code is invalid, ensure your authenticator app clock is synced (Settings &rarr; Time Correction in Google Authenticator).</li>
+          </ul>
+        </div>
+
+        <!-- TOTP setup guide -->
+        <h3 style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:.875rem;">
+          <i class="fas fa-mobile-alt" style="margin-right:.4rem;color:#1A3A6B;"></i>Setting Up Your Authenticator App
+        </h3>
+        <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:1rem;margin-bottom:1.25rem;font-size:.78rem;color:#0c4a6e;line-height:1.8;">
+          <ol style="padding-left:1.25rem;margin:0;">
+            <li>Install <strong>Google Authenticator</strong>, <strong>Authy</strong>, or <strong>Microsoft Authenticator</strong> on your phone.</li>
+            <li>Email <a href="mailto:admin@indiagully.com" style="color:#0369a1;">admin@indiagully.com</a> to request your TOTP QR code.</li>
+            <li>Scan the QR code in your authenticator app to register <em>India Gully Enterprise</em>.</li>
+            <li>Enter the 6-digit rotating code during login. The code refreshes every 30 seconds.</li>
+            <li><strong>Clock skew:</strong> If codes are consistently rejected, go to Google Authenticator → Settings → Time Correction for Codes → Sync Now.</li>
+          </ol>
+        </div>
+
+        <!-- Available portals -->
+        <h3 style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:.875rem;">Available Portals</h3>
         ${[
           {portal:'Client Portal',   url:'/portal/client',   icon:'user-tie',   color:'#B8960C', desc:'Advisory services, mandates, invoices, deliverables'},
           {portal:'Employee Portal', url:'/portal/employee', icon:'users',      color:'#1A3A6B', desc:'HR, payroll, leave, attendance, Form-16'},
@@ -238,27 +307,14 @@ app.get('/demo-access', (c) => {
           <a href="${p.url}" style="font-size:.72rem;color:var(--gold);text-decoration:none;white-space:nowrap;margin-left:1rem;">Login &rarr;</a>
         </div>`).join('')}
 
-        <div style="background:#fffbeb;border:1px solid #fde68a;padding:1rem;margin-top:1.25rem;margin-bottom:1rem;">
-          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#92400e;margin-bottom:.5rem;"><i class="fas fa-mobile-alt" style="margin-right:.4rem;"></i>2FA / TOTP — Authenticator App Required</div>
-          <p style="font-size:.78rem;color:#78350f;line-height:1.8;">All portals require a 6-digit code from an authenticator app (Google Authenticator, Authy, or Microsoft Authenticator).<br>Your TOTP secret is provisioned by the administrator when your account is created. It is never displayed on screen.</p>
-        </div>
-
-        <div style="background:#f0fdf4;border:1px solid #bbf7d0;padding:1rem;margin-bottom:1.25rem;">
-          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#166534;margin-bottom:.5rem;"><i class="fas fa-envelope" style="margin-right:.4rem;"></i>Request Access</div>
-          <p style="font-size:.78rem;color:#166534;line-height:1.8;">Contact your system administrator for login credentials:<br>
-            <strong>Email:</strong> <a href="mailto:admin@indiagully.com" style="color:#16a34a;">admin@indiagully.com</a><br>
-            <strong>Phone:</strong> +91 8988 988 988
-          </p>
-        </div>
-
-        <div style="text-align:center;">
+        <div style="text-align:center;margin-top:1.25rem;">
           <a href="/portal" style="font-size:.78rem;color:var(--gold);">&larr; Back to Portal Selection</a>
         </div>
       </div>
     </div>
   </div>
 </div>`
-  return c.html(layout('Access Support', content, { noNav:true, noFooter:true }))
+  return c.html(layout('Demo Access Guide', content, { noNav:true, noFooter:true }))
 })
 
 // ── PASSWORD RESET ────────────────────────────────────────────────────────────
