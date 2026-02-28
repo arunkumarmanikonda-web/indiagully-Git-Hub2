@@ -30,24 +30,26 @@
   // Production D1 — create with: npx wrangler d1 create india-gully-production
   // Local dev uses automatic --local SQLite in .wrangler/state/v3/d1
   // Requires Cloudflare API token with D1:Edit permission
+  // PENDING: Enable once Cloudflare API token has D1:Edit permissions
   // After creation, replace "PENDING_D1_ID" with real database_id from wrangler output
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "india-gully-production",
-      "database_id": "PENDING_D1_ID"
-    }
-  ],
+  // "d1_databases": [
+  //   {
+  //     "binding": "DB",
+  //     "database_name": "india-gully-production",
+  //     "database_id": "PENDING_D1_ID"
+  //   }
+  // ],
 
   // ── R2 Storage ───────────────────────────────────────────────────────────────
   // Document storage: board packs, contracts, employee files
   // Create with: npx wrangler r2 bucket create india-gully-docs
-  "r2_buckets": [
-    {
-      "binding": "DOCS_BUCKET",
-      "bucket_name": "india-gully-docs"
-    }
-  ],
+  // PENDING: Enable once R2 bucket is created
+  // "r2_buckets": [
+  //   {
+  //     "binding": "DOCS_BUCKET",
+  //     "bucket_name": "india-gully-docs"
+  //   }
+  // ],
 
   // ── Environment Variables (non-secret) ───────────────────────────────────────
   "vars": {

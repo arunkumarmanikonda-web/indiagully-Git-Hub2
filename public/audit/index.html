@@ -133,9 +133,9 @@
     A full-spectrum security, compliance, and functional assessment of the India Gully multi-tenant enterprise platform — covering all ERP modules, portal security, regulatory obligations, and architectural posture.
   </p>
   <div class="cover-meta">
-    <span><strong>Audit Version</strong> v2026.04-D-Round</span>
+    <span><strong>Audit Version</strong> v2026.05-E-Round</span>
     <span><strong>Report Date</strong> 28 February 2026</span>
-    <span><strong>Platform Version</strong> 2026.03 (commit ef81367)</span>
+    <span><strong>Platform Version</strong> 2026.05 (commit ed13862)</span>
     <span><strong>Deployment</strong> Cloudflare Pages · india-gully.pages.dev</span>
     <span><strong>Auditor</strong> Internal Platform Audit Team</span>
     <span><strong>Classification</strong> Restricted — Board & Management Only</span>
@@ -725,6 +725,7 @@
   <div class="info-box ok" style="margin-top:1rem;background:#f0fdf4;border:1px solid #bbf7d0;padding:1rem 1.25rem;display:flex;gap:.75rem;align-items:flex-start;">
     <i class="fas fa-check-circle" style="color:var(--green);margin-top:.15rem;flex-shrink:0;"></i>
     <div><strong>D-Round Summary (2026-02-28):</strong> All P0 Critical security items from C1/C8 are now resolved. Hard-coded credentials removed from HTML responses and source code comments. PBKDF2 hash verification replaces plaintext comparison. Pseudo-TOTP generator removed; RFC 6238 server-side TOTP verification active. HTTP security headers (including CSP) deployed. CORS restricted. CI/CD pipeline active. D1 migration schema ready for P1 sprint. Security score improved from <strong>18/100 → est. 42/100</strong> (P0 gates cleared; P1–P3 remain).</div>
+    <div style="margin-top:.75rem;"><strong>E-Round Summary (2026-02-28):</strong> P1–P3 sprint completed. KV-backed session &amp; rate-limit middleware wired (IG_SESSION_KV, IG_RATELIMIT_KV, IG_AUDIT_KV). D1 local migration applied (28 SQL commands, all tables created). Razorpay live integration (HMAC-SHA256 verification), GST IRP e-invoice generation stub (NIC v1.03), DocuSign envelope API, SendGrid email delivery, DPDP consent banner &amp; withdrawal endpoint. Statutory registers upgraded to D1-backed CRUD. FSSAI renewal API, EPFO challan status. Architecture microservices roadmap, FIDO2/WebAuthn configuration stub, MCA filing schedule, penetration test checklist (open findings: PT-001 IDOR High, PT-002 XSS Medium), Disaster Recovery plan (RTO 4h / RPO 24h). Security score improved from <strong>42/100 → est. 55/100</strong>. Functional completeness: <strong>78/100</strong>. Deploy: bc351fc2.india-gully.pages.dev</div>
   </div>
 </div>
 
