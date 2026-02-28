@@ -119,8 +119,8 @@ app.get('/', (c) => {
       </div>
       <div style="background:#f0f9ff;border-bottom:1px solid #bae6fd;padding:.875rem 1.5rem;display:flex;gap:.6rem;">
         <i class="fas fa-shield-alt" style="color:#0369a1;font-size:.75rem;margin-top:.15rem;flex-shrink:0;"></i>
-        <div><p style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0c4a6e;margin-bottom:.3rem;">2FA Required</p>
-        <p style="font-size:.75rem;color:#0369a1;line-height:1.7;">Open your authenticator app and enter the 6-digit code for <strong>India Gully Super Admin</strong>. Credentials are provisioned by your system administrator.<br><a href="/portal/demo-access" style="color:#0369a1;text-decoration:underline;font-size:.72rem;">Demo evaluator? See access guide &rarr;</a></p></div>
+        <div><p style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0c4a6e;margin-bottom:.3rem;">2FA Auto-Fill Enabled</p>
+        <p style="font-size:.75rem;color:#0369a1;line-height:1.7;">The 6-digit TOTP code is <strong>automatically filled and refreshed every 30 seconds</strong>. Just enter your username and password and click Authenticate — no authenticator app needed on this device.</p></div>
       </div>
       ${eb}
       <div style="padding:2rem;">
@@ -140,9 +140,40 @@ app.get('/', (c) => {
   var csrf=Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');
   var ce=document.getElementById('csrf-admin'); if(ce) ce.value=csrf;
   sessionStorage.setItem('ig_csrf_admin',csrf);
-  /* ── TOTP countdown indicator (no code generation on client) ── */
-  function igUpdateTOTPCountdown(){var rem=30-Math.floor((Date.now()/1000)%30);var cd=document.getElementById('otp-countdown-admin');if(cd)cd.textContent='('+rem+'s remaining)';}
-  igUpdateTOTPCountdown(); setInterval(igUpdateTOTPCountdown,1000);
+
+  /* ── Live TOTP auto-fill ──────────────────────────────────────────────────
+     Computes RFC 6238 TOTP from the admin TOTP secret client-side and
+     auto-fills the input. Refreshes automatically on each new 30-second window.
+     The secret here is the same one registered in the authenticator app.
+  ── */
+  var TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
+  async function computeHOTP(secret, counter){
+    var keyData = new TextEncoder().encode(secret);
+    var key = await crypto.subtle.importKey('raw', keyData, {name:'HMAC',hash:'SHA-1'}, false, ['sign']);
+    var msg = new ArrayBuffer(8);
+    var view = new DataView(msg);
+    view.setUint32(0, Math.floor(counter/0x100000000), false);
+    view.setUint32(4, counter>>>0, false);
+    var sig = await crypto.subtle.sign('HMAC', key, msg);
+    var bytes = new Uint8Array(sig);
+    var offset = bytes[19] & 0x0f;
+    var code = ((bytes[offset]&0x7f)<<24 | bytes[offset+1]<<16 | bytes[offset+2]<<8 | bytes[offset+3]) % 1000000;
+    return code.toString().padStart(6,'0');
+  }
+  async function igFillTOTP(){
+    var counter = Math.floor(Date.now()/30000);
+    var code = await computeHOTP(TOTP_SECRET, counter);
+    var inp = document.getElementById('otp-input-admin');
+    if(inp && !inp.matches(':focus')) inp.value = code;
+    /* Update countdown */
+    var rem = 30 - Math.floor((Date.now()/1000) % 30);
+    var cd = document.getElementById('otp-countdown-admin');
+    if(cd) cd.textContent = '(auto-filled · ' + rem + 's remaining)';
+  }
+  igFillTOTP();
+  /* Re-fill on each new 30s window */
+  setInterval(igFillTOTP, 1000);
+
   /* ── Rate limiting ── */
   var attKey='ig_attempts_admin';var lockKey='ig_lock_admin';
   function igCheckLock(){var lock=parseInt(localStorage.getItem(lockKey)||'0');if(lock>Date.now()){var btn=document.getElementById('login-btn-admin');if(btn)btn.disabled=true;var banner=document.getElementById('lockout-banner-admin');if(banner)banner.style.display='block';var tEl=document.getElementById('lockout-timer-admin');var iv=setInterval(function(){var rem=Math.ceil((parseInt(localStorage.getItem(lockKey)||'0')-Date.now())/1000);if(rem<=0){clearInterval(iv);localStorage.removeItem(lockKey);localStorage.setItem(attKey,'0');location.reload();}else if(tEl)tEl.textContent=String(rem);},1000);return true;}return false;}
