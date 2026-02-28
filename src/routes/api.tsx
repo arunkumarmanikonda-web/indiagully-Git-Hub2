@@ -230,4 +230,71 @@ app.post('/leave/apply', async (c) => {
   }
 })
 
+// ── MANDATES API ──────────────────────────────────────────────────────────────
+app.get('/mandates', (c) => c.json({
+  total: 3, active: 2, pipeline_value: '₹6,645 Cr',
+  mandates: [
+    { id:'MND-001', title:'Retail Leasing — Mumbai',        sector:'Real Estate',  value:'₹2,100 Cr', advisor:'Amit Jhingan',    client:'Mumbai Mall Pvt Ltd',         start:'01 Jan 2025', status:'Active',      progress:75 },
+    { id:'MND-002', title:'Hotel Pre-Opening PMC',           sector:'Hospitality',  value:'₹45 Cr',    advisor:'Arun Manikonda',  client:'Rajasthan Hotels Pvt Ltd',    start:'15 Feb 2025', status:'In Progress',  progress:45 },
+    { id:'MND-003', title:'Entertainment Feasibility Study', sector:'Entertainment',value:'₹4,500 Cr', advisor:'Arun Manikonda',  client:'Entertainment Ventures Ltd',  start:'01 Mar 2025', status:'Review',       progress:20 },
+  ],
+}))
+
+// ── INVOICES API ──────────────────────────────────────────────────────────────
+app.get('/invoices', (c) => c.json({
+  total: 3, total_billed: 750160, total_paid: 250160, total_due: 500000,
+  invoices: [
+    { id:'INV-2025-001', client:'Demo Client Corp',        description:'Advisory Retainer — Jan 2025',   base:212000, gst:38160, total:250160, due:'15 Feb 2025', status:'Paid',    sac:'998313' },
+    { id:'INV-2025-002', client:'Demo Client Corp',        description:'Hotel PMC — Phase 1',             base:152542, gst:27458, total:180000, due:'28 Feb 2025', status:'Overdue', sac:'998313' },
+    { id:'INV-2025-003', client:'Entertainment Ventures',  description:'Entertainment Feasibility Study', base:271186, gst:48814, total:320000, due:'31 Mar 2025', status:'Draft',   sac:'998313' },
+  ],
+}))
+
+// ── EMPLOYEES API ─────────────────────────────────────────────────────────────
+app.get('/employees', (c) => c.json({
+  total: 3, active: 3, total_payroll_monthly: 450000,
+  employees: [
+    { id:'IG-EMP-0001', name:'Arun Manikonda',  designation:'Managing Director',      department:'Leadership', email:'akm@indiagully.com',           joined:'01 Apr 2017', status:'Active', ctc_annual:1800000 },
+    { id:'IG-EMP-0002', name:'Pavan Manikonda', designation:'Executive Director',     department:'Operations', email:'pavan@indiagully.com',         joined:'01 Apr 2017', status:'Active', ctc_annual:1500000 },
+    { id:'IG-EMP-0003', name:'Amit Jhingan',    designation:'President, Real Estate', department:'Advisory',  email:'amit.jhingan@indiagully.com',  joined:'01 Jan 2020', status:'Active', ctc_annual:2100000 },
+  ],
+}))
+
+// ── FINANCE SUMMARY API ───────────────────────────────────────────────────────
+app.get('/finance/summary', (c) => c.json({
+  period: 'February 2025',
+  revenue:  { mtd: 1240000, ytd: 8950000, growth_pct: 8.3 },
+  expenses: { mtd: 780000,  ytd: 5620000, payroll: 450000, opex: 330000 },
+  profit:   { mtd: 460000,  margin_pct: 37.1, ytd: 3330000 },
+  gst:      { collected: 223200, paid_itc: 164400, payable: 58800, due_date: '20 Mar 2025' },
+  bank_balance: 5620000, receivables: 3480000, payables: 420000,
+}))
+
+// ── COMPLIANCE CALENDAR API ───────────────────────────────────────────────────
+app.get('/compliance', (c) => c.json({
+  upcoming: [
+    { date:'11 Mar 2025', event:'GSTR-1 Filing',       form:'GSTR-1',    module:'Finance',    status:'Pending',  penalty:'₹200/day'   },
+    { date:'15 Mar 2025', event:'TDS Deposit',          form:'Challan 281',module:'Finance',   status:'Pending',  penalty:'1.5%/month' },
+    { date:'20 Mar 2025', event:'GSTR-3B Filing',       form:'GSTR-3B',   module:'Finance',    status:'Pending',  penalty:'₹50/day'    },
+    { date:'31 Mar 2025', event:'ROC Annual Filing',    form:'MGT-7A',    module:'Governance', status:'Pending',  penalty:'₹200/day'   },
+    { date:'31 Mar 2025', event:'Income Tax Advance',   form:'Challan 280',module:'Finance',   status:'Pending',  penalty:'1%/month'   },
+    { date:'15 Apr 2025', event:'PF ECR Upload',        form:'ECR',        module:'HR',        status:'Upcoming', penalty:'₹5,000 min' },
+  ],
+}))
+
+// ── HORECA CATALOGUE API ──────────────────────────────────────────────────────
+app.get('/horeca/catalogue', (c) => c.json({
+  categories: 8, active_vendors: 14,
+  categories_list: [
+    { name:'Kitchen Equipment',      skus:124, icon:'utensils'       },
+    { name:'Tableware & Crockery',   skus:89,  icon:'wine-glass-alt' },
+    { name:'Linen & Soft Furnishing',skus:156, icon:'bed'            },
+    { name:'Bar & Beverages',        skus:67,  icon:'glass-martini'  },
+    { name:'Housekeeping Supplies',  skus:98,  icon:'spray-can'      },
+    { name:'Furniture & Fixtures',   skus:203, icon:'chair'          },
+    { name:'Tech & POS Systems',     skus:34,  icon:'desktop'        },
+    { name:'Safety & Security',      skus:45,  icon:'shield-alt'     },
+  ],
+}))
+
 export default app
