@@ -287,7 +287,7 @@ app.get('/cms', (c) => {
   const body = `
   <!-- CMS Tab Bar -->
   <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.5rem;background:#fff;padding:0 .25rem;">
-    ${['Pages','Page Builder','AI Copy Assist','Approval Workflow','Templates','SEO'].map((t,i)=>`<button id="cms-tab-${i}" onclick="igCmsTab(${i})" style="padding:.625rem 1.1rem;font-size:.78rem;font-weight:600;border:none;background:none;cursor:pointer;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;">${t}</button>`).join('')}
+    ${['Pages','Page Builder','AI Copy Assist','Approval Workflow','Templates','SEO','Asset Manager'].map((t,i)=>`<button id="cms-tab-${i}" onclick="igCmsTab(${i})" style="padding:.625rem 1.1rem;font-size:.78rem;font-weight:600;border:none;background:none;cursor:pointer;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;">${t}</button>`).join('')}
   </div>
 
   <!-- TAB 0: PAGES -->
@@ -708,9 +708,88 @@ app.get('/cms', (c) => {
     </div>
   </div>
 
+  <!-- cms-pane-6: Digital Asset Manager -->
+  <div id="cms-pane-6" style="display:none;">
+    <div class="ig-info" style="margin-bottom:1.25rem;"><i class="fas fa-database"></i><div><strong>Digital Asset Manager:</strong> Centralised repository for all brand, marketing and content assets. Locked assets (logos, favicons) are read-only. Upload, tag, and share marketing collateral here.</div></div>
+    <!-- DAM Stats -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+      ${[
+        {label:'Total Assets',    value:'48',        sub:'Across 6 folders',   c:'#B8960C'},
+        {label:'Storage Used',    value:'12.4 MB',   sub:'of 100 MB quota',    c:'#2563eb'},
+        {label:'Locked Assets',   value:'9',         sub:'Brand & favicon files',c:'#9f1239'},
+        {label:'Recently Added',  value:'3',         sub:'This month',          c:'#16a34a'},
+      ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;">
+        <div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.35rem;">${s.label}</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:${s.c};">${s.value}</div>
+        <div style="font-size:.68rem;color:${s.c};">${s.sub}</div>
+      </div>`).join('')}
+    </div>
+    <!-- Upload + Folder Nav -->
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:1.5rem;">
+      <!-- Folders -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1rem;border-bottom:1px solid var(--border);font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);">Folders</div>
+        ${[
+          {name:'Brand Assets',     count:9,  icon:'trademark',    locked:true},
+          {name:'Favicons',         count:6,  icon:'globe',        locked:true},
+          {name:'Marketing Images', count:14, icon:'image',        locked:false},
+          {name:'Document Templates',count:8, icon:'file-alt',     locked:false},
+          {name:'Presentations',    count:7,  icon:'presentation', locked:false},
+          {name:'Social Media',     count:4,  icon:'share-alt',    locked:false},
+        ].map(f=>`<div onclick="igToast('${f.name} folder opened — ${f.count} assets','info')" style="padding:.625rem 1rem;display:flex;align-items:center;gap:.625rem;cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
+          <i class="fas fa-folder${f.locked?'-lock':''}" style="color:${f.locked?'#d97706':'#94a3b8'};font-size:.82rem;width:16px;text-align:center;"></i>
+          <span style="font-size:.78rem;flex:1;color:var(--ink);">${f.name}</span>
+          <span style="font-size:.65rem;color:var(--ink-muted);">${f.count}</span>
+        </div>`).join('')}
+        <div style="padding:.875rem 1rem;">
+          <button onclick="igToast('New folder created','success')" style="background:none;border:1px dashed var(--border);padding:.4rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);width:100%;"><i class="fas fa-plus" style="margin-right:.3rem;"></i>New Folder</button>
+        </div>
+      </div>
+      <!-- Asset Grid -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+          <div style="display:flex;gap:.5rem;align-items:center;">
+            <input type="text" class="ig-input" placeholder="Search assets…" style="font-size:.82rem;max-width:220px;">
+            <select class="ig-input" style="font-size:.78rem;max-width:120px;"><option>All Types</option><option>Images</option><option>Documents</option><option>Videos</option></select>
+          </div>
+          <label style="background:var(--gold);color:#fff;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;">
+            <i class="fas fa-upload"></i>Upload Asset
+            <input type="file" multiple style="display:none;" onchange="igToast(this.files.length+' file(s) uploaded to Marketing Images','success')">
+          </label>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;">
+          ${[
+            {name:'logo-primary.png',  size:'55 KB', dim:'1024×239',  type:'image', locked:true,  bg:'#FAF8F3', file:'logo-primary.png'},
+            {name:'logo-white.png',    size:'52 KB', dim:'1024×239',  type:'image', locked:true,  bg:'#1a1a2e', file:'logo-white.png'},
+            {name:'logo-hologram.png', size:'24 KB', dim:'275×424',   type:'image', locked:true,  bg:'#1a1a2e', file:'logo-hologram.png'},
+            {name:'favicon.ico',       size:'10 KB', dim:'16/32/48/64',type:'icon', locked:true,  bg:'#f8fafc', file:'favicon-32.png'},
+            {name:'og-banner.jpg',     size:'120 KB',dim:'1200×630',  type:'image', locked:false, bg:'#f0f4ff', file:''},
+            {name:'indiagully-deck.pdf',size:'4.2 MB',dim:'—',        type:'doc',   locked:false, bg:'#fef9f0', file:''},
+            {name:'advisory-brochure.pdf',size:'2.1 MB',dim:'—',      type:'doc',   locked:false, bg:'#f0fdf4', file:''},
+            {name:'social-banner-1.png',size:'85 KB',dim:'1080×1080', type:'image', locked:false, bg:'#f0f4ff', file:''},
+          ].map(a=>`<div style="background:#fff;border:1px solid ${a.locked?'#fde68a':'var(--border)'};overflow:hidden;position:relative;">
+            ${a.locked?'<div style="position:absolute;top:.4rem;right:.4rem;background:#d97706;color:#fff;font-size:.5rem;font-weight:700;padding:1px 5px;letter-spacing:.06em;z-index:2;">LOCKED</div>':''}
+            <div style="background:${a.bg};height:70px;display:flex;align-items:center;justify-content:center;">
+              ${a.file?`<img src="/assets/${a.file}" alt="${a.name}" style="max-height:50px;max-width:80%;object-fit:contain;pointer-events:none;" draggable="false">`:`<i class="fas fa-${a.type==='doc'?'file-pdf':a.type==='icon'?'globe':'image'}" style="font-size:1.5rem;color:#94a3b8;"></i>`}
+            </div>
+            <div style="padding:.625rem;">
+              <div style="font-size:.7rem;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.name}</div>
+              <div style="font-size:.62rem;color:var(--ink-muted);">${a.size} · ${a.dim}</div>
+              <div style="display:flex;gap:.3rem;margin-top:.4rem;">
+                <button onclick="navigator.clipboard.writeText('/assets/${a.file||a.name}').then(()=>igToast('URL copied','success'))" style="background:none;border:1px solid var(--border);padding:.2rem .4rem;font-size:.6rem;cursor:pointer;color:var(--gold);flex:1;" title="Copy URL"><i class="fas fa-copy"></i></button>
+                <button onclick="igToast('${a.name} downloaded','success')" style="background:none;border:1px solid var(--border);padding:.2rem .4rem;font-size:.6rem;cursor:pointer;color:var(--ink-muted);" title="Download"><i class="fas fa-download"></i></button>
+                ${!a.locked?`<button onclick="igToast('${a.name} deleted','warn')" style="background:none;border:1px solid var(--border);padding:.2rem .4rem;font-size:.6rem;cursor:pointer;color:#dc2626;" title="Delete"><i class="fas fa-trash"></i></button>`:''}
+              </div>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
   window.igCmsTab = function(idx){
-    for(var i=0;i<6;i++){
+    for(var i=0;i<7;i++){
       var p=document.getElementById('cms-pane-'+i);
       var t=document.getElementById('cms-tab-'+i);
       if(p) p.style.display=i===idx?'block':'none';
@@ -1384,7 +1463,7 @@ app.get('/finance', (c) => {
 
   <!-- Tab navigation (Phase 6: added Ledger, Bank Recon, e-Invoice) -->
   <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);overflow-x:auto;">
-    ${['Invoices','P&L Statement','Ledger','Bank Recon','Expenses','GST / e-Invoice','Reports','Multi-Entity','E-Way Bill','TDS 26Q & Close'].map((t,i)=>`<button onclick="igFinTab(${i})" id="fin-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
+    ${['Invoices','P&L Statement','Ledger','Bank Recon','Expenses','GST / e-Invoice','Reports','Multi-Entity','E-Way Bill','TDS 26Q & Close','HSN/SAC Master'].map((t,i)=>`<button onclick="igFinTab(${i})" id="fin-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
   </div>
 
   <!-- Tab 0: Invoices -->
@@ -1977,16 +2056,158 @@ app.get('/finance', (c) => {
     </div>
   </div>
 
+  <!-- fin-pane-10: HSN/SAC Master & Period Closing -->
+  <div id="fin-pane-10" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+      <!-- HSN/SAC Search -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">HSN / SAC Code Master</h3>
+          <button onclick="igToast('HSN master refreshed from CBIC database','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-sync" style="margin-right:.3rem;"></i>Sync</button>
+        </div>
+        <div style="padding:1rem 1.25rem;">
+          <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
+            <input id="hsn-search" type="text" class="ig-input" placeholder="Search code or description…" style="font-size:.82rem;flex:1;" oninput="igHsnSearch(this.value)">
+            <select class="ig-input" style="font-size:.78rem;max-width:120px;" onchange="igHsnSearch(document.getElementById('hsn-search').value,this.value)">
+              <option value="">All</option><option value="HSN">HSN (Goods)</option><option value="SAC">SAC (Services)</option>
+            </select>
+          </div>
+          <table class="ig-tbl" id="hsn-table"><thead><tr><th>Type</th><th>Code</th><th>Description</th><th>GST Rate</th><th>Action</th></tr></thead><tbody id="hsn-tbody">
+            ${[
+              {type:'SAC',code:'998311',desc:'Management Consulting Services',gst:'18%'},
+              {type:'SAC',code:'998312',desc:'Business & Corporate Advisory Services',gst:'18%'},
+              {type:'SAC',code:'998313',desc:'Real Estate Consulting & Advisory',gst:'18%'},
+              {type:'SAC',code:'997221',desc:'HORECA — Hospitality / Hotel Supply',gst:'12%'},
+              {type:'SAC',code:'997212',desc:'Retail Leasing & Property Services',gst:'18%'},
+              {type:'HSN',code:'8418',  desc:'Refrigerators & Cooling Equipment (HORECA)',gst:'12%'},
+              {type:'HSN',code:'8516',  desc:'Commercial Kitchen Heating Equipment',gst:'18%'},
+              {type:'HSN',code:'7323',  desc:'Stainless Steel Tableware & Cookware',gst:'12%'},
+              {type:'HSN',code:'6302',  desc:'Bed & Table Linen (Hotels)',gst:'5%'},
+              {type:'SAC',code:'997331',desc:'Debt Advisory & Special Situations',gst:'18%'},
+            ].map(h=>`<tr data-type="${h.type}" data-desc="${h.desc.toLowerCase()}" data-code="${h.code}">
+              <td><span class="badge ${h.type==='SAC'?'b-dk':'b-gr'}" style="font-size:.6rem;">${h.type}</span></td>
+              <td style="font-weight:700;font-size:.82rem;color:var(--gold);font-family:'DM Serif Display',Georgia,serif;">${h.code}</td>
+              <td style="font-size:.78rem;">${h.desc}</td>
+              <td><span class="badge b-g" style="font-size:.65rem;">${h.gst}</span></td>
+              <td><button onclick="igToast('${h.code} copied to clipboard','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-copy"></i></button></td>
+            </tr>`).join('')}
+          </tbody></table>
+        </div>
+      </div>
+      <!-- Period Closing Workflow -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Period Closing Workflow — Feb 2025</h3>
+          <button onclick="igToast('Period closing initiated for February 2025','success')" style="background:var(--gold);color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">Initiate Close</button>
+        </div>
+        <div style="padding:1.25rem;">
+          <div class="ig-info" style="margin-bottom:1rem;"><i class="fas fa-lock"></i><div>Period close locks all entries for Feb 2025. All pending vouchers and reconciliations must be resolved first.</div></div>
+          ${[
+            {step:'01', task:'Reconcile all bank accounts',                   done:true,  resp:'Finance'},
+            {step:'02', task:'Post all accrual journal entries',               done:true,  resp:'Finance'},
+            {step:'03', task:'Clear all inter-company transactions',           done:true,  resp:'Finance'},
+            {step:'04', task:'Validate TDS deducted vs deposited',            done:true,  resp:'Finance'},
+            {step:'05', task:'File GSTR-1 for February 2025',                 done:false, resp:'Finance'},
+            {step:'06', task:'Confirm inventory count (HORECA)',               done:false, resp:'HORECA'},
+            {step:'07', task:'Resolve all outstanding debit notes',           done:true,  resp:'Finance'},
+            {step:'08', task:'Generate P&L and Balance Sheet draft',          done:false, resp:'CFO'},
+            {step:'09', task:'Director approval on monthly financials',       done:false, resp:'Board'},
+            {step:'10', task:'Lock period in ERP (no further entries)',       done:false, resp:'Admin'},
+          ].map(s=>`<div style="display:flex;align-items:center;gap:.875rem;padding:.5rem 0;border-bottom:1px solid var(--border);">
+            <span style="width:24px;height:24px;border-radius:50%;background:${s.done?'#16a34a':'#e5e7eb'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-${s.done?'check':'circle'}" style="font-size:.55rem;color:${s.done?'#fff':'#9ca3af'};"></i>
+            </span>
+            <div style="flex:1;">
+              <div style="font-size:.82rem;color:${s.done?'var(--ink-muted)':'var(--ink)'};${s.done?'text-decoration:line-through;':''}">${s.step}. ${s.task}</div>
+              <div style="font-size:.65rem;color:var(--ink-muted);">Responsible: ${s.resp}</div>
+            </div>
+            ${!s.done?`<button onclick="igToast('Step ${s.step} marked complete','success');this.closest('div').querySelector('span').style.background='#16a34a';this.closest('div').querySelector('span i').className='fas fa-check';this.closest('div').querySelector('span i').style.color='#fff';this.remove();" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">Done</button>`:''}
+          </div>`).join('')}
+          <div style="margin-top:1rem;padding:.75rem;background:#fef9c3;border:1px solid #fde047;font-size:.78rem;color:#854d0e;">
+            <i class="fas fa-exclamation-triangle" style="margin-right:.4rem;"></i> 5 of 10 steps pending. Complete all steps before locking the period.
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Double-Entry Journal Quick Entry -->
+    <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin-bottom:1rem;">Double-Entry Journal Voucher</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.875rem;margin-bottom:.875rem;">
+        <div><label class="ig-label">Voucher Date</label><input type="date" class="ig-input" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Voucher Type</label><select class="ig-input" style="font-size:.82rem;"><option>Journal</option><option>Sales</option><option>Purchase</option><option>Payment</option><option>Receipt</option><option>Contra</option></select></div>
+        <div><label class="ig-label">Narration</label><input type="text" class="ig-input" placeholder="e.g. Monthly accrual for advisory fees" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Reference No.</label><input type="text" class="ig-input" placeholder="Invoice / bill no." style="font-size:.82rem;"></div>
+      </div>
+      <table class="ig-tbl" id="journal-entries-table">
+        <thead><tr><th>#</th><th>Account Head</th><th>Cost Centre</th><th>Dr/Cr</th><th>Amount (₹)</th><th>HSN/SAC</th><th></th></tr></thead>
+        <tbody id="journal-lines">
+          ${[
+            {acct:'Advisory Fees Income',  cc:'Real Estate',  type:'Cr',amt:'1,25,000',hsn:'998313'},
+            {acct:'Accounts Receivable',   cc:'',             type:'Dr',amt:'1,47,500',hsn:''},
+            {acct:'CGST Payable @ 9%',     cc:'',             type:'Cr',amt:'11,250', hsn:''},
+            {acct:'SGST Payable @ 9%',     cc:'',             type:'Cr',amt:'11,250', hsn:''},
+          ].map((e,i)=>`<tr id="jl-${i}">
+            <td style="font-size:.72rem;color:var(--ink-muted);">${i+1}</td>
+            <td><input type="text" class="ig-input" value="${e.acct}" style="font-size:.78rem;border:none;background:transparent;padding:.1rem;"></td>
+            <td><input type="text" class="ig-input" value="${e.cc}" style="font-size:.78rem;border:none;background:transparent;padding:.1rem;"></td>
+            <td><select class="ig-input" style="font-size:.78rem;border:none;background:transparent;padding:.1rem;"><option ${e.type==='Dr'?'selected':''}>Dr</option><option ${e.type==='Cr'?'selected':''}>Cr</option></select></td>
+            <td><input type="text" class="ig-input" value="${e.amt}" style="font-size:.78rem;border:none;background:transparent;padding:.1rem;text-align:right;"></td>
+            <td><input type="text" class="ig-input" value="${e.hsn}" style="font-size:.78rem;border:none;background:transparent;padding:.1rem;" placeholder="HSN/SAC"></td>
+            <td><button onclick="document.getElementById('jl-${i}').remove()" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.72rem;"><i class="fas fa-times"></i></button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:.875rem;">
+        <button onclick="igAddJournalLine()" style="background:none;border:1px solid var(--border);padding:.35rem .75rem;font-size:.72rem;cursor:pointer;color:var(--gold);"><i class="fas fa-plus" style="margin-right:.3rem;"></i>Add Line</button>
+        <div style="font-size:.78rem;color:var(--ink-muted);">Dr Total: <strong>₹1,47,500</strong> &nbsp;|&nbsp; Cr Total: <strong>₹1,47,500</strong> &nbsp; <span style="color:#16a34a;font-weight:600;"><i class="fas fa-check"></i> Balanced</span></div>
+        <div style="display:flex;gap:.5rem;">
+          <button onclick="igToast('Journal entry saved as draft','info')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink);">Save Draft</button>
+          <button onclick="igToast('Journal entry VCH-2025-0147 posted successfully','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Post Entry</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
   // ── Finance Tab Switcher ───────────────────────────────────────────────────
   window.igFinTab = function(idx){
-    for(var i=0;i<10;i++){
+    for(var i=0;i<11;i++){
       var pane=document.getElementById('fin-pane-'+i);
       var tab=document.getElementById('fin-tab-'+i);
       if(pane) pane.style.display = i===idx?'block':'none';
       if(tab){ tab.style.color=i===idx?'var(--gold)':'var(--ink-muted)'; tab.style.borderBottom=i===idx?'2px solid var(--gold)':'2px solid transparent'; }
     }
     if(idx===1) igRenderPL();
+  };
+  // ── HSN Search ───────────────────────────────────────────────────────────
+  window.igHsnSearch = function(q, typeFilter){
+    var rows = document.querySelectorAll('#hsn-tbody tr');
+    q = (q||'').toLowerCase();
+    rows.forEach(function(r){
+      var code = r.getAttribute('data-code')||'';
+      var desc = r.getAttribute('data-desc')||'';
+      var type = r.getAttribute('data-type')||'';
+      var matchQ = !q || code.includes(q) || desc.includes(q);
+      var matchT = !typeFilter || type === typeFilter;
+      r.style.display = matchQ && matchT ? '' : 'none';
+    });
+  };
+  // ── Add Journal Line ─────────────────────────────────────────────────────
+  var jlCnt = 4;
+  window.igAddJournalLine = function(){
+    jlCnt++;
+    var tb = document.getElementById('journal-lines');
+    if(!tb) return;
+    var tr = document.createElement('tr');
+    tr.id = 'jl-'+jlCnt;
+    tr.innerHTML = '<td style="font-size:.72rem;color:var(--ink-muted);">'+jlCnt+'</td>'
+      +'<td><input type="text" class="ig-input" placeholder="Account head" style="font-size:.78rem;border:none;background:transparent;padding:.1rem;"></td>'
+      +'<td><input type="text" class="ig-input" placeholder="Cost centre" style="font-size:.78rem;border:none;background:transparent;padding:.1rem;"></td>'
+      +'<td><select class="ig-input" style="font-size:.78rem;border:none;background:transparent;padding:.1rem;"><option>Dr</option><option>Cr</option></select></td>'
+      +'<td><input type="text" class="ig-input" placeholder="0" style="font-size:.78rem;border:none;background:transparent;padding:.1rem;text-align:right;"></td>'
+      +'<td><input type="text" class="ig-input" placeholder="HSN/SAC" style="font-size:.78rem;border:none;background:transparent;padding:.1rem;"></td>'
+      +'<td><button onclick="document.getElementById(\'jl-'+jlCnt+'\').remove()" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.72rem;"><i class="fas fa-times"></i></button></td>';
+    tb.appendChild(tr);
   };
 
   // ── Invoice Calc ──────────────────────────────────────────────────────────
@@ -2154,7 +2375,7 @@ app.get('/hr', (c) => {
 
   <!-- HR Tab Nav -->
   <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
-    ${['Employees','Attendance','Leave Mgmt','Payroll','Reports','Tax Declaration','Onboarding'].map((t,i)=>`<button onclick="igHrTab(${i})" id="hr-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
+    ${['Employees','Attendance','Leave Mgmt','Payroll','Reports','Tax Declaration','Onboarding','Appraisals'].map((t,i)=>`<button onclick="igHrTab(${i})" id="hr-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
   </div>
 
   <!-- Tab 0: Employees -->
@@ -2659,9 +2880,98 @@ app.get('/hr', (c) => {
     </div>
   </div>
 
+  <!-- hr-pane-7: Appraisals & Performance Management -->
+  <div id="hr-pane-7" style="display:none;">
+    <div class="ig-info" style="margin-bottom:1.25rem;"><i class="fas fa-star"></i><div><strong>Performance Cycle FY 2025-26:</strong> Mid-year review due 30 Sep 2025. Annual appraisal cycle runs Oct–Nov 2025. KRA setting deadline: 15 Apr 2025.</div></div>
+    <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+      <button onclick="togglePanel('new-appraisal-panel')" style="background:#1E1E1E;color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.4rem;"></i>Initiate Appraisal</button>
+      <button onclick="igToast('KRA setting forms sent to all employees','success')" style="background:none;border:1px solid var(--border);padding:.5rem 1rem;font-size:.78rem;cursor:pointer;color:var(--ink);"><i class="fas fa-bullseye" style="margin-right:.4rem;"></i>Send KRA Forms</button>
+      <button onclick="igToast('360° feedback requests sent','success')" style="background:none;border:1px solid var(--border);padding:.5rem 1rem;font-size:.78rem;cursor:pointer;color:var(--ink);"><i class="fas fa-sync-alt" style="margin-right:.4rem;"></i>360° Feedback</button>
+    </div>
+    <!-- Initiate Appraisal Panel -->
+    <div id="new-appraisal-panel" class="ig-panel" style="margin-bottom:1.5rem;">
+      <h4 style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.875rem;">Initiate Performance Appraisal</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.875rem;margin-bottom:.875rem;">
+        <div><label class="ig-label">Employee</label><select class="ig-input" style="font-size:.82rem;"><option>Arun Manikonda</option><option>Pavan Manikonda</option><option>Amit Jhingan</option></select></div>
+        <div><label class="ig-label">Appraisal Type</label><select class="ig-input" style="font-size:.82rem;"><option>Annual Review</option><option>Mid-Year Review</option><option>Probation Completion</option><option>Promotion Review</option></select></div>
+        <div><label class="ig-label">Review Period</label><select class="ig-input" style="font-size:.82rem;"><option>FY 2024-25 (Apr 24 – Mar 25)</option><option>H1 FY 2025-26</option></select></div>
+        <div><label class="ig-label">Reviewer</label><select class="ig-input" style="font-size:.82rem;"><option>Arun Manikonda (CEO)</option><option>Pavan Manikonda (COO)</option></select></div>
+        <div><label class="ig-label">Self-Assessment Due</label><input type="date" class="ig-input" style="font-size:.82rem;" value="2025-03-31"></div>
+        <div><label class="ig-label">Review Meeting Date</label><input type="date" class="ig-input" style="font-size:.82rem;" value="2025-04-15"></div>
+      </div>
+      <div><label class="ig-label">KRAs / Goals (one per line)</label><textarea class="ig-input" rows="4" placeholder="1. Deliver 3 new HORECA mandates&#10;2. Achieve ₹5Cr revenue in Q1&#10;3. Complete ISO 9001 documentation&#10;4. Train 2 junior advisors" style="font-size:.82rem;"></textarea></div>
+      <div style="display:flex;gap:.75rem;margin-top:.875rem;">
+        <button onclick="igToast('Appraisal initiated — self-assessment email sent to employee','success');togglePanel('new-appraisal-panel')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Initiate & Notify</button>
+        <button onclick="togglePanel('new-appraisal-panel')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+      </div>
+    </div>
+    <!-- Appraisal Status Table -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Appraisal Tracker — FY 2024-25</h3>
+        <button onclick="igToast('Appraisal summary exported','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export</button>
+      </div>
+      <table class="ig-tbl"><thead><tr><th>Employee</th><th>Type</th><th>Period</th><th>Self-Assessment</th><th>Manager Review</th><th>Rating</th><th>Increment</th><th>Status</th><th>Action</th></tr></thead><tbody>
+        ${[
+          {name:'Amit Jhingan',   type:'Annual',   period:'FY 2024-25', self:'Submitted',  mgr:'Completed', rating:4.2, incr:'12%',  cls:'b-gr', status:'Completed'},
+          {name:'Pavan Manikonda',type:'Annual',   period:'FY 2024-25', self:'Submitted',  mgr:'In Review',  rating:4.0, incr:'—',   cls:'b-g',  status:'In Progress'},
+          {name:'Arun Manikonda', type:'Annual',   period:'FY 2024-25', self:'Pending',    mgr:'Pending',    rating:'—', incr:'—',   cls:'b-dk', status:'Pending'},
+        ].map(a=>`<tr>
+          <td style="font-weight:500;">${a.name}</td>
+          <td><span class="badge b-dk" style="font-size:.6rem;">${a.type}</span></td>
+          <td style="font-size:.78rem;color:var(--ink-muted);">${a.period}</td>
+          <td><span class="badge ${a.self==='Submitted'?'b-gr':a.self==='Pending'?'b-g':'b-dk'}">${a.self}</span></td>
+          <td><span class="badge ${a.mgr==='Completed'?'b-gr':a.mgr==='In Review'?'b-g':'b-dk'}">${a.mgr}</span></td>
+          <td style="font-weight:700;color:var(--gold);">${a.rating}</td>
+          <td style="font-weight:600;color:#16a34a;">${a.incr}</td>
+          <td><span class="badge ${a.cls}">${a.status}</span></td>
+          <td style="display:flex;gap:.3rem;">
+            <button onclick="igToast('${a.name} appraisal form opened','info')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">View</button>
+            ${a.status!=='Completed'?`<button onclick="igToast('Reminder sent to ${a.name}','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--ink-muted);"><i class="fas fa-bell"></i></button>`:''}
+          </td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>
+    <!-- Performance Rating Distribution -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin-bottom:1rem;">Rating Distribution — FY 2024-25</h3>
+        ${[
+          {rating:'5 — Exceptional',  count:0, pct:0,  color:'#16a34a'},
+          {rating:'4 — Exceeds Exp.', count:2, pct:67, color:'#22c55e'},
+          {rating:'3 — Meets Exp.',   count:1, pct:33, color:'#d97706'},
+          {rating:'2 — Needs Impr.',  count:0, pct:0,  color:'#f97316'},
+          {rating:'1 — Below Std.',   count:0, pct:0,  color:'#dc2626'},
+        ].map(r=>`<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.625rem;">
+          <div style="font-size:.75rem;color:var(--ink);width:140px;flex-shrink:0;">${r.rating}</div>
+          <div style="flex:1;height:8px;background:#e5e7eb;overflow:hidden;"><div style="height:100%;background:${r.color};width:${r.pct}%;transition:width .5s;"></div></div>
+          <div style="font-size:.75rem;font-weight:700;color:${r.color};width:20px;">${r.count}</div>
+        </div>`).join('')}
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin-bottom:1rem;">Increment Summary</h3>
+        ${[
+          {name:'Arun Manikonda',  ctc:'₹18L', incr:'Pending', newCtc:'—',    effective:'TBD'},
+          {name:'Pavan Manikonda', ctc:'₹15L', incr:'TBD',     newCtc:'—',    effective:'TBD'},
+          {name:'Amit Jhingan',    ctc:'₹21L', incr:'+12%',    newCtc:'₹23.5L',effective:'01 Apr 2025'},
+        ].map(e=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:.625rem;border-bottom:1px solid var(--border);">
+          <div>
+            <div style="font-weight:500;font-size:.85rem;">${e.name}</div>
+            <div style="font-size:.72rem;color:var(--ink-muted);">Current: ${e.ctc} · Effective: ${e.effective}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:700;color:${e.incr.startsWith('+')?'#16a34a':'var(--ink-muted)'};">${e.incr}</div>
+            <div style="font-size:.72rem;color:var(--ink-muted);">${e.newCtc}</div>
+          </div>
+        </div>`).join('')}
+        <button onclick="igToast('Increment letters generated for all employees','success')" style="margin-top:.875rem;background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;width:100%;"><i class="fas fa-envelope" style="margin-right:.4rem;"></i>Generate Increment Letters</button>
+      </div>
+    </div>
+  </div>
+
   <script>
   window.igHrTab = function(idx){
-    for(var i=0;i<7;i++){
+    for(var i=0;i<8;i++){
       var p=document.getElementById('hr-pane-'+i);
       var t=document.getElementById('hr-tab-'+i);
       if(p) p.style.display=i===idx?'block':'none';
@@ -3302,7 +3612,7 @@ app.get('/horeca', (c) => {
 
   <!-- Tab Nav -->
   <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
-    ${['Catalogue','Inventory Ledger','Vendors','Quote Builder','Purchase Orders','Customer Portal'].map((t,i)=>`<button onclick="igHorecaTab(${i})" id="hrc-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
+    ${['Catalogue','Inventory Ledger','Vendors','Quote Builder','Purchase Orders','Customer Portal','GRN & Logistics'].map((t,i)=>`<button onclick="igHorecaTab(${i})" id="hrc-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
   </div>
 
   <!-- Tab 0: Catalogue -->
@@ -3589,9 +3899,121 @@ app.get('/horeca', (c) => {
     </div>
   </div>
 
+  <!-- hrc-pane-6: GRN, Multi-Warehouse & Logistics -->
+  <div id="hrc-pane-6" style="display:none;">
+    <!-- GRN Summary -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+      ${[
+        {label:'GRNs This Month',    value:'12',       sub:'3 pending QC',        c:'#B8960C'},
+        {label:'Items Received',     value:'847 SKUs',  sub:'Across all locations',c:'#16a34a'},
+        {label:'Pending Delivery',   value:'4 Orders',  sub:'₹8.4L in transit',   c:'#d97706'},
+        {label:'Rejection Rate',     value:'1.8%',      sub:'QC failures MTD',    c:'#dc2626'},
+      ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;">
+        <div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.35rem;">${s.label}</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:${s.c};">${s.value}</div>
+        <div style="font-size:.68rem;color:${s.c};">${s.sub}</div>
+      </div>`).join('')}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+      <!-- GRN Register -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GRN Register</h3>
+          <button onclick="togglePanel('new-grn-panel')" style="background:var(--gold);color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.3rem;"></i>New GRN</button>
+        </div>
+        <div id="new-grn-panel" class="ig-panel" style="margin:1.25rem;display:none;">
+          <h4 style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.875rem;">Goods Receipt Note</h4>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+            <div><label class="ig-label">Purchase Order Ref</label><select class="ig-input" style="font-size:.82rem;"><option>PO-2025-018 — Kitchen Equipment</option><option>PO-2025-019 — Linen Supply</option></select></div>
+            <div><label class="ig-label">Receiving Warehouse</label><select class="ig-input" style="font-size:.82rem;"><option>New Delhi Central</option><option>Mumbai Satellite</option><option>Gurgaon Depot</option></select></div>
+            <div><label class="ig-label">Delivery Challan No.</label><input type="text" class="ig-input" style="font-size:.82rem;" placeholder="DC/2025/xxxx"></div>
+            <div><label class="ig-label">Receipt Date</label><input type="date" class="ig-input" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">QC Inspector</label><select class="ig-input" style="font-size:.82rem;"><option>Amit Jhingan</option><option>Pavan Manikonda</option></select></div>
+            <div><label class="ig-label">QC Status</label><select class="ig-input" style="font-size:.82rem;"><option>Pass</option><option>Partial Pass</option><option>Fail — Return</option></select></div>
+          </div>
+          <div style="display:flex;gap:.75rem;margin-top:.875rem;">
+            <button onclick="igToast('GRN-2025-013 created. Stock updated in New Delhi Central warehouse.','success');togglePanel('new-grn-panel')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Create GRN</button>
+            <button onclick="togglePanel('new-grn-panel')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+          </div>
+        </div>
+        <table class="ig-tbl" style="font-size:.78rem;"><thead><tr><th>GRN No.</th><th>PO Ref</th><th>Warehouse</th><th>Items</th><th>QC</th><th>Date</th><th>Status</th></tr></thead><tbody>
+          ${[
+            {grn:'GRN-013',po:'PO-018',wh:'Delhi Central', items:24, qc:'Pass',    date:'27 Feb 2025',cls:'b-gr'},
+            {grn:'GRN-012',po:'PO-017',wh:'Mumbai',        items:16, qc:'Pass',    date:'22 Feb 2025',cls:'b-gr'},
+            {grn:'GRN-011',po:'PO-015',wh:'Delhi Central', items:8,  qc:'Partial', date:'18 Feb 2025',cls:'b-g'},
+            {grn:'GRN-010',po:'PO-014',wh:'Gurgaon',       items:32, qc:'Pass',    date:'10 Feb 2025',cls:'b-gr'},
+          ].map(g=>`<tr>
+            <td style="font-weight:700;color:var(--gold);">${g.grn}</td>
+            <td style="color:var(--ink-muted);">${g.po}</td>
+            <td>${g.wh}</td>
+            <td style="text-align:center;">${g.items}</td>
+            <td><span class="badge ${g.qc==='Pass'?'b-gr':g.qc==='Partial'?'b-g':'b-re'}" style="font-size:.6rem;">${g.qc}</span></td>
+            <td style="color:var(--ink-muted);">${g.date}</td>
+            <td><span class="badge ${g.cls}" style="font-size:.6rem;">Received</span></td>
+          </tr>`).join('')}
+        </tbody></table>
+      </div>
+      <!-- Multi-Warehouse Stock -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Multi-Warehouse Stock View</h3>
+        </div>
+        <div style="padding:1.25rem;">
+          <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+            ${['All Locations','New Delhi Central','Mumbai Satellite','Gurgaon Depot'].map((w,i)=>`<button onclick="igWHFilter('${w}')" style="background:${i===0?'var(--gold)':'var(--parch-dk)'};color:${i===0?'#fff':'var(--ink)'};border:1px solid ${i===0?'var(--gold)':'var(--border)'};padding:.25rem .625rem;font-size:.68rem;cursor:pointer;">${w}</button>`).join('')}
+          </div>
+          ${[
+            {cat:'Kitchen Equipment', delhi:45, mumbai:18, gurgaon:12, reorder:10, value:'₹14.2L'},
+            {cat:'Crockery & Cutlery',delhi:230,mumbai:95, gurgaon:0,  reorder:50, value:'₹6.8L'},
+            {cat:'Linen & Fabrics',   delhi:82, mumbai:34, gurgaon:28, reorder:30, value:'₹3.1L'},
+            {cat:'Front Office',      delhi:18, mumbai:12, gurgaon:5,  reorder:8,  value:'₹2.4L'},
+            {cat:'Food & Beverage',   delhi:120,mumbai:56, gurgaon:0,  reorder:40, value:'₹5.7L'},
+          ].map(w=>`<div style="border:1px solid var(--border);padding:.75rem;margin-bottom:.5rem;background:var(--parch-dk);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+              <span style="font-weight:600;font-size:.82rem;">${w.cat}</span>
+              <span style="font-size:.72rem;font-weight:700;color:var(--gold);">${w.value}</span>
+            </div>
+            <div style="display:flex;gap:1rem;font-size:.72rem;color:var(--ink-muted);">
+              <span><i class="fas fa-map-marker-alt" style="color:#B8960C;margin-right:.2rem;"></i>Delhi: <strong style="color:var(--ink);">${w.delhi}</strong></span>
+              <span><i class="fas fa-map-marker-alt" style="color:#2563eb;margin-right:.2rem;"></i>Mumbai: <strong style="color:var(--ink);">${w.mumbai}</strong></span>
+              <span><i class="fas fa-map-marker-alt" style="color:#7c3aed;margin-right:.2rem;"></i>Gurgaon: <strong style="color:var(--ink);">${w.gurgaon}</strong></span>
+              <span style="margin-left:auto;color:${(w.delhi+w.mumbai+w.gurgaon)<w.reorder*2?'#dc2626':'#16a34a'};">Reorder: ${w.reorder}</span>
+            </div>
+          </div>`).join('')}
+          <button onclick="igToast('Inter-warehouse transfer request submitted','success')" style="margin-top:.875rem;background:var(--ink);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;width:100%;"><i class="fas fa-exchange-alt" style="margin-right:.4rem;"></i>Request Stock Transfer</button>
+        </div>
+      </div>
+    </div>
+    <!-- Logistics Tracking -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Shipment & Logistics Tracker</h3>
+        <button onclick="igToast('Logistics export generated','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export</button>
+      </div>
+      <table class="ig-tbl"><thead><tr><th>Shipment ID</th><th>PO Ref</th><th>Carrier</th><th>AWB / LR</th><th>Origin</th><th>Destination</th><th>ETA</th><th>Last Update</th><th>Status</th></tr></thead><tbody>
+        ${[
+          {id:'SHP-028',po:'PO-020',carrier:'Blue Dart',   awb:'BD1234567890',origin:'Mumbai',     dest:'Delhi Central',  eta:'01 Mar 2025',upd:'28 Feb — Out for delivery',cls:'b-g',  s:'In Transit'},
+          {id:'SHP-027',po:'PO-019',carrier:'DTDC',        awb:'DT9876543210',origin:'Delhi',      dest:'Gurgaon Depot',  eta:'28 Feb 2025',upd:'28 Feb — Delivered',     cls:'b-gr', s:'Delivered'},
+          {id:'SHP-026',po:'PO-018',carrier:'DHL Express', awb:'DH4567890123',origin:'Hyderabad',  dest:'Mumbai',         eta:'05 Mar 2025',upd:'27 Feb — In transit',     cls:'b-dk', s:'Scheduled'},
+          {id:'SHP-025',po:'PO-017',carrier:'Gati',        awb:'GT7890123456',origin:'Delhi',      dest:'Delhi Central',  eta:'26 Feb 2025',upd:'26 Feb — Delivered',     cls:'b-gr', s:'Delivered'},
+        ].map(s=>`<tr>
+          <td style="font-weight:700;font-size:.78rem;color:var(--gold);">${s.id}</td>
+          <td style="font-size:.75rem;color:var(--ink-muted);">${s.po}</td>
+          <td style="font-size:.78rem;">${s.carrier}</td>
+          <td style="font-size:.72rem;font-family:monospace;">${s.awb}</td>
+          <td style="font-size:.75rem;">${s.origin}</td>
+          <td style="font-size:.75rem;">${s.dest}</td>
+          <td style="font-size:.75rem;font-weight:500;">${s.eta}</td>
+          <td style="font-size:.72rem;color:var(--ink-muted);">${s.upd}</td>
+          <td><span class="badge ${s.cls}">${s.s}</span></td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>
+
   <script>
   window.igHorecaTab = function(idx){
-    for(var i=0;i<6;i++){
+    for(var i=0;i<7;i++){
       var p=document.getElementById('hrc-pane-'+i);
       var t=document.getElementById('hrc-tab-'+i);
       if(p) p.style.display=i===idx?'block':'none';
@@ -4181,6 +4603,69 @@ app.get('/reports', (c) => {
     </div>
   </div>
 
+  <!-- Predictive Analytics -->
+  <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+    <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Predictive Analytics — Revenue Forecast</h3>
+        <p style="font-size:.72rem;color:var(--ink-muted);margin-top:.2rem;">Trend-based 8-month forecast with 90% confidence interval · Model: linear regression + seasonality</p>
+      </div>
+      <div style="display:flex;gap:.5rem;">
+        <select class="ig-input" style="font-size:.78rem;max-width:140px;" onchange="igToast('Forecast model updated','info')"><option>Linear Regression</option><option>Moving Average</option><option>Exponential Smoothing</option></select>
+        <button onclick="igToast('Forecast report exported','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export</button>
+      </div>
+    </div>
+    <div style="padding:1.25rem;">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem;">
+        ${[
+          {label:'FY26 Forecast',  value:'₹1.58 Cr/mo', sub:'Avg monthly target',      c:'#B8960C'},
+          {label:'Growth CAGR',    value:'+28%',          sub:'vs FY25 actual',          c:'#16a34a'},
+          {label:'Churn Risk',     value:'Low (12%)',     sub:'2 at-risk client accounts',c:'#d97706'},
+          {label:'Model Accuracy', value:'87.3%',         sub:'Backtested on FY24-25',   c:'#2563eb'},
+        ].map(s=>`<div style="background:var(--parch-dk);border:1px solid var(--border);padding:.875rem;">
+          <div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">${s.label}</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.4rem;color:${s.c};">${s.value}</div>
+          <div style="font-size:.68rem;color:${s.c};">${s.sub}</div>
+        </div>`).join('')}
+      </div>
+      <canvas id="forecast-chart" height="100"></canvas>
+      <div style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <!-- Churn Risk Model -->
+        <div style="background:var(--parch-dk);border:1px solid var(--border);padding:1rem;">
+          <div style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.75rem;">Churn Risk Analysis</div>
+          ${[
+            {client:'Demo Client Corp',      score:82, risk:'Low',    trend:'stable',   c:'#16a34a'},
+            {client:'Rajasthan Hotels Ltd',  score:61, risk:'Medium', trend:'declining',c:'#d97706'},
+            {client:'Mumbai Mall Pvt. Ltd.', score:45, risk:'High',   trend:'declining',c:'#dc2626'},
+            {client:'L5 Resort Group',       score:91, risk:'Low',    trend:'improving',c:'#16a34a'},
+          ].map(c=>`<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;">
+            <div style="flex:1;font-size:.78rem;color:var(--ink);">${c.client}</div>
+            <div style="width:80px;height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;"><div style="height:100%;background:${c.c};width:${c.score}%;"></div></div>
+            <span class="badge ${c.risk==='Low'?'b-gr':c.risk==='Medium'?'b-g':'b-re'}" style="font-size:.6rem;width:50px;text-align:center;">${c.risk}</span>
+          </div>`).join('')}
+          <button onclick="igToast('Churn prevention campaign triggered for high-risk accounts','success')" style="margin-top:.75rem;background:var(--gold);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;width:100%;">Run Retention Campaign</button>
+        </div>
+        <!-- Sector Growth Prediction -->
+        <div style="background:var(--parch-dk);border:1px solid var(--border);padding:1rem;">
+          <div style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.75rem;">Sector Growth Prediction — FY 2025-26</div>
+          ${[
+            {sector:'HORECA',        curr:'₹210L', pred:'₹310L', growth:'+47%', c:'#16a34a'},
+            {sector:'Real Estate',   curr:'₹620L', pred:'₹780L', growth:'+26%', c:'#16a34a'},
+            {sector:'Hospitality',   curr:'₹520L', pred:'₹620L', growth:'+19%', c:'#B8960C'},
+            {sector:'Entertainment', curr:'₹350L', pred:'₹390L', growth:'+11%', c:'#d97706'},
+            {sector:'Retail',        curr:'₹150L', pred:'₹160L', growth:'+7%',  c:'#94a3b8'},
+          ].map(s=>`<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;font-size:.78rem;">
+            <div style="width:90px;flex-shrink:0;color:var(--ink);">${s.sector}</div>
+            <div style="font-size:.72rem;color:var(--ink-muted);width:60px;">${s.curr}</div>
+            <i class="fas fa-arrow-right" style="font-size:.6rem;color:var(--ink-muted);"></i>
+            <div style="font-size:.78rem;font-weight:600;">${s.pred}</div>
+            <span style="font-size:.68rem;font-weight:700;color:${s.c};margin-left:auto;">${s.growth}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Scheduled Reports -->
   <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
     <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
@@ -4267,6 +4752,14 @@ app.get('/reports', (c) => {
   // Monthly Revenue Trend
   var trendCtx = document.getElementById('trend-chart').getContext('2d');
   new Chart(trendCtx, { type:'line', data:{ labels:['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'], datasets:[{ label:'Revenue', data:[620000,680000,720000,790000,820000,880000,980000,1050000,900000,1080000,1240000,1050000], borderColor:'#B8960C', backgroundColor:'rgba(184,150,12,.1)', fill:true, tension:.4, pointRadius:3, pointBackgroundColor:'#B8960C' }] }, options:{ responsive:true, plugins:{ legend:{display:false} }, scales:{ y:{ ticks:{ callback:v=>'₹'+(v/100000).toFixed(1)+'L', font:{size:9} } }, x:{ ticks:{font:{size:9}} } } } });
+
+  // Predictive Forecast Chart
+  var fctCtx = document.getElementById('forecast-chart');
+  if(fctCtx){ new Chart(fctCtx.getContext('2d'), { type:'line', data:{ labels:['Apr 25','May 25','Jun 25','Jul 25','Aug 25','Sep 25','Oct 25','Nov 25'], datasets:[
+    { label:'Predicted Revenue', data:[1100000,1200000,1350000,1280000,1420000,1500000,1380000,1550000], borderColor:'#B8960C', backgroundColor:'rgba(184,150,12,.15)', fill:true, tension:.4, borderDash:[0,0], pointRadius:3, pointBackgroundColor:'#B8960C' },
+    { label:'Lower Bound',       data:[950000,1040000,1160000,1090000,1210000,1290000,1170000,1310000], borderColor:'rgba(184,150,12,.3)', backgroundColor:'transparent', fill:false, tension:.4, borderDash:[4,4], pointRadius:0 },
+    { label:'Upper Bound',       data:[1250000,1360000,1540000,1470000,1630000,1710000,1590000,1790000], borderColor:'rgba(184,150,12,.3)', backgroundColor:'rgba(184,150,12,.07)', fill:'-1', tension:.4, borderDash:[4,4], pointRadius:0 },
+  ]}, options:{ responsive:true, plugins:{ legend:{ labels:{ font:{size:9} }}}, scales:{ y:{ ticks:{ callback:v=>'₹'+(v/100000).toFixed(1)+'L', font:{size:9}}}, x:{ ticks:{font:{size:9}}}}}}); }
   </script>`
   return c.html(layout('BI & Reports', adminShell('BI & Reports', 'reports', body), {noNav:true,noFooter:true}))
 })
@@ -4386,7 +4879,7 @@ app.get('/security', (c) => {
 
   <!-- Tab Nav -->
   <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);overflow-x:auto;">
-    ${['Audit Log','RBAC Matrix','TOTP / 2FA','Rate Limiting','IP Whitelist','Zero-Trust'].map((t,i)=>`<button onclick="igSecTab(${i})" id="sec-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
+    ${['Audit Log','RBAC Matrix','TOTP / 2FA','Rate Limiting','IP Whitelist','Zero-Trust','SIEM & Monitoring','FIDO & MFA','Data Encryption','Incident Response'].map((t,i)=>`<button onclick="igSecTab(${i})" id="sec-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
   </div>
 
   <!-- Tab 0: Audit Log -->
@@ -4715,9 +5208,315 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
     </div>
   </div>
 
+  <!-- Tab 6: SIEM & Monitoring -->
+  <div id="sec-pane-6" style="display:none;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem;">
+      ${[
+        {label:'Critical Alerts',value:'1', color:'#dc2626',icon:'skull-crossbones'},
+        {label:'High Alerts',   value:'2', color:'#d97706',icon:'exclamation-triangle'},
+        {label:'Active Sessions',value:'3',color:'#2563eb',icon:'user-clock'},
+        {label:'API Error Rate', value:'0.8%',color:'#16a34a',icon:'chart-line'},
+      ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.75rem;">
+        <div style="width:34px;height:34px;background:${s.color}18;border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${s.icon}" style="color:${s.color};font-size:.8rem;"></i></div>
+        <div><div style="font-size:1.3rem;font-weight:700;color:${s.color};line-height:1;">${s.value}</div><div style="font-size:.65rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.07em;">${s.label}</div></div>
+      </div>`).join('')}
+    </div>
+    <!-- Live Alerts Table -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">SIEM Alert Feed</h3>
+        <div style="display:flex;gap:.5rem;">
+          <button onclick="igToast('Alerts acknowledged','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);">Acknowledge All</button>
+          <button onclick="igToast('Alert report exported','success')" style="background:var(--gold);color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;cursor:pointer;font-weight:600;">Export Report</button>
+        </div>
+      </div>
+      <table class="ig-tbl"><thead><tr><th>ID</th><th>Severity</th><th>Type</th><th>Message</th><th>Time</th><th>Status</th><th>Action</th></tr></thead><tbody>
+        ${[
+          {id:'ALT-001',sev:'Critical',type:'Brute Force',     msg:'5 failed logins from 185.220.101.x in 10 min',      ts:'06:12',status:'Investigating',sc:'#dc2626'},
+          {id:'ALT-002',sev:'High',    type:'Unusual Access',  msg:'Board doc accessed from unregistered device',        ts:'04:30',status:'Acknowledged', sc:'#d97706'},
+          {id:'ALT-003',sev:'High',    type:'API Anomaly',     msg:'100+ req/min from RM account — rate-limit triggered',ts:'03:55',status:'Resolved',     sc:'#d97706'},
+          {id:'ALT-004',sev:'Medium',  type:'Geo Anomaly',     msg:'Login from Singapore for IG-KMP-0001 — blocked',    ts:'02:14',status:'Blocked',      sc:'#2563eb'},
+          {id:'ALT-005',sev:'Medium',  type:'Session Anomaly', msg:'Token reuse detected — possible replay attack',      ts:'22:10',status:'Resolved',     sc:'#2563eb'},
+          {id:'ALT-006',sev:'Medium',  type:'Data Access',     msg:'Bulk export >50 invoices by Finance Manager',       ts:'18:45',status:'Acknowledged', sc:'#2563eb'},
+          {id:'ALT-007',sev:'Low',     type:'Config Change',   msg:'Rate limit updated by Super Admin',                  ts:'14:20',status:'Resolved',     sc:'#16a34a'},
+        ].map(r=>`<tr>
+          <td style="font-size:.72rem;font-family:monospace;color:var(--gold);">${r.id}</td>
+          <td><span style="font-size:.65rem;font-weight:700;padding:2px 7px;background:${r.sc}18;color:${r.sc};border:1px solid ${r.sc}44;">${r.sev}</span></td>
+          <td style="font-size:.75rem;">${r.type}</td>
+          <td style="font-size:.75rem;max-width:280px;">${r.msg}</td>
+          <td style="font-size:.7rem;color:var(--ink-muted);">Today ${r.ts}</td>
+          <td><span class="badge ${r.status==='Resolved'||r.status==='Blocked'?'b-gr':r.status==='Investigating'?'b-re':'b-g'}" style="font-size:.6rem;">${r.status}</span></td>
+          <td><button onclick="igToast('${r.id} escalated','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">Escalate</button></td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>
+    <!-- Distributed Tracing -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Distributed Tracing — Recent Spans</h3></div>
+      <div style="padding:1rem;">
+        ${[
+          {span:'POST /api/auth/admin',       ms:34, svc:'Auth',       ok:true},
+          {span:'GET /api/finance/summary',   ms:18, svc:'Finance',    ok:true},
+          {span:'POST /api/finance/voucher',  ms:52, svc:'Finance',    ok:true},
+          {span:'POST /api/contracts/clause-check',ms:410,svc:'Contracts',ok:true},
+          {span:'POST /api/hr/tds-declaration',ms:88, svc:'HR',         ok:true},
+          {span:'GET /api/risk/mandates',     ms:11, svc:'Analytics',  ok:true},
+        ].map(t=>`<div style="display:flex;align-items:center;gap:1rem;padding:.5rem 0;border-bottom:1px solid var(--border);">
+          <div style="width:6px;height:6px;border-radius:50%;background:${t.ok?'#16a34a':'#dc2626'};flex-shrink:0;"></div>
+          <div style="font-size:.75rem;font-family:monospace;flex:1;color:var(--ink);">${t.span}</div>
+          <span style="font-size:.68rem;padding:1px 6px;background:#f1f5f9;border:1px solid var(--border);color:var(--ink-muted);">${t.svc}</span>
+          <div style="display:flex;align-items:center;gap:.5rem;min-width:120px;">
+            <div style="flex:1;background:#e2e8f0;height:5px;border-radius:3px;overflow:hidden;"><div style="height:100%;background:${t.ms<50?'#16a34a':t.ms<200?'#d97706':'#dc2626'};width:${Math.min(100,t.ms/5)}%;"></div></div>
+            <span style="font-size:.72rem;font-weight:700;color:${t.ms<50?'#16a34a':t.ms<200?'#d97706':'#dc2626'};min-width:35px;text-align:right;">${t.ms}ms</span>
+          </div>
+        </div>`).join('')}
+        <div style="margin-top:.75rem;display:flex;gap:1.5rem;font-size:.72rem;color:var(--ink-muted);">
+          <span><strong>p50:</strong> 34ms</span><span><strong>p95:</strong> 218ms</span><span><strong>p99:</strong> 410ms</span><span><strong>Error rate:</strong> 0.0%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 7: FIDO & MFA -->
+  <div id="sec-pane-7" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+      <!-- FIDO2 / WebAuthn -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">FIDO2 / WebAuthn Hardware Keys</h3>
+          <p style="font-size:.72rem;color:var(--ink-muted);margin-top:.2rem;">Phishing-resistant hardware tokens for Super Admin and Director accounts</p>
+        </div>
+        <div style="padding:1.25rem;">
+          ${[
+            {user:'superadmin@indiagully.com',role:'Super Admin',key:'YubiKey 5C NFC',registered:'15 Jan 2025',last_used:'Today 06:10',status:'Active'},
+            {user:'akm@indiagully.com',        role:'Director MD', key:'YubiKey 5 NFC', registered:'20 Jan 2025',last_used:'Yesterday',  status:'Active'},
+            {user:'pavan@indiagully.com',       role:'Director ED', key:'Not registered',registered:'—',          last_used:'—',          status:'Pending'},
+          ].map(k=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border);">
+            <div>
+              <div style="font-size:.78rem;font-weight:600;color:var(--ink);">${k.user}</div>
+              <div style="font-size:.68rem;color:var(--ink-muted);">${k.role} · ${k.key}</div>
+              <div style="font-size:.65rem;color:var(--ink-muted);">Registered: ${k.registered} · Last used: ${k.last_used}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem;">
+              <span class="badge ${k.status==='Active'?'b-gr':'b-g'}" style="font-size:.6rem;">${k.status}</span>
+              <button onclick="igToast('${k.status==='Active'?'Revoke':'Register'} key for ${k.user}','${k.status==='Active'?'warn':'success'}')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">${k.status==='Active'?'Revoke':'Register Key'}</button>
+            </div>
+          </div>`).join('')}
+          <button onclick="igToast('Add FIDO2 key flow initiated — connect hardware token','info')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.75rem;font-weight:600;cursor:pointer;margin-top:1rem;width:100%;"><i class="fas fa-plus" style="margin-right:.4rem;"></i>Register New Hardware Key</button>
+        </div>
+      </div>
+      <!-- TOTP / MFA Policy -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">TOTP & MFA Policy</h3>
+          <p style="font-size:.72rem;color:var(--ink-muted);margin-top:.2rem;">App-based TOTP enforcement per role</p>
+        </div>
+        <div style="padding:1.25rem;">
+          ${[
+            {role:'Super Admin',totp:'Mandatory',fido:'Mandatory',backup:'Recovery codes only',sms:'Disabled'},
+            {role:'Director / KMP',totp:'Mandatory',fido:'Recommended',backup:'Recovery codes only',sms:'Disabled'},
+            {role:'Finance Manager',totp:'Mandatory',fido:'Optional',backup:'Backup TOTP device',sms:'Disabled'},
+            {role:'HR Manager',  totp:'Mandatory',fido:'Optional',backup:'Backup TOTP device',sms:'Disabled'},
+            {role:'Employee',    totp:'Recommended',fido:'Optional',backup:'Email OTP fallback',sms:'Disabled'},
+            {role:'Client',      totp:'Optional', fido:'Not required',backup:'Email OTP',sms:'Disabled'},
+          ].map(r=>`<div style="padding:.6rem 0;border-bottom:1px solid var(--border);">
+            <div style="font-size:.75rem;font-weight:700;color:var(--ink);margin-bottom:.3rem;">${r.role}</div>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+              <span style="font-size:.62rem;padding:1px 6px;background:${r.totp==='Mandatory'?'#dcfce7':'#fef9c3'};color:${r.totp==='Mandatory'?'#15803d':'#92400e'};border-radius:3px;">TOTP: ${r.totp}</span>
+              <span style="font-size:.62rem;padding:1px 6px;background:#eff6ff;color:#1d4ed8;border-radius:3px;">FIDO: ${r.fido}</span>
+              <span style="font-size:.62rem;padding:1px 6px;background:#f8fafc;color:var(--ink-muted);border-radius:3px;">Backup: ${r.backup}</span>
+              <span style="font-size:.62rem;padding:1px 6px;background:#fef2f2;color:#991b1b;border-radius:3px;">SMS: ${r.sms}</span>
+            </div>
+          </div>`).join('')}
+          <div class="ig-warn" style="margin-top:1rem;"><i class="fas fa-exclamation-triangle"></i><div style="font-size:.75rem;">Static OTP (000000) used in demo accounts must be disabled in production. All accounts must enroll real TOTP before go-live.</div></div>
+          <button onclick="igToast('MFA policy saved — enforced on next login','success')" style="background:var(--ink);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.75rem;font-weight:600;cursor:pointer;margin-top:1rem;width:100%;"><i class="fas fa-lock" style="margin-right:.4rem;"></i>Save MFA Policy</button>
+        </div>
+      </div>
+    </div>
+    <!-- CSRF & reCAPTCHA -->
+    <div style="background:#fff;border:1px solid var(--border);margin-top:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">CSRF Protection & reCAPTCHA</h3></div>
+      <div style="padding:1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+        <div>
+          <div style="font-size:.78rem;font-weight:700;color:var(--ink);margin-bottom:.75rem;">CSRF Token Configuration</div>
+          ${[
+            {endpoint:'POST /api/auth/login',    token:'Required',  method:'Double-submit cookie'},
+            {endpoint:'POST /api/auth/admin',    token:'Required',  method:'Synchronizer token'},
+            {endpoint:'POST /api/finance/voucher',token:'Required', method:'Synchronizer token'},
+            {endpoint:'POST /api/contracts/*',   token:'Required',  method:'Synchronizer token'},
+            {endpoint:'POST /api/hr/*',          token:'Required',  method:'Double-submit cookie'},
+            {endpoint:'GET  /api/*',             token:'Not needed',method:'Read-only — exempt'},
+          ].map(r=>`<div style="display:flex;align-items:center;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--border);">
+            <i class="fas fa-${r.token==='Required'?'check-circle':'minus-circle'}" style="color:${r.token==='Required'?'#16a34a':'var(--ink-faint)'};font-size:.75rem;flex-shrink:0;"></i>
+            <div style="font-size:.72rem;font-family:monospace;flex:1;color:var(--ink);">${r.endpoint}</div>
+            <span style="font-size:.62rem;color:var(--ink-muted);">${r.method}</span>
+          </div>`).join('')}
+        </div>
+        <div>
+          <div style="font-size:.78rem;font-weight:700;color:var(--ink);margin-bottom:.75rem;">reCAPTCHA v3 Configuration</div>
+          ${[
+            {endpoint:'Login page',             score:0.5, status:'Active',  trigger:'Always'},
+            {endpoint:'Admin login',            score:0.7, status:'Active',  trigger:'Always'},
+            {endpoint:'Enquiry form',           score:0.3, status:'Active',  trigger:'Always'},
+            {endpoint:'Password reset',         score:0.5, status:'Active',  trigger:'Always'},
+            {endpoint:'Portal registration',    score:0.5, status:'Planned', trigger:'Always'},
+            {endpoint:'HORECA quote request',   score:0.3, status:'Planned', trigger:'Always'},
+          ].map(r=>`<div style="display:flex;align-items:center;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--border);">
+            <span class="badge ${r.status==='Active'?'b-gr':'b-g'}" style="font-size:.6rem;flex-shrink:0;">${r.status}</span>
+            <div style="font-size:.72rem;flex:1;color:var(--ink);">${r.endpoint}</div>
+            <span style="font-size:.62rem;background:#f1f5f9;padding:1px 5px;color:var(--ink-muted);">min score ${r.score}</span>
+          </div>`).join('')}
+          <div style="margin-top:.875rem;">
+            <label class="ig-label">reCAPTCHA Site Key</label>
+            <input type="text" class="ig-input" value="6LeXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" style="font-size:.75rem;font-family:monospace;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 8: Data Encryption -->
+  <div id="sec-pane-8" style="display:none;">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem;">
+      ${[
+        {label:'Encrypted Fields',value:'12',   color:'#16a34a',icon:'lock',      desc:'AES-256-GCM at rest'},
+        {label:'Tokenized PII',   value:'6',    color:'#2563eb',icon:'fingerprint',desc:'PAN, Aadhaar, Bank A/C'},
+        {label:'TLS Version',     value:'1.3',  color:'#16a34a',icon:'shield-alt', desc:'All connections enforced'},
+        {label:'Key Rotation',    value:'90d',  color:'#d97706',icon:'sync-alt',   desc:'Scheduled — next: 28 May'},
+        {label:'Encrypted Storage',value:'100%',color:'#16a34a',icon:'database',  desc:'Cloudflare D1 + R2'},
+        {label:'DPDP Compliance', value:'87%',  color:'#d97706',icon:'balance-scale',desc:'3 items pending'},
+      ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.75rem;">
+        <div style="width:36px;height:36px;background:${s.color}18;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${s.icon}" style="color:${s.color};font-size:.85rem;"></i></div>
+        <div><div style="font-size:1.25rem;font-weight:700;color:${s.color};line-height:1;">${s.value}</div><div style="font-size:.65rem;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.06em;">${s.label}</div><div style="font-size:.62rem;color:var(--ink-muted);">${s.desc}</div></div>
+      </div>`).join('')}
+    </div>
+    <!-- Field-Level Encryption Table -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Field-Level Encryption Registry</h3></div>
+      <table class="ig-tbl"><thead><tr><th>Field</th><th>Table/Module</th><th>Algorithm</th><th>Key Scope</th><th>Masking</th><th>Status</th></tr></thead><tbody>
+        ${[
+          {field:'PAN Number',       module:'HR/Employees',  algo:'AES-256-GCM', scope:'Employee',       mask:'ABCDE••••F',  status:'Active'},
+          {field:'Aadhaar Number',   module:'HR/KYC',        algo:'AES-256-GCM', scope:'Employee',       mask:'••••-••••-9012',status:'Active'},
+          {field:'Bank Account No',  module:'Finance/HR',    algo:'AES-256-GCM', scope:'Employee',       mask:'••••567890',  status:'Active'},
+          {field:'Salary / CTC',     module:'HR/Payroll',    algo:'AES-256-GCM', scope:'HR+Finance',     mask:'₹ ••,•••',   status:'Active'},
+          {field:'Email Address',    module:'All Portals',   algo:'HMAC-SHA256', scope:'Session-bound',  mask:'Optional',   status:'Active'},
+          {field:'Phone Number',     module:'All Portals',   algo:'AES-256-GCM', scope:'HR+Admin',       mask:'+91 9810××××', status:'Active'},
+          {field:'Board Resolutions',module:'Governance',    algo:'AES-256-GCM', scope:'Board+Admin',    mask:'N/A',         status:'Active'},
+          {field:'Invoice Amounts',  module:'Finance',       algo:'At-rest TLS', scope:'Finance+Admin',  mask:'N/A',         status:'Active'},
+          {field:'Contract Terms',   module:'Contracts',     algo:'AES-256-GCM', scope:'Parties+Admin',  mask:'N/A',         status:'Active'},
+          {field:'GSTIN',            module:'Finance',       algo:'Tokenized',   scope:'Finance+Admin',  mask:'07XXXXX1234', status:'Active'},
+          {field:'DIN Number',       module:'Governance',    algo:'AES-256-GCM', scope:'Board+Admin',    mask:'••••••',      status:'Active'},
+          {field:'Director Aadhaar', module:'Governance',    algo:'AES-256-GCM', scope:'Board+Admin',    mask:'••••-••••-××××',status:'Active'},
+        ].map(r=>`<tr>
+          <td style="font-size:.78rem;font-weight:600;color:var(--ink);">${r.field}</td>
+          <td style="font-size:.72rem;color:var(--ink-muted);">${r.module}</td>
+          <td style="font-size:.72rem;font-family:monospace;color:#2563eb;">${r.algo}</td>
+          <td style="font-size:.72rem;color:var(--ink-muted);">${r.scope}</td>
+          <td style="font-size:.72rem;font-family:monospace;color:var(--gold);">${r.mask}</td>
+          <td><span class="badge b-gr" style="font-size:.6rem;">${r.status}</span></td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>
+    <!-- DPDP Compliance Checklist -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DPDP Act 2023 — Compliance Checklist</h3></div>
+      <div style="padding:1.25rem;">
+        ${[
+          {item:'Consent notice displayed before data collection',done:true},
+          {item:'Purpose limitation documented for each data category',done:true},
+          {item:'Data minimisation — collect only what is needed',done:true},
+          {item:'Data Fiduciary registration with DPB (when live)',done:false},
+          {item:'Data Principal rights portal (access, correct, erase)',done:false},
+          {item:'Grievance Redressal Officer appointed & published',done:true},
+          {item:'Cross-border data transfer controls implemented',done:true},
+          {item:'Data breach notification procedure (72hr DPB, 7d principals)',done:true},
+          {item:'Retention policy — auto-delete after 7 years',done:false},
+          {item:'Processor agreements with vendors (SendGrid, Twilio, etc.)',done:false},
+          {item:'Children data — age-gating and parental consent',done:true},
+          {item:'Annual DPDP audit by qualified assessor',done:false},
+        ].map((r,i)=>`<div style="display:flex;align-items:flex-start;gap:.625rem;padding:.5rem 0;border-bottom:1px solid var(--border);">
+          <i class="fas fa-${r.done?'check-circle':'circle'}" style="color:${r.done?'#16a34a':'#e2e8f0'};font-size:.85rem;margin-top:.05rem;flex-shrink:0;"></i>
+          <span style="font-size:.78rem;color:${r.done?'var(--ink)':'var(--ink-muted)'};">${r.item}</span>
+          ${!r.done?'<span style="margin-left:auto;font-size:.6rem;background:#fef9c3;color:#92400e;padding:1px 6px;flex-shrink:0;border-radius:3px;">Pending</span>':''}
+        </div>`).join('')}
+        <div style="margin-top:1rem;display:flex;gap:.75rem;">
+          <button onclick="igToast('DPDP compliance report generated','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class="fas fa-file-alt" style="margin-right:.4rem;"></i>Generate Compliance Report</button>
+          <button onclick="igToast('Breach notification workflow opened','info')" style="background:none;border:1px solid var(--border);padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:var(--ink-muted);">Breach Notify Workflow</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 9: Incident Response -->
+  <div id="sec-pane-9" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem;">
+      <!-- Incident Register -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Incident Register</h3>
+          <button onclick="igToast('New incident opened','warn')" style="background:#dc2626;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.3rem;"></i>New Incident</button>
+        </div>
+        ${[
+          {id:'INC-001',title:'Brute-force attempt from TOR exit node',  sev:'Critical',status:'Resolved',  opened:'2026-01-14',closed:'2026-01-14',owner:'superadmin'},
+          {id:'INC-002',title:'Unencrypted laptop left in public space',  sev:'High',    status:'Closed',    opened:'2026-01-28',closed:'2026-01-30',owner:'pavan'},
+          {id:'INC-003',title:'Phishing email targeting Finance Manager', sev:'High',    status:'Investigating',opened:'2026-02-20',closed:'—',        owner:'superadmin'},
+          {id:'INC-004',title:'Rate-limit bypass attempt via proxy chain',sev:'Medium',  status:'Resolved',  opened:'2026-02-25',closed:'2026-02-25',owner:'superadmin'},
+        ].map(r=>`<div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.3rem;">
+            <span style="font-size:.72rem;font-weight:700;color:var(--gold);">${r.id}</span>
+            <span class="badge ${r.status==='Resolved'||r.status==='Closed'?'b-gr':r.status==='Investigating'?'b-re':'b-g'}" style="font-size:.6rem;">${r.status}</span>
+          </div>
+          <div style="font-size:.78rem;color:var(--ink);margin-bottom:.3rem;">${r.title}</div>
+          <div style="display:flex;gap:1rem;font-size:.68rem;color:var(--ink-muted);">
+            <span><i class="fas fa-exclamation-triangle" style="color:${r.sev==='Critical'?'#dc2626':r.sev==='High'?'#d97706':'#2563eb'};margin-right:.2rem;"></i>${r.sev}</span>
+            <span>Opened: ${r.opened}</span><span>Closed: ${r.closed}</span><span>Owner: ${r.owner}</span>
+          </div>
+        </div>`).join('')}
+      </div>
+      <!-- Response Playbooks -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Response Playbooks</h3></div>
+        <div style="padding:1.25rem;">
+          ${[
+            {name:'Credential Compromise',    steps:['Lock account immediately','Notify user + CISO','Force password reset + re-enroll MFA','Review audit log 30 days','Assess blast radius','File incident report'],color:'#dc2626'},
+            {name:'Data Breach',              steps:['Contain — isolate affected service','Assess scope + affected data principals','Notify DPB within 72 hours (DPDP)','Notify affected users','Preserve evidence','Root-cause analysis 7 days'],color:'#d97706'},
+            {name:'DDoS / API Abuse',         steps:['Activate Cloudflare WAF rule','Enable rate-limiting at edge','Block offending ASNs','Notify CISO','Post-mortem within 24hr'],color:'#2563eb'},
+            {name:'Insider Threat',           steps:['Revoke access immediately','Preserve logs + devices','HR + Legal notification','Forensic review','Board notification if Director'],color:'#7c3aed'},
+          ].map((p,pi)=>`<div style="margin-bottom:1rem;">
+            <button onclick="document.getElementById('playbook-${pi}').style.display=document.getElementById('playbook-${pi}').style.display==='none'?'block':'none'" style="width:100%;text-align:left;background:${p.color}10;border:1px solid ${p.color}33;padding:.5rem .875rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:.78rem;font-weight:700;color:${p.color};">${p.name}</span>
+              <i class="fas fa-chevron-down" style="font-size:.6rem;color:${p.color};"></i>
+            </button>
+            <div id="playbook-${pi}" style="display:none;border:1px solid ${p.color}33;border-top:none;padding:.75rem;">
+              ${p.steps.map((s,si)=>`<div style="display:flex;gap:.5rem;padding:.3rem 0;font-size:.75rem;color:var(--ink);"><span style="color:${p.color};font-weight:700;flex-shrink:0;">${si+1}.</span>${s}</div>`).join('')}
+              <button onclick="igToast('${p.name} playbook initiated — incident logged','warn')" style="background:${p.color};color:#fff;border:none;padding:.35rem .875rem;font-size:.68rem;font-weight:600;cursor:pointer;margin-top:.5rem;"><i class="fas fa-play" style="margin-right:.3rem;"></i>Initiate Playbook</button>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <!-- Pen Test Schedule -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Penetration Testing & Vulnerability Scanning</h3></div>
+      <div style="padding:1.25rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;">
+        ${[
+          {label:'Last Pen Test',  value:'Jan 2026',  status:'Completed', icon:'bug',         color:'#16a34a'},
+          {label:'Next Pen Test',  value:'Jul 2026',  status:'Scheduled', icon:'calendar-alt',color:'#2563eb'},
+          {label:'Open CVEs',      value:'3 Medium',  status:'Tracking',  icon:'exclamation', color:'#d97706'},
+          {label:'Dependabot',     value:'Auto-scan', status:'Active',    icon:'robot',       color:'#16a34a'},
+        ].map(s=>`<div style="background:#f8fafc;border:1px solid var(--border);padding:.875rem;text-align:center;">
+          <i class="fas fa-${s.icon}" style="color:${s.color};font-size:1.25rem;margin-bottom:.5rem;"></i>
+          <div style="font-size:.82rem;font-weight:700;color:var(--ink);">${s.value}</div>
+          <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-muted);margin-bottom:.3rem;">${s.label}</div>
+          <span class="badge ${s.status==='Completed'||s.status==='Active'?'b-gr':s.status==='Scheduled'?'b-g':'b-g'}" style="font-size:.58rem;">${s.status}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>
+
   <script>
   window.igSecTab = function(idx){
-    for(var i=0;i<6;i++){
+    for(var i=0;i<10;i++){
       var p=document.getElementById('sec-pane-'+i);
       var t=document.getElementById('sec-tab-'+i);
       if(p) p.style.display=i===idx?'block':'none';

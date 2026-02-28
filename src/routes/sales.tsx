@@ -13,6 +13,7 @@ function salesShell(pageTitle: string, active: string, body: string) {
     { id:'engagements',icon:'handshake',      label:'Engagements',   badge:'' },
     { id:'tasks',      icon:'tasks',          label:'Tasks',         badge:'3' },
     { id:'analytics',  icon:'chart-line',     label:'Analytics',     badge:'' },
+    { id:'commission', icon:'percentage',      label:'Commission',    badge:'' },
   ]
   return `
 <div style="display:flex;height:100vh;overflow:hidden;background:#f7f7f7;">
@@ -806,6 +807,142 @@ app.get('/analytics', (c) => {
     </div>
   </div>`
   return c.html(layout('Sales Analytics', salesShell('Sales Analytics', 'analytics', body), {noNav:true,noFooter:true}))
+})
+
+// ── COMMISSION ENGINE ──────────────────────────────────────────────────────────
+app.get('/commission', (c) => {
+  const body = `
+  <div class="ig-info" style="margin-bottom:1.25rem;"><i class="fas fa-info-circle"></i><div><strong>Commission Engine:</strong> Calculates advisory fees, success fees and incentives. Commissions are auto-linked to invoices and payroll. All rates are configured per engagement type and seniority band.</div></div>
+
+  <!-- Commission KPIs -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+    ${[
+      {label:'Total Earned FY25',     value:'₹42.6L',  sub:'Across all employees',  c:'#16a34a'},
+      {label:'Pending Payout',        value:'₹8.2L',   sub:'Awaiting invoice close', c:'#d97706'},
+      {label:'Avg Commission Rate',   value:'2.8%',    sub:'Of deal value',          c:'#B8960C'},
+      {label:'Deals Commissioned',    value:'6',       sub:'Closed this FY',         c:'#7c3aed'},
+    ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1.1rem;">
+      <div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.4rem;">${s.label}</div>
+      <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:${s.c};line-height:1;margin-bottom:.25rem;">${s.value}</div>
+      <div style="font-size:.68rem;color:${s.c};">${s.sub}</div>
+    </div>`).join('')}
+  </div>
+
+  <!-- Commission Rate Matrix -->
+  <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+    <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Commission Rate Matrix</h3>
+      <button onclick="igToast('Commission rates saved','success')" style="background:var(--gold);color:#fff;border:none;padding:.35rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-save" style="margin-right:.3rem;"></i>Save Rates</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="ig-tbl"><thead><tr><th>Service Type</th><th>Retainer Fee Rate</th><th>Success Fee Rate</th><th>Min. Deal Size</th><th>Clawback Period</th><th>Split Rule</th></tr></thead><tbody>
+        ${[
+          {type:'Real Estate Advisory',    ret:'5%',  succ:'2.5%', min:'₹5 Cr',   clawback:'6 mo', split:'70% lead / 30% support'},
+          {type:'Hospitality Advisory',    ret:'5%',  succ:'3.0%', min:'₹3 Cr',   clawback:'6 mo', split:'70% lead / 30% support'},
+          {type:'Retail & Leasing',        ret:'4%',  succ:'2.0%', min:'₹2 Cr',   clawback:'3 mo', split:'80% lead / 20% support'},
+          {type:'Debt & Special Situations',ret:'3%', succ:'1.5%', min:'₹10 Cr',  clawback:'12 mo',split:'60% lead / 40% support'},
+          {type:'Entertainment Advisory',  ret:'5%',  succ:'3.5%', min:'₹1 Cr',   clawback:'3 mo', split:'75% lead / 25% support'},
+          {type:'HORECA Solutions',        ret:'8%',  succ:'—',    min:'₹25L',    clawback:'1 mo', split:'100% account manager'},
+        ].map(r=>`<tr>
+          <td style="font-weight:600;font-size:.82rem;">${r.type}</td>
+          <td style="color:#2563eb;font-weight:600;">${r.ret}</td>
+          <td style="color:#16a34a;font-weight:600;">${r.succ}</td>
+          <td style="font-size:.78rem;">${r.min}</td>
+          <td style="font-size:.75rem;color:var(--ink-muted);">${r.clawback}</td>
+          <td style="font-size:.75rem;color:var(--ink-muted);">${r.split}</td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>
+
+  <!-- Commission Ledger -->
+  <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+    <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Commission Ledger — FY 2024-25</h3>
+      <div style="display:flex;gap:.5rem;">
+        <button onclick="igToast('Commission ledger exported to Excel','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-file-excel" style="margin-right:.3rem;"></i>Export</button>
+        <button onclick="togglePanel('new-comm-panel')" style="background:#1E1E1E;color:#fff;border:none;padding:.35rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.3rem;"></i>Manual Entry</button>
+      </div>
+    </div>
+    <div id="new-comm-panel" class="ig-panel" style="margin:1.25rem;display:none;">
+      <h4 style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.875rem;">Add Commission Entry</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.875rem;">
+        <div><label class="ig-label">Employee</label><select class="ig-input" style="font-size:.82rem;"><option>Arun Manikonda</option><option>Pavan Manikonda</option><option>Amit Jhingan</option></select></div>
+        <div><label class="ig-label">Engagement</label><select class="ig-input" style="font-size:.82rem;"><option>ENG-001 — L5 Resort HORECA</option><option>ENG-002 — Rajasthan Hotel</option><option>ENG-003 — Mumbai Retail</option></select></div>
+        <div><label class="ig-label">Deal Value (₹)</label><input type="number" class="ig-input" style="font-size:.82rem;" placeholder="e.g. 50000000" id="comm-deal-val" oninput="igCalcComm()"></div>
+        <div><label class="ig-label">Rate (%)</label><input type="number" class="ig-input" style="font-size:.82rem;" value="2.5" id="comm-rate" oninput="igCalcComm()"></div>
+        <div><label class="ig-label">Type</label><select class="ig-input" style="font-size:.82rem;"><option>Success Fee</option><option>Retainer Commission</option><option>Bonus Incentive</option></select></div>
+        <div><label class="ig-label">Calculated Commission (₹)</label><input type="text" class="ig-input" id="comm-calc" style="font-size:.82rem;background:#f8f9fa;" readonly></div>
+        <div><label class="ig-label">Payout Date</label><input type="date" class="ig-input" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Status</label><select class="ig-input" style="font-size:.82rem;"><option>Pending</option><option>Approved</option><option>Paid</option></select></div>
+      </div>
+      <div style="display:flex;gap:.75rem;margin-top:.875rem;">
+        <button onclick="igToast('Commission entry saved — pending approval','success');togglePanel('new-comm-panel')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Save Entry</button>
+        <button onclick="togglePanel('new-comm-panel')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+      </div>
+    </div>
+    <table class="ig-tbl"><thead><tr><th>Ref</th><th>Employee</th><th>Engagement</th><th>Type</th><th>Deal Value</th><th>Rate</th><th>Commission</th><th>Payout Date</th><th>Status</th><th>Action</th></tr></thead><tbody>
+      ${[
+        {ref:'COM-001',emp:'Arun Manikonda',   eng:'ENG-001 — L5 Resort',   type:'Success Fee',       deal:'₹15 Cr',   rate:'2.5%',amt:'₹37.5L',date:'28 Feb 2025',cls:'b-gr',s:'Paid'},
+        {ref:'COM-002',emp:'Amit Jhingan',     eng:'ENG-003 — Mumbai Retail',type:'Retainer Comm.',    deal:'₹3.5 Cr',  rate:'5.0%',amt:'₹17.5L',date:'15 Mar 2025',cls:'b-g', s:'Pending'},
+        {ref:'COM-003',emp:'Pavan Manikonda',  eng:'ENG-002 — Raj. Hotel',   type:'Success Fee',       deal:'₹8 Cr',    rate:'3.0%',amt:'₹24L',  date:'30 Mar 2025',cls:'b-g', s:'Pending'},
+        {ref:'COM-004',emp:'Arun Manikonda',   eng:'ENG-005 — Debt Mandate', type:'Bonus Incentive',   deal:'₹22 Cr',   rate:'1.5%',amt:'₹33L',  date:'01 Apr 2025',cls:'b-dk',s:'Approved'},
+      ].map(r=>`<tr>
+        <td style="font-weight:700;font-size:.78rem;color:var(--gold);">${r.ref}</td>
+        <td style="font-size:.82rem;">${r.emp}</td>
+        <td style="font-size:.75rem;color:var(--ink-muted);">${r.eng}</td>
+        <td><span class="badge b-dk" style="font-size:.6rem;">${r.type}</span></td>
+        <td style="font-family:'DM Serif Display',Georgia,serif;font-size:.85rem;">${r.deal}</td>
+        <td style="font-size:.78rem;color:#2563eb;font-weight:600;">${r.rate}</td>
+        <td style="font-family:'DM Serif Display',Georgia,serif;font-weight:700;color:var(--gold);">${r.amt}</td>
+        <td style="font-size:.75rem;white-space:nowrap;">${r.date}</td>
+        <td><span class="badge ${r.cls}">${r.s}</span></td>
+        <td style="display:flex;gap:.3rem;">
+          ${r.s==='Pending'?`<button onclick="igToast('${r.ref} approved — will be added to payroll','success')" style="background:#16a34a;color:#fff;border:none;padding:.2rem .5rem;font-size:.65rem;cursor:pointer;">Approve</button>`:''}
+          <button onclick="igToast('${r.ref} details opened','info')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--ink-muted);"><i class="fas fa-eye"></i></button>
+        </td>
+      </tr>`).join('')}
+    </tbody></table>
+  </div>
+
+  <!-- Lead Auto-Assignment Rules -->
+  <div style="background:#fff;border:1px solid var(--border);">
+    <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Lead Auto-Assignment Rules</h3>
+      <button onclick="igToast('Assignment rules saved','success')" style="background:var(--gold);color:#fff;border:none;padding:.35rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-save" style="margin-right:.3rem;"></i>Save Rules</button>
+    </div>
+    <div style="padding:1.25rem;">
+      <div class="ig-info" style="margin-bottom:1rem;"><i class="fas fa-robot"></i><div>Leads are auto-assigned based on vertical expertise and current workload. Assign rules below control the routing logic.</div></div>
+      <table class="ig-tbl"><thead><tr><th>Vertical / Source</th><th>Primary Assignee</th><th>Backup Assignee</th><th>SLA (Response)</th><th>Round-Robin</th><th>Status</th></tr></thead><tbody>
+        ${[
+          {vert:'Real Estate',  primary:'Arun Manikonda',  backup:'Pavan Manikonda', sla:'2h',  rr:false, on:true},
+          {vert:'Hospitality',  primary:'Pavan Manikonda', backup:'Arun Manikonda',  sla:'4h',  rr:false, on:true},
+          {vert:'HORECA',       primary:'Amit Jhingan',    backup:'Pavan Manikonda', sla:'1h',  rr:false, on:true},
+          {vert:'Entertainment',primary:'Arun Manikonda',  backup:'Amit Jhingan',    sla:'4h',  rr:true,  on:true},
+          {vert:'Debt',         primary:'Arun Manikonda',  backup:'—',               sla:'24h', rr:false, on:true},
+          {vert:'Website Forms',primary:'',                backup:'',                sla:'30m', rr:true,  on:true},
+        ].map(r=>`<tr>
+          <td style="font-weight:600;font-size:.82rem;">${r.vert}</td>
+          <td><select class="ig-input" style="font-size:.75rem;padding:.15rem .35rem;border:1px solid var(--border);"><option>${r.primary||'Select...'}</option><option>Arun Manikonda</option><option>Pavan Manikonda</option><option>Amit Jhingan</option></select></td>
+          <td><select class="ig-input" style="font-size:.75rem;padding:.15rem .35rem;border:1px solid var(--border);"><option>${r.backup||'None'}</option><option>Arun Manikonda</option><option>Pavan Manikonda</option><option>Amit Jhingan</option><option>None</option></select></td>
+          <td><input type="text" class="ig-input" value="${r.sla}" style="font-size:.75rem;padding:.15rem .35rem;max-width:60px;border:1px solid var(--border);"></td>
+          <td><input type="checkbox" ${r.rr?'checked':''} onchange="igToast('Round-robin ${r.rr?'disabled':'enabled'} for ${r.vert}','info')"></td>
+          <td><span class="badge ${r.on?'b-gr':'b-dk'}">${r.on?'Active':'Off'}</span></td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>
+
+  <script>
+  window.igCalcComm = function(){
+    var deal = parseFloat(document.getElementById('comm-deal-val').value)||0;
+    var rate = parseFloat(document.getElementById('comm-rate').value)||0;
+    var comm = (deal * rate / 100);
+    var el = document.getElementById('comm-calc');
+    if(el) el.value = '₹' + comm.toLocaleString('en-IN');
+  };
+  </script>`
+  return c.html(layout('Commission Engine', salesShell('Commission Engine', 'commission', body), {noNav:true,noFooter:true}))
 })
 
 export default app

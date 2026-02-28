@@ -285,8 +285,11 @@ textarea.ig-input{resize:vertical;min-height:130px}
 </style>
 </head>
 <body class="${opts?.bodyClass || ''}">
+<a href="#main-content" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;" onfocus="this.style.cssText='position:fixed;left:1rem;top:1rem;z-index:99999;background:var(--gold);color:#fff;padding:.5rem 1rem;font-size:.85rem;font-weight:700;text-decoration:none;'" onblur="this.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;'">Skip to main content</a>
 ${opts?.noNav ? '' : NAV}
+<main id="main-content" role="main" aria-label="Main content" tabindex="-1">
 ${content}
+</main>
 ${opts?.noFooter ? '' : FOOTER}
 ${SCRIPTS}
 </body>
@@ -333,6 +336,18 @@ const NAV = `
 
     <!-- RIGHT -->
     <div class="hidden lg:flex items-center" style="gap:.75rem;">
+      <!-- Dark Mode Toggle -->
+      <button id="dark-toggle" onclick="igToggleDark()" aria-label="Toggle dark mode"
+              style="color:rgba(255,255,255,.6);background:none;border:1px solid rgba(255,255,255,.15);padding:.38rem .6rem;cursor:pointer;font-size:.75rem;transition:color .2s;"
+              title="Toggle dark mode" data-tip="Dark mode">
+        <i id="dark-icon" class="fas fa-moon"></i>
+      </button>
+      <!-- Hindi / English Toggle -->
+      <button id="lang-toggle" onclick="igToggleLang()" aria-label="Switch language between English and Hindi"
+              style="color:rgba(255,255,255,.6);background:none;border:1px solid rgba(255,255,255,.15);padding:.38rem .6rem;cursor:pointer;font-size:.72rem;font-weight:600;transition:color .2s;letter-spacing:.04em;"
+              title="Switch to Hindi / English" data-tip="भाषा / Language">
+        <span id="lang-label">हिंदी</span>
+      </button>
       <div class="relative n-par" style="position:relative;">
         <button class="n-lk" style="display:flex;align-items:center;gap:.5rem;border:1px solid rgba(255,255,255,.15);padding:.42rem .9rem;">
           <i class="fas fa-lock" style="font-size:.55rem;color:var(--gold);"></i>Portals
@@ -433,11 +448,16 @@ const FOOTER = `
     <div class="wrap" style="padding-top:.9rem;padding-bottom:.9rem;display:flex;flex-direction:column;gap:.5rem;align-items:center;justify-content:space-between;">
       <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;width:100%;gap:.75rem;">
         <p style="font-size:.68rem;color:rgba(255,255,255,.18);">© 2024 Vivacious Entertainment and Hospitality Pvt. Ltd. All rights reserved. India Gully™ is a registered brand.</p>
-        <div style="display:flex;gap:1.25rem;font-size:.68rem;color:rgba(255,255,255,.18);">
+        <div style="display:flex;gap:1.25rem;font-size:.68rem;color:rgba(255,255,255,.18);align-items:center;">
           <a href="/legal/privacy"    onmouseover="this.style.color='rgba(255,255,255,.45)'" onmouseout="this.style.color='rgba(255,255,255,.18)'" style="transition:color .2s;">Privacy Policy</a>
           <a href="/legal/terms"      onmouseover="this.style.color='rgba(255,255,255,.45)'" onmouseout="this.style.color='rgba(255,255,255,.18)'" style="transition:color .2s;">Terms of Use</a>
           <a href="/legal/disclaimer" onmouseover="this.style.color='rgba(255,255,255,.45)'" onmouseout="this.style.color='rgba(255,255,255,.18)'" style="transition:color .2s;">Disclaimer</a>
           <span style="color:rgba(255,255,255,.1);">GSTIN: 07XXXXXX000XXX</span>
+          <button onclick="igStartTour && igStartTour()" aria-label="Start guided tour"
+                  style="background:none;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.3);padding:.2rem .6rem;font-size:.62rem;cursor:pointer;transition:color .2s;"
+                  onmouseover="this.style.color='rgba(255,255,255,.6)'" onmouseout="this.style.color='rgba(255,255,255,.3)'">
+            <i class="fas fa-compass" style="margin-right:.3rem;"></i>Tour
+          </button>
         </div>
       </div>
     </div>
@@ -654,9 +674,99 @@ const SCRIPTS = `
     };
   })();
 
+  /* ── DARK MODE ────────────────────────────────────────────────────────── */
+  (function(){
+    var DM_KEY = 'ig_dark_mode';
+    var root = document.documentElement;
+    function applyDark(on){
+      root.setAttribute('data-theme', on ? 'dark' : 'light');
+      var icon = document.getElementById('dark-icon');
+      if(icon){ icon.className = on ? 'fas fa-sun' : 'fas fa-moon'; }
+    }
+    var saved = localStorage.getItem(DM_KEY);
+    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyDark(saved ? saved==='1' : prefersDark);
+    window.igToggleDark = function(){
+      var isDark = root.getAttribute('data-theme')==='dark';
+      var next = !isDark;
+      applyDark(next);
+      localStorage.setItem(DM_KEY, next?'1':'0');
+      igToast(next?'Dark mode enabled':'Light mode enabled','success');
+    };
+  })();
+
+  /* ── HINDI / ENGLISH TOGGLE ─────────────────────────────────────────── */
+  (function(){
+    var LANG_KEY = 'ig_lang';
+    var translations = {
+      'Home':'होम','About':'परिचय','Mandates':'मैंडेट','Contact':'संपर्क',
+      'Submit Mandate':'मैंडेट सबमिट करें','Portals':'पोर्टल',
+      'Advisory':'सलाह','Insights':'अंतर्दृष्टि'
+    };
+    var isHindi = false;
+    window.igToggleLang = function(){
+      isHindi = !isHindi;
+      var lbl = document.getElementById('lang-label');
+      if(lbl) lbl.textContent = isHindi ? 'EN' : 'हिंदी';
+      localStorage.setItem(LANG_KEY, isHindi?'hi':'en');
+      igToast(isHindi ? 'हिंदी मोड सक्रिय — नेविगेशन लेबल अनुवादित' : 'English mode active','success');
+    };
+    var saved = localStorage.getItem(LANG_KEY);
+    if(saved === 'hi'){ window.igToggleLang && window.igToggleLang(); }
+  })();
+
+  /* ── GUIDED TOUR ─────────────────────────────────────────────────────── */
+  window.igStartTour = function(){
+    var steps = [
+      {sel:'#mainNav',         title:'Navigation',       text:'Use the top nav to access Advisory, Mandates, Insights, and the secure Portals.'},
+      {sel:'.btn-g',           title:'Submit Mandate',   text:'Submit your advisory brief here. Our team responds within 24 hours.'},
+      {sel:'[aria-label="India Gully — Home"]', title:'India Gully Logo', text:'Click the logo to return to the home page at any time.'},
+    ];
+    var step = 0;
+    function showStep(i){
+      var overlay = document.getElementById('ig-tour-overlay');
+      if(overlay) overlay.remove();
+      if(i >= steps.length){ igToast('Tour complete! ✓','success'); return; }
+      var s = steps[i];
+      var el = document.querySelector(s.sel);
+      if(!el){ showStep(i+1); return; }
+      var rect = el.getBoundingClientRect();
+      var ov = document.createElement('div');
+      ov.id = 'ig-tour-overlay';
+      ov.style.cssText = 'position:fixed;inset:0;z-index:9990;pointer-events:none;';
+      ov.innerHTML = '<div style="position:fixed;left:'+(rect.left-8)+'px;top:'+(rect.top-8)+'px;width:'+(rect.width+16)+'px;height:'+(rect.height+16)+'px;border:2px solid var(--gold);border-radius:4px;box-shadow:0 0 0 9999px rgba(0,0,0,.5);pointer-events:none;"></div>'
+        +'<div style="position:fixed;left:'+Math.min(rect.left,window.innerWidth-300)+'px;top:'+(rect.bottom+14)+'px;background:#fff;border-top:3px solid var(--gold);padding:1rem 1.25rem;width:280px;box-shadow:0 8px 32px rgba(0,0,0,.2);pointer-events:all;z-index:9991;">'
+        +'<div style="font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;">Step '+(i+1)+' of '+steps.length+': '+s.title+'</div>'
+        +'<div style="font-size:.82rem;color:#1e293b;line-height:1.5;margin-bottom:.75rem;">'+s.text+'</div>'
+        +'<div style="display:flex;gap:.5rem;">'
+        +(i>0?'<button onclick="window.igTourStep('+(i-1)+')" style="background:none;border:1px solid #cbd5e1;padding:.3rem .75rem;font-size:.72rem;cursor:pointer;">← Back</button>':'')
+        +'<button onclick="window.igTourStep('+(i+1)+')" style="background:var(--gold);color:#fff;border:none;padding:.3rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;">'+(i===steps.length-1?'Finish':'Next →')+'</button>'
+        +'<button onclick="document.getElementById(\'ig-tour-overlay\').remove();igToast(\'Tour skipped\',\'info\')" style="background:none;border:none;font-size:.68rem;color:#94a3b8;cursor:pointer;margin-left:auto;">Skip</button>'
+        +'</div></div>';
+      document.body.appendChild(ov);
+    }
+    window.igTourStep = showStep;
+    showStep(0);
+  };
+
 })();
 </script>
 <style>
+/* ── DARK MODE VARIABLES ───────────────────────────────────────────────── */
+[data-theme="dark"]{
+  --gold:#e6b412;--gold-pale:rgba(230,180,18,.1);
+  --ink:#e2e8f0;--ink-muted:#94a3b8;--ink-soft:#64748b;--ink-faint:#334155;
+  --parchment:#0f172a;--parch-dk:#1e293b;--border:#334155;
+}
+[data-theme="dark"] body{background:#0f172a;color:#e2e8f0;}
+[data-theme="dark"] .am,[data-theme="dark"] .ig-tbl thead tr,[data-theme="dark"] [style*="background:#fff"]{background:#1e293b!important;}
+[data-theme="dark"] table.ig-tbl tbody tr{background:#1e293b;}
+[data-theme="dark"] table.ig-tbl tbody tr:hover{background:#334155;}
+[data-theme="dark"] .ig-input{background:#1e293b;color:#e2e8f0;border-color:#334155;}
+[data-theme="dark"] .ig-panel{background:#1e293b;border-color:#334155;}
+/* ── FOCUS VISIBLE (ARIA) ──────────────────────────────────────────────── */
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
 /* ── MODAL OVERLAY ──────────────────────────────── */
 .ig-modal{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:1rem;}
 .ig-modal-box{background:#fff;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.3);}
