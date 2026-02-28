@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>India Gully Enterprise Platform — Final Deep-Audit Report 2026</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet"/>
+<style>
+  :root{
+    --gold:#B8960C;--gold-lt:#f9f3dc;--ink:#1A1A1A;--ink-soft:#4B4B4B;
+    --ink-muted:#888;--border:#E5E0D5;--bg:#FAFAF8;--white:#fff;
+    --red:#dc2626;--red-lt:#fef2f2;--amber:#d97706;--amber-lt:#fffbeb;
+    --green:#16a34a;--green-lt:#f0fdf4;--blue:#2563eb;--blue-lt:#eff6ff;
+    --purple:#7c3aed;--purple-lt:#faf5ff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;font-size:15px;}
+  h1,h2,h3,h4{font-family:'DM Serif Display',Georgia,serif;}
+  code,pre,.mono{font-family:'JetBrains Mono',monospace;}
+
+  /* ── Layout ── */
+  .page{max-width:1100px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+  .cover{background:var(--ink);color:#fff;padding:3rem 2.5rem 2.5rem;margin-bottom:2.5rem;position:relative;overflow:hidden;}
+  .cover::before{content:'';position:absolute;right:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:rgba(184,150,12,.12);}
+  .cover-badge{display:inline-block;background:var(--gold);color:#fff;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .8rem;margin-bottom:1.25rem;}
+  .cover h1{font-size:2.2rem;color:#fff;line-height:1.2;margin-bottom:.75rem;}
+  .cover-meta{display:flex;flex-wrap:wrap;gap:1.5rem;margin-top:1.5rem;font-size:.8rem;color:rgba(255,255,255,.6);}
+  .cover-meta span strong{color:rgba(255,255,255,.9);}
+
+  /* ── Section ── */
+  .section{margin-bottom:2.5rem;}
+  .section-title{font-size:1.35rem;color:var(--ink);border-bottom:2px solid var(--gold);padding-bottom:.5rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.6rem;}
+  .section-title i{color:var(--gold);font-size:1rem;}
+  .sub-title{font-size:1rem;color:var(--ink);margin-bottom:.75rem;margin-top:1.25rem;}
+
+  /* ── Cards ── */
+  .card{background:var(--white);border:1px solid var(--border);padding:1.25rem 1.5rem;margin-bottom:1rem;}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-bottom:1rem;}
+  .kpi-card{background:var(--white);border:1px solid var(--border);padding:1.1rem 1.25rem;text-align:center;}
+  .kpi-val{font-family:'DM Serif Display',Georgia,serif;font-size:2rem;line-height:1;}
+  .kpi-lbl{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-top:.35rem;}
+
+  /* ── Risk Badges ── */
+  .badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .65rem;}
+  .b-cr{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;}  /* Critical */
+  .b-hi{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;}  /* High */
+  .b-me{background:#fffbeb;color:#92400e;border:1px solid #fde68a;}  /* Medium */
+  .b-lo{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;}  /* Low */
+  .b-na{background:#f8fafc;color:#475569;border:1px solid #e2e8f0;}  /* Info */
+  .b-ok{background:var(--green-lt);color:#166534;border:1px solid #bbf7d0;} /* Pass */
+  .b-wa{background:var(--amber-lt);color:#92400e;border:1px solid #fde68a;} /* Partial */
+  .b-fa{background:var(--red-lt);color:#991b1b;border:1px solid #fecaca;}   /* Fail */
+
+  /* ── Tables ── */
+  .tbl{width:100%;border-collapse:collapse;font-size:.82rem;}
+  .tbl th{background:var(--ink);color:#fff;padding:.55rem .875rem;text-align:left;font-weight:600;font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;}
+  .tbl td{padding:.6rem .875rem;border-bottom:1px solid var(--border);vertical-align:top;}
+  .tbl tr:nth-child(even) td{background:#fafaf8;}
+  .tbl tr:hover td{background:var(--gold-lt);}
+
+  /* ── Finding Cards ── */
+  .finding{border-left:4px solid var(--border);padding:.875rem 1rem;margin-bottom:.75rem;background:var(--white);border-bottom:1px solid var(--border);}
+  .finding.cr{border-left-color:var(--red);}
+  .finding.hi{border-left-color:var(--amber);}
+  .finding.me{border-left-color:#f59e0b;}
+  .finding.lo{border-left-color:var(--green);}
+  .finding-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.4rem;}
+  .finding-id{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--ink-muted);flex-shrink:0;}
+  .finding-title{font-size:.9rem;font-weight:600;color:var(--ink);}
+  .finding-body{font-size:.8rem;color:var(--ink-soft);line-height:1.65;}
+  .finding-rem{margin-top:.5rem;font-size:.78rem;color:var(--blue);background:var(--blue-lt);padding:.4rem .7rem;}
+  .finding-rem::before{content:'▶ Remediation: ';font-weight:700;}
+
+  /* ── Timeline ── */
+  .timeline{position:relative;padding-left:1.75rem;}
+  .timeline::before{content:'';position:absolute;left:.55rem;top:.5rem;bottom:.5rem;width:2px;background:var(--border);}
+  .tl-item{position:relative;margin-bottom:1.25rem;}
+  .tl-dot{position:absolute;left:-1.75rem;top:.3rem;width:12px;height:12px;border-radius:50%;border:2px solid var(--gold);background:var(--white);}
+  .tl-dot.done{background:var(--gold);}
+  .tl-phase{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.2rem;}
+  .tl-title{font-size:.9rem;font-weight:600;color:var(--ink);}
+  .tl-body{font-size:.78rem;color:var(--ink-soft);margin-top:.2rem;}
+
+  /* ── Score Meter ── */
+  .score-wrap{display:flex;align-items:center;gap:.875rem;margin-bottom:.75rem;}
+  .score-bar-bg{flex:1;height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden;}
+  .score-bar{height:100%;border-radius:4px;transition:width .8s ease;}
+  .score-pct{font-size:.78rem;font-weight:700;min-width:36px;text-align:right;}
+  .score-label{font-size:.8rem;color:var(--ink-soft);min-width:200px;}
+
+  /* ── Summary boxes ── */
+  .info-box{display:flex;gap:.75rem;padding:.875rem 1rem;margin-bottom:.75rem;font-size:.82rem;}
+  .info-box.warn{background:var(--amber-lt);border-left:3px solid var(--amber);}
+  .info-box.danger{background:var(--red-lt);border-left:3px solid var(--red);}
+  .info-box.ok{background:var(--green-lt);border-left:3px solid var(--green);}
+  .info-box.info{background:var(--blue-lt);border-left:3px solid var(--blue);}
+  .info-box i{flex-shrink:0;margin-top:.1rem;}
+
+  /* ── Nav ── */
+  .nav-toc{background:var(--white);border:1px solid var(--border);padding:1.25rem 1.5rem;margin-bottom:2rem;}
+  .nav-toc h3{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.875rem;}
+  .nav-toc ol{padding-left:1.25rem;}
+  .nav-toc li{margin-bottom:.3rem;font-size:.82rem;}
+  .nav-toc a{color:var(--gold);text-decoration:none;}
+  .nav-toc a:hover{text-decoration:underline;}
+
+  /* ── Print ── */
+  @media print{
+    .no-print{display:none !important;}
+    .page{max-width:100%;padding:0;}
+    .cover{print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+  }
+  @media(max-width:640px){
+    .cover h1{font-size:1.5rem;}
+    .card-grid{grid-template-columns:1fr 1fr;}
+    .tbl{font-size:.72rem;}
+    .tbl th,.tbl td{padding:.4rem .5rem;}
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<!-- ══════════════ COVER ══════════════ -->
+<div class="cover">
+  <div class="cover-badge"><i class="fas fa-shield-alt" style="margin-right:.4rem;"></i>Confidential · Final Audit Report</div>
+  <h1>India Gully Enterprise Platform<br>Comprehensive Deep-Audit Report</h1>
+  <p style="color:rgba(255,255,255,.65);font-size:.9rem;margin-top:.5rem;max-width:640px;">
+    A full-spectrum security, compliance, and functional assessment of the India Gully multi-tenant enterprise platform — covering all ERP modules, portal security, regulatory obligations, and architectural posture.
+  </p>
+  <div class="cover-meta">
+    <span><strong>Audit Version</strong> v2026.03-FINAL</span>
+    <span><strong>Report Date</strong> 28 February 2026</span>
+    <span><strong>Platform Version</strong> 2026.03 (commit ef81367)</span>
+    <span><strong>Deployment</strong> Cloudflare Pages · india-gully.pages.dev</span>
+    <span><strong>Auditor</strong> Internal Platform Audit Team</span>
+    <span><strong>Classification</strong> Restricted — Board & Management Only</span>
+  </div>
+</div>
+
+<!-- ══════════════ TOC ══════════════ -->
+<div class="nav-toc no-print">
+  <h3><i class="fas fa-list" style="margin-right:.4rem;"></i>Table of Contents</h3>
+  <ol>
+    <li><a href="#exec-summary">Executive Summary</a></li>
+    <li><a href="#methodology">Audit Methodology</a></li>
+    <li><a href="#scope">Platform Scope & Architecture</a></li>
+    <li><a href="#security">Security Assessment</a></li>
+    <li><a href="#modules">Module-by-Module Findings</a></li>
+    <li><a href="#compliance">Regulatory Compliance Matrix</a></li>
+    <li><a href="#remediation-status">Remediation Status (B-Round & C-Round)</a></li>
+    <li><a href="#risk-register">Consolidated Risk Register</a></li>
+    <li><a href="#roadmap">Actionable Remediation Roadmap</a></li>
+    <li><a href="#recommendations">Strategic Recommendations</a></li>
+    <li><a href="#conclusion">Conclusion & Sign-Off</a></li>
+  </ol>
+</div>
+
+<!-- ══════════════ 1. EXECUTIVE SUMMARY ══════════════ -->
+<div class="section" id="exec-summary">
+  <div class="section-title"><i class="fas fa-flag"></i> 1. Executive Summary</div>
+
+  <div class="info-box warn">
+    <i class="fas fa-exclamation-triangle" style="color:var(--amber);"></i>
+    <div><strong>Overall Platform Maturity: Demo-Grade / Pre-Production.</strong> The platform demonstrates strong functional breadth and impressive UI fidelity across 11+ ERP modules. However, multiple <strong>Critical and High-severity security gaps</strong> prevent production readiness. No genuine authentication exists — all portals accept hard-coded credentials with a static OTP of <code>000000</code>. No CI/CD pipeline, no automated tests, no real database persistence, and no live third-party integrations are in place. The platform is <strong>suitable for client demonstrations only</strong> and must not be used to process real financial, HR, or governance data until the gaps identified herein are fully remediated.</div>
+  </div>
+
+  <div class="card-grid">
+    <div class="kpi-card">
+      <div class="kpi-val" style="color:var(--red);">CRITICAL</div>
+      <div class="kpi-lbl">Overall Risk Rating</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val" style="color:var(--red);">8</div>
+      <div class="kpi-lbl">Critical Findings</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val" style="color:var(--amber);">14</div>
+      <div class="kpi-lbl">High Findings</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val" style="color:#f59e0b;">11</div>
+      <div class="kpi-lbl">Medium Findings</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val" style="color:var(--green);">9</div>
+      <div class="kpi-lbl">Low / Info Findings</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val" style="color:var(--ink);">13,592</div>
+      <div class="kpi-lbl">Lines of Code Audited</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val" style="color:var(--ink);">11+</div>
+      <div class="kpi-lbl">ERP Modules Reviewed</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val" style="color:var(--ink);">24</div>
+      <div class="kpi-lbl">API Endpoints Assessed</div>
+    </div>
+  </div>
+
+  <h3 class="sub-title">Key Strengths</h3>
+  <ul style="font-size:.83rem;color:var(--ink-soft);line-height:1.9;padding-left:1.25rem;">
+    <li>Extensive functional breadth: Finance ERP, HR ERP, Governance, HORECA, CMS v2, BI, Sales Force Engine, Smart Contracts, Client/Employee/Board portals all present.</li>
+    <li>Compliance-aware UI: GSTR-1/3B tracking, Form 26Q, TDS 26AS, ITR tracker, Period Closing, Form 16, Board Resolutions with SS-1/SS-2 notices, DPDP checklist (87% scored).</li>
+    <li>Security controls designed: CSP meta-tag present, masking configuration for PAN/Aadhaar/Bank/Salary, TOTP simulator, rate-limiting UI, session-timeout logic in JS, RBAC roles defined (6 roles), DPDP compliance checklist, audit-log viewer.</li>
+    <li>Good developer experience: single Hono/TypeScript monorepo, fast Cloudflare Pages deployment, version history in git (15+ meaningful commits).</li>
+    <li>Dark mode, Hindi language toggle, guided tour, ARIA labels implemented in latest build.</li>
+    <li>OpenAPI docs with 24 endpoints, GraphQL playground stub, changelog present.</li>
+  </ul>
+
+  <h3 class="sub-title">Critical Gaps (Must Fix Before Production)</h3>
+  <ul style="font-size:.83rem;color:#991b1b;line-height:1.9;padding-left:1.25rem;">
+    <li><strong>No real authentication:</strong> All credentials are hard-coded in source code (api.tsx lines 6–10, admin.tsx line 123). OTP <code>000000</code> still accepted in production auth flow.</li>
+    <li><strong>No session management:</strong> No server-side session tokens, JWT, or cookies issued on login. Dashboard routes are fully unprotected — any user can navigate directly to <code>/admin/dashboard</code>.</li>
+    <li><strong>No database:</strong> All ERP data is static JavaScript arrays. No Cloudflare D1/KV/R2 bound. Zero data persistence across requests.</li>
+    <li><strong>No real integrations:</strong> GST Portal, Razorpay, DocuSign, SendGrid, WhatsApp, TRACES all show "stub" toast messages with no live API calls.</li>
+    <li><strong>No CI/CD or tests:</strong> No <code>.github/workflows</code>, no test suite, no linting/security scanning.</li>
+    <li><strong>Missing HTTP security headers:</strong> No <code>X-Frame-Options</code>, <code>Strict-Transport-Security</code>, <code>X-Content-Type-Options</code>, <code>Referrer-Policy</code> from Cloudflare Pages response headers (confirmed via live curl).</li>
+    <li><strong>Demo credentials publicly visible:</strong> Login pages still render full credentials including passwords in HTML source.</li>
+    <li><strong>PII exposed:</strong> DIN numbers, director names, CIN, full email addresses in plain text in JS arrays throughout admin.tsx.</li>
+  </ul>
+</div>
+
+<!-- ══════════════ 2. METHODOLOGY ══════════════ -->
+<div class="section" id="methodology">
+  <div class="section-title"><i class="fas fa-microscope"></i> 2. Audit Methodology</div>
+  <div class="card">
+    <table class="tbl">
+      <thead><tr><th>Technique</th><th>Tools / Approach</th><th>Coverage</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Static Code Analysis</strong></td><td>Manual review of all 13,592 lines across 15 source files; grep-based pattern searches for credentials, SQL injection vectors, XSS sinks, PII exposure</td><td>100% of src/</td></tr>
+        <tr><td><strong>Live Site Assessment</strong></td><td>HTTP request/response inspection via curl; security header analysis; CSP evaluation; route enumeration</td><td>All 92 routes</td></tr>
+        <tr><td><strong>Authentication Testing</strong></td><td>Manual credential-flow tracing from login form → POST /api/auth → redirect; session state verification; OTP bypass testing</td><td>5 portals</td></tr>
+        <tr><td><strong>API Security Review</strong></td><td>All 24 API endpoints reviewed for input validation, auth enforcement, rate limiting, CORS configuration</td><td>api.tsx fully</td></tr>
+        <tr><td><strong>Compliance Mapping</strong></td><td>Feature-by-feature mapping against Companies Act 2013, GST Acts, DPDP Act 2023, Labour Codes, IT Act 2000</td><td>11 modules</td></tr>
+        <tr><td><strong>Infrastructure Review</strong></td><td>wrangler.jsonc, package.json, vite.config, Cloudflare deployment settings, missing IaC</td><td>Full config</td></tr>
+        <tr><td><strong>Dependency Audit</strong></td><td>Package versions, known CVEs, supply-chain risk</td><td>package.json</td></tr>
+        <tr><td><strong>Previous Audit Verification</strong></td><td>Cross-check of all B-round (B1–B10) and C-round (C1–C9) items against current codebase state</td><td>19 items</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════ 3. SCOPE & ARCHITECTURE ══════════════ -->
+<div class="section" id="scope">
+  <div class="section-title"><i class="fas fa-layer-group"></i> 3. Platform Scope & Architecture</div>
+
+  <div class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));">
+    <div class="card" style="padding:.875rem;margin:0;"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.35rem;">Runtime</div><div style="font-size:.82rem;font-weight:500;">Cloudflare Workers (Edge)</div></div>
+    <div class="card" style="padding:.875rem;margin:0;"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.35rem;">Framework</div><div style="font-size:.82rem;font-weight:500;">Hono v4.12 + TypeScript</div></div>
+    <div class="card" style="padding:.875rem;margin:0;"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.35rem;">Build</div><div style="font-size:.82rem;font-weight:500;">Vite 6.4 + @hono/vite-build</div></div>
+    <div class="card" style="padding:.875rem;margin:0;"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.35rem;">Bundle Size</div><div style="font-size:.82rem;font-weight:500;">1,081 kB (_worker.js)</div></div>
+    <div class="card" style="padding:.875rem;margin:0;"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.35rem;">Database</div><div style="font-size:.82rem;font-weight:500;color:var(--red);">None (static JS arrays)</div></div>
+    <div class="card" style="padding:.875rem;margin:0;"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.35rem;">Storage</div><div style="font-size:.82rem;font-weight:500;color:var(--red);">None (no KV/R2/D1)</div></div>
+    <div class="card" style="padding:.875rem;margin:0;"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.35rem;">Auth</div><div style="font-size:.82rem;font-weight:500;color:var(--red);">Hard-coded / None</div></div>
+    <div class="card" style="padding:.875rem;margin:0;"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.35rem;">Routes</div><div style="font-size:.82rem;font-weight:500;">92 total · 24 API</div></div>
+    <div class="card" style="padding:.875rem;margin:0;"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.35rem;">CI/CD</div><div style="font-size:.82rem;font-weight:500;color:var(--red);">None</div></div>
+    <div class="card" style="padding:.875rem;margin:0;"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.35rem;">Testing</div><div style="font-size:.82rem;font-weight:500;color:var(--red);">None</div></div>
+  </div>
+
+  <h3 class="sub-title" style="margin-top:1.25rem;">Architecture Assessment</h3>
+  <div class="info-box info">
+    <i class="fas fa-info-circle" style="color:var(--blue);"></i>
+    <div>The platform is architected as a <strong>monolithic Hono SSR application</strong> compiled to a single Cloudflare Worker. All ERP modules (Finance, HR, Governance, HORECA, CMS, etc.) are co-located in <code>src/routes/admin.tsx</code> (6,326 lines). While this works for a demo, it is not scalable, maintainable, or secure for production use. The 1,081 kB worker bundle is already near Cloudflare's 10 MB compressed limit and will not support real database integration without architectural refactoring.</div>
+  </div>
+
+  <table class="tbl" style="margin-top:1rem;">
+    <thead><tr><th>Module</th><th>Route</th><th>Lines (est.)</th><th>Status</th><th>Data Source</th></tr></thead>
+    <tbody>
+      <tr><td>Corporate Website</td><td>/  /about  /services</td><td>~900</td><td><span class="badge b-ok">Live</span></td><td>Static HTML</td></tr>
+      <tr><td>Super Admin Console</td><td>/admin/*</td><td>6,326</td><td><span class="badge b-wa">Demo Only</span></td><td>JS arrays</td></tr>
+      <tr><td>Client Portal</td><td>/portal/client/*</td><td>~600</td><td><span class="badge b-wa">Demo Only</span></td><td>JS arrays</td></tr>
+      <tr><td>Employee Portal</td><td>/portal/employee/*</td><td>~500</td><td><span class="badge b-wa">Demo Only</span></td><td>JS arrays</td></tr>
+      <tr><td>Board & KMP Portal</td><td>/portal/board/*</td><td>~400</td><td><span class="badge b-wa">Demo Only</span></td><td>JS arrays</td></tr>
+      <tr><td>HORECA Portal</td><td>/horeca/*</td><td>375</td><td><span class="badge b-ok">Live</span></td><td>Static HTML</td></tr>
+      <tr><td>Sales Force Engine</td><td>/admin/sales/*</td><td>1,029</td><td><span class="badge b-wa">Demo Only</span></td><td>JS arrays</td></tr>
+      <tr><td>API Layer</td><td>/api/*</td><td>722</td><td><span class="badge b-fa">Stub</span></td><td>Hard-coded</td></tr>
+      <tr><td>Insights/CMS</td><td>/insights  /admin (cms)</td><td>~400</td><td><span class="badge b-wa">Demo Only</span></td><td>JS arrays</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════ 4. SECURITY ASSESSMENT ══════════════ -->
+<div class="section" id="security">
+  <div class="section-title"><i class="fas fa-shield-alt"></i> 4. Security Assessment</div>
+
+  <h3 class="sub-title">4.1 Authentication &amp; Access Control</h3>
+
+  <div class="finding cr">
+    <div class="finding-hdr">
+      <div>
+        <div class="finding-id">SEC-001</div>
+        <div class="finding-title">Hard-Coded Credentials in Source Code — Production Auth</div>
+      </div>
+      <span class="badge b-cr">Critical</span>
+    </div>
+    <div class="finding-body">
+      <code>api.tsx</code> lines 6–37 contain the complete authentication logic using a hard-coded <code>DEMO_CREDENTIALS</code> object with plaintext passwords and OTP <code>000000</code> for all portals. The admin auth at <code>/api/auth/admin</code> accepts <code>Admin@IG2024!</code> with OTP <code>000000</code> or <strong>no OTP at all</strong> (<code>totp === '000000' || !totp</code>). These credentials are also rendered in the HTML of the admin login page (<code>admin.tsx</code> line 123) and the portal selection page, making them visible to any user who views page source. This constitutes a complete authentication bypass.
+    </div>
+    <div class="finding-rem">Replace with a proper identity provider (Cloudflare Access, Auth0, or self-hosted JWT flow with Cloudflare KV for user store). Rotate all exposed credentials immediately. Never render credentials in HTML responses.</div>
+  </div>
+
+  <div class="finding cr">
+    <div class="finding-hdr">
+      <div>
+        <div class="finding-id">SEC-002</div>
+        <div class="finding-title">No Server-Side Session Management — Full Route Bypass Possible</div>
+      </div>
+      <span class="badge b-cr">Critical</span>
+    </div>
+    <div class="finding-body">
+      The login endpoints issue a simple <code>302 redirect</code> to the dashboard with no session token, cookie, or JWT. Any unauthenticated user can navigate directly to <code>/admin/dashboard</code>, <code>/portal/client/dashboard</code>, <code>/portal/employee/dashboard</code>, or <code>/portal/board/dashboard</code> without logging in. There is no middleware protecting these routes. The JS-side session timeout is decorative (client-only, trivially bypassed).
+    </div>
+    <div class="finding-rem">Implement server-side session middleware in Hono using <code>hono/cookie</code> + signed session tokens stored in Cloudflare KV. Protect all dashboard routes with an auth middleware that validates the token on every request.</div>
+  </div>
+
+  <div class="finding cr">
+    <div class="finding-hdr">
+      <div>
+        <div class="finding-id">SEC-003</div>
+        <div class="finding-title">TOTP Implementation is a Pseudo-Random Hash, Not RFC 6238</div>
+      </div>
+      <span class="badge b-cr">Critical</span>
+    </div>
+    <div class="finding-body">
+      The <code>igTOTP()</code> function (<code>admin.tsx</code> line 144) implements a custom TOTP using <code>Math.imul</code> hash of a seed string. This is <strong>not RFC 6238 compliant</strong>, uses no cryptographically secure PRNG, and the 30-second token is displayed directly on the login page, defeating the entire purpose of 2FA. The API auth also accepts <code>000000</code> or <em>no TOTP</em> at all. The TOTP is purely cosmetic with no real security value.
+    </div>
+    <div class="finding-rem">Implement server-side RFC 6238 TOTP using the Web Crypto API (HMAC-SHA1). Issue per-user TOTP secrets via QR code. Validate server-side only. Remove OTP display from all login pages entirely.</div>
+  </div>
+
+  <div class="finding cr">
+    <div class="finding-hdr">
+      <div>
+        <div class="finding-id">SEC-004</div>
+        <div class="finding-title">Missing HTTP Security Response Headers on Live Production Domain</div>
+      </div>
+      <span class="badge b-cr">Critical</span>
+    </div>
+    <div class="finding-body">
+      Live curl of <code>https://india-gully.pages.dev</code> confirms the following headers are <strong>absent</strong> from HTTP responses:
+      <ul style="margin:.5rem 0 0 1rem;line-height:1.9;">
+        <li><code>Strict-Transport-Security</code> (HSTS) — missing</li>
+        <li><code>X-Frame-Options: DENY</code> — missing (clickjacking risk)</li>
+        <li><code>X-Content-Type-Options: nosniff</code> — missing (MIME sniffing)</li>
+        <li><code>Referrer-Policy</code> — missing</li>
+        <li><code>Permissions-Policy</code> — missing</li>
+        <li><code>Content-Security-Policy</code> — only present as meta tag (not a response header; provides weaker protection and is bypassed by some attack vectors)</li>
+      </ul>
+      The CSP meta-tag also uses <code>'unsafe-inline'</code> for scripts, defeating protection against XSS.
+    </div>
+    <div class="finding-rem">Add a <code>_headers</code> file in the <code>public/</code> directory for Cloudflare Pages, or set headers in the Hono middleware. Remove <code>'unsafe-inline'</code> from CSP; use nonces instead. Enable HSTS with <code>max-age=31536000; includeSubDomains; preload</code>.</div>
+  </div>
+
+  <div class="finding cr">
+    <div class="finding-hdr">
+      <div>
+        <div class="finding-id">SEC-005</div>
+        <div class="finding-title">CSRF Tokens Are Client-Side Only (No Server Validation)</div>
+      </div>
+      <span class="badge b-cr">Critical</span>
+    </div>
+    <div class="finding-body">
+      CSRF tokens are generated in client-side JavaScript and placed in a hidden form field. However, the server-side POST handlers in <code>api.tsx</code> do not validate any CSRF token at all — they only check credentials. A cross-origin attacker can trivially forge requests to all POST endpoints.
+    </div>
+    <div class="finding-rem">Implement the Synchronizer Token Pattern server-side: generate a cryptographically random token on the GET (session-bound), store in KV, validate on every state-changing POST request.</div>
+  </div>
+
+  <div class="finding cr">
+    <div class="finding-hdr">
+      <div>
+        <div class="finding-id">SEC-006</div>
+        <div class="finding-title">PII Exposed in JavaScript Source — DIN, Email, CIN in Plain Text</div>
+      </div>
+      <span class="badge b-cr">Critical</span>
+    </div>
+    <div class="finding-body">
+      Hard-coded in <code>admin.tsx</code>: real director names with DINs (<code>00000001</code>, <code>00000002</code>), the company CIN <code>U74900DL2017PTC000000</code>, email addresses (<code>superadmin@indiagully.com</code>, <code>akm@indiagully.com</code>, <code>pavan@indiagully.com</code>), and salary data. While the masking UI settings exist, they apply only to rendered display — the underlying data is in plain text in the JS bundle, visible to anyone who downloads the worker script.
+    </div>
+    <div class="finding-rem">Move all PII to a database with access-controlled APIs. Apply field-level encryption (AES-256-GCM) before storage. The compiled worker bundle should never contain real PII.</div>
+  </div>
+
+  <div class="finding cr">
+    <div class="finding-hdr">
+      <div>
+        <div class="finding-id">SEC-007</div>
+        <div class="finding-title">Rate Limiting Is Frontend-Only JavaScript — No Server Enforcement</div>
+      </div>
+      <span class="badge b-cr">Critical</span>
+    </div>
+    <div class="finding-body">
+      The rate-limiting logic (5 failed attempts → 5-minute lockout) is implemented entirely in client-side JavaScript in <code>portal.tsx</code> and <code>admin.tsx</code>. The server POST handlers in <code>api.tsx</code> have no rate limiting, IP-based throttling, or lockout mechanism. An attacker making direct HTTP requests to <code>/api/auth/login</code> bypasses all limits entirely.
+    </div>
+    <div class="finding-rem">Implement server-side rate limiting using Cloudflare KV (counter per IP per time window). Better: enable Cloudflare WAF rate limiting rules at the CDN layer. The client-side UI can remain as UX feedback only.</div>
+  </div>
+
+  <div class="finding cr">
+    <div class="finding-hdr">
+      <div>
+        <div class="finding-id">SEC-008</div>
+        <div class="finding-title">No Automated Security Testing, SAST, DAST, or Dependency Scanning</div>
+      </div>
+      <span class="badge b-cr">Critical</span>
+    </div>
+    <div class="finding-body">
+      No <code>.github/workflows</code> directory exists. No CI/CD pipeline. No automated test suite (no vitest, jest, or playwright tests). No SAST tooling (e.g., CodeQL, Semgrep). No dependency vulnerability scanning (e.g., <code>npm audit</code> in CI). No DAST (e.g., OWASP ZAP) configured. All deployments are manual pushes via wrangler with no quality gates.
+    </div>
+    <div class="finding-rem">Add GitHub Actions workflows for: (1) <code>npm audit</code> on every PR; (2) ESLint/TypeScript strict mode check; (3) Vitest unit tests; (4) Playwright E2E route tests; (5) CodeQL SAST scan. Block merges on failure.</div>
+  </div>
+
+  <h3 class="sub-title" style="margin-top:1.5rem;">4.2 Security Controls Inventory</h3>
+  <table class="tbl">
+    <thead><tr><th>Control</th><th>Claimed</th><th>Actual Implementation</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>TOTP / 2FA</td><td>Enforced on all portals</td><td>JS hash function, static OTP <code>000000</code> accepted, displayed on page</td><td><span class="badge b-fa">Fail</span></td></tr>
+      <tr><td>CSRF Protection</td><td>Token generation on all forms</td><td>Client-side token only; no server validation</td><td><span class="badge b-fa">Fail</span></td></tr>
+      <tr><td>Rate Limiting</td><td>5 attempts / lockout</td><td>Client JS only; server has no rate limiting</td><td><span class="badge b-fa">Fail</span></td></tr>
+      <tr><td>Session Timeout</td><td>30 min inactivity</td><td>Client JS redirect only; no server-side session exists</td><td><span class="badge b-fa">Fail</span></td></tr>
+      <tr><td>Password Reset Flow</td><td>One-time link flow</td><td>Returns success message without sending anything</td><td><span class="badge b-fa">Fail</span></td></tr>
+      <tr><td>PAN/Aadhaar Masking</td><td>AES-256-GCM + display masking</td><td>UI toggle only; underlying data unencrypted in JS bundle</td><td><span class="badge b-wa">Partial</span></td></tr>
+      <tr><td>Content Security Policy</td><td>Enabled (CSP headers)</td><td>Meta-tag only (not response header); <code>unsafe-inline</code> present</td><td><span class="badge b-wa">Partial</span></td></tr>
+      <tr><td>HSTS</td><td>Not claimed</td><td>Absent from response headers</td><td><span class="badge b-fa">Fail</span></td></tr>
+      <tr><td>X-Frame-Options</td><td>Not claimed</td><td>Absent; clickjacking possible</td><td><span class="badge b-fa">Fail</span></td></tr>
+      <tr><td>RBAC (6 roles)</td><td>Defined</td><td>Role labels present in UI; no server-side enforcement</td><td><span class="badge b-wa">Partial</span></td></tr>
+      <tr><td>IP Whitelist</td><td>Configurable UI</td><td>UI form only; no server enforcement</td><td><span class="badge b-wa">Partial</span></td></tr>
+      <tr><td>Audit Logging</td><td>Viewer present</td><td>Static demo log entries; no real event capture</td><td><span class="badge b-wa">Partial</span></td></tr>
+      <tr><td>Zero-Trust Architecture</td><td>Claimed</td><td>Not implemented; all routes publicly accessible</td><td><span class="badge b-fa">Fail</span></td></tr>
+      <tr><td>CORS</td><td>Applied to /api/*</td><td><code>cors()</code> applied in index.tsx but with default (open) config</td><td><span class="badge b-wa">Partial</span></td></tr>
+      <tr><td>Dependency Pinning</td><td>N/A</td><td>Hono <code>^4.12.3</code> (caret range — allows minor updates)</td><td><span class="badge b-wa">Partial</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title" style="margin-top:1.5rem;">4.3 Score Summary</h3>
+  <div class="card">
+    <div class="score-wrap"><div class="score-label">Authentication Strength</div><div class="score-bar-bg"><div class="score-bar" style="width:10%;background:var(--red);"></div></div><div class="score-pct" style="color:var(--red);">10%</div></div>
+    <div class="score-wrap"><div class="score-label">Session Management</div><div class="score-bar-bg"><div class="score-bar" style="width:5%;background:var(--red);"></div></div><div class="score-pct" style="color:var(--red);">5%</div></div>
+    <div class="score-wrap"><div class="score-label">Input Validation &amp; Sanitisation</div><div class="score-bar-bg"><div class="score-bar" style="width:20%;background:var(--red);"></div></div><div class="score-pct" style="color:var(--red);">20%</div></div>
+    <div class="score-wrap"><div class="score-label">Security Headers (HTTP)</div><div class="score-bar-bg"><div class="score-bar" style="width:15%;background:var(--red);"></div></div><div class="score-pct" style="color:var(--red);">15%</div></div>
+    <div class="score-wrap"><div class="score-label">PII Protection &amp; Data Masking</div><div class="score-bar-bg"><div class="score-bar" style="width:35%;background:var(--amber);"></div></div><div class="score-pct" style="color:var(--amber);">35%</div></div>
+    <div class="score-wrap"><div class="score-label">RBAC / Authorisation</div><div class="score-bar-bg"><div class="score-bar" style="width:25%;background:var(--amber);"></div></div><div class="score-pct" style="color:var(--amber);">25%</div></div>
+    <div class="score-wrap"><div class="score-label">Audit Logging</div><div class="score-bar-bg"><div class="score-bar" style="width:30%;background:var(--amber);"></div></div><div class="score-pct" style="color:var(--amber);">30%</div></div>
+    <div class="score-wrap"><div class="score-label">CI/CD &amp; Automated Testing</div><div class="score-bar-bg"><div class="score-bar" style="width:5%;background:var(--red);"></div></div><div class="score-pct" style="color:var(--red);">5%</div></div>
+    <div class="score-wrap"><div class="score-label">Dependency &amp; Supply Chain</div><div class="score-bar-bg"><div class="score-bar" style="width:55%;background:#f59e0b;"></div></div><div class="score-pct" style="color:#f59e0b;">55%</div></div>
+    <div class="score-wrap"><div class="score-label">Functional Security Design</div><div class="score-bar-bg"><div class="score-bar" style="width:65%;background:#f59e0b;"></div></div><div class="score-pct" style="color:#f59e0b;">65%</div></div>
+  </div>
+</div>
+
+<!-- ══════════════ 5. MODULE FINDINGS ══════════════ -->
+<div class="section" id="modules">
+  <div class="section-title"><i class="fas fa-puzzle-piece"></i> 5. Module-by-Module Findings</div>
+
+  <!-- FINANCE -->
+  <h3 class="sub-title">5.1 Finance ERP</h3>
+  <div class="info-box ok"><i class="fas fa-check-circle" style="color:var(--green);"></i><div><strong>Strengths:</strong> 13 finance tabs (Invoices, P&amp;L, Ledger, Bank Recon, Expenses, GST/e-Invoice, Reports, Multi-Entity, E-Way Bill, TDS 26Q, HSN/SAC, Form 26AS, ITR Filing). GST-compliant filing tracker (GSTR-1/3B/9). Period closing workflow with checklist. Multi-entity GL concept. e-Invoice IRN generator UI. Form 26Q with vendor-wise TDS. Form 26AS reconciliation tab. ITR filing tracker with advance tax challan register. Corporate tax computation (22% + surcharge + cess).</div></div>
+  <div class="finding hi">
+    <div class="finding-hdr"><div><div class="finding-id">FIN-001</div><div class="finding-title">No Real GST / IRP API Integration — All Toasts Are Stubs</div></div><span class="badge b-hi">High</span></div>
+    <div class="finding-body">Clicking "File Now" for GSTR-3B shows a toast with a fake ARN (<code>AA270225123456</code>). The "Generate IRN + QR" button shows a fake IRN hash. The GST Portal integration in Settings shows <code>GST_API_KEY_XXXX</code> — a placeholder. No live calls to NIC IRP or GST portal APIs exist.</div>
+    <div class="finding-rem">Integrate with NIC IRP API (sandbox first) for e-invoice, and GST Suvidha Provider (GSP) for GSTR filing. Store API credentials in Cloudflare secrets (<code>wrangler secret put GST_API_KEY</code>).</div>
+  </div>
+  <div class="finding hi">
+    <div class="finding-hdr"><div><div class="finding-id">FIN-002</div><div class="finding-title">Bank Reconciliation Uses Static Mock Data — No Live Bank Feed</div></div><span class="badge b-hi">High</span></div>
+    <div class="finding-body">Bank statement balance (₹56.2L), book balance (₹56.5L), and all transaction rows are hard-coded arrays. "Auto-Reconcile" fires a toast. No integration with banking APIs (ICICI, HDFC, RazorpayX, or Open Banking via Account Aggregator framework) exists.</div>
+    <div class="finding-rem">Integrate with RBI Account Aggregator (AA) ecosystem or direct bank APIs. For interim, implement CSV bank statement upload and parsing.</div>
+  </div>
+  <div class="finding me">
+    <div class="finding-hdr"><div><div class="finding-id">FIN-003</div><div class="finding-title">Duplicate GST Tab — GSTR-3B Section Appears in Both Tab 2 and Tab 5</div></div><span class="badge b-me">Medium</span></div>
+    <div class="finding-body">The GST reporting section with the identical GSTR-3B widget appears in both <code>fin-pane-1</code> (Tab 2: P&amp;L) and <code>fin-pane-4</code> (Tab 5: GST/e-Invoice). This is likely a copy-paste error during phased development.</div>
+    <div class="finding-rem">Remove duplicate GST widget from fin-pane-1. Keep only the full GST module in fin-pane-4.</div>
+  </div>
+  <div class="finding me">
+    <div class="finding-hdr"><div><div class="finding-id">FIN-004</div><div class="finding-title">Multi-Entity Consolidation Is UI-Only — No Actual Inter-Entity Elimination Logic</div></div><span class="badge b-me">Medium</span></div>
+    <div class="finding-body">The Multi-Entity tab shows entity cards but consolidation, inter-company elimination, and currency conversion are not implemented. The "Consolidate" button shows a toast.</div>
+    <div class="finding-rem">Implement proper multi-entity GL with segment codes, inter-company elimination rules, and consolidated P&amp;L/BS generation using Cloudflare D1.</div>
+  </div>
+
+  <!-- HR -->
+  <h3 class="sub-title" style="margin-top:1.25rem;">5.2 HR ERP</h3>
+  <div class="info-box ok"><i class="fas fa-check-circle" style="color:var(--green);"></i><div><strong>Strengths:</strong> Payroll builder with CTC breakdown, HRA, LTA, EPF/ESIC indicators. Attendance heatmap. Leave management with approval flow. TDS investment declaration (Chapter VI-A). Form 16 portal (Part A + Part B with salary breakdown). Onboarding wizard. Performance appraisal tracker. Tax estimator with FY 2025-26 slabs.</div></div>
+  <div class="finding hi">
+    <div class="finding-hdr"><div><div class="finding-id">HR-001</div><div class="finding-title">No EPFO/ESIC E-Filing Integration — ECR File Not Sent to Portal</div></div><span class="badge b-hi">High</span></div>
+    <div class="finding-body">The PF Challan card mentions "ECR file for upload" but no actual EPFO Unified Portal integration or ECR generation is implemented. ESIC portal integration is also absent. Monthly statutory compliance requires actual e-filing with EPFO by the 15th.</div>
+    <div class="finding-rem">Implement ECR (Electronic Challan cum Return) file generator (as per EPFO format) for download. Add ESIC contribution statement generator. These are statutory requirements under EPF Act 1952 and ESI Act 1948.</div>
+  </div>
+  <div class="finding hi">
+    <div class="finding-hdr"><div><div class="finding-id">HR-002</div><div class="finding-title">Form 16 Generation Is Mock — No TRACES API Integration</div></div><span class="badge b-hi">High</span></div>
+    <div class="finding-body">Form 16 shows 8 employees with TDS certificates but these are static arrays. The "Download ZIP" and "Email Certificates" buttons fire toasts. No integration with TRACES (Tax Reconciliation, Accounting and Correction Enabling System) for Form 16 part-A download exists. TRACES integration is mandatory for employer TDS certificate issuance.</div>
+    <div class="finding-rem">Integrate with TRACES APIs for Form 16 Part A download. Implement PDF generation for Part B using actual salary data from the payroll module (requires D1 database).</div>
+  </div>
+  <div class="finding me">
+    <div class="finding-hdr"><div><div class="finding-id">HR-003</div><div class="finding-title">Labour Code Compliance Not Addressed — Four Labour Codes (2019-2020)</div></div><span class="badge b-me">Medium</span></div>
+    <div class="finding-body">The new Labour Codes (Code on Wages 2019, Industrial Relations Code 2020, Code on Social Security 2020, Occupational Safety Code 2020) are not referenced in the HR module. Minimum wage compliance, overtime calculations, leave encashment limits, and gratuity eligibility thresholds are based on old frameworks.</div>
+    <div class="finding-rem">Audit all payroll calculation logic against the four Labour Codes (state-specific notification status). Particularly update: basic wage floor (50% of CTC), PF applicability, gratuity calculation, leave encashment tax treatment.</div>
+  </div>
+  <div class="finding lo">
+    <div class="finding-hdr"><div><div class="finding-id">HR-004</div><div class="finding-title">Recruitment / ATS Module Absent</div></div><span class="badge b-lo">Low</span></div>
+    <div class="finding-body">No applicant tracking system, job posting management, or offer letter generation feature exists in the HR ERP.</div>
+    <div class="finding-rem">Add recruitment module as HR pane-9 in a future sprint.</div>
+  </div>
+
+  <!-- GOVERNANCE -->
+  <h3 class="sub-title" style="margin-top:1.25rem;">5.3 Governance &amp; Compliance</h3>
+  <div class="info-box ok"><i class="fas fa-check-circle" style="color:var(--green);"></i><div><strong>Strengths:</strong> Board meeting tracker with SS-1/SS-2 notice generator. Voting engine with resolution tally. Director KYC portal with DIN verification status. Statutory registers summary. Compliance calendar (FY 2025-26). DSC registry. Quorum tracking. Agenda builder with resolution drafts. Companies Act 2013 checklist (§173, §174, §179, §186 references). ROC filing tracker (AOC-4, MGT-7).</div></div>
+  <div class="finding hi">
+    <div class="finding-hdr"><div><div class="finding-id">GOV-001</div><div class="finding-title">Statutory Register "View Entries" — CRUD Not Functional</div></div><span class="badge b-hi">High</span></div>
+    <div class="finding-body">All nine statutory registers (Register of Members, Register of Directors, Register of Loans, etc.) have "View Entries" buttons that show placeholder states. No actual register entries can be created, edited, or viewed. These are mandatory under Companies Act 2013 (§§ 88, 170, 186, 189) and must be maintained in prescribed format.</div>
+    <div class="finding-rem">Implement full CRUD for each of the 9 registers using Cloudflare D1. Each register must store mandatory prescribed fields per the Companies Act. Add version-locking and digital signature on entries.</div>
+  </div>
+  <div class="finding hi">
+    <div class="finding-hdr"><div><div class="finding-id">GOV-002</div><div class="finding-title">ROC E-Form Filing Not Integrated — AOC-4, MGT-7 Are Manual Reminders Only</div></div><span class="badge b-hi">High</span></div>
+    <div class="finding-body">The period-closing checklist shows "ROC filing preparation (AOC-4, MGT-7) — 0% — Pending." No MCA21 portal integration, XBRL tagging, or e-form pre-fill functionality exists. Filing AOC-4 (Financial Statements) and MGT-7 (Annual Return) are mandatory within 30/60 days of AGM respectively.</div>
+    <div class="finding-rem">Build an MCA pre-fill template generator for AOC-4 and MGT-7. Add XBRL tagging for financial statements. Provide a direct MCA21 V3 portal link with pre-populated CIN/data. Long-term: integrate MCA API (available under MCA V3 API initiative).</div>
+  </div>
+  <div class="finding me">
+    <div class="finding-hdr"><div><div class="finding-id">GOV-003</div><div class="finding-title">Digital Signature (DSC) Registry — No Actual DSC Token Integration</div></div><span class="badge b-me">Medium</span></div>
+    <div class="finding-body">The DSC &amp; Signatures pane shows certificate details but "Sign Now" for documents just fires a DocuSign toast. No integration with USB DSC token (PKCS#11), eMudhra, or Sify DSC APIs. Aadhaar eSign (DigiLocker) not integrated either.</div>
+    <div class="finding-rem">Integrate with eMudhra or (n)Code Solutions DSC API for legally valid digital signatures. For simpler use-cases, implement Aadhaar eSign via UIDAI-licensed ASP (Application Service Provider).</div>
+  </div>
+  <div class="finding me">
+    <div class="finding-hdr"><div><div class="finding-id">GOV-004</div><div class="finding-title">Voting Engine Lacks Proxy Voting and Postal Ballot (Companies Act §110)</div></div><span class="badge b-me">Medium</span></div>
+    <div class="finding-body">The voting engine supports only in-session digital votes by directors. §110 of the Companies Act 2013 mandates postal ballot for certain resolutions. E-voting through NSDL/CDSL platforms for AGM/EGM is not implemented.</div>
+    <div class="finding-rem">Add postal ballot workflow and proxy form generation. For listed-company scenarios, integrate with NSDL e-voting platform API or CDSL e-Voting API.</div>
+  </div>
+
+  <!-- HORECA -->
+  <h3 class="sub-title" style="margin-top:1.25rem;">5.4 HORECA Module</h3>
+  <div class="info-box ok"><i class="fas fa-check-circle" style="color:var(--green);"></i><div><strong>Strengths:</strong> 8 supply categories. Customer portal with role-based pricing. GRN (Goods Receipt Note) workflow. Vendor management. Order management. Inventory tracker. Logistics tracking. Quote builder. Commission engine stub.</div></div>
+  <div class="finding hi">
+    <div class="finding-hdr"><div><div class="finding-id">HOR-001</div><div class="finding-title">FSSAI Compliance Features Absent — Mandatory for Food Business Operators</div></div><span class="badge b-hi">High</span></div>
+    <div class="finding-body">The HORECA module manages food and beverage supply but has no FSSAI licence tracking, food safety compliance checklists, or FSMS (Food Safety Management System) documentation. FSSAI registration/licensing and compliance are mandatory for all Food Business Operators (FBOs) under Food Safety and Standards Act 2006.</div>
+    <div class="finding-rem">Add FSSAI compliance tab with: licence type (Registration/State/Central) tracker, renewal date alerts, FOSCOS portal integration link, product compliance checklist, and FSMS documentation store.</div>
+  </div>
+  <div class="finding me">
+    <div class="finding-hdr"><div><div class="finding-id">HOR-002</div><div class="finding-title">Vendor Payment Terms Not Linked to MSMED Act Compliance</div></div><span class="badge b-me">Medium</span></div>
+    <div class="finding-body">Vendor management does not check or enforce the 45-day payment rule under the MSMED Act 2006. No MSME classification field on vendor records. Interest liability for delayed payments to MSME vendors is not tracked.</div>
+    <div class="finding-rem">Add MSME classification flag to vendor master. Implement 45-day payment alert. Generate MSME Form-1 (half-yearly return for outstanding payments) data.</div>
+  </div>
+  <div class="finding lo">
+    <div class="finding-hdr"><div><div class="finding-id">HOR-003</div><div class="finding-title">Cold Chain / Temperature Logging Not Implemented</div></div><span class="badge b-lo">Low</span></div>
+    <div class="finding-body">No temperature log tracking for cold-chain compliance in perishable goods supply. Required for FSSAI compliance in specific food categories.</div>
+    <div class="finding-rem">Add optional temperature log field to GRN. Consider IoT sensor integration (future roadmap).</div>
+  </div>
+
+  <!-- CMS -->
+  <h3 class="sub-title" style="margin-top:1.25rem;">5.5 CMS v2</h3>
+  <div class="info-box ok"><i class="fas fa-check-circle" style="color:var(--green);"></i><div><strong>Strengths:</strong> 7 CMS tabs (Pages, Page Builder, AI Copy Assist, Approval Workflow, Templates, SEO, Asset Manager). AI copy generation simulated with 4 content types. Approval workflow with status tracking. Branded templates. SEO score display. Digital Asset Manager with file grid.</div></div>
+  <div class="finding hi">
+    <div class="finding-hdr"><div><div class="finding-id">CMS-001</div><div class="finding-title">AI Copy Assist Is a Hardcoded Template Switcher — No Real LLM Call</div></div><span class="badge b-hi">High</span></div>
+    <div class="finding-body">The "Generate with AI" button in CMS pane-2 shows a spinner then displays pre-written static HTML content. There is no API call to any LLM (OpenAI, Gemini, Claude, or Cloudflare AI). The feature is purely cosmetic.</div>
+    <div class="finding-rem">Integrate with Cloudflare Workers AI (available natively, no external API call needed) using <code>@cf/meta/llama-3-8b-instruct</code> or bind OpenAI API key as a Cloudflare secret. Add human-approval badge workflow before publishing generated content.</div>
+  </div>
+  <div class="finding me">
+    <div class="finding-hdr"><div><div class="finding-id">CMS-002</div><div class="finding-title">Digital Asset Manager Has No Real File Storage (R2 Not Bound)</div></div><span class="badge b-me">Medium</span></div>
+    <div class="finding-body">The Digital Asset Manager (cms-pane-6) shows a file grid with upload button but no Cloudflare R2 bucket is configured in wrangler.jsonc. File upload is non-functional.</div>
+    <div class="finding-rem">Create Cloudflare R2 bucket (<code>india-gully-assets</code>), bind in wrangler.jsonc, implement upload/download/delete API endpoints in Hono.</div>
+  </div>
+
+  <!-- BI/Analytics -->
+  <h3 class="sub-title" style="margin-top:1.25rem;">5.6 BI &amp; Analytics</h3>
+  <div class="info-box ok"><i class="fas fa-check-circle" style="color:var(--green);"></i><div><strong>Strengths:</strong> KPI/OKR dashboard. Mandate risk scoring. Chart.js visualizations. Predictive analytics stub. Revenue trend, pipeline, and sector mix charts. Dark mode support.</div></div>
+  <div class="finding me">
+    <div class="finding-hdr"><div><div class="finding-id">BI-001</div><div class="finding-title">All Analytics Data Is Static — No Real-Time Metrics</div></div><span class="badge b-me">Medium</span></div>
+    <div class="finding-body">All KPI values, OKR scores, revenue trends, and risk scores are static JavaScript arrays. "Predictive Analytics" shows a hardcoded forecast line. No connection to actual transactional data, even within the platform's own demo data.</div>
+    <div class="finding-rem">Wire BI module to read from Cloudflare D1 (once implemented). Build aggregation queries for real-time KPIs. Use Cloudflare Durable Objects for streaming dashboards.</div>
+  </div>
+  <div class="finding lo">
+    <div class="finding-hdr"><div><div class="finding-id">BI-002</div><div class="finding-title">No Data Export in Regulated Formats (XBRL, iXBRL, CSV)</div></div><span class="badge b-lo">Low</span></div>
+    <div class="finding-body">Reports can only be "downloaded" as simulated PDF toasts. No XBRL, iXBRL, Excel, or structured CSV exports exist.</div>
+    <div class="finding-rem">Implement server-side PDF generation (Puppeteer via external API or Cloudflare Browser Rendering). Add CSV exports for tabular data.</div>
+  </div>
+
+  <!-- Sales Force -->
+  <h3 class="sub-title" style="margin-top:1.25rem;">5.7 Sales Force Engine</h3>
+  <div class="info-box ok"><i class="fas fa-check-circle" style="color:var(--green);"></i><div><strong>Strengths:</strong> Pipeline stages with deal cards. Quote builder with GST calculation. 6 quote templates. E-sign workflow UI. Version history tab. Commission engine. Lead scoring stub.</div></div>
+  <div class="finding me">
+    <div class="finding-hdr"><div><div class="finding-id">SLS-001</div><div class="finding-title">E-Sign Integration Not Live — DocuSign "Not Configured" in Settings</div></div><span class="badge b-me">Medium</span></div>
+    <div class="finding-body">The DocuSign integration in Settings → Integrations shows status "Not Configured" with empty API credentials. "Send for E-Sign" fires a toast but no DocuSign API call is made. Legally binding e-signatures require actual integration under IT Act 2000.</div>
+    <div class="finding-rem">Configure DocuSign sandbox account, add integration key and RSA key as Cloudflare secrets. Implement <code>POST /api/contracts/esign</code> using DocuSign eSignature REST API v2.1. Alternatively integrate Aadhaar eSign as a lower-cost option for Indian contracts.</div>
+  </div>
+
+  <!-- Client Portal -->
+  <h3 class="sub-title" style="margin-top:1.25rem;">5.8 Client Portal</h3>
+  <div class="info-box ok"><i class="fas fa-check-circle" style="color:var(--green);"></i><div><strong>Strengths:</strong> Dashboard with mandate status. Invoice viewer. Proposal read-receipts. Document download. Razorpay payment button. GST invoice with SAC code. Profile management.</div></div>
+  <div class="finding hi">
+    <div class="finding-hdr"><div><div class="finding-id">CPT-001</div><div class="finding-title">Razorpay Payment Gateway Not Integrated — "Pay Now" Is Non-Functional</div></div><span class="badge b-hi">High</span></div>
+    <div class="finding-body">The "Pay ₹2,12,400" button in the client portal invoice view fires a <code>igToast</code> with "Razorpay checkout initialising…" but no actual Razorpay order is created. Razorpay shows "Not Configured" in Settings → Integrations. No payment can be collected.</div>
+    <div class="finding-rem">Create Razorpay order via server-side API (<code>POST /api/payments/create-order</code>) storing <code>RAZORPAY_KEY_ID</code> and <code>RAZORPAY_KEY_SECRET</code> in Cloudflare secrets. Verify payment signature server-side using HMAC-SHA256 per Razorpay documentation.</div>
+  </div>
+
+  <!-- Board Portal -->
+  <h3 class="sub-title" style="margin-top:1.25rem;">5.9 Board &amp; KMP Portal</h3>
+  <div class="info-box ok"><i class="fas fa-check-circle" style="color:var(--green);"></i><div><strong>Strengths:</strong> Board resolutions overview. Voting interface. Statutory registers summary. Financial reports. Compliance calendar. Document downloads.</div></div>
+  <div class="finding hi">
+    <div class="finding-hdr"><div><div class="finding-id">BRD-001</div><div class="finding-title">Board Portal Data Accessible Without Authentication</div></div><span class="badge b-hi">High</span></div>
+    <div class="finding-body">As noted in SEC-002, the board portal dashboard at <code>/portal/board/dashboard</code> is accessible without any authentication. Board resolutions, director details (DIN, designation), and financial reports are visible to any unauthenticated user who knows the URL. This is a material data breach risk.</div>
+    <div class="finding-rem">This is resolved by implementing SEC-002 (server-side session middleware). Additionally: encrypt resolution documents at rest, implement role-specific data filtering, and add IP whitelist for board portal access.</div>
+  </div>
+</div>
+
+<!-- ══════════════ 6. COMPLIANCE MATRIX ══════════════ -->
+<div class="section" id="compliance">
+  <div class="section-title"><i class="fas fa-balance-scale"></i> 6. Regulatory Compliance Matrix</div>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th style="width:22%;">Regulation / Act</th>
+        <th style="width:28%;">Requirement</th>
+        <th style="width:15%;">Module</th>
+        <th style="width:10%;">Status</th>
+        <th>Gap / Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Companies Act -->
+      <tr><td rowspan="6"><strong>Companies Act 2013</strong></td><td>Statutory registers (§§88,170,186,189)</td><td>Governance</td><td><span class="badge b-wa">Partial</span></td><td>UI present; CRUD not functional; no digital sign/versioning</td></tr>
+      <tr><td>Board meeting minutes &amp; notices (SS-1, §118)</td><td>Governance</td><td><span class="badge b-wa">Partial</span></td><td>Notice generator present; not linked to real meeting records</td></tr>
+      <tr><td>Annual filings AOC-4, MGT-7</td><td>Governance</td><td><span class="badge b-fa">Fail</span></td><td>Only a checklist reminder; no MCA integration, no XBRL</td></tr>
+      <tr><td>Director KYC (DIR-3 KYC)</td><td>Governance</td><td><span class="badge b-wa">Partial</span></td><td>KYC status field present; no actual verification against MCA DB</td></tr>
+      <tr><td>Related-party transactions (§188)</td><td>Finance / Gov</td><td><span class="badge b-fa">Fail</span></td><td>No RPT tracking, Board approval workflow, or AOC-2 generation</td></tr>
+      <tr><td>Quorum tracking (§174)</td><td>Governance</td><td><span class="badge b-ok">Pass</span></td><td>Quorum validation logic present in meeting tracker</td></tr>
+
+      <!-- GST -->
+      <tr><td rowspan="5"><strong>GST Acts (CGST/IGST 2017)</strong></td><td>GSTR-1 outward supplies filing</td><td>Finance ERP</td><td><span class="badge b-wa">Partial</span></td><td>Filing tracker present; no live GSP/IRP API call</td></tr>
+      <tr><td>GSTR-3B summary return</td><td>Finance ERP</td><td><span class="badge b-wa">Partial</span></td><td>UI tracker present; no actual filing mechanism</td></tr>
+      <tr><td>e-Invoice (IRN) ≥₹5 Cr turnover</td><td>Finance ERP</td><td><span class="badge b-wa">Partial</span></td><td>IRN generator UI present; no real IRP API call; mock IRN shown</td></tr>
+      <tr><td>E-Way Bill generation</td><td>Finance ERP</td><td><span class="badge b-wa">Partial</span></td><td>E-Way Bill tab present; no NIC EWB API integration</td></tr>
+      <tr><td>GSTR-2A/2B ITC reconciliation</td><td>Finance ERP</td><td><span class="badge b-wa">Partial</span></td><td>GST Reconciliation card present; no live GSTR-2A pull</td></tr>
+
+      <!-- Income Tax / TDS -->
+      <tr><td rowspan="4"><strong>Income Tax Act 1961</strong></td><td>TDS deduction &amp; deposit (§194C/J/I)</td><td>Finance / HR</td><td><span class="badge b-wa">Partial</span></td><td>TDS calculation logic present; no TRACES/NSDL API for challan</td></tr>
+      <tr><td>Form 26Q quarterly TDS return</td><td>Finance ERP</td><td><span class="badge b-wa">Partial</span></td><td>UI present with vendor-wise TDS; no e-filing integration</td></tr>
+      <tr><td>Form 16 Part A (TRACES download)</td><td>HR ERP</td><td><span class="badge b-wa">Partial</span></td><td>Form 16 portal present; no TRACES API for Part A</td></tr>
+      <tr><td>Advance tax payments</td><td>Finance ERP</td><td><span class="badge b-wa">Partial</span></td><td>Advance tax challan register present; no challan generation</td></tr>
+
+      <!-- DPDP Act -->
+      <tr><td rowspan="5"><strong>DPDP Act 2023</strong></td><td>Consent management for personal data</td><td>Platform-wide</td><td><span class="badge b-fa">Fail</span></td><td>No consent banner, no consent receipt, no withdrawal mechanism</td></tr>
+      <tr><td>Data Principal rights (access/correct/erase)</td><td>Platform-wide</td><td><span class="badge b-fa">Fail</span></td><td>Privacy policy references rights; no functional self-service portal</td></tr>
+      <tr><td>Data Protection Officer designation</td><td>Governance</td><td><span class="badge b-fa">Fail</span></td><td>Not named in privacy policy or platform</td></tr>
+      <tr><td>Breach notification (72h to DPB)</td><td>Security</td><td><span class="badge b-wa">Partial</span></td><td>Incident response procedure documented in UI; no automated breach detection/notification</td></tr>
+      <tr><td>Cross-border data transfer controls</td><td>Platform-wide</td><td><span class="badge b-wa">Partial</span></td><td>Checklist item checked; Cloudflare edge locations need data residency config</td></tr>
+
+      <!-- Labour Laws -->
+      <tr><td rowspan="4"><strong>Labour Laws (India)</strong></td><td>EPF monthly challan filing (EPF Act 1952)</td><td>HR ERP</td><td><span class="badge b-wa">Partial</span></td><td>PF Challan card present; no EPFO Unified Portal / ECR integration</td></tr>
+      <tr><td>ESIC contribution (ESI Act 1948)</td><td>HR ERP</td><td><span class="badge b-wa">Partial</span></td><td>ESIC threshold noted in UI; no ESIC portal filing</td></tr>
+      <tr><td>Minimum wage compliance (Code on Wages 2019)</td><td>HR ERP</td><td><span class="badge b-fa">Fail</span></td><td>No minimum wage validation against state-wise scheduled rates</td></tr>
+      <tr><td>Gratuity Act 1972 compliance</td><td>HR ERP</td><td><span class="badge b-fa">Fail</span></td><td>No gratuity calculator or liability provisioning module</td></tr>
+
+      <!-- IT Act -->
+      <tr><td rowspan="2"><strong>IT Act 2000</strong></td><td>Legal validity of e-signatures (§5)</td><td>Contracts</td><td><span class="badge b-fa">Fail</span></td><td>DocuSign/Aadhaar eSign not configured; e-signatures are legally invalid</td></tr>
+      <tr><td>Cybercrime reporting (§66)</td><td>Security</td><td><span class="badge b-wa">Partial</span></td><td>Security incident procedure documented; no integration with CERT-In reporting</td></tr>
+
+      <!-- RERA -->
+      <tr><td><strong>RERA Act 2016</strong></td><td>Real estate mandate disclosures</td><td>Listings</td><td><span class="badge b-wa">Partial</span></td><td>Mandate listings present; no RERA registration number display or validation</td></tr>
+
+      <!-- SEBI -->
+      <tr><td><strong>SEBI Guidelines</strong></td><td>Investment advisory disclosures</td><td>Services / Insights</td><td><span class="badge b-wa">Partial</span></td><td>Disclaimer page present; no SEBI RIA/IA registration display if applicable</td></tr>
+    </tbody>
+  </table>
+
+  <div style="display:flex;flex-wrap:wrap;gap:.875rem;margin-top:1.25rem;">
+    <div class="card" style="margin:0;flex:1;min-width:140px;text-align:center;"><div class="kpi-val" style="font-size:1.5rem;color:var(--green);">7</div><div class="kpi-lbl">Pass</div></div>
+    <div class="card" style="margin:0;flex:1;min-width:140px;text-align:center;"><div class="kpi-val" style="font-size:1.5rem;color:var(--amber);">17</div><div class="kpi-lbl">Partial</div></div>
+    <div class="card" style="margin:0;flex:1;min-width:140px;text-align:center;"><div class="kpi-val" style="font-size:1.5rem;color:var(--red);">12</div><div class="kpi-lbl">Fail</div></div>
+    <div class="card" style="margin:0;flex:1;min-width:140px;text-align:center;"><div class="kpi-val" style="font-size:1.5rem;color:var(--ink);">36</div><div class="kpi-lbl">Total Requirements Assessed</div></div>
+  </div>
+</div>
+
+<!-- ══════════════ 7. REMEDIATION STATUS ══════════════ -->
+<div class="section" id="remediation-status">
+  <div class="section-title"><i class="fas fa-check-double"></i> 7. Remediation Status — B-Round &amp; C-Round</div>
+
+  <h3 class="sub-title">7.1 B-Round Items (B1–B10) — Previous Audit Cycle</h3>
+  <table class="tbl">
+    <thead><tr><th>ID</th><th>Item</th><th>Priority</th><th>Implementation Status</th><th>Verification Outcome</th></tr></thead>
+    <tbody>
+      <tr><td><strong>B1</strong></td><td>Replace static OTP with TOTP simulator</td><td><span class="badge b-cr">Critical</span></td><td>TOTP JS hash (<code>igTOTP()</code>) added; refreshes every 30s</td><td><span class="badge b-wa">Partial</span> — Not RFC 6238; OTP still accepted as <code>000000</code> in server auth (api.tsx line 32)</td></tr>
+      <tr><td><strong>B2</strong></td><td>CSRF token on all login forms</td><td><span class="badge b-cr">Critical</span></td><td>Client-side CSRF token generated in JS</td><td><span class="badge b-wa">Partial</span> — Token not validated server-side in api.tsx</td></tr>
+      <tr><td><strong>B3</strong></td><td>Rate-limiting UI with lockout after 5 attempts</td><td><span class="badge b-cr">Critical</span></td><td>Client-side lockout counter and 5-min timer in JS</td><td><span class="badge b-wa">Partial</span> — Server-side has no rate limiting; direct API calls bypass</td></tr>
+      <tr><td><strong>B4</strong></td><td>Session timeout (30 min inactivity)</td><td><span class="badge b-hi">High</span></td><td>Client-side inactivity timer with redirect</td><td><span class="badge b-wa">Partial</span> — No server session; redirect only cosmetic</td></tr>
+      <tr><td><strong>B5</strong></td><td>Finance: Form 26AS reconciliation + ITR tracker</td><td><span class="badge b-hi">High</span></td><td>New tabs added (fin-pane-11, fin-pane-12) with full UI</td><td><span class="badge b-ok">Pass</span> — Feature complete for demo scope</td></tr>
+      <tr><td><strong>B6</strong></td><td>HR: Form 16 generation portal</td><td><span class="badge b-hi">High</span></td><td>New HR pane-8 with 8-employee TDS certificate table</td><td><span class="badge b-ok">Pass</span> — Demo scope complete; TRACES integration pending</td></tr>
+      <tr><td><strong>B7</strong></td><td>Governance: Board-meeting agenda builder</td><td><span class="badge b-me">Medium</span></td><td>gov-pane-7 added with drag-add agenda items, SS-1 notice preview</td><td><span class="badge b-ok">Pass</span> — Feature complete for demo scope</td></tr>
+      <tr><td><strong>B8</strong></td><td>Sales: e-sign workflow + quote versioning</td><td><span class="badge b-me">Medium</span></td><td>E-sign modal + version-history tab added to sales.tsx</td><td><span class="badge b-ok">Pass</span> — Demo scope complete; DocuSign not configured</td></tr>
+      <tr><td><strong>B9</strong></td><td>GraphQL playground stub at /admin/api-docs</td><td><span class="badge b-lo">Low</span></td><td>GraphQL playground UI with schema explorer added</td><td><span class="badge b-ok">Pass</span> — Feature complete for demo scope</td></tr>
+      <tr><td><strong>B10</strong></td><td>Build, test, and deploy</td><td><span class="badge b-cr">Critical</span></td><td>Build succeeds (1,081 kB); deployed to Cloudflare Pages</td><td><span class="badge b-ok">Pass</span> — All 10 routes return HTTP 200</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title" style="margin-top:1.5rem;">7.2 C-Round Items (C1–C9) — Current Audit Cycle</h3>
+  <table class="tbl">
+    <thead><tr><th>ID</th><th>Item</th><th>Priority</th><th>Implementation Status</th><th>Verification Outcome</th></tr></thead>
+    <tbody>
+      <tr><td><strong>C1</strong></td><td>Remove on-screen TOTP; add authenticator-app instruction + QR placeholder</td><td><span class="badge b-cr">Critical</span></td><td>Python script run to modify portal.tsx; TOTP display and demo banner removed per script log</td><td><span class="badge b-wa">Partial</span> — admin.tsx line 123 still renders full credentials + TOTP on admin login page; portal.tsx lines 227–229 still contain plaintext demo credentials visible in page source</td></tr>
+      <tr><td><strong>C2</strong></td><td>Live modal with CRUD for 9 statutory registers</td><td><span class="badge b-hi">High</span></td><td>Not implemented in this round</td><td><span class="badge b-fa">Open</span></td></tr>
+      <tr><td><strong>C3</strong></td><td>Role-based PAN/Aadhaar/DIN masking enforcement</td><td><span class="badge b-hi">High</span></td><td>Masking UI settings panel added with toggle options</td><td><span class="badge b-wa">Partial</span> — UI toggles only; no server-side enforcement; data unmasked in JS bundle</td></tr>
+      <tr><td><strong>C4</strong></td><td>Searchable audit-trail viewer (filter by module/user/date)</td><td><span class="badge b-hi">High</span></td><td>Audit log table with filter dropdowns present in Security section</td><td><span class="badge b-wa">Partial</span> — Static demo log entries; no real event capture or persistence</td></tr>
+      <tr><td><strong>C5</strong></td><td>One-time-link password reset for all portals</td><td><span class="badge b-hi">High</span></td><td>Reset form POST to /api/auth/reset; server returns success message</td><td><span class="badge b-wa">Partial</span> — Server returns success without actually sending email; no OTP/link generation; no email service integrated</td></tr>
+      <tr><td><strong>C6</strong></td><td>E-sign stub (DocuSign/Aadhaar) + Razorpay wiring</td><td><span class="badge b-hi">High</span></td><td>E-sign modal present; Razorpay "Pay Now" button present</td><td><span class="badge b-fa">Open</span> — Both show "Not Configured"; no live API calls</td></tr>
+      <tr><td><strong>C7</strong></td><td>AI CMS copy-assist with human-approval badge</td><td><span class="badge b-me">Medium</span></td><td>AI copy assist UI present with template switcher</td><td><span class="badge b-wa">Partial</span> — No real LLM call; approval workflow UI present but not connected to real content store</td></tr>
+      <tr><td><strong>C8</strong></td><td>Remove demo credentials from login pages → /demo-access</td><td><span class="badge b-cr">Critical</span></td><td>Python script run; demo banners removed per script log</td><td><span class="badge b-fa">Open</span> — admin.tsx line 123 still shows full credentials; portal.tsx lines 227-229 still contain plaintext demo credentials; /demo-access page not verified</td></tr>
+      <tr><td><strong>C9</strong></td><td>Build, full route tests, deploy, update README</td><td><span class="badge b-cr">Critical</span></td><td>Build completed; README updated; deployed to cdb2edad.india-gully.pages.dev</td><td><span class="badge b-ok">Pass</span> — 10 routes return HTTP 200 on production</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box warn" style="margin-top:1rem;">
+    <i class="fas fa-exclamation-triangle" style="color:var(--amber);"></i>
+    <div><strong>Critical Note on C1 / C8:</strong> The Python script modifications to portal.tsx appear to have removed demo banners from the portal selection page, but the underlying <code>demoId</code>, <code>demoPass</code> variables and the credential lookup table remain at lines 227–229. Additionally, admin.tsx was <strong>not modified</strong> by the C-round — the admin login page still renders full super-admin credentials including password and TOTP in the HTML response. The C1/C8 remediations are therefore <strong>incomplete</strong> and must be addressed as first-priority items.</div>
+  </div>
+</div>
+
+<!-- ══════════════ 8. RISK REGISTER ══════════════ -->
+<div class="section" id="risk-register">
+  <div class="section-title"><i class="fas fa-exclamation-circle"></i> 8. Consolidated Risk Register</div>
+
+  <table class="tbl">
+    <thead><tr><th>Risk ID</th><th>Description</th><th>Likelihood</th><th>Impact</th><th>Rating</th><th>Owner</th></tr></thead>
+    <tbody>
+      <tr><td><strong>R-01</strong></td><td>Credential exposure in source code leads to unauthorised access to all portals</td><td>High</td><td>Critical</td><td><span class="badge b-cr">Critical</span></td><td>Tech Lead</td></tr>
+      <tr><td><strong>R-02</strong></td><td>Route bypass (no server auth) exposes board/HR/finance data to public</td><td>High</td><td>Critical</td><td><span class="badge b-cr">Critical</span></td><td>Tech Lead</td></tr>
+      <tr><td><strong>R-03</strong></td><td>Static OTP (<code>000000</code>) in production auth bypasses all 2FA protections</td><td>High</td><td>Critical</td><td><span class="badge b-cr">Critical</span></td><td>Tech Lead</td></tr>
+      <tr><td><strong>R-04</strong></td><td>No data persistence — all ERP transactions lost on worker restart</td><td>Certain</td><td>High</td><td><span class="badge b-cr">Critical</span></td><td>Architect</td></tr>
+      <tr><td><strong>R-05</strong></td><td>DPDP non-compliance: no consent management, no DPO, no data principal rights portal</td><td>High</td><td>High</td><td><span class="badge b-hi">High</span></td><td>Compliance</td></tr>
+      <tr><td><strong>R-06</strong></td><td>GST filings rely on UI stubs; actual GSTR-1/3B not filed → penalties under CGST Act</td><td>High</td><td>High</td><td><span class="badge b-hi">High</span></td><td>Finance</td></tr>
+      <tr><td><strong>R-07</strong></td><td>Form 26Q TDS returns not filed; TDS not deposited via TRACES → Interest + penalty u/s 201</td><td>High</td><td>High</td><td><span class="badge b-hi">High</span></td><td>Finance</td></tr>
+      <tr><td><strong>R-08</strong></td><td>No CSRF server validation — CSRF attacks can trigger financial/governance actions</td><td>Medium</td><td>High</td><td><span class="badge b-hi">High</span></td><td>Tech Lead</td></tr>
+      <tr><td><strong>R-09</strong></td><td>Missing HTTP security headers → XSS, clickjacking, MIME sniffing vulnerabilities</td><td>Medium</td><td>High</td><td><span class="badge b-hi">High</span></td><td>Tech Lead</td></tr>
+      <tr><td><strong>R-10</strong></td><td>Statutory registers non-functional → Companies Act violations, ROC penalties</td><td>High</td><td>High</td><td><span class="badge b-hi">High</span></td><td>Company Secretary</td></tr>
+      <tr><td><strong>R-11</strong></td><td>Razorpay / DocuSign not integrated → cannot collect payments or execute legally binding documents</td><td>Certain</td><td>High</td><td><span class="badge b-hi">High</span></td><td>Product</td></tr>
+      <tr><td><strong>R-12</strong></td><td>No CI/CD / automated testing → regressions ship undetected to production</td><td>High</td><td>Medium</td><td><span class="badge b-hi">High</span></td><td>DevOps</td></tr>
+      <tr><td><strong>R-13</strong></td><td>FSSAI compliance absent for HORECA → regulatory action risk for food business</td><td>Medium</td><td>High</td><td><span class="badge b-hi">High</span></td><td>Compliance</td></tr>
+      <tr><td><strong>R-14</strong></td><td>1,081 kB worker bundle → approaching Cloudflare 10 MB limit; will block D1/KV additions</td><td>Medium</td><td>Medium</td><td><span class="badge b-me">Medium</span></td><td>Architect</td></tr>
+      <tr><td><strong>R-15</strong></td><td>EPFO/ESIC e-filing absent → statutory obligation unmet under EPF Act 1952</td><td>High</td><td>Medium</td><td><span class="badge b-me">Medium</span></td><td>HR Head</td></tr>
+      <tr><td><strong>R-16</strong></td><td>CORS with open default config allows any origin to call /api/* endpoints</td><td>Medium</td><td>Medium</td><td><span class="badge b-me">Medium</span></td><td>Tech Lead</td></tr>
+      <tr><td><strong>R-17</strong></td><td>e-Signatures legally invalid (IT Act 2000) — contracts unenforceable</td><td>High</td><td>Medium</td><td><span class="badge b-me">Medium</span></td><td>Legal</td></tr>
+      <tr><td><strong>R-18</strong></td><td>No disaster recovery / RTO/RPO defined; no backup for platform data</td><td>Medium</td><td>Medium</td><td><span class="badge b-me">Medium</span></td><td>DevOps</td></tr>
+      <tr><td><strong>R-19</strong></td><td>Labour Code 2019-2020 compliance gaps in payroll calculations</td><td>Medium</td><td>Medium</td><td><span class="badge b-me">Medium</span></td><td>HR Head</td></tr>
+      <tr><td><strong>R-20</strong></td><td>Penetration testing never conducted; unknown vulnerabilities in deployment</td><td>Medium</td><td>High</td><td><span class="badge b-me">Medium</span></td><td>CISO</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════ 9. ROADMAP ══════════════ -->
+<div class="section" id="roadmap">
+  <div class="section-title"><i class="fas fa-road"></i> 9. Actionable Remediation Roadmap</div>
+
+  <div class="timeline">
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Phase P0 · Immediate (0–2 weeks) — Block Production Use Until Done</div>
+      <div class="tl-title">Critical Security Hardening</div>
+      <div class="tl-body">
+        <ol style="padding-left:1.25rem;line-height:2;font-size:.82rem;">
+          <li><strong>SEC-001/003:</strong> Remove all hard-coded credentials from source. Implement Cloudflare KV-based user store with bcrypt-hashed passwords. Replace TOTP with RFC 6238 server-side HMAC-SHA1 implementation. Issue QR codes for authenticator app setup.</li>
+          <li><strong>SEC-002:</strong> Implement Hono session middleware. On login, issue a cryptographically random signed cookie (128-bit token) stored in KV with TTL=30min. Protect ALL dashboard routes with <code>authMiddleware</code>.</li>
+          <li><strong>SEC-004:</strong> Add <code>public/_headers</code> file with HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy. Replace CSP meta-tag with response header. Remove <code>unsafe-inline</code>; use nonces.</li>
+          <li><strong>SEC-005:</strong> Implement server-side CSRF validation using KV-stored per-session tokens.</li>
+          <li><strong>SEC-007:</strong> Implement Cloudflare KV rate limiting (IP + session) in Hono middleware with <code>429 Too Many Requests</code> responses.</li>
+          <li><strong>C1/C8 (URGENT):</strong> Remove credential display from admin.tsx line 123 and portal.tsx lines 227–229. Create /demo-access page with guidance (no passwords displayed publicly).</li>
+          <li><strong>CORS:</strong> Restrict <code>cors()</code> to specific allowed origins in index.tsx.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Phase P1 · Short-term (2–6 weeks) — Core Infrastructure</div>
+      <div class="tl-title">Database, Persistence &amp; Real Auth</div>
+      <div class="tl-body">
+        <ol style="padding-left:1.25rem;line-height:2;font-size:.82rem;">
+          <li><strong>Database:</strong> Provision Cloudflare D1. Design schema for all modules (users, sessions, mandates, invoices, employees, leave, resolutions, etc.). Write migrations. Replace all static JS arrays with D1 queries.</li>
+          <li><strong>File Storage:</strong> Create Cloudflare R2 bucket. Implement document upload API. Bind to Hono app. Replace DAM mock with real upload/download.</li>
+          <li><strong>Email:</strong> Configure SendGrid/Resend. Implement real password reset flow (OTP + one-time link). Wire to /api/auth/reset. Store <code>SENDGRID_API_KEY</code> as Cloudflare secret.</li>
+          <li><strong>Bundle Splitting:</strong> Refactor admin.tsx (6,326 lines) into sub-modules loaded per admin route. Reduce initial worker bundle below 500 kB.</li>
+          <li><strong>CI/CD:</strong> Add GitHub Actions: npm audit, ESLint, TypeScript check, Vitest unit tests, Playwright E2E (all 10 key routes), wrangler deploy on merge to main.</li>
+          <li><strong>SEC-006:</strong> Move all PII to database. Apply field-level encryption (AES-256-GCM via Web Crypto API) for PAN, Aadhaar, bank account numbers before D1 storage.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Phase P2 · Medium-term (6–12 weeks) — Compliance &amp; Integration</div>
+      <div class="tl-title">Regulatory Integration &amp; Live API Wiring</div>
+      <div class="tl-body">
+        <ol style="padding-left:1.25rem;line-height:2;font-size:.82rem;">
+          <li><strong>GST Integration:</strong> Integrate with a licensed GSP (e.g., ClearTax GSP, Masters India) for GSTR-1/3B filing. Integrate with NIC IRP API for e-invoice. Store keys in Cloudflare secrets.</li>
+          <li><strong>Payments:</strong> Configure Razorpay (server-side order creation, signature verification). Wire client portal "Pay Now". Implement webhook handler for payment events.</li>
+          <li><strong>e-Signature:</strong> Configure DocuSign sandbox → production. Alternatively implement Aadhaar eSign via UIDAI-licensed ASP. Wire contracts module. Store keys in Cloudflare secrets.</li>
+          <li><strong>DPDP Compliance:</strong> Add consent banner (first visit + annual renewal). Build data principal self-service portal (access, correct, delete requests). Designate and publish DPO contact. Implement consent receipt storage in D1.</li>
+          <li><strong>Statutory Registers:</strong> Implement full CRUD for all 9 statutory registers in D1. Add digital signature on register entries. Version-lock closed periods.</li>
+          <li><strong>EPF/ESIC:</strong> Implement ECR file generator per EPFO format. Add ESIC statement generator. Provide EPFO portal deep-link with pre-populated data.</li>
+          <li><strong>FSSAI:</strong> Add FSSAI compliance module to HORECA. Licence tracker, FSMS checklist, FOSCOS integration link.</li>
+          <li><strong>AI/CMS:</strong> Bind Cloudflare Workers AI. Implement real LLM copy generation with human-approval workflow. Store approved content in D1/R2.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-phase">Phase P3 · Long-term (3–6 months) — Advanced &amp; Production-Grade</div>
+      <div class="tl-title">Architecture, Security &amp; Governance Maturity</div>
+      <div class="tl-body">
+        <ol style="padding-left:1.25rem;line-height:2;font-size:.82rem;">
+          <li><strong>Architecture:</strong> Migrate to micro-frontend/micro-services pattern. Each ERP module as an independent Cloudflare Worker with its own D1 database binding and type-safe API. Use Cloudflare Service Bindings for inter-service calls.</li>
+          <li><strong>Advanced Auth:</strong> Implement FIDO2/WebAuthn for passwordless login. Add Cloudflare Access as zero-trust network gateway. Implement OAuth 2.0 / OIDC for third-party integrations.</li>
+          <li><strong>MCA Integration:</strong> Integrate with MCA21 V3 API for AOC-4/MGT-7 pre-fill. Implement XBRL tagging for financial statements. Add DIR-3 KYC verification against MCA database.</li>
+          <li><strong>RBI Account Aggregator:</strong> Integrate with AA framework for automated bank statement pull and reconciliation. Reduces manual bank feed dependency.</li>
+          <li><strong>TRACES Integration:</strong> Implement TRACES API for Form 16 Part A download, TDS challan verification. Auto-populate 26AS data for reconciliation.</li>
+          <li><strong>Penetration Testing:</strong> Commission annual third-party penetration test (OWASP methodology). Implement bug-bounty programme. Schedule bi-annual security audits.</li>
+          <li><strong>Disaster Recovery:</strong> Define RTO (4 hours) / RPO (1 hour) targets. Implement D1 automated backups. Document runbook. Test failover quarterly.</li>
+          <li><strong>Accessibility:</strong> Full WCAG 2.1 AA audit and remediation. Hindi and regional language full interface localisation.</li>
+          <li><strong>Labour Code Alignment:</strong> Update payroll calculator for four Labour Codes (2019-2020). Add state-wise minimum wage validation. Implement gratuity and notice pay calculators.</li>
+        </ol>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ 10. RECOMMENDATIONS ══════════════ -->
+<div class="section" id="recommendations">
+  <div class="section-title"><i class="fas fa-lightbulb"></i> 10. Strategic Recommendations</div>
+
+  <div class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr));">
+
+    <div class="card" style="border-left:4px solid var(--red);margin:0;">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--red);margin-bottom:.5rem;"><i class="fas fa-ban" style="margin-right:.3rem;"></i>Do Not Go Live Until</div>
+      <ul style="font-size:.8rem;line-height:1.9;padding-left:1rem;color:var(--ink-soft);">
+        <li>Real authentication with server-side sessions</li>
+        <li>All hard-coded credentials removed from source</li>
+        <li>HTTP security headers deployed</li>
+        <li>Cloudflare D1 database provisioned</li>
+        <li>DPDP consent mechanism active</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-left:4px solid var(--gold);margin:0;">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:.5rem;"><i class="fas fa-star" style="margin-right:.3rem;"></i>Platform Strengths to Preserve</div>
+      <ul style="font-size:.8rem;line-height:1.9;padding-left:1rem;color:var(--ink-soft);">
+        <li>Excellent UI/UX fidelity and design system</li>
+        <li>Impressive functional breadth (11+ modules)</li>
+        <li>Compliance-aware design patterns throughout</li>
+        <li>Hono + Cloudflare Workers = right architecture</li>
+        <li>Good git discipline and documentation</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-left:4px solid var(--blue);margin:0;">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);margin-bottom:.5rem;"><i class="fas fa-rocket" style="margin-right:.3rem;"></i>Quick Wins (High ROI)</div>
+      <ul style="font-size:.8rem;line-height:1.9;padding-left:1rem;color:var(--ink-soft);">
+        <li>Add <code>_headers</code> file → security headers in &lt;1 hour</li>
+        <li>Restrict CORS origins → 30 minutes</li>
+        <li>Remove demo credentials from HTML → 1 hour</li>
+        <li>npm audit + add to CI → 2 hours</li>
+        <li>Cloudflare D1 + sessions → 1 week</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-left:4px solid var(--purple);margin:0;">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--purple);margin-bottom:.5rem;"><i class="fas fa-brain" style="margin-right:.3rem;"></i>AI &amp; Automation Opportunities</div>
+      <ul style="font-size:.8rem;line-height:1.9;padding-left:1rem;color:var(--ink-soft);">
+        <li>Cloudflare Workers AI for CMS copy (free tier)</li>
+        <li>AI contract clause-risk scanning (real LLM)</li>
+        <li>Predictive analytics on actual D1 transaction data</li>
+        <li>Auto-draft GST/TDS return summaries</li>
+        <li>NLP-based mandate matching engine</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-left:4px solid var(--green);margin:0;">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green);margin-bottom:.5rem;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>Security Programme</div>
+      <ul style="font-size:.8rem;line-height:1.9;padding-left:1rem;color:var(--ink-soft);">
+        <li>Annual third-party penetration test (OWASP)</li>
+        <li>Bug-bounty programme via HackerOne/Bugcrowd</li>
+        <li>CERT-In reporting integration</li>
+        <li>Cloudflare Access as zero-trust gateway</li>
+        <li>HSM / KMS for encryption key management</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-left:4px solid var(--amber);margin:0;">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--amber);margin-bottom:.5rem;"><i class="fas fa-balance-scale" style="margin-right:.3rem;"></i>Compliance Priorities</div>
+      <ul style="font-size:.8rem;line-height:1.9;padding-left:1rem;color:var(--ink-soft);">
+        <li>Appoint Data Protection Officer (DPDP Act)</li>
+        <li>Implement consent management platform</li>
+        <li>Integrate TRACES for TDS compliance</li>
+        <li>Wire GSP for live GSTR filing</li>
+        <li>Update payroll for Labour Codes 2019-2020</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ 11. CONCLUSION ══════════════ -->
+<div class="section" id="conclusion">
+  <div class="section-title"><i class="fas fa-flag-checkered"></i> 11. Conclusion &amp; Sign-Off</div>
+
+  <div class="card">
+    <p style="font-size:.9rem;line-height:1.85;color:var(--ink-soft);margin-bottom:1rem;">
+      The India Gully Enterprise Platform represents a <strong>technically ambitious and visually impressive demonstration platform</strong> that covers the full functional surface of a multi-vertical Indian enterprise advisory firm. The breadth of modules — from GST-compliant Finance ERP, EPFO-aware HR ERP, and Companies Act 2013 Governance tooling, to HORECA supply chain, CMS with AI assistance, and BI analytics — is commendable and demonstrates a clear vision for the platform.
+    </p>
+    <p style="font-size:.9rem;line-height:1.85;color:var(--ink-soft);margin-bottom:1rem;">
+      However, the audit has confirmed that the platform currently operates entirely in <strong>demonstration mode with no production-safe controls</strong>. The authentication system is cosmetic, all data is ephemeral, regulatory integrations are stubs, and multiple critical security vulnerabilities exist that would constitute immediate data-breach risks if real client, employee, or board data were processed on this platform.
+    </p>
+    <p style="font-size:.9rem;line-height:1.85;color:var(--ink-soft);margin-bottom:1rem;">
+      The remediation roadmap presented in Section 9 provides a structured path from the current demo-grade state to a production-ready platform over approximately 6 months. The P0 phase items (2 weeks) are absolute pre-requisites and should be treated as a hard gate before any live client is given access.
+    </p>
+    <p style="font-size:.9rem;line-height:1.85;color:var(--ink-soft);">
+      The architectural foundation (Hono + Cloudflare Workers + TypeScript) is sound and well-suited for the target use case. With disciplined execution of the roadmap, the platform has strong potential to become a competitive, compliance-ready enterprise solution for the Indian advisory and hospitality sector.
+    </p>
+
+    <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;">
+      <div>
+        <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.35rem;">Overall Security Score</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--red);">18 / 100</div>
+        <div style="font-size:.72rem;color:var(--ink-muted);">Demo-grade only</div>
+      </div>
+      <div>
+        <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.35rem;">Compliance Score</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--amber);">47 / 100</div>
+        <div style="font-size:.72rem;color:var(--ink-muted);">7 pass · 17 partial · 12 fail</div>
+      </div>
+      <div>
+        <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.35rem;">Functional Completeness</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--gold);">72 / 100</div>
+        <div style="font-size:.72rem;color:var(--ink-muted);">11+ modules · demo complete</div>
+      </div>
+      <div>
+        <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.35rem;">Production Readiness</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--red);">NOT READY</div>
+        <div style="font-size:.72rem;color:var(--ink-muted);">P0 phase must complete first</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;font-size:.8rem;">
+    <div class="card" style="margin:0;">
+      <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">Prepared By</div>
+      <div><strong>India Gully Internal Platform Audit Team</strong></div>
+      <div style="color:var(--ink-muted);margin-top:.35rem;">Audit Scope: Full platform static analysis, live site assessment, compliance mapping</div>
+      <div style="color:var(--ink-muted);margin-top:.25rem;">Date: 28 February 2026</div>
+    </div>
+    <div class="card" style="margin:0;">
+      <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">For Review By</div>
+      <div><strong>Vivacious Entertainment and Hospitality Pvt. Ltd.</strong></div>
+      <div style="color:var(--ink-muted);margin-top:.35rem;">CIN: U74900DL2017PTC000000</div>
+      <div style="color:var(--ink-muted);margin-top:.25rem;">Board of Directors &amp; Management</div>
+    </div>
+  </div>
+
+  <div class="info-box warn" style="margin-top:1.25rem;">
+    <i class="fas fa-lock" style="color:var(--amber);"></i>
+    <div><strong>Classification: RESTRICTED.</strong> This report contains sensitive security findings. Distribution should be limited to the Board of Directors, Managing Director, Chief Technology Officer, and Compliance Officer. Do not distribute externally. Findings should be acted upon within the timelines specified in the remediation roadmap.</div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div style="border-top:2px solid var(--border);padding-top:1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.875rem;font-size:.72rem;color:var(--ink-muted);">
+  <div>India Gully Enterprise Platform — Deep Audit Report v2026.03-FINAL</div>
+  <div>Platform: https://india-gully.pages.dev · Build: 2026.03 · Commit: ef81367</div>
+  <div>© 2026 Vivacious Entertainment and Hospitality Pvt. Ltd. · Confidential</div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+// Animate score bars on load
+document.addEventListener('DOMContentLoaded', function() {
+  const bars = document.querySelectorAll('.score-bar');
+  bars.forEach(bar => {
+    const w = bar.style.width;
+    bar.style.width = '0';
+    setTimeout(() => { bar.style.width = w; }, 200);
+  });
+});
+</script>
+</body>
+</html>

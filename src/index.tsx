@@ -121,6 +121,10 @@ app.get('/legal/disclaimer', (c) => c.html(legalPage('Disclaimer', `
 <p>For legal queries: <strong>Vivacious Entertainment and Hospitality Pvt. Ltd.</strong>, New Delhi — <a href="mailto:info@indiagully.com" style="color:var(--gold);">info@indiagully.com</a></p>
 `)))
 
+// ── AUDIT REPORT ─────────────────────────────────────────────────────────────
+import auditRoute from './routes/audit'
+app.route('/audit', auditRoute)
+
 // Mount routes
 app.route('/', homeRoute)
 app.route('/about', aboutRoute)

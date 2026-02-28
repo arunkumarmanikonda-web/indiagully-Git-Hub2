@@ -61,7 +61,7 @@ app.get('/', (c) => {
 // ── LOGIN PAGE HELPER ─────────────────────────────────────────────────────────
 function loginPage(opts: {
   portal: string; title: string; subtitle: string; accentColor: string; icon: string
-  idLabel: string; idPlaceholder: string; demoId: string; demoPass: string; demoOtp?: string; error?: string
+  idLabel: string; idPlaceholder: string; error?: string
 }) {
   const errorBanner = opts.error ? `
   <div style="background:#fef2f2;border-bottom:1px solid #fecaca;padding:.875rem 1.5rem;display:flex;gap:.6rem;">
@@ -80,15 +80,12 @@ function loginPage(opts: {
         <p style="font-size:.78rem;color:rgba(255,255,255,.65);">${opts.subtitle}</p>
         <p style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:.5rem;">India Gully Enterprise Platform</p>
       </div>
-      <div style="background:#fffbeb;border-bottom:1px solid #fde68a;padding:.875rem 1.5rem;display:flex;gap:.6rem;">
-        <i class="fas fa-key" style="color:#d97706;font-size:.75rem;margin-top:.15rem;flex-shrink:0;"></i>
+      <!-- 2FA instruction — no codes displayed on screen -->
+      <div style="background:#f0f9ff;border-bottom:1px solid #bae6fd;padding:.875rem 1.5rem;display:flex;gap:.6rem;">
+        <i class="fas fa-shield-alt" style="color:#0369a1;font-size:.75rem;margin-top:.15rem;flex-shrink:0;"></i>
         <div>
-          <p style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#92400e;margin-bottom:.3rem;">Demo Access</p>
-          <p style="font-size:.75rem;color:#78350f;line-height:1.7;">
-            <strong>${opts.idLabel}:</strong> <code style="background:#fef3c7;padding:1px 5px;font-size:.72rem;">${opts.demoId}</code><br>
-            <strong>Password:</strong> <code style="background:#fef3c7;padding:1px 5px;font-size:.72rem;">${opts.demoPass}</code>
-            ${opts.demoOtp ? `<br><strong>OTP/2FA:</strong> <span id="demo-otp-${opts.portal}" style="font-size:.72rem;background:#fef3c7;padding:1px 5px;font-family:monospace;">Generating…</span><span style="font-size:.62rem;color:#92400e;"> (refreshes every 30s)</span>` : ''}
-          </p>
+          <p style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0c4a6e;margin-bottom:.2rem;">2FA Required</p>
+          <p style="font-size:.75rem;color:#0369a1;line-height:1.6;">Open your authenticator app and enter the 6-digit code for <strong>India Gully</strong>. Code refreshes every 30 seconds.<br><a href="/portal/demo-access" style="color:#0369a1;text-decoration:underline;font-size:.72rem;">Demo access guide &rarr;</a></p>
         </div>
       </div>
       ${errorBanner}
@@ -106,10 +103,9 @@ function loginPage(opts: {
             <input type="password" name="password" class="ig-input" required placeholder="••••••••••••" autocomplete="current-password">
           </div>
           <div>
-            <label class="ig-label" style="display:flex;align-items:center;gap:.5rem;">OTP / 2FA Code
-              <span id="otp-countdown-${opts.portal}" style="font-size:.62rem;color:#d97706;font-weight:400;"></span>
-            </label>
-            <input type="text" name="otp" id="otp-input-${opts.portal}" class="ig-input" placeholder="6-digit TOTP code" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+            <label class="ig-label">2FA Authentication Code</label>
+            <input type="text" name="otp" class="ig-input" placeholder="6-digit code from authenticator app" maxlength="6" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}">
+            <p style="font-size:.68rem;color:var(--ink-muted);margin-top:.3rem;"><i class="fas fa-info-circle" style="margin-right:.3rem;"></i>Use Google Authenticator, Authy or Microsoft Authenticator.</p>
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;">
             <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;font-size:.75rem;color:var(--ink-soft);">
@@ -130,20 +126,7 @@ function loginPage(opts: {
   var csrf=Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>(b).toString(16).padStart(2,'0')).join('');
   var csrfEl=document.getElementById('csrf-'+portal); if(csrfEl) csrfEl.value=csrf;
   sessionStorage.setItem('ig_csrf_'+portal, csrf);
-  /* ── TOTP simulator (HOTP-style, 30s window, seed=portal+date) ── */
-  function igTOTP(){
-    var t=Math.floor(Date.now()/30000);
-    var seed=portal+'|'+t+'|IGDemo2025';
-    var h=0; for(var i=0;i<seed.length;i++){h=(Math.imul(31,h)+seed.charCodeAt(i))|0;} h=Math.abs(h);
-    return String(h%1000000).padStart(6,'0');
-  }
-  function igUpdateOTP(){
-    var code=igTOTP();
-    var el=document.getElementById('demo-otp-'+portal); if(el) el.textContent=code;
-    var rem=30-Math.floor((Date.now()/1000)%30);
-    var cd=document.getElementById('otp-countdown-'+portal); if(cd) cd.textContent='(refreshes in '+rem+'s)';
-  }
-  igUpdateOTP(); setInterval(igUpdateOTP,1000);
+  /* TOTP generated by authenticator app — no codes displayed server-side */
   /* ── Rate limiting (5 attempts → 5min lockout) ── */
   var attKey='ig_attempts_'+portal; var lockKey='ig_lock_'+portal;
   var form=document.getElementById('login-form-'+portal);
@@ -183,10 +166,9 @@ function loginPage(opts: {
 })();
 </script>
     </div>
-    <div style="text-align:center;margin-top:1.5rem;">
-      <a href="/portal" style="font-size:.78rem;color:rgba(255,255,255,.3);">
-        <i class="fas fa-arrow-left" style="font-size:.6rem;"></i> Back to Portal Selection
-      </a>
+    <div style="text-align:center;margin-top:1.5rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;">
+      <a href="/portal" style="font-size:.78rem;color:rgba(255,255,255,.3);"><i class="fas fa-arrow-left" style="font-size:.6rem;"></i> Back to Portal Selection</a>
+      <a href="/portal/demo-access" style="font-size:.78rem;color:rgba(255,255,255,.3);"><i class="fas fa-question-circle" style="font-size:.6rem;"></i> Demo Access</a>
     </div>
   </div>
 </div>`
@@ -199,7 +181,7 @@ app.get('/client', (c) => {
     portal:'client', title:'Client Portal', subtitle:'Advisory Services Platform',
     accentColor:'#B8960C', icon:'user-tie',
     idLabel:'Client ID or Email', idPlaceholder:'your@email.com',
-    demoId:'demo@indiagully.com', demoPass:'Client@IG2024', demoOtp:'(see above)', error
+    error
   }), { noNav:true, noFooter:true }))
 })
 
@@ -209,7 +191,7 @@ app.get('/employee', (c) => {
     portal:'employee', title:'Employee Portal', subtitle:'HR & Operations Platform',
     accentColor:'#1A3A6B', icon:'users',
     idLabel:'Employee ID', idPlaceholder:'IG-EMP-XXXX',
-    demoId:'IG-EMP-0001', demoPass:'Emp@IG2024', demoOtp:'(see above)', error
+    error
   }), { noNav:true, noFooter:true }))
 })
 
@@ -219,40 +201,114 @@ app.get('/board', (c) => {
     portal:'board', title:'Board & KMP Portal', subtitle:'Governance & Compliance Platform',
     accentColor:'#1E1E1E', icon:'gavel',
     idLabel:'Director DIN or KMP ID', idPlaceholder:'DIN XXXXXXXX or IG-KMP-XXXX',
-    demoId:'IG-KMP-0001', demoPass:'Board@IG2024', demoOtp:'(see above)', error
+    error
   }), { noNav:true, noFooter:true }))
 })
 
-// ── PASSWORD RESET ────────────────────────────────────────────────────────────
-app.get('/reset', (c) => {
-  const portal = c.req.query('portal') || 'client'
+// ── DEMO ACCESS GUIDE (replaces on-login-page credential display) ─────────────
+app.get('/demo-access', (c) => {
   const content = `
-<div style="min-height:100vh;background:linear-gradient(135deg,#080808,#141414);display:flex;align-items:center;justify-content:center;padding:2rem;">
-  <div style="width:100%;max-width:400px;">
+<div style="min-height:100vh;background:linear-gradient(135deg,#080808 0%,#141414 100%);display:flex;align-items:center;justify-content:center;padding:2rem 1.5rem;">
+  <div style="width:100%;max-width:560px;">
     <div style="background:#fff;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.5);">
-      <div style="background:var(--ink);padding:2rem;text-align:center;">
-        <div style="width:48px;height:48px;background:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;">
-          <i class="fas fa-key" style="color:#fff;"></i>
-        </div>
-        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;margin-bottom:.25rem;">Reset Password</h2>
-        <p style="font-size:.78rem;color:rgba(255,255,255,.45);">Enter your registered email to receive reset instructions.</p>
+      <div style="background:#1A3A6B;padding:2rem;text-align:center;">
+        <div style="width:48px;height:48px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;"><i class="fas fa-user-shield" style="color:#fff;font-size:1.25rem;"></i></div>
+        <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;margin-bottom:.25rem;">Demo Access Guide</h1>
+        <p style="font-size:.75rem;color:rgba(255,255,255,.55);">For authorised evaluators &amp; technical reviewers only</p>
       </div>
-      <div style="padding:2rem;">
-        <form method="POST" action="/api/auth/reset" style="display:flex;flex-direction:column;gap:1rem;">
-          <input type="hidden" name="portal" value="${portal}">
-          <div>
-            <label class="ig-label">Registered Email Address</label>
-            <input type="email" name="email" class="ig-input" required placeholder="your@email.com">
+      <div style="background:#fef2f2;border-bottom:1px solid #fecaca;padding:.875rem 1.5rem;display:flex;gap:.6rem;">
+        <i class="fas fa-exclamation-triangle" style="color:#dc2626;font-size:.75rem;margin-top:.2rem;flex-shrink:0;"></i>
+        <p style="font-size:.75rem;color:#991b1b;">This page is for demo evaluation only. In production, credentials are provisioned by the administrator. Remove this page before go-live.</p>
+      </div>
+      <div style="padding:1.75rem;">
+        <h3 style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:.875rem;">Portal Credentials</h3>
+        ${[
+          {portal:'Super Admin', url:'/admin',          id:'superadmin@indiagully.com', pw:'Admin@IG2024!',  color:'#6B1A1A'},
+          {portal:'Client',      url:'/portal/client',   id:'demo@indiagully.com',        pw:'Client@IG2024', color:'#B8960C'},
+          {portal:'Employee',    url:'/portal/employee', id:'IG-EMP-0001',                pw:'Emp@IG2024',    color:'#1A3A6B'},
+          {portal:'Board & KMP', url:'/portal/board',    id:'IG-KMP-0001',                pw:'Board@IG2024',  color:'#1E1E1E'},
+        ].map(p=>`<div style="background:#f8f9fa;border:1px solid var(--border);padding:.875rem 1rem;margin-bottom:.625rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem;">
+            <span style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:${p.color};">${p.portal}</span>
+            <a href="${p.url}" style="font-size:.68rem;color:var(--gold);text-decoration:none;">Open Login &rarr;</a>
           </div>
-          <button type="submit" class="btn btn-g" style="width:100%;justify-content:center;">Send Reset Instructions</button>
-        </form>
-        <div style="margin-top:1rem;text-align:center;">
-          <a href="/portal/${portal}" style="font-size:.78rem;color:var(--gold);">Back to Login</a>
+          <div style="font-size:.78rem;color:var(--ink);line-height:1.8;">
+            <strong>ID:</strong> <code style="background:#fff;border:1px solid var(--border);padding:1px 6px;font-size:.72rem;user-select:all;">${p.id}</code><br>
+            <strong>Password:</strong> <code style="background:#fff;border:1px solid var(--border);padding:1px 6px;font-size:.72rem;user-select:all;">${p.pw}</code>
+          </div>
+        </div>`).join('')}
+        <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:1rem;margin-bottom:1.25rem;">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#0369a1;margin-bottom:.5rem;"><i class="fas fa-mobile-alt" style="margin-right:.4rem;"></i>2FA / TOTP Setup</div>
+          <p style="font-size:.78rem;color:#0c4a6e;line-height:1.8;">1. Install <strong>Google Authenticator</strong> or <strong>Authy</strong> on your phone.<br>2. Add a new account &rarr; "Enter setup key manually".<br>3. Account name: <code style="background:#fff;border:1px solid #bae6fd;padding:1px 6px;font-size:.72rem;">India Gully Demo</code><br>4. Secret key: <code style="background:#fff;border:1px solid #bae6fd;padding:1px 6px;font-size:.72rem;user-select:all;font-weight:700;">JBSWY3DPEHPK3PXP</code><br>5. Time-based (TOTP): <strong>Yes</strong><br><span style="font-size:.68rem;color:#0369a1;margin-top:.3rem;display:block;"><i class="fas fa-lock" style="margin-right:.25rem;"></i>This is the shared demo secret only. Each user receives a unique provisioned secret in production.</span></p>
+        </div>
+        <div style="text-align:center;">
+          <a href="/portal" style="font-size:.78rem;color:var(--gold);">&larr; Back to Portal Selection</a>
         </div>
       </div>
     </div>
   </div>
 </div>`
+  return c.html(layout('Demo Access', content, { noNav:true, noFooter:true }))
+})
+
+// ── PASSWORD RESET ────────────────────────────────────────────────────────────
+app.get('/reset', (c) => {
+  const portal = c.req.query('portal') || 'client'
+  const sent = c.req.query('sent') === '1'
+  const portalLabel = portal.charAt(0).toUpperCase() + portal.slice(1)
+  const content = `
+<div style="min-height:100vh;background:linear-gradient(135deg,#080808,#141414);display:flex;align-items:center;justify-content:center;padding:2rem;">
+  <div style="width:100%;max-width:420px;">
+    <div style="background:#fff;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.5);">
+      <div style="background:var(--ink);padding:2rem;text-align:center;">
+        <div style="width:48px;height:48px;background:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;"><i class="fas fa-key" style="color:#fff;"></i></div>
+        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;margin-bottom:.25rem;">Reset Password</h2>
+        <p style="font-size:.78rem;color:rgba(255,255,255,.45);">Enter your registered ID to receive a secure one-time link.</p>
+      </div>
+      ${sent ? `<div style="background:#f0fdf4;border-bottom:1px solid #bbf7d0;padding:1rem 1.5rem;display:flex;gap:.6rem;">
+        <i class="fas fa-check-circle" style="color:#16a34a;font-size:.875rem;flex-shrink:0;margin-top:.1rem;"></i>
+        <div>
+          <p style="font-size:.82rem;font-weight:600;color:#166534;margin-bottom:.2rem;">Reset link sent!</p>
+          <p style="font-size:.75rem;color:#166534;">If this account exists, a secure one-time link has been sent to the registered email/mobile. The link expires in 15 minutes. Do not share it.</p>
+        </div>
+      </div>` : ''}
+      <div style="padding:2rem;">
+        ${!sent ? `
+        <form id="reset-form" method="GET" action="/portal/reset" style="display:flex;flex-direction:column;gap:1rem;">
+          <input type="hidden" name="portal" value="${portal}">
+          <input type="hidden" name="csrf_r" id="csrf-reset" value="">
+          <div>
+            <label class="ig-label">Registered Email / ID</label>
+            <input type="text" name="identifier" class="ig-input" required placeholder="your@email.com or IG-EMP-XXXX" autocomplete="username">
+          </div>
+          <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:.75rem;font-size:.75rem;color:#0369a1;">
+            <i class="fas fa-info-circle" style="margin-right:.35rem;"></i>For security, we never confirm whether an account exists.
+          </div>
+          <button type="submit" id="reset-btn" style="width:100%;padding:.875rem;background:var(--gold);color:#fff;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;"><i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Send Reset Link</button>
+        </form>` : `
+        <div style="text-align:center;margin-bottom:1rem;">
+          <a href="/portal/${portal}" style="display:inline-flex;align-items:center;gap:.4rem;font-size:.78rem;background:var(--gold);color:#fff;padding:.625rem 1.25rem;text-decoration:none;font-weight:600;"><i class="fas fa-sign-in-alt" style="font-size:.72rem;"></i>Back to ${portalLabel} Login</a>
+        </div>`}
+        <div style="margin-top:1rem;text-align:center;">
+          <a href="/portal/${portal}" style="font-size:.75rem;color:var(--gold);">&larr; Back to Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var ce=document.getElementById('csrf-reset');
+  if(ce){var csrf=Array.from(crypto.getRandomValues(new Uint8Array(16))).map(function(b){return b.toString(16).padStart(2,'0');}).join('');ce.value=csrf;}
+  var btn=document.getElementById('reset-btn');
+  var form=document.getElementById('reset-form');
+  if(form&&btn)form.addEventListener('submit',function(e){
+    e.preventDefault();
+    btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin" style="margin-right:.5rem;"></i>Sending\u2026';
+    setTimeout(function(){location.href='/portal/reset?portal=${portal}&sent=1';},1200);
+  });
+})();
+</script>`
   return c.html(layout('Password Reset', content, { noNav:true, noFooter:true }))
 })
 
