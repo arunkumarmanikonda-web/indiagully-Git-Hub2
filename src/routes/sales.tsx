@@ -480,12 +480,86 @@ app.get('/quotes', (c) => {
     </div>
   </div>
 
+  <!-- Tab 3: E-Sign Workflow -->
+  <div id="qt-pane-3" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Send Quote for E-Signature</h3></div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:.875rem;">
+          <div><label class="ig-label">Select Quote</label>
+            <select id="esign-qt-sel" class="ig-input" style="font-size:.82rem;">
+              ${quotes.filter(q=>q.status!=='Draft').map(q=>`<option value="${q.id}">${q.id} \u2014 ${q.client} (${q.status})</option>`).join('')}
+            </select>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+            <div><label class="ig-label">Signatory Name</label><input type="text" id="esign-sig-name" class="ig-input" placeholder="Full legal name" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">Signatory Email</label><input type="email" id="esign-sig-email" class="ig-input" placeholder="signatory@company.com" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">Signatory Role</label><input type="text" id="esign-sig-role" class="ig-input" placeholder="CEO / Director / MD" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">Sign Deadline</label><input type="date" id="esign-qt-deadline" class="ig-input" style="font-size:.82rem;"></div>
+          </div>
+          <div><label class="ig-label">Message to Signatory</label><textarea class="ig-input" id="esign-qt-msg" rows="3" style="font-size:.82rem;" placeholder="Please review and sign the attached quote at your earliest convenience..."></textarea></div>
+          <div style="background:#f0fdf4;border:1px solid #86efac;padding:.75rem;font-size:.75rem;color:#166534;">
+            <i class="fas fa-shield-alt" style="margin-right:.35rem;"></i>Signatures legally binding under IT Act 2000. DSC or Aadhaar OTP e-sign link sent to signatory.
+          </div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+            <button onclick="igSendESign()" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-signature" style="margin-right:.35rem;"></i>Send for E-Sign</button>
+            <button onclick="igToast('E-sign reminder sent to signatory','info')" style="background:none;border:1px solid var(--border);padding:.55rem 1.1rem;font-size:.78rem;cursor:pointer;color:var(--ink);"><i class="fas fa-bell" style="margin-right:.35rem;"></i>Remind</button>
+          </div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">E-Sign Status Tracker</h3></div>
+        <div style="padding:0;">
+          <table style="width:100%;border-collapse:collapse;font-size:.78rem;">
+            <thead><tr style="background:#f8f9fa;">${['Quote','Signatory','Sent','Deadline','Status'].map(h=>`<th style="padding:.6rem 1rem;text-align:left;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;border-bottom:1px solid var(--border);">${h}</th>`).join('')}</tr></thead>
+            <tbody>${[
+              {qt:'QT-2025-001',sig:'Rajiv Arora, Heritage Hotels',sent:'22 Feb 2025',dl:'28 Feb 2025',s:'Signed'},
+              {qt:'QT-2025-002',sig:'Meera Rajan, NCR Entertainment',sent:'25 Feb 2025',dl:'05 Mar 2025',s:'Viewed'},
+              {qt:'QT-2025-004',sig:'Sunita Bhatt, Goa Ventures',sent:'27 Feb 2025',dl:'10 Mar 2025',s:'Sent'},
+              {qt:'QT-2025-006',sig:'Rajeev Pillai, Desi Brands',sent:'01 Mar 2025',dl:'12 Mar 2025',s:'Sent'},
+            ].map(r=>`<tr style="border-bottom:1px solid var(--border);"><td style="padding:.55rem 1rem;font-weight:700;color:var(--gold);font-size:.72rem;">${r.qt}</td><td style="padding:.55rem 1rem;font-size:.75rem;">${r.sig}</td><td style="padding:.55rem 1rem;color:var(--ink-muted);">${r.sent}</td><td style="padding:.55rem 1rem;color:var(--ink-muted);">${r.dl}</td><td style="padding:.55rem 1rem;"><span style="font-size:.68rem;background:${r.s==='Signed'?'#dcfce7':r.s==='Viewed'?'#fef3c7':'#eff6ff'};color:${r.s==='Signed'?'#166534':r.s==='Viewed'?'#92400e':'#1e40af'};padding:2px 7px;">${r.s}</span></td></tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 4: Version History -->
+  <div id="qt-pane-4" style="display:none;">
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Quote Version History</h3>
+        <select class="ig-input" style="font-size:.78rem;padding:.35rem .6rem;" onchange="igToast('Loaded history for: '+this.options[this.selectedIndex].text,'info')">
+          ${quotes.map(q=>`<option value="${q.id}">${q.id} \u2014 ${q.client}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <table style="width:100%;border-collapse:collapse;font-size:.78rem;">
+          <thead><tr style="background:#f8f9fa;">${['Version','Date','Changed By','Total Value','Key Changes','Actions'].map(h=>`<th style="padding:.6rem 1rem;text-align:left;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;border-bottom:1px solid var(--border);">${h}</th>`).join('')}</tr></thead>
+          <tbody>${[
+            {ver:'v2',dt:'22 Feb 2025',by:'Arun Manikonda',val:'\u20b944.8L',note:'PMC scope expanded; 5% discount applied',curr:true},
+            {ver:'v1',dt:'15 Feb 2025',by:'Pavan Manikonda',val:'\u20b938.0L',note:'Initial quote — basic PMC scope',curr:false},
+          ].map(r=>`<tr style="border-bottom:1px solid var(--border);${r.curr?'background:#fffdf5;':''}"><td style="padding:.55rem 1rem;"><span style="font-weight:700;color:var(--gold);">${r.ver}</span>${r.curr?' <span style="font-size:.6rem;background:#B8960C22;color:#B8960C;padding:1px 5px;">Current</span>':''}</td><td style="padding:.55rem 1rem;color:var(--ink-muted);">${r.dt}</td><td style="padding:.55rem 1rem;">${r.by}</td><td style="padding:.55rem 1rem;font-weight:600;">${r.val}</td><td style="padding:.55rem 1rem;font-size:.75rem;color:var(--ink-muted);">${r.note}</td><td style="padding:.55rem 1rem;display:flex;gap:.3rem;"><button onclick="igToast('${r.ver} PDF downloaded','success')" style="background:none;border:1px solid var(--border);padding:.22rem .5rem;font-size:.62rem;cursor:pointer;color:var(--ink-muted);" title="Download"><i class="fas fa-download"></i></button>${!r.curr?'<button onclick="igToast(\'Version diff report generated\',\'info\')" style="background:none;border:1px solid var(--border);padding:.22rem .5rem;font-size:.62rem;cursor:pointer;color:#7c3aed;" title="Diff"><i class="fas fa-exchange-alt"></i></button>':''}</td></tr>`).join('')}
+          </tbody>
+        </table>
+        <div style="padding:.875rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:.5rem;">
+          <button onclick="igToast('New version v3 branched from current draft','success')" style="background:var(--ink);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class="fas fa-code-branch" style="margin-right:.35rem;"></i>Branch New Version</button>
+          <button onclick="igToast('Version diff report exported','success')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.75rem;cursor:pointer;color:var(--ink);"><i class="fas fa-file-alt" style="margin-right:.35rem;"></i>Export Diff</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
   window.igQtTab = function(idx){
-    for(var i=0;i<3;i++){
+    for(var i=0;i<5;i++){
       var p=document.getElementById('qt-pane-'+i);
       var t=document.getElementById('qt-tab-'+i);
       if(p) p.style.display=i===idx?'block':'none';
+      if(t){ t.style.color=i===idx?'var(--gold)':'var(--ink-muted)'; t.style.borderBottom=i===idx?'2px solid var(--gold)':'2px solid transparent'; }
+    }
+  };
       if(t){ t.style.color=i===idx?'var(--gold)':'var(--ink-muted)'; t.style.borderBottom=i===idx?'2px solid var(--gold)':'2px solid transparent'; }
     }
   };
@@ -526,6 +600,13 @@ app.get('/quotes', (c) => {
     var id='QT-2025-00'+(Math.floor(Math.random()*90)+10);
     igToast('Quote '+id+' created for '+client,'success');
     igQtTab(0);
+  };
+  window.igSendESign = function(){
+    var name=document.getElementById('esign-sig-name')?.value.trim();
+    var email=document.getElementById('esign-sig-email')?.value.trim();
+    var qt=document.getElementById('esign-qt-sel')?.value;
+    if(!name||!email){igToast('Enter signatory name and email','warn');return;}
+    igToast('E-sign request sent for '+qt+' to '+email+' — secure link valid 72 hrs','success');
   };
   </script>`
   return c.html(layout('Quotes & Estimates', salesShell('Quotes & Estimates', 'quotes', body), {noNav:true,noFooter:true}))

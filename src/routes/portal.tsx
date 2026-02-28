@@ -87,14 +87,16 @@ function loginPage(opts: {
           <p style="font-size:.75rem;color:#78350f;line-height:1.7;">
             <strong>${opts.idLabel}:</strong> <code style="background:#fef3c7;padding:1px 5px;font-size:.72rem;">${opts.demoId}</code><br>
             <strong>Password:</strong> <code style="background:#fef3c7;padding:1px 5px;font-size:.72rem;">${opts.demoPass}</code>
-            ${opts.demoOtp ? `<br><strong>OTP/2FA:</strong> <code style="background:#fef3c7;padding:1px 5px;font-size:.72rem;">${opts.demoOtp}</code>` : ''}
+            ${opts.demoOtp ? `<br><strong>OTP/2FA:</strong> <span id="demo-otp-${opts.portal}" style="font-size:.72rem;background:#fef3c7;padding:1px 5px;font-family:monospace;">Generating…</span><span style="font-size:.62rem;color:#92400e;"> (refreshes every 30s)</span>` : ''}
           </p>
         </div>
       </div>
       ${errorBanner}
       <div style="padding:2rem;">
-        <form method="POST" action="/api/auth/login" style="display:flex;flex-direction:column;gap:1.1rem;">
+        <div id="lockout-banner-${opts.portal}" style="display:none;background:#fef2f2;border:1px solid #fecaca;padding:.7rem 1rem;margin-bottom:1rem;font-size:.78rem;color:#991b1b;border-radius:2px;"><i class="fas fa-ban" style="margin-right:.4rem;"></i>Too many failed attempts — account locked for <span id="lockout-timer-${opts.portal}">300</span>s. Please try again later or reset your password.</div>
+        <form id="login-form-${opts.portal}" method="POST" action="/api/auth/login" style="display:flex;flex-direction:column;gap:1.1rem;">
           <input type="hidden" name="portal" value="${opts.portal}">
+          <input type="hidden" name="csrf" id="csrf-${opts.portal}" value="">
           <div>
             <label class="ig-label">${opts.idLabel}</label>
             <input type="text" name="identifier" class="ig-input" required placeholder="${opts.idPlaceholder}" autocomplete="username">
@@ -104,8 +106,10 @@ function loginPage(opts: {
             <input type="password" name="password" class="ig-input" required placeholder="••••••••••••" autocomplete="current-password">
           </div>
           <div>
-            <label class="ig-label">OTP / 2FA Code <span style="color:var(--ink-faint);font-weight:400;">(optional for demo)</span></label>
-            <input type="text" name="otp" class="ig-input" placeholder="6-digit code" maxlength="6" inputmode="numeric">
+            <label class="ig-label" style="display:flex;align-items:center;gap:.5rem;">OTP / 2FA Code
+              <span id="otp-countdown-${opts.portal}" style="font-size:.62rem;color:#d97706;font-weight:400;"></span>
+            </label>
+            <input type="text" name="otp" id="otp-input-${opts.portal}" class="ig-input" placeholder="6-digit TOTP code" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;">
             <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;font-size:.75rem;color:var(--ink-soft);">
@@ -113,12 +117,71 @@ function loginPage(opts: {
             </label>
             <a href="/portal/reset?portal=${opts.portal}" style="font-size:.75rem;color:var(--gold);">Forgot password?</a>
           </div>
-          <button type="submit" style="width:100%;padding:.875rem;background:${opts.accentColor};color:#fff;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;">
+          <button type="submit" id="login-btn-${opts.portal}" style="width:100%;padding:.875rem;background:${opts.accentColor};color:#fff;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;">
             <i class="fas fa-sign-in-alt" style="margin-right:.5rem;"></i>Secure Login
           </button>
         </form>
         <p style="text-align:center;font-size:.68rem;color:var(--ink-faint);margin-top:.875rem;">Authorised users only. All access is logged and monitored.</p>
       </div>
+<script>
+(function(){
+  var portal='${opts.portal}';
+  /* ── CSRF token ── */
+  var csrf=Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>(b).toString(16).padStart(2,'0')).join('');
+  var csrfEl=document.getElementById('csrf-'+portal); if(csrfEl) csrfEl.value=csrf;
+  sessionStorage.setItem('ig_csrf_'+portal, csrf);
+  /* ── TOTP simulator (HOTP-style, 30s window, seed=portal+date) ── */
+  function igTOTP(){
+    var t=Math.floor(Date.now()/30000);
+    var seed=portal+'|'+t+'|IGDemo2025';
+    var h=0; for(var i=0;i<seed.length;i++){h=(Math.imul(31,h)+seed.charCodeAt(i))|0;} h=Math.abs(h);
+    return String(h%1000000).padStart(6,'0');
+  }
+  function igUpdateOTP(){
+    var code=igTOTP();
+    var el=document.getElementById('demo-otp-'+portal); if(el) el.textContent=code;
+    var rem=30-Math.floor((Date.now()/1000)%30);
+    var cd=document.getElementById('otp-countdown-'+portal); if(cd) cd.textContent='(refreshes in '+rem+'s)';
+  }
+  igUpdateOTP(); setInterval(igUpdateOTP,1000);
+  /* ── Rate limiting (5 attempts → 5min lockout) ── */
+  var attKey='ig_attempts_'+portal; var lockKey='ig_lock_'+portal;
+  var form=document.getElementById('login-form-'+portal);
+  function igCheckLockout(){
+    var lock=parseInt(localStorage.getItem(lockKey)||'0');
+    if(lock>Date.now()){
+      var btn=document.getElementById('login-btn-'+portal);
+      if(btn) btn.disabled=true;
+      var banner=document.getElementById('lockout-banner-'+portal); if(banner) banner.style.display='block';
+      var timerEl=document.getElementById('lockout-timer-'+portal);
+      var iv=setInterval(function(){
+        var rem=Math.ceil((parseInt(localStorage.getItem(lockKey)||'0')-Date.now())/1000);
+        if(rem<=0){clearInterval(iv);localStorage.removeItem(lockKey);localStorage.setItem(attKey,'0');location.reload();}
+        else if(timerEl) timerEl.textContent=String(rem);
+      },1000);
+      return true;
+    }
+    return false;
+  }
+  igCheckLockout();
+  if(form) form.addEventListener('submit',function(e){
+    var lock=parseInt(localStorage.getItem(lockKey)||'0');
+    if(lock>Date.now()){e.preventDefault();return;}
+    var att=parseInt(localStorage.getItem(attKey)||'0')+1;
+    localStorage.setItem(attKey,String(att));
+    if(att>=5){localStorage.setItem(lockKey,String(Date.now()+300000));localStorage.setItem(attKey,'0');e.preventDefault();igCheckLockout();}
+  });
+  /* ── Session timeout (30min inactivity) ── */
+  var actKey='ig_lastact_'+portal;
+  function igResetTimer(){localStorage.setItem(actKey,String(Date.now()));}
+  ['click','keydown','mousemove','touchstart'].forEach(function(ev){document.addEventListener(ev,igResetTimer,{passive:true});});
+  igResetTimer();
+  setInterval(function(){
+    var last=parseInt(localStorage.getItem(actKey)||String(Date.now()));
+    if(Date.now()-last>30*60*1000){localStorage.setItem(actKey,String(Date.now()));location.href='/portal/'+portal+'?timeout=1';}
+  },60000);
+})();
+</script>
     </div>
     <div style="text-align:center;margin-top:1.5rem;">
       <a href="/portal" style="font-size:.78rem;color:rgba(255,255,255,.3);">
@@ -136,7 +199,7 @@ app.get('/client', (c) => {
     portal:'client', title:'Client Portal', subtitle:'Advisory Services Platform',
     accentColor:'#B8960C', icon:'user-tie',
     idLabel:'Client ID or Email', idPlaceholder:'your@email.com',
-    demoId:'demo@indiagully.com', demoPass:'Client@IG2024', demoOtp:'000000', error
+    demoId:'demo@indiagully.com', demoPass:'Client@IG2024', demoOtp:'(see above)', error
   }), { noNav:true, noFooter:true }))
 })
 
@@ -146,7 +209,7 @@ app.get('/employee', (c) => {
     portal:'employee', title:'Employee Portal', subtitle:'HR & Operations Platform',
     accentColor:'#1A3A6B', icon:'users',
     idLabel:'Employee ID', idPlaceholder:'IG-EMP-XXXX',
-    demoId:'IG-EMP-0001', demoPass:'Emp@IG2024', demoOtp:'000000', error
+    demoId:'IG-EMP-0001', demoPass:'Emp@IG2024', demoOtp:'(see above)', error
   }), { noNav:true, noFooter:true }))
 })
 
@@ -156,7 +219,7 @@ app.get('/board', (c) => {
     portal:'board', title:'Board & KMP Portal', subtitle:'Governance & Compliance Platform',
     accentColor:'#1E1E1E', icon:'gavel',
     idLabel:'Director DIN or KMP ID', idPlaceholder:'DIN XXXXXXXX or IG-KMP-XXXX',
-    demoId:'IG-KMP-0001', demoPass:'Board@IG2024', demoOtp:'000000', error
+    demoId:'IG-KMP-0001', demoPass:'Board@IG2024', demoOtp:'(see above)', error
   }), { noNav:true, noFooter:true }))
 })
 

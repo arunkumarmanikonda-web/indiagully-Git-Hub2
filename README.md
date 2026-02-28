@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://5567855b.india-gully.pages.dev |
+| **Latest Deploy** | https://b936fa45.india-gully.pages.dev |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **Sandbox Preview** | http://localhost:3000 |
 
@@ -56,15 +56,30 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | ID | Module | Enhancements Delivered |
 |----|--------|----------------------|
 | R1 | **API Docs** | OpenAPI-compatible spec at `/admin/api-docs` — 24 endpoints, tag+auth labels, Swagger-style try-it |
-| R2 | **Security (Zero-Trust)** | New tab 6: Zero-Trust policy toggles, device fingerprint registry, per-action re-auth matrix (9 sensitive actions), CSP header live view with all 6 HTTP security headers |
-| R3 | **Data Protection** | DPDP Act 2023 consent banner, document watermark (10-tile grid on print/download), 6-field masking (PAN/Aadhaar/bank/salary/email/phone) |
-| R4 | **Finance ERP** | +3 new tabs: Multi-Entity Ledger (3 entities, intercompany eliminations, consolidated P&L), E-Way Bill (generate EWB, GSTIN routing, register), TDS 26Q & Period Closing (vendor-wise TDS, Form 16A, year-end checklist with 9-step closer) |
-| R5 | **HR ERP** | +2 new tabs: Tax Declaration Portal (live TDS estimator with 80C/80D/HRA/NPS sliders + regime toggle), Onboarding Wizard (7-step wizard, active onboardings tracker, bank+PF setup) |
-| R6 | **Governance** | +2 new tabs: DSC & Signatures (DSC registry, pending signatures queue, digital director attendance, SS-1 format export), SS-1/SS-2 Notices (draft notices, compliance records, Companies Act 2013 checklist) |
-| R7 | **Smart Contracts** | +3 new tabs: Renewals Tracker (6 contracts, expiry alerts, auto-renew config, reminder settings), Version Diff (4-version history, side-by-side diff viewer, revert), AI Risk Scanner (clause risk scoring, 4 risk categories, fix suggestions) |
-| R8 | **HORECA Customer Portal** | New public route `/horeca/portal` — full customer-facing portal: tier-based pricing (Premium/Preferred/Standard/Trial), product catalogue (8 SKUs), add-to-cart, stock check, order history, portal account admin tab in admin HORECA |
-| R9 | **BI & Analytics** | `/admin/kpi` — OKR/KPI tracker with 6 departments, 8 KPIs, add key result form. `/admin/risk` — Mandate Risk Scoring Dashboard (6 mandates, 5-factor radar, sector concentration heatmap) |
-| R10 | **Build & Deploy** | All changes built (910 KB worker), tested (10/10 routes 200 OK), deployed to `india-gully.pages.dev` (commit d16c401) |
+| R2 | **Security (Zero-Trust)** | New tab 6: Zero-Trust policy toggles, device fingerprint registry, per-action re-auth matrix, CSP header live view |
+| R3 | **Data Protection** | DPDP Act 2023 consent banner, document watermark, 6-field masking (PAN/Aadhaar/bank/salary/email/phone) |
+| R4 | **Finance ERP** | Multi-Entity Ledger, E-Way Bill, TDS 26Q & Period Closing |
+| R5 | **HR ERP** | Tax Declaration Portal (live TDS estimator), Onboarding Wizard |
+| R6 | **Governance** | DSC & Signatures, SS-1/SS-2 Notices, compliance records |
+| R7 | **Smart Contracts** | Renewals Tracker, Version Diff, AI Risk Scanner |
+| R8 | **HORECA Customer Portal** | `/horeca/portal` — tier-based pricing, catalogue, cart, order history |
+| R9 | **BI & Analytics** | OKR/KPI tracker, Mandate Risk Scoring Dashboard |
+| R10 | **Build & Deploy** | Built (1,023 KB), tested, deployed — commit d16c401 |
+
+---
+
+### Enhancement Rounds A5–A12 (LIVE ✅ — commit 910ceca)
+
+| ID | Module | What's New |
+|----|--------|-----------|
+| **A5** | **Governance** | Quorum tracker, weighted voting engine, digital minute book, SS-1/SS-2 compliance checker, director attendance register |
+| **A6** | **HR ERP** | **New tab: Appraisals & Performance Management** — initiate reviews, KRA setting, 360° feedback, rating distribution, increment letter generation, appraisal status tracker |
+| **A7** | **Finance ERP** | **New tab: HSN/SAC Master + Period Closing** — 10-entry HSN/SAC code master (with live search), 10-step period closing workflow with done/pending tracker, double-entry journal voucher with multi-line entry |
+| **A8** | **Sales Force** | **New route: `/admin/sales/commission`** — Commission Engine with rate matrix (6 service types), commission ledger, manual entry panel, live calculator (deal value × rate), lead auto-assignment rules per vertical |
+| **A9** | **HORECA** | **New tab: GRN & Logistics** — GRN register with quality-check status, multi-warehouse stock view (Delhi/Mumbai/Gurgaon), inter-warehouse transfer, shipment tracker with AWB/LR, carrier, ETA |
+| **A10** | **CMS** | **New tab: Digital Asset Manager** — folder navigation (6 folders), asset grid (8 assets), locked brand assets (3 logos + 6 favicon files), upload button, copy URL, metadata display |
+| **A11** | **BI & Reports** | **Predictive Analytics panel** — 8-month revenue forecast chart with confidence bands, churn risk model (4 clients), sector growth predictions (FY 2025-26), model accuracy display |
+| **A12** | **UX / Accessibility** | **Dark mode toggle** (persists via localStorage, respects prefers-color-scheme), **Hindi/English language toggle** (nav labels, persists), **guided tour** (step-by-step overlay with back/next/skip), **skip-to-content** link (ARIA), `:focus-visible` keyboard outlines, `<main role="main">` landmark, ARIA labels on logo & toggles |
 
 ---
 
@@ -79,8 +94,8 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | **Client Portal** | Multi-method payments, KYC upload, message read receipts |
 | **HORECA** | Inventory ledger + alerts, vendor tier/rating, PO approval workflow |
 | **BI & Reports** | 4 interactive Chart.js charts, analytics builder, scheduled reports |
-| **Sales Force Engine** | 7 routes (`/admin/sales/*`): Dashboard + Kanban, Leads CRM, Pipeline, Quotes, Engagements, Tasks, Analytics |
-| **CMS v2** | Page Builder, AI Copy Assist (9 types, 5 tones), Approval Workflow, Branded Templates, SEO scoring |
+| **Sales Force Engine** | 8 routes (`/admin/sales/*`): Dashboard + Kanban, Leads CRM, Pipeline, Quotes, Engagements, Tasks, Analytics, **Commission Engine** |
+| **CMS v2** | Page Builder, AI Copy Assist (9 types, 5 tones), Approval Workflow, Branded Templates, SEO scoring, **Digital Asset Manager** |
 
 ---
 
@@ -119,20 +134,20 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 
 | File | Lines | Description |
 |------|-------|-------------|
-| `src/routes/admin.tsx` | ~5,028 | Super Admin ERP (all modules) |
-| `src/routes/sales.tsx` | 805 | Sales Force Engine (7 routes) |
-| `src/routes/portal.tsx` | 1,999 | Client, Employee, Board portals |
-| `src/routes/horeca.tsx` | 375 | HORECA public + customer portal |
-| `src/lib/layout.ts` | 667 | Master layout, DPDP, watermark |
-| `src/routes/api.tsx` | 421 | 24 REST API endpoints |
+| `src/routes/admin.tsx` | ~6,600 | Super Admin ERP (all modules + A5–A12 enhancements) |
+| `src/routes/sales.tsx` | ~1,000 | Sales Force Engine (8 routes incl. Commission Engine) |
+| `src/routes/portal.tsx` | ~2,011 | Client, Employee, Board portals |
+| `src/routes/horeca.tsx` | ~375 | HORECA public + customer portal |
+| `src/lib/layout.ts` | ~780 | Master layout, dark mode, Hindi toggle, guided tour, DPDP |
+| `src/routes/api.tsx` | ~438 | 24 REST API endpoints |
 | `src/index.tsx` | ~137 | App entry + legal pages |
-| **Total** | **~9,432** | **Compiled worker: 910 KB** |
+| **Total** | **~11,341** | **Compiled worker: 1,023 KB** |
 
 ---
 
 ## 🏗️ Architecture
 
-- **Platform:** Cloudflare Pages / Workers (edge runtime, 92 routes)
+- **Platform:** Cloudflare Pages / Workers (edge runtime, 93+ routes)
 - **Framework:** Hono (TypeScript)
 - **Frontend:** Server-side HTML + Tailwind CSS CDN + FontAwesome + Chart.js
 - **Storage:** Cloudflare R2 (documents) — D1/KV ready
@@ -152,7 +167,22 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 ## 🚀 Deployment Status
 
 - **Platform:** Cloudflare Pages · Project: `india-gully`
-- **Status:** ✅ Active — Audit Round complete (commit d16c401)
+- **Status:** ✅ Active — Enhancement Rounds A5–A12 complete (commit 910ceca)
 - **Last Updated:** 28 Feb 2026
 - **Tech Stack:** Hono + TypeScript + TailwindCSS CDN + Chart.js
-- **Worker Size:** 910 KB · 92 routes · 24 API endpoints · 17 modules
+- **Worker Size:** 1,023 KB · 93+ routes · 24 API endpoints · 18 modules
+
+---
+
+## ⏳ Pending / Roadmap
+
+| Item | Description | Priority |
+|------|-------------|----------|
+| Real IdP | Replace static OTP with Keycloak/Auth0, FIDO/TOTP hardware keys | High |
+| Message Queues | Kafka/RabbitMQ for event-driven payroll, notifications | Medium |
+| Container Migration | EKS/GKE with Terraform IaC, HashiCorp Vault secrets | Medium |
+| Headless CMS | Migrate to Strapi/Sanity for content workflow | Medium |
+| GSTR e-Filing | Live GSTN API integration for real e-filing | High |
+| e-Invoice IRN | NIC sandbox → production API integration | High |
+| PF/ESIC Portal | EPFO ECR live upload integration | Medium |
+| Hindi Full i18n | Complete UI translation (currently nav labels only) | Low |
