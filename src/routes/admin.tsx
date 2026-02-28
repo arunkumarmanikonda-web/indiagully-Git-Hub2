@@ -6,25 +6,33 @@ const app = new Hono()
 // ── SHARED SHELL ──────────────────────────────────────────────────────────────
 function adminShell(pageTitle: string, active: string, body: string) {
   const S = [
-    { id:'dashboard',    icon:'tachometer-alt',  label:'Dashboard',      g:'Main'     },
-    { id:'cms',          icon:'globe',           label:'CMS',            g:'Main'     },
-    { id:'users',        icon:'users',           label:'Users',          g:'Main'     },
-    { id:'workflows',    icon:'sitemap',         label:'Workflows',      g:'Main'     },
-    { id:'finance',      icon:'chart-bar',       label:'Finance ERP',    g:'ERP'      },
-    { id:'hr',           icon:'user-friends',    label:'HR ERP',         g:'ERP'      },
-    { id:'governance',   icon:'gavel',           label:'Governance',     g:'ERP'      },
-    { id:'horeca',       icon:'boxes',           label:'HORECA',         g:'ERP'      },
-    { id:'contracts',    icon:'file-signature',  label:'Contracts',      g:'ERP'      },
-    { id:'integrations', icon:'plug',            label:'Integrations',   g:'Platform' },
-    { id:'reports',      icon:'chart-pie',       label:'BI & Reports',   g:'Platform' },
-    { id:'config',       icon:'cog',             label:'System Config',  g:'Platform' },
-    { id:'security',     icon:'shield-alt',      label:'Security Audit', g:'Platform' },
+    { id:'dashboard',    icon:'tachometer-alt',  label:'Dashboard',      g:'Main',     badge:'' },
+    { id:'cms',          icon:'globe',           label:'CMS',            g:'Main',     badge:'' },
+    { id:'users',        icon:'users',           label:'Users',          g:'Main',     badge:'' },
+    { id:'workflows',    icon:'sitemap',         label:'Workflows',      g:'Main',     badge:'' },
+    { id:'finance',      icon:'chart-bar',       label:'Finance ERP',    g:'ERP',      badge:'2' },
+    { id:'hr',           icon:'user-friends',    label:'HR ERP',         g:'ERP',      badge:'1' },
+    { id:'governance',   icon:'gavel',           label:'Governance',     g:'ERP',      badge:'' },
+    { id:'horeca',       icon:'boxes',           label:'HORECA',         g:'ERP',      badge:'' },
+    { id:'contracts',    icon:'file-signature',  label:'Contracts',      g:'ERP',      badge:'' },
+    { id:'integrations', icon:'plug',            label:'Integrations',   g:'Platform', badge:'' },
+    { id:'reports',      icon:'chart-pie',       label:'BI & Reports',   g:'Platform', badge:'' },
+    { id:'config',       icon:'cog',             label:'System Config',  g:'Platform', badge:'' },
+    { id:'security',     icon:'shield-alt',      label:'Security Audit', g:'Platform', badge:'!' },
+  ]
+  const adminAlerts = [
+    {msg:'INV-2025-002 overdue — ₹1.8L from Demo Client',type:'danger',time:'2h ago'},
+    {msg:'New leave request from Amit Jhingan — Casual Leave',type:'warn',time:'3h ago'},
+    {msg:'GSTR-1 due on 11 Mar 2025 — 13 days remaining',type:'warn',time:'1d ago'},
+    {msg:'EY Retainer contract expiring in 30 days',type:'danger',time:'2d ago'},
+    {msg:'Failed login attempt from 185.x.x.x (3 attempts)',type:'danger',time:'3d ago'},
   ]
   const nav = ['Main','ERP','Platform'].map(g =>
     `<div class="sb-sec">${g}</div>` +
     S.filter(s => s.g === g).map(s =>
       `<a href="/admin/${s.id==='dashboard'?'dashboard':s.id}" class="sb-lk ${active===s.id?'on':''}">
         <i class="fas fa-${s.icon}" style="width:16px;font-size:.72rem;text-align:center;"></i>${s.label}
+        ${s.badge ? `<span class="${s.badge==='!'?'sb-dot':'sb-badge'}">${s.badge==='!'?'':s.badge}</span>` : ''}
       </a>`
     ).join('')
   ).join('')
@@ -43,19 +51,46 @@ function adminShell(pageTitle: string, active: string, body: string) {
   <main style="flex:1;overflow-y:auto;display:flex;flex-direction:column;">
     <div style="background:#fff;border-bottom:1px solid var(--border);padding:.875rem 1.75rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
       <div>
+        <div style="font-size:.62rem;color:var(--ink-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.15rem;">
+          <a href="/admin/dashboard" style="color:var(--ink-muted);text-decoration:none;">Admin</a>
+          <i class="fas fa-chevron-right" style="font-size:.5rem;margin:0 .35rem;"></i>
+          <span style="color:var(--ink);">${pageTitle}</span>
+        </div>
         <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);">${pageTitle}</h2>
-        <p style="font-size:.68rem;color:var(--ink-muted);">India Gully Enterprise · Super Admin Console</p>
       </div>
-      <div style="display:flex;align-items:center;gap:.75rem;">
-        <span style="font-size:.7rem;color:var(--ink-muted);">superadmin@indiagully.com</span>
-        <div style="width:32px;height:32px;background:#6B1A1A;display:flex;align-items:center;justify-content:center;">
-          <i class="fas fa-shield-alt" style="color:var(--gold);font-size:.75rem;"></i>
+      <div style="display:flex;align-items:center;gap:.875rem;">
+        <!-- Admin Notification Bell -->
+        <div style="position:relative;">
+          <button id="adm-notif-btn" onclick="toggleAdmNotif()" style="background:none;border:1px solid var(--border);width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;">
+            <i class="fas fa-bell" style="font-size:.72rem;color:var(--ink-muted);"></i>
+            <span style="position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:#dc2626;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:.5rem;color:#fff;font-weight:700;">5</span>
+          </button>
+          <div id="adm-notif-panel" style="display:none;position:absolute;right:0;top:calc(100% + 8px);width:340px;background:#fff;border:1px solid var(--border);box-shadow:0 12px 40px rgba(0,0,0,.15);z-index:9999;">
+            <div style="padding:.75rem 1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);">Admin Alerts</span>
+              <button onclick="igToast('All alerts cleared','success')" style="font-size:.65rem;color:var(--gold);background:none;border:none;cursor:pointer;">Clear All</button>
+            </div>
+            ${adminAlerts.map(n=>`<div style="padding:.75rem 1rem;border-bottom:1px solid var(--border);display:flex;gap:.625rem;">
+              <i class="fas fa-${n.type==='danger'?'exclamation-circle':'exclamation-triangle'}" style="color:${n.type==='danger'?'#dc2626':'#d97706'};font-size:.72rem;margin-top:.1rem;flex-shrink:0;"></i>
+              <div><div style="font-size:.75rem;color:var(--ink);line-height:1.4;">${n.msg}</div><div style="font-size:.62rem;color:var(--ink-muted);margin-top:.15rem;">${n.time}</div></div>
+            </div>`).join('')}
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem;">
+          <span style="font-size:.68rem;color:var(--ink-muted);">superadmin</span>
+          <div style="width:32px;height:32px;background:#6B1A1A;display:flex;align-items:center;justify-content:center;cursor:pointer;" title="Super Admin" onclick="igToast('superadmin@indiagully.com · Super Admin','info')">
+            <i class="fas fa-shield-alt" style="color:var(--gold);font-size:.72rem;"></i>
+          </div>
         </div>
       </div>
     </div>
     <div style="flex:1;padding:1.75rem;overflow-y:auto;">${body}</div>
   </main>
-</div>`
+</div>
+<script>
+function toggleAdmNotif(){var p=document.getElementById('adm-notif-panel');p.style.display=p.style.display==='none'?'block':'none';}
+document.addEventListener('click',function(e){var btn=document.getElementById('adm-notif-btn');var panel=document.getElementById('adm-notif-panel');if(panel&&!panel.contains(e.target)&&btn&&!btn.contains(e.target))panel.style.display='none';});
+</script>`
 }
 
 // ── LOGIN ─────────────────────────────────────────────────────────────────────
@@ -499,136 +534,369 @@ app.get('/finance', (c) => {
     ${[{label:'Revenue MTD',value:'₹12.4L',trend:'↑ +8.3%',c:'#16a34a'},{label:'Expenses MTD',value:'₹7.8L',trend:'↓ -2.1%',c:'#dc2626'},{label:'Net Profit',value:'₹4.6L',trend:'37.1% margin',c:'#2563eb'},{label:'GST Liability',value:'₹2.1L',trend:'Due 20 Mar',c:'#d97706'}].map(s=>`<div class="am"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--ink);line-height:1;margin-bottom:.3rem;">${s.value}</div><div style="font-size:.7rem;color:${s.c};">${s.trend}</div></div>`).join('')}
   </div>
 
-  <!-- New Invoice Panel -->
-  <div style="margin-bottom:1rem;">
-    <button onclick="togglePanel('new-inv-panel')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;letter-spacing:.07em;text-transform:uppercase;display:inline-flex;align-items:center;gap:.4rem;"><i class="fas fa-plus"></i>Create New Invoice</button>
+  <!-- Tab navigation -->
+  <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
+    ${['Invoices','P&L Statement','Expenses','GST Filing','Reports'].map((t,i)=>`<button onclick="igFinTab(${i})" id="fin-tab-${i}" style="padding:.6rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;">${t}</button>`).join('')}
   </div>
-  <div id="new-inv-panel" class="ig-panel" style="margin-bottom:1.5rem;">
-    <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">New Invoice — <span id="inv-num-preview">INV-2025-004</span></h4>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
-      <div><label class="ig-label">Client Name</label><select class="ig-input"><option>Demo Client Corp</option><option>Rajasthan Hotels Pvt Ltd</option><option>Mumbai Mall Pvt Ltd</option></select></div>
-      <div><label class="ig-label">Invoice Date</label><input type="date" class="ig-input" id="inv-date" value="2025-02-27"></div>
-      <div><label class="ig-label">Due Date</label><input type="date" class="ig-input" id="inv-due" value="2025-03-27"></div>
-      <div style="grid-column:span 3"><label class="ig-label">Description of Services</label><input type="text" class="ig-input" id="inv-desc" placeholder="Advisory Retainer — Feb 2025"></div>
-      <div><label class="ig-label">Amount (excl. GST) ₹</label><input type="number" class="ig-input" placeholder="0.00" id="inv-amt" oninput="var a=parseFloat(this.value)||0;document.getElementById('inv-gst').value=(a*0.18).toFixed(2);document.getElementById('inv-total').value=(a*1.18).toFixed(2);document.getElementById('inv-cgst').textContent='₹'+(a*0.09).toFixed(2);document.getElementById('inv-sgst').textContent='₹'+(a*0.09).toFixed(2);document.getElementById('inv-total-disp').textContent='₹'+(a*1.18).toFixed(2);"></div>
-      <div><label class="ig-label">GST @ 18% ₹</label><input type="number" class="ig-input" id="inv-gst" placeholder="0.00" readonly></div>
-      <div><label class="ig-label">Total Amount ₹</label><input type="number" class="ig-input" id="inv-total" placeholder="0.00" readonly style="font-weight:700;color:var(--gold);"></div>
-      <div><label class="ig-label">HSN/SAC Code</label><input type="text" class="ig-input" value="998313" placeholder="998313"></div>
-      <div><label class="ig-label">Payment Terms</label><select class="ig-input"><option>Net 30 Days</option><option>Net 15 Days</option><option>Immediate</option></select></div>
-      <div style="padding:1rem;background:var(--parch-dk);border:1px solid var(--border);">
-        <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">GST Breakup</div>
-        <div style="font-size:.78rem;color:var(--ink-muted);">CGST (9%): <span id="inv-cgst" style="color:var(--ink);font-weight:600;">₹0.00</span></div>
-        <div style="font-size:.78rem;color:var(--ink-muted);">SGST (9%): <span id="inv-sgst" style="color:var(--ink);font-weight:600;">₹0.00</span></div>
-        <div style="font-size:.82rem;color:var(--ink);font-weight:600;margin-top:.3rem;border-top:1px solid var(--border);padding-top:.3rem;">Total: <span id="inv-total-disp">₹0.00</span></div>
+
+  <!-- Tab 0: Invoices -->
+  <div id="fin-pane-0">
+    <div style="margin-bottom:1rem;display:flex;gap:.75rem;">
+      <button onclick="togglePanel('new-inv-panel')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;letter-spacing:.07em;text-transform:uppercase;display:inline-flex;align-items:center;gap:.4rem;"><i class="fas fa-plus"></i>New Invoice</button>
+      <button onclick="igToast('Payment reminder sent to all overdue clients','success')" style="background:var(--ink);color:#fff;border:none;padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-bell" style="margin-right:.4rem;"></i>Send Reminders</button>
+    </div>
+    <div id="new-inv-panel" class="ig-panel" style="margin-bottom:1.5rem;">
+      <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">New Invoice — <span id="inv-num-preview">INV-2025-004</span></h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+        <div><label class="ig-label">Client</label><select class="ig-input" id="inv-client"><option>Demo Client Corp</option><option>Rajasthan Hotels Pvt Ltd</option><option>Mumbai Mall Pvt Ltd</option><option>Entertainment Ventures Ltd</option></select></div>
+        <div><label class="ig-label">Invoice Date</label><input type="date" class="ig-input" id="inv-date" value="2025-02-28"></div>
+        <div><label class="ig-label">Due Date</label><input type="date" class="ig-input" id="inv-due" value="2025-03-30"></div>
+        <div style="grid-column:span 2"><label class="ig-label">Description of Services</label><input type="text" class="ig-input" id="inv-desc" placeholder="Advisory Retainer — Feb 2025"></div>
+        <div><label class="ig-label">SAC Code</label><input type="text" class="ig-input" id="inv-sac" value="998313" placeholder="SAC"></div>
+        <div><label class="ig-label">Amount (excl. GST) ₹</label><input type="number" class="ig-input" placeholder="0" id="inv-amt" oninput="igInvCalc()"></div>
+        <div><label class="ig-label">GST Type</label><select class="ig-input" id="inv-gst-type" onchange="igInvCalc()"><option value="18">GST @ 18% (CGST+SGST)</option><option value="12">GST @ 12%</option><option value="0">NIL GST</option></select></div>
+        <div style="padding:.875rem;background:var(--parch-dk);border:1px solid var(--border);">
+          <div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.4rem;">Breakup</div>
+          <div style="font-size:.78rem;color:var(--ink-muted);">CGST: <span id="inv-cgst" style="color:var(--ink);font-weight:600;">₹0</span></div>
+          <div style="font-size:.78rem;color:var(--ink-muted);">SGST: <span id="inv-sgst" style="color:var(--ink);font-weight:600;">₹0</span></div>
+          <div style="font-size:.82rem;font-weight:700;color:var(--gold);margin-top:.3rem;">Total: <span id="inv-total-disp">₹0</span></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:.75rem;margin-top:1rem;">
+        <button onclick="igCreateInvoice()" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-paper-plane" style="margin-right:.4rem;"></i>Create & Send</button>
+        <button onclick="igToast('Draft saved as '+document.getElementById('inv-num-preview').textContent,'success')" style="background:var(--ink);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save Draft</button>
+        <button onclick="togglePanel('new-inv-panel')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
       </div>
     </div>
-    <div style="display:flex;gap:.75rem;margin-top:1rem;">
-      <button onclick="igCreateInvoice()" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-paper-plane" style="margin-right:.4rem;"></i>Create & Send Invoice</button>
-      <button onclick="igToast('Draft saved as '+document.getElementById(\'inv-num-preview\').textContent,'success')" style="background:var(--ink);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save as Draft</button>
-      <button onclick="togglePanel('new-inv-panel')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Invoice Register</h3>
+        <span style="font-size:.72rem;color:var(--ink-muted);">AR Total: <strong style="color:var(--gold);">₹7.5L</strong></span>
+      </div>
+      <table class="ig-tbl" id="inv-register-table">
+        <thead><tr><th>Invoice</th><th>Client</th><th>SAC</th><th>Amount</th><th>GST</th><th>Total</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${[
+            {inv:'INV-2025-001',client:'Demo Client',sac:'998313',base:212000,gst:38160,total:250160,due:'15 Feb',status:'Paid',   cls:'b-gr'},
+            {inv:'INV-2025-002',client:'Demo Client',sac:'998313',base:152542,gst:27458,total:180000,due:'28 Feb',status:'Overdue',cls:'b-re'},
+            {inv:'INV-2025-003',client:'Entertainment Ventures',sac:'998313',base:271186,gst:48814,total:320000,due:'31 Mar',status:'Draft', cls:'b-dk'},
+          ].map(r=>`<tr id="inv-row-${r.inv.replace(/-/g,'_')}">
+            <td style="font-size:.82rem;font-weight:600;color:var(--gold);">${r.inv}</td>
+            <td style="font-size:.8rem;">${r.client}</td>
+            <td style="font-size:.72rem;color:var(--ink-muted);">${r.sac}</td>
+            <td style="font-family:'DM Serif Display',Georgia,serif;">₹${(r.base/100000).toFixed(2)}L</td>
+            <td style="font-size:.75rem;color:var(--ink-muted);">₹${(r.gst/1000).toFixed(1)}K</td>
+            <td style="font-family:'DM Serif Display',Georgia,serif;font-weight:600;">₹${(r.total/100000).toFixed(2)}L</td>
+            <td style="font-size:.78rem;color:${r.status==='Overdue'?'#dc2626':'var(--ink-muted)'};">${r.due}</td>
+            <td id="status-${r.inv.replace(/-/g,'_')}"><span class="badge ${r.cls}">${r.status}</span></td>
+            <td style="display:flex;gap:.3rem;">
+              <button onclick="igToast('${r.inv} PDF ready','success')" style="background:none;border:1px solid var(--border);cursor:pointer;font-size:.68rem;color:var(--gold);padding:.2rem .5rem;"><i class="fas fa-download"></i></button>
+              ${r.status!=='Paid'?`<button onclick="igMarkPaid('${r.inv.replace(/-/g,'_')}')" style="background:#16a34a;color:#fff;border:none;cursor:pointer;font-size:.68rem;padding:.2rem .5rem;">Paid</button>`:''}
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
-    <!-- Invoices -->
-    <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Invoice Register</h3></div>
-      <table class="ig-tbl" id="inv-register-table"><thead><tr><th>Invoice</th><th>Client</th><th>Amount</th><th>Due</th><th>Status</th><th>Action</th></tr></thead><tbody>
-        ${[
-          {inv:'INV-2025-001',client:'Demo Client',amount:'₹2.5L',due:'15 Mar',status:'Paid',   cls:'b-gr'},
-          {inv:'INV-2025-002',client:'Demo Client',amount:'₹1.8L',due:'28 Feb',status:'Overdue',cls:'b-re'},
-          {inv:'INV-2025-003',client:'Pending Corp',amount:'₹3.2L',due:'31 Mar',status:'Draft', cls:'b-dk'},
-        ].map(r=>`<tr id="inv-row-${r.inv.replace(/-/g,'_')}">
-          <td style="font-size:.82rem;font-weight:500;color:var(--gold);">${r.inv}</td>
-          <td style="font-size:.8rem;">${r.client}</td>
-          <td style="font-family:'DM Serif Display',Georgia,serif;">${r.amount}</td>
-          <td style="font-size:.78rem;color:var(--ink-muted);">${r.due}</td>
-          <td id="status-${r.inv.replace(/-/g,'_')}"><span class="badge ${r.cls}">${r.status}</span></td>
-          <td>
-            <button onclick="igToast('${r.inv} PDF generated — simulating download','success')" style="background:none;border:none;cursor:pointer;font-size:.72rem;color:var(--gold);padding:0;margin-right:.5rem;"><i class="fas fa-download"></i></button>
-            ${r.status!=='Paid'?`<button onclick="igMarkPaid('${r.inv.replace(/-/g,'_')}')" style="background:none;border:none;cursor:pointer;font-size:.68rem;color:#16a34a;padding:0;">Mark Paid</button>`:''}
-          </td>
-        </tr>`).join('')}
-      </tbody></table>
+  <!-- Tab 1: P&L Statement -->
+  <div id="fin-pane-1" style="display:none;">
+    <div style="display:flex;gap:.75rem;margin-bottom:1rem;align-items:center;">
+      <select class="ig-input" id="pl-month" onchange="igRenderPL()" style="font-size:.82rem;max-width:180px;"><option value="Feb 2025" selected>February 2025</option><option value="Jan 2025">January 2025</option><option value="Dec 2024">December 2024</option><option value="FY 2024-25">Full Year FY 2024-25</option></select>
+      <button onclick="igToast('P&L PDF generated','success')" style="background:var(--ink);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export PDF</button>
+      <button onclick="igToast('P&L Excel sheet downloaded','success')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.72rem;font-weight:500;cursor:pointer;color:var(--ink);"><i class="fas fa-file-excel" style="margin-right:.3rem;color:#16a34a;"></i>Excel</button>
     </div>
-    <!-- GST -->
-    <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GST Summary — Feb 2025</h3>
-        <button onclick="igConfirm('File GSTR-3B for February 2025? This action is irreversible.',function(){ igToast('GSTR-3B filed successfully for February 2025','success'); this.textContent='Filed ✓'; })" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File GSTR-3B</button>
+    <div id="pl-table-container"></div>
+  </div>
+
+  <!-- Tab 2: Expenses -->
+  <div id="fin-pane-2" style="display:none;">
+    <div style="margin-bottom:1rem;"><button onclick="togglePanel('add-exp-panel')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.4rem;"></i>Record Expense</button></div>
+    <div id="add-exp-panel" class="ig-panel" style="margin-bottom:1.5rem;">
+      <h4 style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.875rem;">New Expense Entry</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.875rem;">
+        <div><label class="ig-label">Category</label><select class="ig-input" id="exp-cat" style="font-size:.82rem;"><option>Rent & Facilities</option><option>Staff Payroll</option><option>Travel & Conveyance</option><option>Technology & Software</option><option>Professional Fees</option><option>Marketing</option><option>Miscellaneous</option></select></div>
+        <div><label class="ig-label">Amount (₹)</label><input type="number" class="ig-input" id="exp-amt" placeholder="0" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Date</label><input type="date" class="ig-input" id="exp-date" style="font-size:.82rem;"></div>
+        <div style="grid-column:span 2"><label class="ig-label">Description</label><input type="text" class="ig-input" id="exp-desc" placeholder="Brief description..." style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Vendor</label><input type="text" class="ig-input" id="exp-vendor" placeholder="Vendor / Party Name" style="font-size:.82rem;"></div>
       </div>
-      <div style="padding:1.25rem;">
+      <div style="display:flex;gap:.75rem;margin-top:.875rem;">
+        <button onclick="igAddExpense()" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Save Expense</button>
+        <button onclick="togglePanel('add-exp-panel')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:3fr 2fr;gap:1.5rem;">
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Expense Ledger — Feb 2025</h3></div>
+        <table class="ig-tbl" id="exp-table">
+          <thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Vendor</th><th>Amount</th></tr></thead>
+          <tbody>
+            ${[
+              {date:'27 Feb',cat:'Staff Payroll',    desc:'Salary — Feb 2025',          vendor:'—',                  amt:450000},
+              {date:'25 Feb',cat:'Rent & Facilities',desc:'Office Rent — Feb 2025',      vendor:'Phoenix Estates',    amt:85000},
+              {date:'20 Feb',cat:'Technology',       desc:'Google Workspace + Zoom Pro', vendor:'Google / Zoom',      amt:12500},
+              {date:'18 Feb',cat:'Travel',           desc:'Client meeting travel — Delhi',vendor:'Ola Business',      amt:8400},
+              {date:'15 Feb',cat:'Professional Fees',desc:'CA Retainer — Feb 2025',      vendor:'S.K. Associates',    amt:25000},
+              {date:'10 Feb',cat:'Marketing',        desc:'LinkedIn Campaign',           vendor:'LinkedIn Ads',       amt:18000},
+              {date:'05 Feb',cat:'Miscellaneous',    desc:'Office supplies & stationery',vendor:'Amazon Business',    amt:6200},
+            ].map(e=>`<tr>
+              <td style="font-size:.78rem;color:var(--ink-muted);">${e.date}</td>
+              <td><span class="badge b-dk" style="font-size:.6rem;">${e.cat}</span></td>
+              <td style="font-size:.82rem;">${e.desc}</td>
+              <td style="font-size:.75rem;color:var(--ink-muted);">${e.vendor}</td>
+              <td style="font-family:'DM Serif Display',Georgia,serif;">₹${e.amt.toLocaleString('en-IN')}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+        <h4 style="font-family:'DM Serif Display',Georgia,serif;font-size:.95rem;color:var(--ink);margin-bottom:1rem;">Expense by Category</h4>
         ${[
-          {label:'CGST Collected',  value:'₹1.05L',c:'#16a34a'},
-          {label:'SGST Collected',  value:'₹1.05L',c:'#16a34a'},
-          {label:'CGST Paid (ITC)', value:'₹0.82L',c:'#dc2626'},
-          {label:'SGST Paid (ITC)', value:'₹0.82L',c:'#dc2626'},
-          {label:'Net GST Payable', value:'₹0.46L',c:'#d97706'},
-        ].map(g=>`<div style="display:flex;justify-content:space-between;padding:.625rem 0;border-bottom:1px solid var(--border);"><span style="font-size:.82rem;color:var(--ink-muted);">${g.label}</span><span style="font-family:'DM Serif Display',Georgia,serif;color:${g.c};">${g.value}</span></div>`).join('')}
-        <button onclick="igToast('GSTR-1 report downloaded','success')" style="margin-top:1rem;background:var(--ink);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;display:block;width:100%;"><i class="fas fa-download" style="margin-right:.4rem;"></i>Download GSTR-1 Report</button>
+          {cat:'Staff Payroll',amt:450000,pct:75,c:'#1A3A6B'},
+          {cat:'Rent',         amt:85000, pct:14,c:'#2563eb'},
+          {cat:'Prof. Fees',   amt:25000, pct:4, c:'#7c3aed'},
+          {cat:'Marketing',    amt:18000, pct:3, c:'#d97706'},
+          {cat:'Technology',   amt:12500, pct:2, c:'#16a34a'},
+          {cat:'Other',        amt:14600, pct:2, c:'#9ca3af'},
+        ].map(e=>`<div style="margin-bottom:.875rem;">
+          <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:.25rem;">
+            <span style="color:var(--ink);">${e.cat}</span>
+            <span style="font-weight:600;color:${e.c};">₹${(e.amt/1000).toFixed(0)}K</span>
+          </div>
+          <div style="height:6px;background:var(--border);"><div style="height:6px;width:${e.pct}%;background:${e.c};"></div></div>
+          <div style="font-size:.65rem;color:var(--ink-muted);margin-top:.15rem;">${e.pct}% of total</div>
+        </div>`).join('')}
       </div>
     </div>
   </div>
 
-  <!-- Financial Reports -->
-  <div style="background:#fff;border:1px solid var(--border);padding:1rem 1.25rem;">
-    <h4 style="font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.875rem;">Financial Reports</h4>
-    <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
-      ${['P&L Statement','Balance Sheet','Cash Flow','Bank Reconciliation','TDS Certificates','Expense Report'].map(r=>
-        `<button onclick="igToast('${r} generated — check Downloads','success')" style="background:var(--parch-dk);border:1px solid var(--border);padding:.5rem 1rem;font-size:.78rem;font-weight:500;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:.4rem;"><i class="fas fa-file-alt" style="color:var(--gold);font-size:.7rem;"></i>${r}</button>`
-      ).join('')}
+  <!-- Tab 3: GST Filing -->
+  <div id="fin-pane-3" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GSTR-3B — Feb 2025</h3>
+          <button onclick="igConfirm('File GSTR-3B for February 2025?',function(){ igToast('GSTR-3B filed. ARN: AA270225123456','success'); })" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File Now</button>
+        </div>
+        <div style="padding:1.25rem;">
+          ${[
+            {label:'Taxable Outward Supplies', value:'₹12.4L',c:'var(--gold)'},
+            {label:'CGST Collected (9%)',      value:'₹1.12L',c:'var(--ink)'},
+            {label:'SGST Collected (9%)',      value:'₹1.12L',c:'var(--ink)'},
+            {label:'ITC — CGST Available',     value:'₹0.82L',c:'#2563eb'},
+            {label:'ITC — SGST Available',     value:'₹0.82L',c:'#2563eb'},
+            {label:'Net GST Payable',          value:'₹0.60L',c:'#dc2626'},
+            {label:'Late Fee (if any)',         value:'—',     c:'var(--ink-muted)'},
+          ].map(g=>`<div style="display:flex;justify-content:space-between;padding:.55rem 0;border-bottom:1px solid var(--border);"><span style="font-size:.82rem;color:var(--ink-muted);">${g.label}</span><span style="font-family:'DM Serif Display',Georgia,serif;color:${g.c};">${g.value}</span></div>`).join('')}
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Filing Calendar</h3></div>
+        <div style="padding:1.25rem;">
+          ${[
+            {form:'GSTR-1',period:'Feb 2025',due:'11 Mar 2025',status:'Pending',cls:'b-g'},
+            {form:'GSTR-3B',period:'Feb 2025',due:'20 Mar 2025',status:'Pending',cls:'b-g'},
+            {form:'GSTR-1',period:'Jan 2025',due:'11 Feb 2025',status:'Filed',cls:'b-gr'},
+            {form:'GSTR-3B',period:'Jan 2025',due:'20 Feb 2025',status:'Filed',cls:'b-gr'},
+            {form:'GSTR-9',period:'FY 2023-24',due:'31 Dec 2024',status:'Filed',cls:'b-gr'},
+          ].map(f=>`<div style="display:flex;justify-content:space-between;padding:.55rem 0;border-bottom:1px solid var(--border);align-items:center;">
+            <div><div style="font-size:.82rem;font-weight:500;color:var(--ink);">${f.form} — ${f.period}</div><div style="font-size:.7rem;color:var(--ink-muted);">Due: ${f.due}</div></div>
+            <span class="badge ${f.cls}">${f.status}</span>
+          </div>`).join('')}
+          <button onclick="igToast('GSTR-1 data exported for filing','success')" style="margin-top:1rem;background:var(--ink);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;display:block;width:100%;"><i class="fas fa-download" style="margin-right:.4rem;"></i>Download GSTR-1 Data</button>
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- Tab 4: Reports -->
+  <div id="fin-pane-4" style="display:none;">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+      ${[
+        {title:'Profit & Loss Statement',icon:'chart-line',color:'#1A3A6B',desc:'Monthly & YTD P&L with all income and expense categories'},
+        {title:'Balance Sheet',icon:'balance-scale',color:'#2563eb',desc:'Assets, liabilities and equity as on date'},
+        {title:'Cash Flow Statement',icon:'money-bill-wave',color:'#16a34a',desc:'Operating, investing and financing activities'},
+        {title:'GST Reconciliation',icon:'receipt',color:'#d97706',desc:'GSTR-2A vs Books reconciliation for ITC claim'},
+        {title:'TDS Certificates',icon:'certificate',color:'#7c3aed',desc:'Form 16A for all TDS deductions — vendor wise'},
+        {title:'Aged Receivables',icon:'clock',color:'#dc2626',desc:'Invoice ageing report — 0-30, 31-60, 60-90, 90+ days'},
+        {title:'Expense Analytics',icon:'chart-bar',color:'#0891b2',desc:'Department-wise and category-wise expense breakdown'},
+        {title:'Bank Reconciliation',icon:'university',color:'#374151',desc:'Book balance vs bank statement reconciliation'},
+        {title:'Audit Trail',icon:'file-alt',color:'#64748b',desc:'Complete financial transaction log for audit'},
+      ].map(r=>`<div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+        <div style="display:flex;align-items:center;gap:.875rem;margin-bottom:.75rem;">
+          <div style="width:36px;height:36px;background:${r.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-${r.icon}" style="color:#fff;font-size:.72rem;"></i>
+          </div>
+          <div style="font-weight:600;font-size:.875rem;color:var(--ink);">${r.title}</div>
+        </div>
+        <div style="font-size:.75rem;color:var(--ink-muted);margin-bottom:.875rem;">${r.desc}</div>
+        <div style="display:flex;gap:.5rem;">
+          <button onclick="igToast('${r.title} PDF — generating...','success')" style="background:var(--gold);color:#fff;border:none;padding:.35rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;flex:1;text-align:center;"><i class="fas fa-file-pdf" style="margin-right:.3rem;"></i>PDF</button>
+          <button onclick="igToast('${r.title} Excel — downloading...','success')" style="background:none;border:1px solid var(--border);padding:.35rem .75rem;font-size:.68rem;cursor:pointer;color:var(--ink);"><i class="fas fa-file-excel" style="color:#16a34a;"></i></button>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+
   <script>
+  // ── Finance Tab Switcher ───────────────────────────────────────────────────
+  window.igFinTab = function(idx){
+    for(var i=0;i<5;i++){
+      var pane=document.getElementById('fin-pane-'+i);
+      var tab=document.getElementById('fin-tab-'+i);
+      if(pane) pane.style.display = i===idx?'block':'none';
+      if(tab){ tab.style.color=i===idx?'var(--gold)':'var(--ink-muted)'; tab.style.borderBottom=i===idx?'2px solid var(--gold)':'2px solid transparent'; }
+    }
+    if(idx===1) igRenderPL();
+  };
+
+  // ── Invoice Calc ──────────────────────────────────────────────────────────
+  window.igInvCalc = function(){
+    var a=parseFloat(document.getElementById('inv-amt').value)||0;
+    var rate=parseFloat(document.getElementById('inv-gst-type').value)||0;
+    var gst=a*rate/100;
+    var half=gst/2;
+    document.getElementById('inv-cgst').textContent='₹'+Math.round(half).toLocaleString('en-IN');
+    document.getElementById('inv-sgst').textContent='₹'+Math.round(half).toLocaleString('en-IN');
+    document.getElementById('inv-total-disp').textContent='₹'+(a+gst).toLocaleString('en-IN');
+  };
+
+  // ── Invoice Create ─────────────────────────────────────────────────────────
   var igInvCounter = 4;
-  function igUpdateInvNum(){
-    var n = 'INV-2025-00'+igInvCounter;
-    var el = document.getElementById('inv-num-preview');
-    if(el) el.textContent = n;
-    return n;
-  }
-  function igCreateInvoice(){
-    var desc = document.getElementById('inv-desc').value.trim();
-    var amt  = document.getElementById('inv-amt').value;
-    if(!desc){ igToast('Please enter a description of services','warn'); return; }
-    if(!amt || parseFloat(amt) <= 0){ igToast('Please enter a valid invoice amount','warn'); return; }
-    var num = igUpdateInvNum();
-    igInvCounter++;
-    igToast(num+' created & emailed to client','success');
-    togglePanel('new-inv-panel');
-    // Add to table
-    var tbody = document.querySelector('#inv-register-table tbody');
-    var tr = document.createElement('tr');
-    tr.id = 'inv-row-'+num.replace(/-/g,'_');
-    var total = (parseFloat(amt)*1.18).toFixed(0);
-    var totalLakh = (total/100000).toFixed(1);
-    var due = document.getElementById('inv-due').value;
-    var dueFmt = due ? new Date(due).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : '—';
-    tr.innerHTML = '<td style="font-size:.82rem;font-weight:500;color:var(--gold);">'+num+'</td>'
-      +'<td style="font-size:.8rem;">'+document.querySelector(\'#new-inv-panel select\').value+'</td>'
-      +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+totalLakh+'L</td>'
+  window.igCreateInvoice = function(){
+    var desc=document.getElementById('inv-desc').value.trim();
+    var amt=parseFloat(document.getElementById('inv-amt').value)||0;
+    if(!desc){igToast('Enter description of services','warn');return;}
+    if(amt<=0){igToast('Enter valid amount','warn');return;}
+    var rate=parseFloat(document.getElementById('inv-gst-type').value)||0;
+    var total=Math.round(amt*(1+rate/100));
+    var num='INV-2025-00'+igInvCounter++;
+    var client=document.getElementById('inv-client').value;
+    var due=document.getElementById('inv-due').value;
+    var dueFmt=due?new Date(due).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'—';
+    var tbody=document.querySelector('#inv-register-table tbody');
+    var tr=document.createElement('tr');
+    tr.id='inv-row-'+num.replace(/-/g,'_');
+    tr.innerHTML='<td style="font-size:.82rem;font-weight:600;color:var(--gold);">'+num+'</td>'
+      +'<td style="font-size:.8rem;">'+client+'</td><td style="font-size:.72rem;color:var(--ink-muted);">998313</td>'
+      +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+(amt/100000).toFixed(2)+'L</td>'
+      +'<td style="font-size:.75rem;color:var(--ink-muted);">₹'+Math.round(amt*rate/100/1000).toFixed(1)+'K</td>'
+      +'<td style="font-family:\'DM Serif Display\',Georgia,serif;font-weight:600;">₹'+(total/100000).toFixed(2)+'L</td>'
       +'<td style="font-size:.78rem;color:var(--ink-muted);">'+dueFmt+'</td>'
       +'<td id="status-'+num.replace(/-/g,'_')+'"><span class="badge b-g">Sent</span></td>'
-      +'<td><button onclick="igMarkPaid(\''+num.replace(/-/g,'_')+'\')" style="background:none;border:none;cursor:pointer;font-size:.68rem;color:#16a34a;padding:0;">Mark Paid</button></td>';
-    tbody.insertBefore(tr, tbody.firstChild);
-    // Reset form
+      +'<td style="display:flex;gap:.3rem;"><button onclick="igToast(\''+num+' PDF ready\',\'success\')" style="background:none;border:1px solid var(--border);cursor:pointer;font-size:.68rem;color:var(--gold);padding:.2rem .5rem;"><i class=\'fas fa-download\'></i></button>'
+      +'<button onclick="igMarkPaid(\''+num.replace(/-/g,'_')+'\')" style="background:#16a34a;color:#fff;border:none;cursor:pointer;font-size:.68rem;padding:.2rem .5rem;">Paid</button></td>';
+    tbody.insertBefore(tr,tbody.firstChild);
+    igToast(num+' created & emailed to '+client,'success');
+    togglePanel('new-inv-panel');
     document.getElementById('inv-desc').value='';
     document.getElementById('inv-amt').value='';
-    document.getElementById('inv-gst').value='';
-    document.getElementById('inv-total').value='';
-    igUpdateInvNum();
-  }
-  function igMarkPaid(invId){
-    igConfirm('Mark this invoice as Paid? This will update the ledger.',function(){
-      var cell = document.getElementById('status-'+invId);
-      if(cell){ cell.innerHTML = '<span class="badge b-gr">Paid</span>'; }
-      // Remove the mark paid button
-      var row = document.getElementById('inv-row-'+invId);
-      if(row){ var btn = row.querySelector('[onclick*="igMarkPaid"]'); if(btn) btn.remove(); }
-      igToast('Invoice marked as Paid. Ledger updated.','success');
+    igInvCalc();
+    document.getElementById('inv-num-preview').textContent='INV-2025-00'+igInvCounter;
+  };
+  window.igMarkPaid = function(invId){
+    igConfirm('Mark as Paid & update ledger?',function(){
+      var cell=document.getElementById('status-'+invId);
+      if(cell) cell.innerHTML='<span class="badge b-gr">Paid</span>';
+      var row=document.getElementById('inv-row-'+invId);
+      if(row){ var b=row.querySelector('[onclick*="igMarkPaid"]'); if(b) b.remove(); }
+      igToast('Invoice marked Paid. Ledger updated.','success');
     });
-  }
-  igUpdateInvNum();
+  };
+
+  // ── P&L Renderer ─────────────────────────────────────────────────────────
+  var plData = {
+    'Feb 2025': {
+      income: [{name:'Advisory Retainer',amt:650000},{name:'Hotel PMC',amt:350000},{name:'Mandate Fees',amt:240000}],
+      cogs:   [{name:'Consultant Fees',  amt:180000},{name:'Research & Data',amt:45000}],
+      opex:   [{name:'Staff Payroll',amt:450000},{name:'Rent',amt:85000},{name:'Travel',amt:28400},{name:'Technology',amt:12500},{name:'Prof. Fees',amt:25000},{name:'Marketing',amt:18000},{name:'Other',amt:6200}],
+    },
+    'Jan 2025': {
+      income: [{name:'Advisory Retainer',amt:620000},{name:'Hotel PMC',amt:280000},{name:'Consulting',amt:180000}],
+      cogs:   [{name:'Consultant Fees',amt:155000},{name:'Research',amt:38000}],
+      opex:   [{name:'Staff Payroll',amt:450000},{name:'Rent',amt:85000},{name:'Travel',amt:22000},{name:'Technology',amt:12500},{name:'Other',amt:14000}],
+    },
+    'Dec 2024': {
+      income: [{name:'Advisory Retainer',amt:580000},{name:'Entertainment Feasibility',amt:320000}],
+      cogs:   [{name:'Consultant Fees',amt:140000}],
+      opex:   [{name:'Staff Payroll',amt:450000},{name:'Rent',amt:85000},{name:'Other',amt:48000}],
+    },
+    'FY 2024-25': {
+      income: [{name:'Advisory Retainer',amt:7500000},{name:'Hotel PMC',amt:3200000},{name:'Entertainment',amt:1800000},{name:'Other',amt:820000}],
+      cogs:   [{name:'Consultant Fees',amt:1800000},{name:'Research',amt:420000}],
+      opex:   [{name:'Staff Payroll',amt:5400000},{name:'Rent',amt:1020000},{name:'Travel',amt:285000},{name:'Technology',amt:150000},{name:'Marketing',amt:180000},{name:'Other',amt:210000}],
+    },
+  };
+  window.igRenderPL = function(){
+    var period = document.getElementById('pl-month').value;
+    var d = plData[period] || plData['Feb 2025'];
+    var totalIncome = d.income.reduce((a,r)=>a+r.amt,0);
+    var totalCogs   = d.cogs.reduce((a,r)=>a+r.amt,0);
+    var grossProfit = totalIncome - totalCogs;
+    var totalOpex   = d.opex.reduce((a,r)=>a+r.amt,0);
+    var ebitda      = grossProfit - totalOpex;
+    var tax         = Math.max(0, Math.round(ebitda*0.25));
+    var netProfit   = ebitda - tax;
+    var fmt = n => '₹'+n.toLocaleString('en-IN');
+    var pct = (n,base) => base!==0 ? (n/base*100).toFixed(1)+'%' : '—';
+    var row = (name, amt, bold, indent, colorOverride) => {
+      var c = colorOverride || (amt<0?'#dc2626':'var(--ink)');
+      return '<tr style="border-bottom:1px solid var(--border);">'
+        +'<td style="padding:.5rem .875rem;font-size:.82rem;'+(bold?'font-weight:700;':'')+(indent?'padding-left:1.5rem;color:var(--ink-muted);':'')+'">'+name+'</td>'
+        +'<td style="padding:.5rem .875rem;text-align:right;font-family:\'DM Serif Display\',Georgia,serif;font-size:.85rem;color:'+c+';'+(bold?'font-weight:700;':'')+'">'+fmt(Math.abs(amt))+'</td>'
+        +'<td style="padding:.5rem .875rem;text-align:right;font-size:.75rem;color:var(--ink-muted);">'+pct(amt,totalIncome)+'</td>'
+        +'</tr>';
+    };
+    var html = '<div style="background:#fff;border:1px solid var(--border);">'
+      +'<div style="padding:1rem 1.25rem;border-bottom:2px solid var(--gold);display:flex;justify-content:space-between;">'
+      +'<div style="font-family:\'DM Serif Display\',Georgia,serif;font-size:1rem;color:var(--ink);">Profit & Loss — '+period+'</div>'
+      +'<div style="font-size:.72rem;color:var(--ink-muted);">India Gully · GSTIN 07AABCV1234F1Z5</div>'
+      +'</div>'
+      +'<table style="width:100%;border-collapse:collapse;">'
+      +'<thead><tr style="background:var(--parch-dk);"><th style="padding:.5rem .875rem;text-align:left;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);">Particulars</th><th style="padding:.5rem .875rem;text-align:right;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);">Amount</th><th style="padding:.5rem .875rem;text-align:right;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);">% of Revenue</th></tr></thead>'
+      +'<tbody>'
+      +'<tr style="background:#fafafa;"><td colspan="3" style="padding:.4rem .875rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);">INCOME</td></tr>'
+      +d.income.map(r=>row(r.name,r.amt,false,true)).join('')
+      +'<tr style="background:#f0fdf4;"><td style="padding:.5rem .875rem;font-size:.82rem;font-weight:700;">Total Revenue</td><td style="padding:.5rem .875rem;text-align:right;font-family:\'DM Serif Display\',Georgia,serif;font-size:.95rem;font-weight:700;color:#15803d;">'+fmt(totalIncome)+'</td><td style="padding:.5rem .875rem;text-align:right;font-size:.75rem;color:var(--ink-muted);">100%</td></tr>'
+      +'<tr style="background:#fafafa;"><td colspan="3" style="padding:.4rem .875rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#2563eb;">COST OF SERVICES</td></tr>'
+      +d.cogs.map(r=>row(r.name,-r.amt,false,true,'#2563eb')).join('')
+      +'<tr style="background:#eff6ff;"><td style="padding:.5rem .875rem;font-size:.82rem;font-weight:700;">Gross Profit</td><td style="padding:.5rem .875rem;text-align:right;font-family:\'DM Serif Display\',Georgia,serif;font-size:.95rem;font-weight:700;color:#1d4ed8;">'+fmt(grossProfit)+'</td><td style="padding:.5rem .875rem;text-align:right;font-size:.75rem;color:var(--ink-muted);">'+pct(grossProfit,totalIncome)+'</td></tr>'
+      +'<tr style="background:#fafafa;"><td colspan="3" style="padding:.4rem .875rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7c3aed;">OPERATING EXPENSES</td></tr>'
+      +d.opex.map(r=>row(r.name,-r.amt,false,true,'#7c3aed')).join('')
+      +'<tr style="background:#fdf4ff;"><td style="padding:.5rem .875rem;font-size:.82rem;font-weight:700;">EBITDA</td><td style="padding:.5rem .875rem;text-align:right;font-family:\'DM Serif Display\',Georgia,serif;font-size:.95rem;font-weight:700;color:'+(ebitda>=0?'#6d28d9':'#dc2626')+';">'+fmt(Math.abs(ebitda))+(ebitda<0?' (Loss)':'')+'</td><td style="padding:.5rem .875rem;text-align:right;font-size:.75rem;color:var(--ink-muted);">'+pct(ebitda,totalIncome)+'</td></tr>'
+      +row('Income Tax (25% of EBITDA)',-tax,false,true,'#dc2626')
+      +'<tr style="background:var(--ink);"><td style="padding:.75rem .875rem;font-size:.875rem;font-weight:700;color:#fff;">Net Profit After Tax</td><td style="padding:.75rem .875rem;text-align:right;font-family:\'DM Serif Display\',Georgia,serif;font-size:1.1rem;font-weight:700;color:var(--gold);">'+(netProfit>=0?'':'(Loss) ')+fmt(Math.abs(netProfit))+'</td><td style="padding:.75rem .875rem;text-align:right;font-size:.75rem;color:rgba(255,255,255,.6);">'+pct(netProfit,totalIncome)+'</td></tr>'
+      +'</tbody></table></div>';
+    document.getElementById('pl-table-container').innerHTML = html;
+  };
+
+  // ── Add Expense ────────────────────────────────────────────────────────────
+  window.igAddExpense = function(){
+    var amt=parseFloat(document.getElementById('exp-amt').value)||0;
+    var desc=document.getElementById('exp-desc').value.trim();
+    if(!desc||amt<=0){igToast('Enter description and amount','warn');return;}
+    var cat=document.getElementById('exp-cat').value;
+    var vendor=document.getElementById('exp-vendor').value||'—';
+    var date=document.getElementById('exp-date').value;
+    var dateFmt=date?new Date(date).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'Today';
+    var tbody=document.querySelector('#exp-table tbody');
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td style="font-size:.78rem;color:var(--ink-muted);">'+dateFmt+'</td>'
+      +'<td><span class="badge b-dk" style="font-size:.6rem;">'+cat+'</span></td>'
+      +'<td style="font-size:.82rem;">'+desc+'</td>'
+      +'<td style="font-size:.75rem;color:var(--ink-muted);">'+vendor+'</td>'
+      +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+amt.toLocaleString('en-IN')+'</td>';
+    tbody.insertBefore(tr,tbody.firstChild);
+    igToast('Expense recorded: '+cat+' — ₹'+amt.toLocaleString('en-IN'),'success');
+    togglePanel('add-exp-panel');
+    document.getElementById('exp-amt').value='';
+    document.getElementById('exp-desc').value='';
+    document.getElementById('exp-vendor').value='';
+  };
+
+  // Init
+  document.getElementById('inv-num-preview').textContent = 'INV-2025-004';
   </script>`
   return c.html(layout('Finance ERP', adminShell('Finance ERP', 'finance', body), {noNav:true,noFooter:true}))
 })
@@ -636,73 +904,333 @@ app.get('/finance', (c) => {
 // ── HR ERP ────────────────────────────────────────────────────────────────────
 app.get('/hr', (c) => {
   const body = `
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
-    ${[{label:'Total Employees',value:'3',c:'#2563eb'},{label:'Present Today',value:'3',c:'#16a34a'},{label:'On Leave',value:'0',c:'#d97706'},{label:'Payroll Due',value:'Mar',c:'#7c3aed'}].map(s=>`<div class="am"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:${s.c};">${s.value}</div></div>`).join('')}
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-bottom:1.5rem;">
+    ${[
+      {label:'Total Employees',value:'3',   c:'#2563eb'},
+      {label:'Present Today',  value:'3',   c:'#16a34a'},
+      {label:'On Leave',       value:'0',   c:'#d97706'},
+      {label:'Leave Pending',  value:'1',   c:'#dc2626'},
+      {label:'Payroll Month',  value:'Mar', c:'#7c3aed'},
+    ].map(s=>`<div class="am"><div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:${s.c};">${s.value}</div></div>`).join('')}
   </div>
-  <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
-    <!-- Employee table -->
-    <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Employee Directory</h3>
-        <button onclick="togglePanel('add-emp-panel')" style="background:var(--gold);color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">+ Add Employee</button>
-      </div>
-      <div id="add-emp-panel" class="ig-panel" style="margin:.5rem 1rem;">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
-          <div><label class="ig-label">Full Name</label><input type="text" class="ig-input" placeholder="Full Name" style="font-size:.82rem;"></div>
-          <div><label class="ig-label">Designation</label><input type="text" class="ig-input" placeholder="Job Title" style="font-size:.82rem;"></div>
-          <div><label class="ig-label">Department</label><select class="ig-input" style="font-size:.82rem;"><option>Leadership</option><option>Operations</option><option>Advisory</option><option>Finance</option><option>HR</option></select></div>
-          <div><label class="ig-label">Date of Joining</label><input type="date" class="ig-input" style="font-size:.82rem;"></div>
-          <div><label class="ig-label">Employee Email</label><input type="email" class="ig-input" placeholder="emp@indiagully.com" style="font-size:.82rem;"></div>
-          <div><label class="ig-label">CTC (Annual ₹)</label><input type="number" class="ig-input" placeholder="1200000" style="font-size:.82rem;"></div>
+
+  <!-- HR Tab Nav -->
+  <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
+    ${['Employees','Attendance','Leave Mgmt','Payroll','Reports'].map((t,i)=>`<button onclick="igHrTab(${i})" id="hr-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;">${t}</button>`).join('')}
+  </div>
+
+  <!-- Tab 0: Employees -->
+  <div id="hr-pane-0">
+    <div style="margin-bottom:1rem;"><button onclick="togglePanel('add-emp-panel')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-user-plus" style="margin-right:.4rem;"></i>Add Employee</button></div>
+    <div id="add-emp-panel" class="ig-panel" style="margin-bottom:1.5rem;">
+      <h4 style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.875rem;">New Employee Onboarding</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.875rem;">
+        <div><label class="ig-label">Full Name</label><input type="text" id="emp-name" class="ig-input" placeholder="Full Name" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Designation</label><input type="text" id="emp-des" class="ig-input" placeholder="Job Title" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Department</label><select id="emp-dept" class="ig-input" style="font-size:.82rem;"><option>Leadership</option><option>Operations</option><option>Advisory</option><option>Finance</option><option>HR</option><option>Technology</option></select></div>
+        <div><label class="ig-label">Date of Joining</label><input type="date" id="emp-doj" class="ig-input" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Employee Email</label><input type="email" id="emp-email" class="ig-input" placeholder="emp@indiagully.com" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Annual CTC (₹)</label><input type="number" id="emp-ctc" class="ig-input" placeholder="1200000" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">PAN Number</label><input type="text" id="emp-pan" class="ig-input" placeholder="ABCDE1234F" style="font-size:.82rem;text-transform:uppercase;"></div>
+        <div><label class="ig-label">Portal Role</label><select id="emp-role" class="ig-input" style="font-size:.82rem;"><option>Employee</option><option>Manager</option><option>KMP</option><option>Director</option></select></div>
+        <div style="display:flex;align-items:flex-end;gap:.5rem;">
+          <label style="display:flex;align-items:center;gap:.4rem;font-size:.78rem;cursor:pointer;"><input type="checkbox" id="emp-portal" checked> Create Portal Login</label>
         </div>
-        <div style="display:flex;gap:.75rem;margin-top:.875rem;">
-          <button onclick="igToast('Employee added. Credentials emailed.','success');togglePanel('add-emp-panel')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Save Employee</button>
-          <button onclick="togglePanel('add-emp-panel')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
-        </div>
       </div>
-      <table class="ig-tbl"><thead><tr><th>Employee</th><th>Designation</th><th>Dept</th><th>Join Date</th><th>Status</th><th>Action</th></tr></thead><tbody>
-        ${[
-          {name:'Arun Manikonda', des:'Managing Director',    dept:'Leadership', join:'01 Apr 2017'},
-          {name:'Pavan Manikonda',des:'Executive Director',   dept:'Operations', join:'01 Apr 2017'},
-          {name:'Amit Jhingan',   des:'President, Real Estate',dept:'Advisory',  join:'01 Jan 2020'},
-        ].map(e=>`<tr>
-          <td style="font-weight:500;">${e.name}</td>
-          <td style="font-size:.82rem;">${e.des}</td>
-          <td><span class="badge b-dk">${e.dept}</span></td>
-          <td style="font-size:.78rem;color:var(--ink-muted);">${e.join}</td>
-          <td><span class="badge b-gr">Active</span></td>
-          <td>
-            <button onclick="igToast('Payslip for ${e.name} generated','success')" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--gold);">Payslip</button>
-          </td>
-        </tr>`).join('')}
-      </tbody></table>
+      <div style="display:flex;gap:.75rem;margin-top:.875rem;">
+        <button onclick="igAddEmployee()" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Add & Onboard</button>
+        <button onclick="togglePanel('add-emp-panel')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+      </div>
     </div>
-    <!-- Leave Requests -->
     <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Leave Requests</h3></div>
-      <div style="padding:1.5rem;text-align:center;"><i class="fas fa-check-circle" style="color:#16a34a;font-size:2.5rem;display:block;margin-bottom:.75rem;"></i><p style="font-size:.875rem;font-weight:500;color:var(--ink);">No Pending Requests</p><p style="font-size:.78rem;color:var(--ink-muted);margin-top:.25rem;">All leave requests are cleared</p></div>
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Employee Directory</h3></div>
+      <table class="ig-tbl" id="emp-table">
+        <thead><tr><th>ID</th><th>Employee</th><th>Designation</th><th>Dept</th><th>Email</th><th>Joined</th><th>CTC</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${[
+            {id:'IG-0001',name:'Arun Manikonda', des:'Managing Director',    dept:'Leadership',email:'akm@indiagully.com',    join:'01 Apr 2017',ctc:'₹18L',  cls:'b-gr'},
+            {id:'IG-0002',name:'Pavan Manikonda',des:'Executive Director',   dept:'Operations',email:'pavan@indiagully.com',  join:'01 Apr 2017',ctc:'₹15L',  cls:'b-gr'},
+            {id:'IG-0003',name:'Amit Jhingan',   des:'President, Real Estate',dept:'Advisory', email:'amit.j@indiagully.com',join:'01 Jan 2020',ctc:'₹21L',  cls:'b-gr'},
+          ].map(e=>`<tr id="emp-row-${e.id}">
+            <td style="font-size:.72rem;color:var(--gold);font-weight:600;">${e.id}</td>
+            <td style="font-weight:500;">${e.name}</td>
+            <td style="font-size:.82rem;">${e.des}</td>
+            <td><span class="badge b-dk">${e.dept}</span></td>
+            <td style="font-size:.72rem;color:var(--ink-muted);">${e.email}</td>
+            <td style="font-size:.75rem;color:var(--ink-muted);">${e.join}</td>
+            <td style="font-family:'DM Serif Display',Georgia,serif;">${e.ctc}</td>
+            <td><span class="badge ${e.cls}">Active</span></td>
+            <td style="display:flex;gap:.3rem;">
+              <button onclick="igToast('Payslip for ${e.name} — generating','success')" style="background:none;border:1px solid var(--border);padding:.25rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);" title="Payslip"><i class="fas fa-file-invoice"></i></button>
+              <button onclick="igHrViewEmp('${e.name}','${e.des}','${e.ctc}')" style="background:none;border:1px solid var(--border);padding:.25rem .5rem;font-size:.65rem;cursor:pointer;color:var(--ink-muted);" title="View Profile"><i class="fas fa-eye"></i></button>
+              <button onclick="igConfirm('Deactivate ${e.name}?',function(){igToast('${e.name} deactivated from system','warn');})" style="background:none;border:1px solid #fca5a5;padding:.25rem .5rem;font-size:.65rem;cursor:pointer;color:#dc2626;" title="Deactivate"><i class="fas fa-user-times"></i></button>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
     </div>
   </div>
-  <!-- Payroll Run -->
-  <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
-    <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin-bottom:1rem;">Run Payroll — March 2025</h3>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem;">
+
+  <!-- Tab 1: Attendance -->
+  <div id="hr-pane-1" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Today's Attendance — 28 Feb 2025</h3>
+          <button onclick="igToast('Attendance report exported','success')" style="background:var(--ink);color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export</button>
+        </div>
+        <table class="ig-tbl">
+          <thead><tr><th>Employee</th><th>Check In</th><th>Check Out</th><th>Hours</th><th>Status</th></tr></thead>
+          <tbody>
+            ${[
+              {name:'Arun Manikonda', in:'09:05 AM',out:'—',      hrs:'In Office',ok:'present'},
+              {name:'Pavan Manikonda',in:'09:18 AM',out:'—',      hrs:'In Office',ok:'present'},
+              {name:'Amit Jhingan',   in:'09:30 AM',out:'—',      hrs:'In Office',ok:'late'},
+            ].map(r=>`<tr>
+              <td style="font-weight:500;font-size:.85rem;">${r.name}</td>
+              <td style="font-size:.82rem;color:#15803d;">${r.in}</td>
+              <td style="font-size:.82rem;color:var(--ink-muted);">${r.out}</td>
+              <td style="font-size:.78rem;color:var(--ink-muted);">${r.hrs}</td>
+              <td><span class="badge ${r.ok==='present'?'b-gr':r.ok==='late'?'b-g':'b-re'}">${r.ok==='present'?'Present':r.ok==='late'?'Late':'Absent'}</span></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">MTD Summary — February 2025</h3></div>
+        <div style="padding:1.25rem;">
+          ${[
+            {name:'Arun Manikonda',  present:19,late:1,absent:0,pct:'100%',c:'#16a34a'},
+            {name:'Pavan Manikonda', present:18,late:2,absent:0,pct:'100%',c:'#16a34a'},
+            {name:'Amit Jhingan',    present:17,late:3,absent:1,pct:'90%', c:'#d97706'},
+          ].map(e=>`<div style="margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;margin-bottom:.4rem;">
+              <span style="font-size:.85rem;font-weight:500;color:var(--ink);">${e.name}</span>
+              <span style="font-size:.82rem;font-weight:700;color:${e.c};">${e.pct}</span>
+            </div>
+            <div style="display:flex;gap:.5rem;font-size:.72rem;color:var(--ink-muted);margin-bottom:.35rem;">
+              <span style="color:#16a34a;">✓ ${e.present} Present</span>
+              <span style="color:#d97706;">⚠ ${e.late} Late</span>
+              <span style="color:#dc2626;">✗ ${e.absent} Absent</span>
+            </div>
+            <div style="height:5px;background:#e5e7eb;"><div style="height:5px;width:${e.pct};background:${e.c};"></div></div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: Leave Management -->
+  <div id="hr-pane-2" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Pending Leave Requests</h3></div>
+        <div id="leave-req-list">
+          <div style="padding:1.25rem;border-bottom:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;">
+              <div><div style="font-size:.875rem;font-weight:500;color:var(--ink);">Amit Jhingan</div><div style="font-size:.72rem;color:var(--ink-muted);margin-top:.1rem;">Casual Leave · 5 Mar – 7 Mar 2025 (3 days)</div></div>
+              <span id="lv-badge-1" class="badge b-g">Pending</span>
+            </div>
+            <div style="font-size:.78rem;color:var(--ink-muted);margin-bottom:.75rem;">Reason: Personal — attending family event in Chandigarh</div>
+            <div style="display:flex;gap:.5rem;">
+              <button onclick="igApproveLeave(1,'Amit Jhingan','3 days Casual')" style="background:#16a34a;color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-check" style="margin-right:.3rem;"></i>Approve</button>
+              <button onclick="igRejectLeave(1,'Amit Jhingan')" style="background:#dc2626;color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-times" style="margin-right:.3rem;"></i>Reject</button>
+              <button onclick="igToast('Clarification requested from Amit Jhingan','info')" style="background:none;border:1px solid var(--border);padding:.35rem .875rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Ask Clarification</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Leave Balance Summary</h3></div>
+        <table class="ig-tbl">
+          <thead><tr><th>Employee</th><th>Casual</th><th>Sick</th><th>Earned</th><th>Opt.</th></tr></thead>
+          <tbody>
+            ${[
+              {name:'Arun Manikonda', cl:12,sl:12,el:15,oh:2},
+              {name:'Pavan Manikonda',cl:12,sl:12,el:12,oh:2},
+              {name:'Amit Jhingan',   cl:10,sl:12,el:12,oh:2},
+            ].map(e=>`<tr>
+              <td style="font-weight:500;font-size:.85rem;">${e.name}</td>
+              <td style="font-family:'DM Serif Display',Georgia,serif;">${e.cl}</td>
+              <td style="font-family:'DM Serif Display',Georgia,serif;">${e.sl}</td>
+              <td style="font-family:'DM Serif Display',Georgia,serif;">${e.el}</td>
+              <td style="font-family:'DM Serif Display',Georgia,serif;">${e.oh}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+        <div style="padding:.875rem 1.25rem;border-top:1px solid var(--border);">
+          <button onclick="igToast('Leave balance report exported','success')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.72rem;font-weight:500;cursor:pointer;color:var(--ink);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export Leave Report</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: Payroll -->
+  <div id="hr-pane-3" style="display:none;">
+    <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1.25rem;">
+      <select id="payroll-month" class="ig-input" style="font-size:.82rem;max-width:180px;">
+        <option>March 2025</option><option>February 2025</option><option>January 2025</option>
+      </select>
+      <span style="font-size:.78rem;color:var(--ink-muted);">Payroll calculation for all employees</span>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Payroll Register — <span id="pr-month-display">March 2025</span></h3>
+        <div style="font-size:.72rem;color:var(--gold);font-weight:600;">Total Disbursement: ₹3,51,000</div>
+      </div>
+      <table class="ig-tbl">
+        <thead><tr><th>Employee</th><th>CTC/mo</th><th>Basic</th><th>HRA</th><th>Special</th><th>PF (emp)</th><th>PT</th><th>TDS</th><th>Net Pay</th><th>Status</th></tr></thead>
+        <tbody id="payroll-tbody">
+          ${[
+            {name:'Arun Manikonda', ctc:150000,basic:75000,hra:30000,spl:45000,pf:9000,pt:200,tds:15000,net:120800,cls:'b-gr',processed:true},
+            {name:'Pavan Manikonda',ctc:125000,basic:62500,hra:25000,spl:37500,pf:7500,pt:200,tds:10000,net:100800,cls:'b-gr',processed:true},
+            {name:'Amit Jhingan',   ctc:175000,basic:87500,hra:35000,spl:52500,pf:10500,pt:200,tds:20000,net:141800,cls:'b-gr',processed:true},
+          ].map(p=>`<tr>
+            <td style="font-weight:500;font-size:.85rem;">${p.name}</td>
+            <td style="font-family:'DM Serif Display',Georgia,serif;font-size:.82rem;">₹${(p.ctc/1000).toFixed(0)}K</td>
+            <td style="font-size:.78rem;">₹${(p.basic/1000).toFixed(0)}K</td>
+            <td style="font-size:.78rem;">₹${(p.hra/1000).toFixed(0)}K</td>
+            <td style="font-size:.78rem;">₹${(p.spl/1000).toFixed(0)}K</td>
+            <td style="font-size:.75rem;color:#2563eb;">₹${(p.pf/1000).toFixed(1)}K</td>
+            <td style="font-size:.75rem;color:var(--ink-muted);">₹${p.pt}</td>
+            <td style="font-size:.75rem;color:#dc2626;">₹${(p.tds/1000).toFixed(0)}K</td>
+            <td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹${(p.net/1000).toFixed(1)}K</td>
+            <td id="pr-status-${p.name.split(' ')[0]}"><span class="badge ${p.cls}">${p.processed?'Processed':'Pending'}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+      <div style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.875rem;">Payroll Actions</div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+        <button id="process-payroll-btn" onclick="igProcessPayroll()" style="background:#16a34a;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.82rem;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-check" style="margin-right:.4rem;"></i>Process Payroll</button>
+        <button onclick="igToast('Payslips emailed to all employees','success')" style="background:var(--ink);color:#fff;border:none;padding:.6rem 1.5rem;font-size:.82rem;font-weight:600;cursor:pointer;"><i class="fas fa-envelope" style="margin-right:.4rem;"></i>Email Payslips</button>
+        <button onclick="igToast('Bank transfer file (NEFT) generated — ₹3,51,000','success')" style="background:#2563eb;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.82rem;font-weight:600;cursor:pointer;"><i class="fas fa-university" style="margin-right:.4rem;"></i>Generate Bank File</button>
+        <button onclick="igToast('Attendance report downloaded','success')" style="background:none;border:1px solid var(--border);padding:.6rem 1.5rem;font-size:.82rem;font-weight:500;cursor:pointer;color:var(--ink);"><i class="fas fa-download" style="margin-right:.4rem;"></i>Attendance Report</button>
+        <button onclick="igToast('Form-16 bundle generated for FY 2024-25','success')" style="background:none;border:1px solid var(--border);padding:.6rem 1.5rem;font-size:.82rem;font-weight:500;cursor:pointer;color:var(--ink);">Form-16</button>
+      </div>
+      <div style="margin-top:1rem;padding:.875rem;background:#f0fdf4;border:1px solid #86efac;font-size:.78rem;color:#15803d;display:none;" id="payroll-processed-banner">
+        <i class="fas fa-check-circle" style="margin-right:.4rem;"></i> Payroll processed. Bank transfer of ₹3,51,000 initiated. Payslips will be emailed within 30 minutes.
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 4: Reports -->
+  <div id="hr-pane-4" style="display:none;">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
       ${[
-        {name:'Arun Manikonda', gross:'₹1,50,000',tds:'₹15,000',pf:'₹18,000',net:'₹1,17,000'},
-        {name:'Pavan Manikonda',gross:'₹1,25,000',tds:'₹10,000',pf:'₹15,000',net:'₹1,00,000'},
-        {name:'Amit Jhingan',  gross:'₹1,75,000',tds:'₹20,000',pf:'₹21,000',net:'₹1,34,000'},
-      ].map(p=>`<div style="background:var(--parch-dk);border:1px solid var(--border);padding:1rem;">
-        <div style="font-weight:600;font-size:.875rem;color:var(--ink);margin-bottom:.5rem;">${p.name}</div>
-        <div style="font-size:.75rem;color:var(--ink-muted);line-height:1.8;">Gross: <strong>${p.gross}</strong><br>TDS: ${p.tds} · PF: ${p.pf}<br>Net Pay: <strong style="color:var(--gold);">${p.net}</strong></div>
+        {title:'Monthly Payroll Summary',icon:'money-check-alt',color:'#1A3A6B',desc:'Gross, net, deductions and tax for all employees'},
+        {title:'Attendance Register',icon:'calendar-check',color:'#16a34a',desc:'Monthly attendance with present/absent/late counts'},
+        {title:'Leave Ledger',icon:'umbrella-beach',color:'#7c3aed',desc:'Leave taken, balance, and encashment report'},
+        {title:'Form-16 Bundle',icon:'certificate',color:'#d97706',desc:'Part A & B for all employees — current FY'},
+        {title:'PF Challan',icon:'shield-alt',color:'#2563eb',desc:'Monthly EPFO challan with ECR file for upload'},
+        {title:'HR Analytics',icon:'chart-bar',color:'#0891b2',desc:'Headcount, attrition, department distribution'},
+      ].map(r=>`<div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+        <div style="display:flex;align-items:center;gap:.875rem;margin-bottom:.75rem;">
+          <div style="width:36px;height:36px;background:${r.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${r.icon}" style="color:#fff;font-size:.72rem;"></i></div>
+          <div style="font-weight:600;font-size:.875rem;color:var(--ink);">${r.title}</div>
+        </div>
+        <div style="font-size:.75rem;color:var(--ink-muted);margin-bottom:.875rem;">${r.desc}</div>
+        <button onclick="igToast('${r.title} — generating...','success')" style="background:var(--gold);color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;width:100%;"><i class="fas fa-download" style="margin-right:.3rem;"></i>Generate & Download</button>
       </div>`).join('')}
     </div>
-    <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
-      <button onclick="igToast('Payroll for March 2025 processed. Bank transfer initiated.','success')" style="background:#16a34a;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.82rem;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-check" style="margin-right:.4rem;"></i>Process Payroll</button>
-      <button onclick="igToast('Payslips sent to all employees','success')" style="background:var(--ink);color:#fff;border:none;padding:.6rem 1.5rem;font-size:.82rem;font-weight:600;cursor:pointer;">Email Payslips</button>
-      <button onclick="igToast('Attendance report downloaded','success')" style="background:none;border:1px solid var(--border);padding:.6rem 1.5rem;font-size:.82rem;font-weight:500;cursor:pointer;color:var(--ink);"><i class="fas fa-download" style="margin-right:.4rem;"></i>Attendance Report</button>
-      <button onclick="igToast('Form-16 bundle generated for all employees','success')" style="background:none;border:1px solid var(--border);padding:.6rem 1.5rem;font-size:.82rem;font-weight:500;cursor:pointer;color:var(--ink);">Generate Form-16</button>
+  </div>
+
+  <!-- Employee Profile Modal -->
+  <div id="emp-profile-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#fff;width:500px;max-width:95vw;border-top:4px solid var(--gold);">
+      <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Employee Profile</div>
+        <button onclick="document.getElementById('emp-profile-modal').style.display='none'" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--ink-muted);">✕</button>
+      </div>
+      <div style="padding:1.5rem;">
+        <div style="text-align:center;margin-bottom:1.25rem;">
+          <div id="emp-modal-avatar" style="width:64px;height:64px;background:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto .75rem;font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;"></div>
+          <div id="emp-modal-name" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.15rem;color:var(--ink);"></div>
+          <div id="emp-modal-des" style="font-size:.78rem;color:var(--ink-muted);margin-top:.15rem;"></div>
+        </div>
+        <div id="emp-modal-ctc" style="background:#f0fdf4;border:1px solid #86efac;padding:.875rem;text-align:center;margin-bottom:1rem;">
+          <div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#15803d;margin-bottom:.15rem;">Annual CTC</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#15803d;"></div>
+        </div>
+        <div style="display:flex;gap:.75rem;">
+          <button onclick="igToast('Editing employee profile...','info')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;flex:1;"><i class="fas fa-edit" style="margin-right:.3rem;"></i>Edit Profile</button>
+          <button onclick="document.getElementById('emp-profile-modal').style.display='none'" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Close</button>
+        </div>
+      </div>
     </div>
-  </div>`
+  </div>
+
+  <script>
+  window.igHrTab = function(idx){
+    for(var i=0;i<5;i++){
+      var p=document.getElementById('hr-pane-'+i);
+      var t=document.getElementById('hr-tab-'+i);
+      if(p) p.style.display=i===idx?'block':'none';
+      if(t){ t.style.color=i===idx?'var(--gold)':'var(--ink-muted)'; t.style.borderBottom=i===idx?'2px solid var(--gold)':'2px solid transparent'; }
+    }
+  };
+  window.igAddEmployee = function(){
+    var name=document.getElementById('emp-name').value.trim();
+    var des=document.getElementById('emp-des').value.trim();
+    if(!name||!des){igToast('Enter employee name and designation','warn');return;}
+    var dept=document.getElementById('emp-dept').value;
+    var ctc=document.getElementById('emp-ctc').value||'—';
+    var email=document.getElementById('emp-email').value||'—';
+    var tbody=document.querySelector('#emp-table tbody');
+    var id='IG-00'+(tbody.children.length+4);
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td style="font-size:.72rem;color:var(--gold);font-weight:600;">'+id+'</td>'
+      +'<td style="font-weight:500;">'+name+'</td>'
+      +'<td style="font-size:.82rem;">'+des+'</td>'
+      +'<td><span class="badge b-dk">'+dept+'</span></td>'
+      +'<td style="font-size:.72rem;color:var(--ink-muted);">'+email+'</td>'
+      +'<td style="font-size:.75rem;color:var(--ink-muted);">'+new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+'</td>'
+      +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+(parseInt(ctc)/100000).toFixed(1)+'L</td>'
+      +'<td><span class="badge b-gr">Active</span></td>'
+      +'<td><button onclick="igToast(\'Payslip generating\',\'success\')" style="background:none;border:1px solid var(--border);padding:.25rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class=\'fas fa-file-invoice\'></i></button></td>';
+    tbody.insertBefore(tr,tbody.firstChild);
+    igToast('Employee '+name+' onboarded. Portal credentials emailed.','success');
+    togglePanel('add-emp-panel');
+    document.getElementById('emp-name').value='';
+    document.getElementById('emp-des').value='';
+    document.getElementById('emp-email').value='';
+    document.getElementById('emp-ctc').value='';
+  };
+  window.igApproveLeave = function(id,name,details){
+    igConfirm('Approve leave for '+name+' ('+details+')?',function(){
+      var badge=document.getElementById('lv-badge-'+id);
+      if(badge){badge.textContent='Approved';badge.className='badge b-gr';}
+      // Remove action buttons
+      var row=badge?badge.closest('.ig-panel,div[style*="border-bottom"]'):null;
+      if(row){ var btns=row.querySelectorAll('button');btns.forEach(function(b){if(b.textContent.includes('Approve')||b.textContent.includes('Reject')||b.textContent.includes('Clarification'))b.remove();});}
+      igToast('Leave approved for '+name+'. Calendar updated.','success');
+    });
+  };
+  window.igRejectLeave = function(id,name){
+    igConfirm('Reject leave request from '+name+'?',function(){
+      var badge=document.getElementById('lv-badge-'+id);
+      if(badge){badge.textContent='Rejected';badge.className='badge b-re';}
+      igToast('Leave rejected for '+name+'. Employee notified.','warn');
+    });
+  };
+  window.igProcessPayroll = function(){
+    igConfirm('Process payroll for '+document.getElementById('payroll-month').value+'? This will initiate bank transfers.',function(){
+      document.getElementById('payroll-processed-banner').style.display='block';
+      document.getElementById('process-payroll-btn').textContent='Processed ✓';
+      document.getElementById('process-payroll-btn').style.opacity='.6';
+      document.getElementById('process-payroll-btn').style.pointerEvents='none';
+      igToast('Payroll processed — ₹3,51,000 disbursed','success');
+    });
+  };
+  window.igHrViewEmp = function(name,des,ctc){
+    document.getElementById('emp-modal-avatar').textContent=name.charAt(0);
+    document.getElementById('emp-modal-name').textContent=name;
+    document.getElementById('emp-modal-des').textContent=des;
+    document.getElementById('emp-modal-ctc').querySelector('div:last-child').textContent=ctc+' p.a.';
+    var m=document.getElementById('emp-profile-modal');m.style.display='flex';m.style.alignItems='center';m.style.justifyContent='center';
+  };
+  </script>`
   return c.html(layout('HR ERP', adminShell('HR ERP', 'hr', body), {noNav:true,noFooter:true}))
 })
 
@@ -889,72 +1417,227 @@ app.get('/horeca', (c) => {
 // ── CONTRACTS ─────────────────────────────────────────────────────────────────
 app.get('/contracts', (c) => {
   const contracts = [
-    {id:'AGR-001', name:'Advisory Agreement FY2025',       party:'Demo Client Corp',  type:'Advisory',    start:'01 Jan 2025',expiry:'31 Dec 2025',status:'Active',   cls:'b-gr'},
-    {id:'PMC-001', name:'Hotel PMC Agreement',              party:'Rajasthan Hotels',  type:'PMC',         start:'15 Feb 2025',expiry:'14 Feb 2026',status:'Active',   cls:'b-gr'},
-    {id:'MND-001', name:'Retail Leasing Mandate',           party:'Mumbai Mall Pvt.', type:'Mandate',     start:'01 Dec 2024',expiry:'30 Nov 2025',status:'Active',   cls:'b-gr'},
-    {id:'RET-001', name:'EY Advisory Retainer',             party:'Ernst & Young',    type:'Retainer',    start:'01 Apr 2024',expiry:'31 Mar 2025',status:'Expiring', cls:'b-g'},
-    {id:'MOU-001', name:'CBRE Co-Advisory MOU',             party:'CBRE India',       type:'MOU',         start:'01 Jan 2025',expiry:'31 Dec 2025',status:'Active',   cls:'b-gr'},
-    {id:'NDA-001', name:'NDA — Entertainment Project',      party:'Confidential',     type:'NDA',         start:'01 Feb 2025',expiry:'01 Feb 2026',status:'Active',   cls:'b-gr'},
+    {id:'AGR-001', name:'Advisory Agreement FY2025',       party:'Demo Client Corp',  type:'Advisory',    start:'01 Jan 2025',expiry:'31 Dec 2025',status:'Active',   cls:'b-gr',signed:true},
+    {id:'PMC-001', name:'Hotel PMC Agreement',              party:'Rajasthan Hotels',  type:'PMC',         start:'15 Feb 2025',expiry:'14 Feb 2026',status:'Active',   cls:'b-gr',signed:true},
+    {id:'MND-001', name:'Retail Leasing Mandate',           party:'Mumbai Mall Pvt.', type:'Mandate',     start:'01 Dec 2024',expiry:'30 Nov 2025',status:'Active',   cls:'b-gr',signed:true},
+    {id:'RET-001', name:'EY Advisory Retainer',             party:'Ernst & Young',    type:'Retainer',    start:'01 Apr 2024',expiry:'31 Mar 2025',status:'Expiring', cls:'b-g', signed:true},
+    {id:'MOU-001', name:'CBRE Co-Advisory MOU',             party:'CBRE India',       type:'MOU',         start:'01 Jan 2025',expiry:'31 Dec 2025',status:'Active',   cls:'b-gr',signed:true},
+    {id:'NDA-001', name:'NDA — Entertainment Project',      party:'Confidential',     type:'NDA',         start:'01 Feb 2025',expiry:'01 Feb 2026',status:'Active',   cls:'b-gr',signed:false},
+    {id:'DRF-001', name:'New Client Advisory Agreement',    party:'TBD',              type:'Advisory',    start:'—',          expiry:'—',           status:'Draft',    cls:'b-dk',signed:false},
   ]
   const templates = ['Advisory Services Agreement','Hotel Management Pre-Opening Contract','Retail Leasing Mandate','Non-Disclosure Agreement (NDA)','Memorandum of Understanding (MOU)','Engagement Letter']
+  const clauses = [
+    {name:'Scope of Services',     cat:'Standard'},
+    {name:'Fee Structure & Payment Terms',cat:'Standard'},
+    {name:'Confidentiality & NDA', cat:'Legal'},
+    {name:'IP & Work Product',     cat:'Legal'},
+    {name:'Termination Clause',    cat:'Standard'},
+    {name:'Dispute Resolution',    cat:'Legal'},
+    {name:'Limitation of Liability',cat:'Legal'},
+    {name:'Force Majeure',         cat:'Standard'},
+    {name:'Governing Law — India (Delhi)', cat:'Jurisdiction'},
+    {name:'Non-Solicitation',      cat:'HR'},
+    {name:'RERA Compliance Note',  cat:'Regulatory'},
+    {name:'GST Applicability',     cat:'Finance'},
+  ]
   const body = `
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
-    ${[{label:'Active Contracts',value:'6',c:'#16a34a'},{label:'Drafts',value:'2',c:'#d97706'},{label:'Expiring 30 Days',value:'1',c:'#dc2626'},{label:'Templates',value:'6',c:'#4f46e5'}].map(s=>`<div class="am"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:${s.c};">${s.value}</div></div>`).join('')}
+    ${[{label:'Active Contracts',value:'6',c:'#16a34a'},{label:'Awaiting E-Sign',value:'1',c:'#d97706'},{label:'Expiring 30 Days',value:'1',c:'#dc2626'},{label:'Templates',value:'6',c:'#4f46e5'}].map(s=>`<div class="am"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:${s.c};">${s.value}</div></div>`).join('')}
   </div>
 
-  <!-- New Contract -->
-  <div style="margin-bottom:1rem;">
-    <button onclick="togglePanel('new-contract-panel')" style="background:#4f46e5;color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;letter-spacing:.07em;text-transform:uppercase;"><i class="fas fa-plus"></i>New Contract</button>
+  <!-- Tab Nav -->
+  <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
+    ${['All Contracts','New Contract','Template Library','Clause Library'].map((t,i)=>`<button onclick="igCtTab(${i})" id="ct-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;">${t}</button>`).join('')}
   </div>
-  <div id="new-contract-panel" class="ig-panel" style="margin-bottom:1.5rem;">
-    <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">Create New Contract</h4>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
-      <div><label class="ig-label">Contract Title</label><input type="text" class="ig-input" placeholder="Contract name" style="font-size:.82rem;"></div>
-      <div><label class="ig-label">Party Name</label><input type="text" class="ig-input" placeholder="Counter-party name" style="font-size:.82rem;"></div>
-      <div><label class="ig-label">Contract Type</label><select class="ig-input" style="font-size:.82rem;"><option>Advisory</option><option>PMC</option><option>Mandate</option><option>Retainer</option><option>MOU</option><option>NDA</option></select></div>
-      <div><label class="ig-label">Start Date</label><input type="date" class="ig-input" style="font-size:.82rem;"></div>
-      <div><label class="ig-label">End Date</label><input type="date" class="ig-input" style="font-size:.82rem;"></div>
-      <div><label class="ig-label">Use Template</label><select class="ig-input" style="font-size:.82rem;"><option>-- Select Template --</option>${templates.map(t=>`<option>${t}</option>`).join('')}</select></div>
+
+  <!-- Tab 0: All Contracts -->
+  <div id="ct-pane-0">
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Contract Register</h3>
+        <button onclick="igToast('Contract register exported to PDF','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export</button>
+      </div>
+      <table class="ig-tbl">
+        <thead><tr><th>ID</th><th>Contract Name</th><th>Party</th><th>Type</th><th>Expiry</th><th>E-Sign</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${contracts.map(r=>`<tr>
+            <td style="font-size:.78rem;font-weight:600;color:var(--gold);">${r.id}</td>
+            <td style="font-weight:500;font-size:.85rem;">${r.name}</td>
+            <td style="font-size:.8rem;">${r.party}</td>
+            <td><span class="badge b-dk">${r.type}</span></td>
+            <td style="font-size:.78rem;color:${r.status==='Expiring'?'#dc2626':'var(--ink-muted)'};">${r.expiry}</td>
+            <td><span class="badge ${r.signed?'b-gr':'b-g'}">${r.signed?'Signed ✓':'Pending'}</span></td>
+            <td><span class="badge ${r.cls}">${r.status}</span></td>
+            <td style="display:flex;gap:.3rem;flex-wrap:wrap;">
+              <button onclick="igToast('${r.name} opened for viewing','success')" style="background:none;border:1px solid var(--border);padding:.22rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);" title="View"><i class="fas fa-eye"></i></button>
+              <button onclick="igToast('${r.name} downloaded as PDF','success')" style="background:none;border:1px solid var(--border);padding:.22rem .5rem;font-size:.65rem;cursor:pointer;color:var(--ink-muted);" title="Download"><i class="fas fa-download"></i></button>
+              ${!r.signed?`<button onclick="igSendForSign('${r.id}','${r.name}')" style="background:#7c3aed;color:#fff;border:none;padding:.22rem .5rem;font-size:.65rem;cursor:pointer;" title="Send for e-sign"><i class="fas fa-pen"></i> E-Sign</button>`:''}
+              ${r.status==='Expiring'?`<button onclick="igToast('Renewal workflow triggered for ${r.name}','warn')" style="background:#d97706;color:#fff;border:none;padding:.22rem .5rem;font-size:.65rem;cursor:pointer;">Renew</button>`:''}
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
     </div>
-    <div style="display:flex;gap:.75rem;margin-top:1rem;">
-      <button onclick="igToast('Contract draft created. Sent for review.','success');togglePanel('new-contract-panel')" style="background:#4f46e5;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Create Draft</button>
-      <button onclick="togglePanel('new-contract-panel')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+  </div>
+
+  <!-- Tab 1: New Contract -->
+  <div id="ct-pane-1" style="display:none;">
+    <div style="display:grid;grid-template-columns:3fr 2fr;gap:1.5rem;">
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Contract Builder</h3></div>
+        <div style="padding:1.25rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:.875rem;">
+            <div><label class="ig-label">Contract Title</label><input type="text" id="ct-title" class="ig-input" placeholder="Advisory Agreement FY2026" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">Contract Type</label><select id="ct-type" class="ig-input" style="font-size:.82rem;"><option>Advisory</option><option>PMC</option><option>Mandate</option><option>Retainer</option><option>MOU</option><option>NDA</option></select></div>
+            <div><label class="ig-label">Counter-Party</label><input type="text" id="ct-party" class="ig-input" placeholder="Company / Individual name" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">Template</label><select id="ct-template" class="ig-input" style="font-size:.82rem;"><option>-- Blank --</option>${templates.map(t=>`<option>${t}</option>`).join('')}</select></div>
+            <div><label class="ig-label">Start Date</label><input type="date" id="ct-start" class="ig-input" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">End Date</label><input type="date" id="ct-end" class="ig-input" style="font-size:.82rem;"></div>
+            <div style="grid-column:span 2;"><label class="ig-label">Fee / Consideration (₹)</label><input type="text" class="ig-input" placeholder="e.g. ₹5,00,000 + GST per annum" style="font-size:.82rem;"></div>
+            <div style="grid-column:span 2;"><label class="ig-label">Scope Summary</label><textarea class="ig-input" rows="3" placeholder="Brief description of services / scope of this contract..." style="font-size:.82rem;"></textarea></div>
+          </div>
+          <h5 style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.625rem;">Selected Clauses</h5>
+          <div id="ct-selected-clauses" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.875rem;min-height:36px;padding:.5rem;border:1px solid var(--border);background:var(--parch-dk);">
+            <span style="font-size:.72rem;color:var(--ink-muted);">Select clauses from the panel →</span>
+          </div>
+          <div style="display:flex;gap:.75rem;">
+            <button onclick="igCreateContract()" style="background:#4f46e5;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-file-contract" style="margin-right:.4rem;"></i>Save as Draft</button>
+            <button onclick="igToast('Contract PDF preview generated','success')" style="background:var(--ink);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-eye" style="margin-right:.4rem;"></i>Preview PDF</button>
+          </div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Clause Library</h3></div>
+        <div style="padding:.875rem;max-height:560px;overflow-y:auto;">
+          ${clauses.map((cl,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:.55rem .5rem;border-bottom:1px solid var(--border);">
+            <div>
+              <div style="font-size:.82rem;font-weight:500;color:var(--ink);">${cl.name}</div>
+              <span class="badge b-dk" style="font-size:.58rem;">${cl.cat}</span>
+            </div>
+            <button id="clause-btn-${i}" onclick="igAddClause('${cl.name}',${i})" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">Add</button>
+          </div>`).join('')}
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Contract Table -->
-  <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
-    <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Active Contracts</h3></div>
-    <table class="ig-tbl"><thead><tr><th>ID</th><th>Contract Name</th><th>Party</th><th>Type</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead><tbody>
-      ${contracts.map(r=>`<tr>
-        <td style="font-size:.78rem;font-weight:600;color:var(--gold);">${r.id}</td>
-        <td style="font-weight:500;font-size:.85rem;">${r.name}</td>
-        <td style="font-size:.8rem;">${r.party}</td>
-        <td><span class="badge b-dk">${r.type}</span></td>
-        <td style="font-size:.78rem;color:var(--ink-muted);">${r.expiry}</td>
-        <td><span class="badge ${r.cls}">${r.status}</span></td>
-        <td style="display:flex;gap:.4rem;flex-wrap:wrap;">
-          <button onclick="igToast('${r.name} PDF opened','success')" style="background:none;border:1px solid var(--border);padding:.22rem .55rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-eye"></i> View</button>
-          <button onclick="igToast('${r.name} downloaded','success')" style="background:none;border:1px solid var(--border);padding:.22rem .55rem;font-size:.65rem;cursor:pointer;color:var(--ink-muted);"><i class="fas fa-download"></i></button>
-          ${r.status==='Expiring'?`<button onclick="igToast('Renewal workflow triggered for ${r.name}','warn')" style="background:#d97706;color:#fff;border:none;padding:.22rem .55rem;font-size:.65rem;cursor:pointer;">Renew</button>`:''}
-        </td>
-      </tr>`).join('')}
-    </tbody></table>
-  </div>
-
-  <!-- Template Library -->
-  <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
-    <h4 style="font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.875rem;">Template Library</h4>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;">
-      ${templates.map(t=>`<div style="background:var(--parch-dk);border:1px solid var(--border);padding:1rem;display:flex;align-items:center;justify-content:space-between;">
-        <span style="font-size:.82rem;font-weight:500;color:var(--ink);">${t}</span>
-        <div style="display:flex;gap:.4rem;">
-          <button onclick="igToast('${t} template opened for editing','success')" style="background:none;border:1px solid var(--border);padding:.22rem .55rem;font-size:.65rem;cursor:pointer;color:var(--gold);">Edit</button>
-          <button onclick="igToast('${t} downloaded','success')" style="background:none;border:1px solid var(--border);padding:.22rem .55rem;font-size:.65rem;cursor:pointer;color:var(--ink-muted);"><i class="fas fa-download"></i></button>
+  <!-- Tab 2: Template Library -->
+  <div id="ct-pane-2" style="display:none;">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.875rem;">
+      ${templates.map(t=>`<div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+        <div style="width:40px;height:40px;background:#4f46e5;display:flex;align-items:center;justify-content:center;margin-bottom:.75rem;">
+          <i class="fas fa-file-contract" style="color:#fff;font-size:.85rem;"></i>
+        </div>
+        <div style="font-weight:600;font-size:.875rem;color:var(--ink);margin-bottom:.4rem;">${t}</div>
+        <div style="font-size:.72rem;color:var(--ink-muted);margin-bottom:.875rem;">Standard India Gully template · Last updated Jan 2025</div>
+        <div style="display:flex;gap:.5rem;">
+          <button onclick="igToast('${t} — opening in editor','success')" style="background:#4f46e5;color:#fff;border:none;padding:.35rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;flex:1;"><i class="fas fa-edit" style="margin-right:.3rem;"></i>Edit</button>
+          <button onclick="igToast('${t} template downloaded','success')" style="background:none;border:1px solid var(--border);padding:.35rem .75rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);"><i class="fas fa-download"></i></button>
         </div>
       </div>`).join('')}
     </div>
-  </div>`
+  </div>
+
+  <!-- Tab 3: Clause Library -->
+  <div id="ct-pane-3" style="display:none;">
+    <div style="margin-bottom:1rem;"><button onclick="togglePanel('new-clause-panel')" style="background:#4f46e5;color:#fff;border:none;padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.4rem;"></i>Add Custom Clause</button></div>
+    <div id="new-clause-panel" class="ig-panel" style="margin-bottom:1.5rem;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
+        <div><label class="ig-label">Clause Name</label><input type="text" class="ig-input" style="font-size:.82rem;" placeholder="Name this clause..."></div>
+        <div><label class="ig-label">Category</label><select class="ig-input" style="font-size:.82rem;"><option>Standard</option><option>Legal</option><option>Finance</option><option>HR</option><option>Regulatory</option><option>Jurisdiction</option></select></div>
+        <div style="grid-column:span 2;"><label class="ig-label">Clause Text</label><textarea class="ig-input" rows="5" style="font-size:.82rem;" placeholder="Enter full clause text with legal language..."></textarea></div>
+      </div>
+      <div style="display:flex;gap:.75rem;margin-top:.875rem;">
+        <button onclick="igToast('Custom clause saved to library','success');togglePanel('new-clause-panel')" style="background:#4f46e5;color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Save Clause</button>
+        <button onclick="togglePanel('new-clause-panel')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.875rem;">
+      ${clauses.map(cl=>`<div style="background:#fff;border:1px solid var(--border);padding:1.1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;">
+          <div style="font-weight:600;font-size:.875rem;color:var(--ink);">${cl.name}</div>
+          <span class="badge b-dk" style="font-size:.6rem;">${cl.cat}</span>
+        </div>
+        <div style="font-size:.75rem;color:var(--ink-muted);line-height:1.5;margin-bottom:.75rem;">Standard clause covering ${cl.name.toLowerCase()} obligations and rights of both parties as per Indian Contract Act 1872.</div>
+        <div style="display:flex;gap:.4rem;">
+          <button onclick="igToast('${cl.name} — opening editor','success')" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--gold);">Edit</button>
+          <button onclick="igToast('${cl.name} copied to clipboard','success')" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);"><i class="fas fa-copy"></i></button>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <!-- E-Sign Modal -->
+  <div id="esign-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#fff;width:480px;max-width:95vw;border-top:4px solid #7c3aed;">
+      <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Send for E-Signature</div>
+        <button onclick="document.getElementById('esign-modal').style.display='none'" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--ink-muted);">✕</button>
+      </div>
+      <div style="padding:1.5rem;">
+        <div id="esign-contract-name" style="background:#fdf4ff;border:1px solid #e9d5ff;padding:.875rem;margin-bottom:1.25rem;font-size:.85rem;font-weight:500;color:#6d28d9;"></div>
+        <div style="display:flex;flex-direction:column;gap:.875rem;margin-bottom:1.25rem;">
+          <div><label class="ig-label">Signatory Email</label><input type="email" id="esign-email" class="ig-input" placeholder="signatory@company.com" style="font-size:.82rem;"></div>
+          <div><label class="ig-label">Signatory Name</label><input type="text" id="esign-name" class="ig-input" placeholder="Full Name" style="font-size:.82rem;"></div>
+          <div><label class="ig-label">Message (optional)</label><textarea class="ig-input" rows="2" id="esign-msg" placeholder="Please sign this agreement at your earliest convenience..." style="font-size:.82rem;"></textarea></div>
+          <div><label class="ig-label">Sign Deadline</label><input type="date" id="esign-deadline" class="ig-input" style="font-size:.82rem;"></div>
+        </div>
+        <button onclick="igSendSign()" style="background:#7c3aed;color:#fff;border:none;padding:.65rem 1.25rem;font-size:.82rem;font-weight:600;cursor:pointer;width:100%;"><i class="fas fa-paper-plane" style="margin-right:.4rem;"></i>Send for Signature</button>
+        <div style="font-size:.68rem;color:var(--ink-muted);text-align:center;margin-top:.75rem;">Signed via DocuSign / Aadhaar eSign. Legally binding under IT Act 2000.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  window.igCtTab = function(idx){
+    for(var i=0;i<4;i++){
+      var p=document.getElementById('ct-pane-'+i);
+      var t=document.getElementById('ct-tab-'+i);
+      if(p) p.style.display=i===idx?'block':'none';
+      if(t){ t.style.color=i===idx?'var(--gold)':'var(--ink-muted)'; t.style.borderBottom=i===idx?'2px solid var(--gold)':'2px solid transparent'; }
+    }
+  };
+  var selectedClauses = [];
+  window.igAddClause = function(name, idx){
+    var btn=document.getElementById('clause-btn-'+idx);
+    if(selectedClauses.includes(name)){
+      selectedClauses=selectedClauses.filter(function(c){return c!==name;});
+      btn.textContent='Add'; btn.style.color='var(--gold)'; btn.style.background='none';
+    } else {
+      selectedClauses.push(name);
+      btn.textContent='✓'; btn.style.color='#fff'; btn.style.background='#16a34a'; btn.style.border='none';
+    }
+    var area=document.getElementById('ct-selected-clauses');
+    if(selectedClauses.length===0){
+      area.innerHTML='<span style="font-size:.72rem;color:var(--ink-muted);">Select clauses from the panel →</span>';
+    } else {
+      area.innerHTML=selectedClauses.map(function(c){return '<span style="background:#ede9fe;color:#6d28d9;font-size:.7rem;padding:.2rem .6rem;font-weight:600;">'+c+'</span>';}).join('');
+    }
+  };
+  window.igCreateContract = function(){
+    var title=document.getElementById('ct-title').value.trim();
+    var party=document.getElementById('ct-party').value.trim();
+    if(!title||!party){igToast('Enter contract title and party name','warn');return;}
+    igToast('Contract draft "'+title+'" created with '+selectedClauses.length+' clauses','success');
+    igCtTab(0);
+    document.getElementById('ct-title').value='';
+    document.getElementById('ct-party').value='';
+    selectedClauses=[];
+    document.getElementById('ct-selected-clauses').innerHTML='<span style="font-size:.72rem;color:var(--ink-muted);">Select clauses from the panel →</span>';
+  };
+  window.igSendForSign = function(id, name){
+    document.getElementById('esign-contract-name').textContent='Contract: '+name+' ('+id+')';
+    var d=new Date(); d.setDate(d.getDate()+7);
+    document.getElementById('esign-deadline').value=d.toISOString().split('T')[0];
+    var m=document.getElementById('esign-modal'); m.style.display='flex'; m.style.alignItems='center'; m.style.justifyContent='center';
+  };
+  window.igSendSign = function(){
+    var email=document.getElementById('esign-email').value.trim();
+    if(!email){igToast('Enter signatory email','warn');return;}
+    document.getElementById('esign-modal').style.display='none';
+    igToast('E-sign request sent to '+email+'. DocuSign workflow initiated.','success');
+  };
+  </script>`
   return c.html(layout('Contracts', adminShell('Contract Management', 'contracts', body), {noNav:true,noFooter:true}))
 })
 

@@ -199,13 +199,18 @@ app.get('/reset', (c) => {
 
 function clientShell(pageTitle: string, active: string, body: string) {
   const nav = [
-    { id:'dashboard',  icon:'tachometer-alt', label:'Dashboard'      },
-    { id:'mandates',   icon:'file-contract',  label:'My Mandates'    },
-    { id:'proposals',  icon:'file-alt',       label:'Proposals'      },
-    { id:'invoices',   icon:'receipt',        label:'Invoices & GST' },
-    { id:'documents',  icon:'folder-open',    label:'Documents'      },
-    { id:'messages',   icon:'comments',       label:'Messages'       },
-    { id:'profile',    icon:'user-cog',       label:'My Profile'     },
+    { id:'dashboard',  icon:'tachometer-alt', label:'Dashboard',     badge:'' },
+    { id:'mandates',   icon:'file-contract',  label:'My Mandates',   badge:'' },
+    { id:'proposals',  icon:'file-alt',       label:'Proposals',     badge:'1' },
+    { id:'invoices',   icon:'receipt',        label:'Invoices & GST',badge:'2' },
+    { id:'documents',  icon:'folder-open',    label:'Documents',     badge:'' },
+    { id:'messages',   icon:'comments',       label:'Messages',      badge:'1' },
+    { id:'profile',    icon:'user-cog',       label:'My Profile',    badge:'' },
+  ]
+  const notifs = [
+    {msg:'INV-2025-002 is overdue — ₹1.8L pending',type:'danger',  time:'2h ago'},
+    {msg:'Proposal signed — Hotel PMC Engagement Letter',type:'success',time:'5h ago'},
+    {msg:'New document shared: Market Research Q4 2024',type:'info',  time:'1d ago'},
   ]
   return `
 <div style="display:flex;height:100vh;overflow:hidden;background:#f7f7f7;">
@@ -218,6 +223,7 @@ function clientShell(pageTitle: string, active: string, body: string) {
       ${nav.map(i => `
       <a href="/portal/client/${i.id === 'dashboard' ? 'dashboard' : i.id}" class="sb-lk ${active === i.id ? 'on' : ''}">
         <i class="fas fa-${i.icon}" style="width:16px;font-size:.75rem;text-align:center;"></i>${i.label}
+        ${i.badge ? `<span class="sb-badge">${i.badge}</span>` : ''}
       </a>`).join('')}
     </nav>
     <div style="padding:.75rem;border-top:1px solid rgba(255,255,255,.07);">
@@ -225,18 +231,61 @@ function clientShell(pageTitle: string, active: string, body: string) {
     </div>
   </aside>
   <main style="flex:1;overflow-y:auto;display:flex;flex-direction:column;">
-    <div style="background:#fff;border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <div style="background:#fff;border-bottom:1px solid var(--border);padding:.875rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
       <div>
-        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.2rem;color:var(--ink);">${pageTitle}</h2>
-        <p style="font-size:.72rem;color:var(--ink-muted);">Client Portal · India Gully Enterprise Platform</p>
+        <div style="font-size:.65rem;color:var(--ink-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.15rem;">
+          <a href="/portal" style="color:var(--ink-muted);text-decoration:none;">Portal</a>
+          <i class="fas fa-chevron-right" style="font-size:.5rem;margin:0 .35rem;"></i>
+          <a href="/portal/client/dashboard" style="color:var(--ink-muted);text-decoration:none;">Client</a>
+          <i class="fas fa-chevron-right" style="font-size:.5rem;margin:0 .35rem;"></i>
+          <span style="color:var(--ink);">${pageTitle}</span>
+        </div>
+        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.15rem;color:var(--ink);">${pageTitle}</h2>
       </div>
-      <div style="width:34px;height:34px;background:var(--gold);display:flex;align-items:center;justify-content:center;">
-        <span style="font-family:'DM Serif Display',Georgia,serif;font-size:.8rem;color:#fff;font-weight:700;">CL</span>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <!-- Notification Bell -->
+        <div style="position:relative;">
+          <button id="notif-btn" onclick="toggleNotifPanel()" style="background:none;border:1px solid var(--border);width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;">
+            <i class="fas fa-bell" style="font-size:.75rem;color:var(--ink-muted);"></i>
+            <span style="position:absolute;top:-3px;right:-3px;width:10px;height:10px;background:#dc2626;border-radius:50%;border:2px solid #fff;"></span>
+          </button>
+          <div id="notif-panel" style="display:none;position:absolute;right:0;top:calc(100% + 8px);width:320px;background:#fff;border:1px solid var(--border);box-shadow:0 12px 40px rgba(0,0,0,.15);z-index:9999;">
+            <div style="padding:.75rem 1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);">Notifications</span>
+              <button onclick="igToast('All notifications cleared','success')" style="font-size:.68rem;color:var(--gold);background:none;border:none;cursor:pointer;">Clear All</button>
+            </div>
+            ${notifs.map(n=>`<div style="padding:.75rem 1rem;border-bottom:1px solid var(--border);display:flex;gap:.625rem;">
+              <i class="fas fa-${n.type==='danger'?'exclamation-circle':n.type==='success'?'check-circle':'info-circle'}" style="color:${n.type==='danger'?'#dc2626':n.type==='success'?'#16a34a':'#2563eb'};font-size:.75rem;margin-top:.1rem;flex-shrink:0;"></i>
+              <div><div style="font-size:.78rem;color:var(--ink);line-height:1.4;">${n.msg}</div><div style="font-size:.65rem;color:var(--ink-muted);margin-top:.15rem;">${n.time}</div></div>
+            </div>`).join('')}
+          </div>
+        </div>
+        <!-- User Badge -->
+        <div style="display:flex;align-items:center;gap:.625rem;">
+          <div style="text-align:right;display:none;" class="r-hide">
+            <div style="font-size:.72rem;font-weight:600;color:var(--ink);">Demo Client</div>
+            <div style="font-size:.62rem;color:var(--ink-muted);">demo@indiagully.com</div>
+          </div>
+          <div style="width:34px;height:34px;background:var(--gold);display:flex;align-items:center;justify-content:center;cursor:pointer;" title="Demo Client" onclick="igToast('Profile: Demo Client · demo@indiagully.com','info')">
+            <span style="font-family:'DM Serif Display',Georgia,serif;font-size:.8rem;color:#fff;font-weight:700;">CL</span>
+          </div>
+        </div>
       </div>
     </div>
     <div style="flex:1;padding:2rem;overflow-y:auto;">${body}</div>
   </main>
-</div>`
+</div>
+<script>
+function toggleNotifPanel(){
+  var p=document.getElementById('notif-panel');
+  p.style.display=p.style.display==='none'?'block':'none';
+}
+document.addEventListener('click',function(e){
+  var btn=document.getElementById('notif-btn');
+  var panel=document.getElementById('notif-panel');
+  if(panel&&!panel.contains(e.target)&&!btn.contains(e.target)) panel.style.display='none';
+});
+</script>`
 }
 
 app.get('/client/dashboard', (c) => {
@@ -417,11 +466,12 @@ app.get('/client/proposals', (c) => {
 
 app.get('/client/invoices', (c) => {
   const body = `
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
       ${[
         { label:'Total Billed',   value:'₹7.5L',  color:'var(--gold)' },
         { label:'Amount Paid',    value:'₹2.5L',  color:'#16a34a'    },
         { label:'Amount Due',     value:'₹5.0L',  color:'#dc2626'    },
+        { label:'Overdue',        value:'₹1.8L',  color:'#7c3aed'    },
       ].map(s => `
       <div class="am">
         <div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div>
@@ -429,30 +479,121 @@ app.get('/client/invoices', (c) => {
       </div>`).join('')}
     </div>
     <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
         <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Invoice History</h3>
+        <span style="font-size:.72rem;color:var(--ink-muted);">Click an invoice to view or pay</span>
       </div>
       <table class="ig-tbl">
-        <thead><tr><th>Invoice #</th><th>Description</th><th>Amount</th><th>GST</th><th>Total</th><th>Due Date</th><th>Status</th><th>Download</th></tr></thead>
+        <thead><tr><th>Invoice #</th><th>Description</th><th>Amount</th><th>GST (18%)</th><th>Total</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
           ${[
-            { inv:'INV-2025-001', desc:'Advisory Retainer — Jan 2025',   amt:'₹2.12L', gst:'₹0.38L', total:'₹2.5L',  due:'15 Feb 2025', status:'Paid',    cls:'b-gr' },
-            { inv:'INV-2025-002', desc:'Hotel PMC — Phase 1',             amt:'₹1.53L', gst:'₹0.27L', total:'₹1.8L',  due:'28 Feb 2025', status:'Overdue', cls:'b-re' },
-            { inv:'INV-2025-003', desc:'Entertainment Feasibility Study', amt:'₹2.71L', gst:'₹0.49L', total:'₹3.2L',  due:'31 Mar 2025', status:'Draft',   cls:'b-dk' },
+            { inv:'INV-2025-001', desc:'Advisory Retainer — Jan 2025',   base:212000, gst:38160, total:250160, due:'15 Feb 2025', status:'Paid',    cls:'b-gr' },
+            { inv:'INV-2025-002', desc:'Hotel PMC — Phase 1',             base:152542, gst:27458, total:180000, due:'28 Feb 2025', status:'Overdue', cls:'b-re' },
+            { inv:'INV-2025-003', desc:'Entertainment Feasibility Study', base:271186, gst:48814, total:320000, due:'31 Mar 2025', status:'Draft',   cls:'b-dk' },
           ].map(r => `
           <tr>
             <td style="font-weight:600;font-size:.82rem;color:var(--gold);">${r.inv}</td>
             <td style="font-size:.82rem;">${r.desc}</td>
-            <td style="font-family:'DM Serif Display',Georgia,serif;">${r.amt}</td>
-            <td style="font-size:.78rem;color:var(--ink-muted);">${r.gst}</td>
-            <td style="font-family:'DM Serif Display',Georgia,serif;font-weight:600;">${r.total}</td>
+            <td style="font-family:'DM Serif Display',Georgia,serif;">₹${(r.base/100000).toFixed(2)}L</td>
+            <td style="font-size:.78rem;color:var(--ink-muted);">₹${(r.gst/100000).toFixed(2)}L</td>
+            <td style="font-family:'DM Serif Display',Georgia,serif;font-weight:600;">₹${(r.total/100000).toFixed(2)}L</td>
             <td style="font-size:.78rem;color:var(--ink-muted);">${r.due}</td>
-            <td><span class="badge ${r.cls}">${r.status}</span></td>
-            <td><button onclick="igToast('Invoice PDF ready — simulating download','success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;"><i class="fas fa-download"></i></button></td>
+            <td><span class="badge ${r.cls}" id="inv-status-${r.inv.replace(/-/g,'_')}">${r.status}</span></td>
+            <td style="display:flex;gap:.4rem;">
+              <button onclick="igViewInvoice('${r.inv}','${r.desc}','${r.total}','${r.due}','${r.status}')" style="font-size:.68rem;color:var(--gold);background:none;border:1px solid #B8960C;cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-eye'></i></button>
+              ${r.status!=='Paid'?`<button onclick="igPayInvoice('${r.inv}','${r.total}','${r.status}')" style="font-size:.68rem;color:#fff;background:#16a34a;border:none;cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-credit-card'></i> Pay</button>`:'<span style="font-size:.68rem;color:#16a34a;"><i class="fas fa-check-circle"></i> Paid</span>'}
+              <button onclick="igToast('Invoice PDF — ${r.inv} downloading','success')" style="font-size:.68rem;color:var(--ink-muted);background:none;border:1px solid var(--border);cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-download'></i></button>
+            </td>
           </tr>`).join('')}
         </tbody>
       </table>
-    </div>`
+    </div>
+    <!-- Invoice View Modal -->
+    <div id="inv-view-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9998;align-items:center;justify-content:center;">
+      <div style="background:#fff;width:640px;max-width:95vw;max-height:90vh;overflow-y:auto;border-top:4px solid var(--gold);">
+        <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);">Tax Invoice</div>
+          <button onclick="document.getElementById('inv-view-modal').style.display='none'" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--ink-muted);">✕</button>
+        </div>
+        <div style="padding:1.5rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:1.5rem;">
+            <div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:var(--ink);">India Gully</div><div style="font-size:.72rem;color:var(--ink-muted);margin-top:.15rem;">Vivacious Entertainment & Hospitality Pvt. Ltd.<br>GSTIN: 07AABCV1234F1Z5 · CIN: U74999DL2017PTC320001<br>support@indiagully.com</div></div>
+            <div style="text-align:right;"><div id="inv-number" style="font-size:1rem;font-weight:700;color:var(--gold);"></div><div id="inv-due" style="font-size:.72rem;color:var(--ink-muted);margin-top:.25rem;"></div></div>
+          </div>
+          <div style="background:var(--parch-dk);padding:.875rem;margin-bottom:1.25rem;font-size:.82rem;"><strong>Bill To:</strong> Demo Client Org · GSTIN: 27AAACN1234D1ZI</div>
+          <table style="width:100%;font-size:.82rem;border-collapse:collapse;margin-bottom:1.25rem;">
+            <thead><tr style="background:var(--ink);color:#fff;"><th style="padding:.5rem .75rem;text-align:left;">Description</th><th style="padding:.5rem .75rem;text-align:right;">Amount</th><th style="padding:.5rem .75rem;text-align:right;">CGST 9%</th><th style="padding:.5rem .75rem;text-align:right;">SGST 9%</th><th style="padding:.5rem .75rem;text-align:right;">Total</th></tr></thead>
+            <tbody id="inv-tbody"></tbody>
+          </table>
+          <div id="inv-total-row" style="background:var(--ink);color:#fff;padding:.875rem 1rem;display:flex;justify-content:space-between;margin-bottom:1rem;"></div>
+          <div style="font-size:.72rem;color:var(--ink-muted);margin-bottom:1rem;">Payment Terms: 30 days from invoice date · Late payment interest: 18% p.a.<br>Bank: HDFC Bank · A/C: 50200012345678 · IFSC: HDFC0001234</div>
+          <div id="inv-pay-btn-area"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Payment Modal -->
+    <div id="pay-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:10000;align-items:center;justify-content:center;">
+      <div style="background:#fff;width:440px;max-width:95vw;border-top:4px solid #16a34a;">
+        <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Pay Invoice — <span id="pay-inv-id"></span></div>
+          <button onclick="document.getElementById('pay-modal').style.display='none'" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--ink-muted);">✕</button>
+        </div>
+        <div style="padding:1.5rem;">
+          <div id="pay-amount-display" style="background:#f0fdf4;border:1px solid #86efac;padding:1rem;text-align:center;margin-bottom:1.25rem;">
+            <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#15803d;margin-bottom:.25rem;">Amount Due</div>
+            <div id="pay-amt" style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:#15803d;"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.875rem;margin-bottom:1.25rem;">
+            <div><label class="ig-label">Payment Method</label>
+              <select class="ig-input" id="pay-method" style="font-size:.82rem;">
+                <option>NEFT / Bank Transfer</option>
+                <option>RTGS</option>
+                <option>UPI / QR Code</option>
+                <option>Cheque</option>
+              </select>
+            </div>
+            <div><label class="ig-label">Transaction Reference / UTR</label><input type="text" class="ig-input" id="pay-utr" placeholder="Enter UTR / Reference No." style="font-size:.82rem;"></div>
+            <div><label class="ig-label">Payment Date</label><input type="date" class="ig-input" id="pay-date" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">Remarks (optional)</label><input type="text" class="ig-input" placeholder="Add note..." style="font-size:.82rem;"></div>
+          </div>
+          <button onclick="igConfirmPayment()" style="background:#16a34a;color:#fff;border:none;padding:.65rem 1.5rem;font-size:.82rem;font-weight:600;cursor:pointer;width:100%;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-check" style="margin-right:.4rem;"></i>Confirm Payment</button>
+          <div style="font-size:.68rem;color:var(--ink-muted);text-align:center;margin-top:.75rem;">Payment confirmation will be verified by finance team within 24 hrs</div>
+        </div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var curInv = {};
+      window.igViewInvoice = function(inv,desc,total,due,status){
+        curInv = {inv,total,status};
+        document.getElementById('inv-number').textContent = inv;
+        document.getElementById('inv-due').innerHTML = 'Due: '+due+'<br>Status: <strong style="color:'+(status==='Paid'?'#16a34a':status==='Overdue'?'#dc2626':'#d97706')+';">'+status+'</strong>';
+        var base=Math.round(total/1.18);var gst=total-base;var half=Math.round(gst/2);
+        document.getElementById('inv-tbody').innerHTML='<tr style="border-bottom:1px solid var(--border);"><td style="padding:.5rem .75rem;">'+desc+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+base.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+half.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+half.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;font-weight:600;">₹'+total.toLocaleString('en-IN')+'</td></tr>';
+        document.getElementById('inv-total-row').innerHTML='<span style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.78rem;">Total Amount</span><span style="font-family:\'DM Serif Display\',Georgia,serif;font-size:1.25rem;color:var(--gold);">₹'+total.toLocaleString('en-IN')+'</span>';
+        document.getElementById('inv-pay-btn-area').innerHTML=status!=='Paid'?'<button onclick="igPayInvoice(\''+inv+'\',\''+total+'\',\''+status+'\')" style="background:#16a34a;color:#fff;border:none;padding:.6rem 1.25rem;font-size:.8rem;font-weight:600;cursor:pointer;width:100%;"><i class=\'fas fa-credit-card\' style=\'margin-right:.4rem;\'></i>Pay This Invoice</button>':'<div style="text-align:center;padding:.875rem;background:#f0fdf4;border:1px solid #86efac;color:#15803d;font-size:.82rem;font-weight:600;"><i class=\'fas fa-check-circle\' style=\'margin-right:.4rem;\'></i>This invoice has been paid. Thank you.</div>';
+        var m=document.getElementById('inv-view-modal');m.style.display='flex';m.style.alignItems='center';m.style.justifyContent='center';
+      };
+      window.igPayInvoice = function(inv,total,status){
+        if(status==='Paid'){igToast('Invoice already paid','warn');return;}
+        curInv={inv,total,status};
+        document.getElementById('pay-inv-id').textContent=inv;
+        document.getElementById('pay-amt').textContent='₹'+parseInt(total).toLocaleString('en-IN');
+        var d=new Date();document.getElementById('pay-date').value=d.toISOString().split('T')[0];
+        document.getElementById('inv-view-modal').style.display='none';
+        var m=document.getElementById('pay-modal');m.style.display='flex';m.style.alignItems='center';m.style.justifyContent='center';
+      };
+      window.igConfirmPayment = function(){
+        var utr=document.getElementById('pay-utr').value.trim();
+        if(!utr){igToast('Please enter UTR / Transaction reference','warn');return;}
+        document.getElementById('pay-modal').style.display='none';
+        igToast('Payment of ₹'+parseInt(curInv.total).toLocaleString('en-IN')+' submitted (UTR: '+utr+'). Awaiting finance verification.','success');
+        var key='inv-status-'+curInv.inv.replace(/-/g,'_');
+        var el=document.getElementById(key);
+        if(el){el.textContent='Under Review';el.className='badge b-g';}
+      };
+    })();
+    </script>`
   return c.html(layout('Invoices & GST', clientShell('Invoices & GST', 'invoices', body), { noNav:true, noFooter:true }))
 })
 
@@ -649,14 +790,19 @@ app.get('/client/profile', (c) => {
 
 function empShell(pageTitle: string, active: string, body: string) {
   const nav = [
-    { id:'dashboard',  icon:'tachometer-alt',  label:'Dashboard'       },
-    { id:'attendance', icon:'calendar-check',  label:'Attendance'      },
-    { id:'leave',      icon:'umbrella-beach',  label:'Leave'           },
-    { id:'payslips',   icon:'money-check-alt', label:'Payslips'        },
-    { id:'form16',     icon:'file-invoice',    label:'Form-16'         },
-    { id:'policies',   icon:'book-open',       label:'Policies'        },
-    { id:'directory',  icon:'address-book',    label:'Directory'       },
-    { id:'profile',    icon:'user-cog',        label:'My Profile'      },
+    { id:'dashboard',  icon:'tachometer-alt',  label:'Dashboard',  badge:'' },
+    { id:'attendance', icon:'calendar-check',  label:'Attendance', badge:'' },
+    { id:'leave',      icon:'umbrella-beach',  label:'Leave',      badge:'1' },
+    { id:'payslips',   icon:'money-check-alt', label:'Payslips',   badge:'' },
+    { id:'form16',     icon:'file-invoice',    label:'Form-16',    badge:'' },
+    { id:'policies',   icon:'book-open',       label:'Policies',   badge:'' },
+    { id:'directory',  icon:'address-book',    label:'Directory',  badge:'' },
+    { id:'profile',    icon:'user-cog',        label:'My Profile', badge:'' },
+  ]
+  const notifs = [
+    {msg:'Leave application pending approval — Casual Leave 5-7 Mar',type:'warn',time:'1h ago'},
+    {msg:'Payslip for February 2025 processed',type:'success',time:'3h ago'},
+    {msg:'New policy update: Performance Review Process',type:'info',time:'2d ago'},
   ]
   return `
 <div style="display:flex;height:100vh;overflow:hidden;background:#f7f7f7;">
@@ -669,6 +815,7 @@ function empShell(pageTitle: string, active: string, body: string) {
       ${nav.map(i => `
       <a href="/portal/employee/${i.id === 'dashboard' ? 'dashboard' : i.id}" class="sb-lk ${active === i.id ? 'on' : ''}">
         <i class="fas fa-${i.icon}" style="width:16px;font-size:.75rem;text-align:center;"></i>${i.label}
+        ${i.badge ? `<span class="sb-badge">${i.badge}</span>` : ''}
       </a>`).join('')}
     </nav>
     <div style="padding:.75rem;border-top:1px solid rgba(255,255,255,.1);">
@@ -676,18 +823,43 @@ function empShell(pageTitle: string, active: string, body: string) {
     </div>
   </aside>
   <main style="flex:1;overflow-y:auto;display:flex;flex-direction:column;">
-    <div style="background:#fff;border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <div style="background:#fff;border-bottom:1px solid var(--border);padding:.875rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
       <div>
-        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.2rem;color:var(--ink);">${pageTitle}</h2>
-        <p style="font-size:.72rem;color:var(--ink-muted);">Employee Portal · India Gully</p>
+        <div style="font-size:.65rem;color:var(--ink-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.15rem;">
+          <a href="/portal" style="color:var(--ink-muted);text-decoration:none;">Portal</a>
+          <i class="fas fa-chevron-right" style="font-size:.5rem;margin:0 .35rem;"></i>
+          <a href="/portal/employee/dashboard" style="color:var(--ink-muted);text-decoration:none;">Employee</a>
+          <i class="fas fa-chevron-right" style="font-size:.5rem;margin:0 .35rem;"></i>
+          <span style="color:var(--ink);">${pageTitle}</span>
+        </div>
+        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.15rem;color:var(--ink);">${pageTitle}</h2>
       </div>
-      <div style="width:34px;height:34px;background:#1A3A6B;display:flex;align-items:center;justify-content:center;">
-        <span style="font-family:'DM Serif Display',Georgia,serif;font-size:.8rem;color:#fff;font-weight:700;">EE</span>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <div style="position:relative;">
+          <button id="emp-notif-btn" onclick="toggleEmpNotif()" style="background:none;border:1px solid var(--border);width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;">
+            <i class="fas fa-bell" style="font-size:.75rem;color:var(--ink-muted);"></i>
+            <span style="position:absolute;top:-3px;right:-3px;width:10px;height:10px;background:#dc2626;border-radius:50%;border:2px solid #fff;"></span>
+          </button>
+          <div id="emp-notif-panel" style="display:none;position:absolute;right:0;top:calc(100% + 8px);width:300px;background:#fff;border:1px solid var(--border);box-shadow:0 12px 40px rgba(0,0,0,.15);z-index:9999;">
+            <div style="padding:.75rem 1rem;border-bottom:1px solid var(--border);font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);">Notifications</div>
+            ${notifs.map(n=>`<div style="padding:.75rem 1rem;border-bottom:1px solid var(--border);display:flex;gap:.625rem;">
+              <i class="fas fa-${n.type==='warn'?'exclamation-triangle':n.type==='success'?'check-circle':'info-circle'}" style="color:${n.type==='warn'?'#d97706':n.type==='success'?'#16a34a':'#2563eb'};font-size:.75rem;margin-top:.1rem;flex-shrink:0;"></i>
+              <div><div style="font-size:.78rem;color:var(--ink);line-height:1.4;">${n.msg}</div><div style="font-size:.65rem;color:var(--ink-muted);margin-top:.15rem;">${n.time}</div></div>
+            </div>`).join('')}
+          </div>
+        </div>
+        <div style="width:34px;height:34px;background:#1A3A6B;display:flex;align-items:center;justify-content:center;cursor:pointer;" title="Demo Employee" onclick="igToast('Profile: IG-EMP-0001 · Employee Portal','info')">
+          <span style="font-family:'DM Serif Display',Georgia,serif;font-size:.8rem;color:#fff;font-weight:700;">EE</span>
+        </div>
       </div>
     </div>
     <div style="flex:1;padding:2rem;overflow-y:auto;">${body}</div>
   </main>
-</div>`
+</div>
+<script>
+function toggleEmpNotif(){var p=document.getElementById('emp-notif-panel');p.style.display=p.style.display==='none'?'block':'none';}
+document.addEventListener('click',function(e){var btn=document.getElementById('emp-notif-btn');var panel=document.getElementById('emp-notif-panel');if(panel&&!panel.contains(e.target)&&btn&&!btn.contains(e.target))panel.style.display='none';});
+</script>`
 }
 
 app.get('/employee/dashboard', (c) => {
@@ -745,16 +917,46 @@ app.get('/employee/dashboard', (c) => {
 
 app.get('/employee/attendance', (c) => {
   const body = `
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-bottom:1.5rem;">
       ${[
-        { label:'Present Days (Feb)', value:'18', color:'#16a34a' },
-        { label:'Absent Days',        value:'1',  color:'#dc2626' },
-        { label:'Attendance %',       value:'95%',color:'#2563eb' },
+        { label:'Present (Feb)',  value:'18', color:'#16a34a' },
+        { label:'Absent',         value:'1',  color:'#dc2626' },
+        { label:'Late Arrivals',  value:'2',  color:'#d97706' },
+        { label:'Attendance %',   value:'95%',color:'#2563eb' },
+        { label:'Avg Hours/Day',  value:'9h 44m',color:'#7c3aed' },
       ].map(s => `
       <div class="am">
-        <div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div>
-        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:${s.color};">${s.value}</div>
+        <div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.6rem;color:${s.color};">${s.value}</div>
       </div>`).join('')}
+    </div>
+    <!-- Calendar heatmap -->
+    <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;margin-bottom:1.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">February 2025 — Calendar View</h3>
+        <div style="display:flex;gap:.5rem;align-items:center;font-size:.68rem;color:var(--ink-muted);">
+          <span style="width:12px;height:12px;background:#16a34a;display:inline-block;"></span>Present
+          <span style="width:12px;height:12px;background:#dc2626;display:inline-block;margin-left:.5rem;"></span>Absent
+          <span style="width:12px;height:12px;background:#d97706;display:inline-block;margin-left:.5rem;"></span>Late
+          <span style="width:12px;height:12px;background:#e5e7eb;display:inline-block;margin-left:.5rem;"></span>Weekend/Holiday
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:.35rem;text-align:center;">
+        ${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<div style="font-size:.65rem;font-weight:700;color:var(--ink-muted);padding:.25rem 0;">${d}</div>`).join('')}
+        ${/* Feb 2025 starts on Saturday = offset 5 */ ''.split('').fill('').concat(Array.from({length:5})).map(()=>`<div></div>`).join('')}
+        ${Array.from({length:28},(_,i)=>{
+          const d=i+1;
+          const day=(i+5)%7; // 0=Mon
+          const isWknd=day>=5;
+          const status = isWknd ? 'wknd' :
+            [3,10,17].includes(d) ? 'late' :
+            [18].includes(d) ? 'absent' : 'present';
+          const bg = status==='wknd'?'#f3f4f6':status==='absent'?'#fef2f2':status==='late'?'#fffbeb':'#f0fdf4';
+          const border = status==='wknd'?'#e5e7eb':status==='absent'?'#fca5a5':status==='late'?'#fcd34d':'#86efac';
+          const tc = status==='wknd'?'#9ca3af':status==='absent'?'#dc2626':status==='late'?'#d97706':'#15803d';
+          return `<div style="padding:.4rem .1rem;background:${bg};border:1px solid ${border};cursor:pointer;" title="${d} Feb — ${status==='wknd'?'Weekend':status==='absent'?'Absent':status==='late'?'Late Arrival':'Present'}" onclick="igToast('${d} Feb 2025 — ${status==='wknd'?'Weekend/Holiday':status==='absent'?'Absent':status==='late'?'Late Arrival (after 9:30 AM)':'Present'}','${status==='absent'?'warn':'info'}')"><div style="font-size:.75rem;font-weight:600;color:${tc};">${d}</div>${!isWknd?`<div style="font-size:.58rem;color:${tc};margin-top:.1rem;">${status==='absent'?'ABS':status==='late'?'LATE':'PRE'}</div>`:''}</div>`;
+        }).join('')}
+      </div>
     </div>
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
       <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
@@ -986,32 +1188,145 @@ app.get('/employee/leave', (c) => {
 
 app.get('/employee/payslips', (c) => {
   const body = `
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+      ${[
+        {label:'Gross CTC (Annual)',value:'₹15,00,000',color:'var(--ink)'},
+        {label:'Net Pay (Feb)',value:'₹1,04,000',color:'var(--gold)'},
+        {label:'YTD TDS Paid',value:'₹85,000',color:'#dc2626'},
+        {label:'PF Contribution',value:'₹18,000/mo',color:'#2563eb'},
+      ].map(s=>`<div class="am"><div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.6rem;color:${s.color};">${s.value}</div></div>`).join('')}
+    </div>
+    <!-- Payslip Table -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
-      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
         <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Payslip History</h3>
+        <button onclick="togglePanel('tds-calc-panel')" style="background:#1A3A6B;color:#fff;border:none;padding:.3rem .875rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-calculator" style="margin-right:.4rem;"></i>Tax Estimator</button>
+      </div>
+      <div id="tds-calc-panel" class="ig-panel" style="margin:.5rem 1rem;">
+        <h4 style="font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:.875rem;">FY 2025-26 Tax Estimator (New Regime)</h4>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:.875rem;">
+          <div><label class="ig-label">Gross Annual CTC (₹)</label><input type="number" id="tc-ctc" class="ig-input" value="1500000" oninput="igCalcTax()" style="font-size:.82rem;"></div>
+          <div><label class="ig-label">Annual PF (₹)</label><input type="number" id="tc-pf" class="ig-input" value="216000" oninput="igCalcTax()" style="font-size:.82rem;"></div>
+          <div><label class="ig-label">Other Deductions (₹)</label><input type="number" id="tc-ded" class="ig-input" value="0" oninput="igCalcTax()" style="font-size:.82rem;"></div>
+        </div>
+        <div id="tc-result" style="background:var(--parch-dk);border:1px solid var(--border);padding:1rem;display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;">
+          <div><div style="font-size:.6rem;font-weight:700;text-transform:uppercase;color:var(--ink-muted);letter-spacing:.08em;margin-bottom:.25rem;">Taxable Income</div><div id="tc-taxable" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:var(--ink);">₹12,84,000</div></div>
+          <div><div style="font-size:.6rem;font-weight:700;text-transform:uppercase;color:var(--ink-muted);letter-spacing:.08em;margin-bottom:.25rem;">Annual Tax</div><div id="tc-tax" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#dc2626;">₹1,02,000</div></div>
+          <div><div style="font-size:.6rem;font-weight:700;text-transform:uppercase;color:var(--ink-muted);letter-spacing:.08em;margin-bottom:.25rem;">Monthly TDS</div><div id="tc-tds" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#d97706;">₹8,500</div></div>
+          <div><div style="font-size:.6rem;font-weight:700;text-transform:uppercase;color:var(--ink-muted);letter-spacing:.08em;margin-bottom:.25rem;">Effective Rate</div><div id="tc-rate" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#2563eb;">6.8%</div></div>
+        </div>
+        <div id="tc-slab" style="margin-top:.875rem;font-size:.72rem;color:var(--ink-muted);line-height:1.9;"></div>
+        <button onclick="togglePanel('tds-calc-panel')" style="margin-top:.875rem;background:none;border:1px solid var(--border);padding:.35rem .875rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Close</button>
       </div>
       <table class="ig-tbl">
-        <thead><tr><th>Month</th><th>Gross Salary</th><th>Deductions</th><th>TDS</th><th>Net Pay</th><th>Status</th><th>Download</th></tr></thead>
+        <thead><tr><th>Month</th><th>Gross</th><th>PF</th><th>PT</th><th>TDS</th><th>Net Pay</th><th>Days</th><th>Status</th><th>Action</th></tr></thead>
         <tbody>
           ${[
-            { month:'February 2025', gross:'₹1,25,000', ded:'₹12,500', tds:'₹8,500', net:'₹1,04,000', status:'Processed', cls:'b-gr' },
-            { month:'January 2025',  gross:'₹1,25,000', ded:'₹12,500', tds:'₹8,500', net:'₹1,04,000', status:'Processed', cls:'b-gr' },
-            { month:'December 2024', gross:'₹1,25,000', ded:'₹12,500', tds:'₹8,500', net:'₹1,04,000', status:'Processed', cls:'b-gr' },
-            { month:'November 2024', gross:'₹1,25,000', ded:'₹12,500', tds:'₹8,500', net:'₹1,04,000', status:'Processed', cls:'b-gr' },
+            {month:'February 2025',gross:125000,pf:15000,pt:200,tds:8500,net:101300,days:20,cls:'b-gr'},
+            {month:'January 2025', gross:125000,pf:15000,pt:200,tds:8500,net:101300,days:21,cls:'b-gr'},
+            {month:'December 2024',gross:125000,pf:15000,pt:200,tds:8500,net:101300,days:22,cls:'b-gr'},
+            {month:'November 2024',gross:125000,pf:15000,pt:200,tds:8500,net:101300,days:19,cls:'b-gr'},
+            {month:'October 2024', gross:125000,pf:15000,pt:200,tds:8500,net:101300,days:23,cls:'b-gr'},
+            {month:'September 2024',gross:125000,pf:15000,pt:200,tds:8500,net:101300,days:22,cls:'b-gr'},
           ].map(p => `
           <tr>
-            <td style="font-weight:500;">${p.month}</td>
-            <td style="font-family:'DM Serif Display',Georgia,serif;">${p.gross}</td>
-            <td style="font-size:.82rem;color:var(--ink-muted);">${p.ded}</td>
-            <td style="font-size:.82rem;color:var(--ink-muted);">${p.tds}</td>
-            <td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">${p.net}</td>
-            <td><span class="badge ${p.cls}">${p.status}</span></td>
-            <td><button onclick="igToast('Payslip PDF for '+this.closest('tr').querySelector('td').textContent+' — downloading','success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;"><i class='fas fa-download'></i> PDF</button></td>
+            <td style="font-weight:500;font-size:.85rem;">${p.month}</td>
+            <td style="font-family:'DM Serif Display',Georgia,serif;">₹${(p.gross/1000).toFixed(0)}K</td>
+            <td style="font-size:.78rem;color:#2563eb;">₹${(p.pf/1000).toFixed(0)}K</td>
+            <td style="font-size:.78rem;color:var(--ink-muted);">₹${p.pt}</td>
+            <td style="font-size:.78rem;color:#dc2626;">₹${(p.tds/1000).toFixed(1)}K</td>
+            <td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹${(p.net/1000).toFixed(1)}K</td>
+            <td style="font-size:.78rem;color:var(--ink-muted);">${p.days} days</td>
+            <td><span class="badge ${p.cls}">Processed</span></td>
+            <td style="display:flex;gap:.4rem;">
+              <button onclick="igShowPayslip('${p.month}')" style="font-size:.68rem;color:var(--gold);background:none;border:1px solid #B8960C;cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-eye'></i></button>
+              <button onclick="igToast('Payslip PDF — ${p.month} downloading','success')" style="font-size:.68rem;color:var(--ink-muted);background:none;border:1px solid var(--border);cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-download'></i></button>
+            </td>
           </tr>`).join('')}
         </tbody>
       </table>
-    </div>`
-  return c.html(layout('Payslips', empShell('Payslips', 'payslips', body), { noNav:true, noFooter:true }))
+    </div>
+    <!-- Payslip Detail Modal -->
+    <div id="payslip-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:none;align-items:center;justify-content:center;">
+      <div style="background:#fff;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;border-top:4px solid var(--gold);">
+        <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);">India Gully — Payslip</div>
+            <div id="ps-month-title" style="font-size:.75rem;color:var(--ink-muted);margin-top:.15rem;"></div>
+          </div>
+          <button onclick="document.getElementById('payslip-modal').style.display='none'" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--ink-muted);">✕</button>
+        </div>
+        <div style="padding:1.25rem 1.5rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem;font-size:.82rem;">
+            <div style="background:var(--parch-dk);padding:.875rem;"><strong>Employee:</strong> Demo Employee<br><strong>ID:</strong> IG-EMP-0001<br><strong>Dept:</strong> Operations<br><strong>Designation:</strong> Associate</div>
+            <div style="background:var(--parch-dk);padding:.875rem;"><strong>PAN:</strong> XXXXX0000X<br><strong>UAN:</strong> 100123456789<br><strong>Bank:</strong> ****4521 (HDFC)<br><strong>Pay Period:</strong> <span id="ps-period"></span></div>
+          </div>
+          <table style="width:100%;font-size:.82rem;border-collapse:collapse;margin-bottom:1rem;">
+            <thead><tr style="background:var(--ink);color:#fff;"><th style="padding:.5rem .75rem;text-align:left;">Earnings</th><th style="padding:.5rem .75rem;text-align:right;">Amount</th><th style="padding:.5rem .75rem;text-align:left;">Deductions</th><th style="padding:.5rem .75rem;text-align:right;">Amount</th></tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:.45rem .75rem;">Basic Salary</td><td style="padding:.45rem .75rem;text-align:right;">₹62,500</td><td style="padding:.45rem .75rem;">Employee PF (12%)</td><td style="padding:.45rem .75rem;text-align:right;color:#2563eb;">₹7,500</td></tr>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:.45rem .75rem;">HRA</td><td style="padding:.45rem .75rem;text-align:right;">₹25,000</td><td style="padding:.45rem .75rem;">Professional Tax</td><td style="padding:.45rem .75rem;text-align:right;color:var(--ink-muted);">₹200</td></tr>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:.45rem .75rem;">Conveyance</td><td style="padding:.45rem .75rem;text-align:right;">₹5,000</td><td style="padding:.45rem .75rem;">Income Tax (TDS)</td><td style="padding:.45rem .75rem;text-align:right;color:#dc2626;">₹8,500</td></tr>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:.45rem .75rem;">Special Allowance</td><td style="padding:.45rem .75rem;text-align:right;">₹32,500</td><td style="padding:.45rem .75rem;color:var(--ink-muted);"></td><td style="padding:.45rem .75rem;"></td></tr>
+              <tr style="background:var(--parch-dk);font-weight:700;"><td style="padding:.6rem .75rem;">Gross Earnings</td><td style="padding:.6rem .75rem;text-align:right;color:var(--gold);">₹1,25,000</td><td style="padding:.6rem .75rem;">Total Deductions</td><td style="padding:.6rem .75rem;text-align:right;color:#dc2626;">₹16,200</td></tr>
+            </tbody>
+          </table>
+          <div style="background:var(--ink);color:#fff;padding:.875rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+            <span style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.82rem;">Net Pay (Take Home)</span>
+            <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:var(--gold);">₹1,08,800</span>
+          </div>
+          <div style="font-size:.7rem;color:var(--ink-muted);text-align:center;margin-bottom:1rem;">This is a computer-generated payslip and does not require a signature. · Employer PF: ₹7,500 · Gratuity Provisioning: ₹5,952</div>
+          <div style="display:flex;gap:.75rem;">
+            <button onclick="igToast('Payslip PDF downloading','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.75rem;font-weight:600;cursor:pointer;flex:1;"><i class="fas fa-download" style="margin-right:.4rem;"></i>Download PDF</button>
+            <button onclick="document.getElementById('payslip-modal').style.display='none'" style="background:none;border:1px solid var(--border);padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:var(--ink-muted);">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      // Tax Calculator (New Regime FY 2025-26)
+      window.igCalcTax = function(){
+        var ctc = parseFloat(document.getElementById('tc-ctc').value)||0;
+        var pf  = parseFloat(document.getElementById('tc-pf').value)||0;
+        var ded = parseFloat(document.getElementById('tc-ded').value)||0;
+        var std = 75000; // standard deduction new regime
+        var taxable = Math.max(0, ctc - pf - ded - std);
+        document.getElementById('tc-taxable').textContent = '₹'+taxable.toLocaleString('en-IN');
+        // New regime slabs FY 2025-26
+        var slabs = [{limit:400000,rate:0},{limit:800000,rate:.05},{limit:1200000,rate:.10},{limit:1600000,rate:.15},{limit:2000000,rate:.20},{limit:2400000,rate:.25},{limit:Infinity,rate:.30}];
+        var tax=0, prev=0, slabDetails=[];
+        for(var s of slabs){
+          if(taxable<=prev) break;
+          var chunk=Math.min(taxable,s.limit)-prev;
+          var t=chunk*s.rate;
+          if(chunk>0) slabDetails.push('₹'+(prev/100000).toFixed(1)+'L–₹'+(Math.min(taxable,s.limit)/100000).toFixed(1)+'L @'+(s.rate*100)+'% = ₹'+Math.round(t).toLocaleString('en-IN'));
+          tax+=t; prev=s.limit;
+        }
+        if(taxable<=700000) tax=0; // rebate u/s 87A
+        var cess=tax*0.04;
+        var total=tax+cess;
+        var monthly=Math.round(total/12);
+        var rate=ctc>0?((total/ctc)*100).toFixed(1):0;
+        document.getElementById('tc-tax').textContent='₹'+Math.round(total).toLocaleString('en-IN');
+        document.getElementById('tc-tds').textContent='₹'+monthly.toLocaleString('en-IN');
+        document.getElementById('tc-rate').textContent=rate+'%';
+        document.getElementById('tc-slab').innerHTML='<strong>Slab breakdown:</strong> '+(taxable<=700000?'<span style="color:#15803d;">Nil tax — Rebate u/s 87A applies (Income ≤ ₹7L)</span>':slabDetails.join(' · '))+(cess>0?' + Cess ₹'+Math.round(cess).toLocaleString('en-IN'):'');
+      };
+      igCalcTax();
+
+      // Payslip modal
+      window.igShowPayslip = function(month){
+        document.getElementById('ps-month-title').textContent = month;
+        document.getElementById('ps-period').textContent = month;
+        var modal = document.getElementById('payslip-modal');
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+      };
+    })();
+    </script>`
+  return c.html(layout('Payslips & TDS', empShell('Payslips', 'payslips', body), { noNav:true, noFooter:true }))
 })
 
 app.get('/employee/form16', (c) => {
