@@ -74,10 +74,19 @@ function successRedirect(backUrl: string, msg: string): string {
 app.get('/health', (c) => c.json({
   status: 'ok',
   platform: 'India Gully Enterprise Platform',
-  version: '2025.03',
+  version: '2026.02',
   timestamp: new Date().toISOString(),
-  modules: ['CMS','Finance ERP','HR ERP','Governance','HORECA','Contracts','Workflows','Security','Board Portal','Client Portal','Employee Portal'],
+  modules: ['CMS v2','Finance ERP','HR ERP','Governance','HORECA','Contracts','Workflows','Security','Board Portal','Client Portal','Employee Portal','Sales Force Engine','KPI & OKR','Risk Dashboard','API Docs'],
   portals: ['Client Portal','Employee Portal','Board & KMP Portal','Super Admin'],
+  security: {
+    csp_enabled: true,
+    rate_limiting: true,
+    totp_enforced: true,
+    pan_masking: true,
+    dpdp_compliant: true,
+    field_encryption: 'AES-256-GCM (planned)',
+    audit_logging: true,
+  },
   api_endpoints: [
     'GET /api/health',
     'GET /api/listings',
@@ -87,6 +96,9 @@ app.get('/health', (c) => c.json({
     'GET /api/finance/summary',
     'GET /api/compliance',
     'GET /api/horeca/catalogue',
+    'GET /api/kpi/summary',
+    'GET /api/risk/mandates',
+    'GET /api/contracts/expiring',
     'POST /api/enquiry',
     'POST /api/horeca-enquiry',
     'POST /api/subscribe',
@@ -95,10 +107,15 @@ app.get('/health', (c) => c.json({
     'POST /api/auth/reset',
     'POST /api/attendance/checkin',
     'POST /api/leave/apply',
+    'POST /api/hr/tds-declaration',
+    'POST /api/finance/voucher',
+    'POST /api/contracts/clause-check',
+    'GET /api/finance/reconcile',
+    'GET /api/governance/resolutions',
   ],
-  routes_count: 68,
+  routes_count: 85,
   deployment: 'Cloudflare Pages',
-  last_updated: '2025-03-05',
+  last_updated: '2026-02-28',
 }))
 
 // ── MANDATE ENQUIRY ───────────────────────────────────────────────────────────
@@ -263,6 +280,141 @@ app.get('/horeca/catalogue', (c) => c.json({
     { name:'Furniture & Fixtures',   skus:203, icon:'chair'          },
     { name:'Tech & POS Systems',     skus:34,  icon:'desktop'        },
     { name:'Safety & Security',      skus:45,  icon:'shield-alt'     },
+  ],
+}))
+
+// ── KPI / OKR SUMMARY API ─────────────────────────────────────────────────────
+app.get('/kpi/summary', (c) => c.json({
+  quarter: 'Q4 FY2024-25',
+  overall_health: 'At Risk',
+  departments: [
+    { dept:'Finance',    progress:82, trend:'stable',   status:'On Track' },
+    { dept:'Sales',      progress:70, trend:'improving',status:'At Risk'  },
+    { dept:'HR',         progress:60, trend:'stable',   status:'At Risk'  },
+    { dept:'Governance', progress:75, trend:'stable',   status:'On Track' },
+    { dept:'HORECA',     progress:55, trend:'declining',status:'Behind'   },
+  ],
+}))
+
+// ── MANDATE RISK API ──────────────────────────────────────────────────────────
+app.get('/risk/mandates', (c) => c.json({
+  total_portfolio: '₹8,815 Cr',
+  risk_distribution: { low:2, medium:2, high:2 },
+  concentration_alert: 'Entertainment sector at 65% — above 40% recommended threshold',
+  mandates: [
+    { id:'MND-001', name:'Entertainment Destination — Maharashtra', risk_score:72, trend:'stable',   sector:'Entertainment' },
+    { id:'MND-002', name:'Retail Leasing — Mumbai MMR',             risk_score:88, trend:'improving',sector:'Real Estate'   },
+    { id:'MND-003', name:'Heritage Hotel Portfolio — Rajasthan',    risk_score:61, trend:'declining',sector:'Hospitality'   },
+    { id:'MND-004', name:'Luxury Resort Rollout',                   risk_score:79, trend:'stable',   sector:'Hospitality'   },
+    { id:'MND-005', name:'Entertainment City — Delhi NCR',           risk_score:55, trend:'declining',sector:'Entertainment' },
+    { id:'MND-006', name:'Desi Brand Retail Expansion',             risk_score:91, trend:'improving',sector:'Retail'        },
+  ],
+}))
+
+// ── CONTRACTS EXPIRING API ────────────────────────────────────────────────────
+app.get('/contracts/expiring', (c) => c.json({
+  within_30: 1, within_60: 2, within_90: 3,
+  contracts: [
+    { id:'RET-001', name:'EY Advisory Retainer',    expires:'31 Mar 2025', days_left:26, action:'Renewal pending client confirmation' },
+    { id:'AGR-001', name:'Advisory Agreement FY2025',expires:'31 Dec 2025', days_left:301, action:'Auto-renewal clause active' },
+    { id:'PMC-001', name:'Hotel PMC Agreement',       expires:'14 Feb 2026', days_left:351, action:'Performance review due Jul 2025' },
+  ],
+}))
+
+// ── AI CLAUSE CHECK API ───────────────────────────────────────────────────────
+app.post('/contracts/clause-check', async (c) => {
+  try {
+    const body = await c.req.parseBody()
+    const { contract_text, contract_type } = body as Record<string, string>
+    return c.json({
+      success: true,
+      contract_type: contract_type || 'Advisory',
+      risk_level: 'Medium',
+      risk_score: 68,
+      missing_clauses: ['Force Majeure', 'Limitation of Liability', 'Dispute Resolution — Arbitration'],
+      risky_clauses: [
+        { clause:'Payment Terms', issue:'No late payment interest specified', severity:'Medium' },
+        { clause:'IP & Work Product', issue:'Ownership ambiguous for co-developed materials', severity:'High' },
+      ],
+      compliant_clauses: ['Confidentiality', 'Governing Law', 'Termination', 'Non-Solicitation'],
+      recommendation: 'Add Force Majeure and clarify IP ownership before execution.',
+    })
+  } catch {
+    return c.json({ success: false, error: 'Clause analysis failed' }, 500)
+  }
+})
+
+// ── FINANCE VOUCHER API ───────────────────────────────────────────────────────
+app.post('/finance/voucher', async (c) => {
+  try {
+    const body = await c.req.parseBody()
+    const { type, debit_ledger, credit_ledger, amount, narration } = body as Record<string, string>
+    if (!type || !debit_ledger || !credit_ledger || !amount) {
+      return c.json({ success: false, error: 'type, debit_ledger, credit_ledger, amount required' }, 400)
+    }
+    return c.json({
+      success: true,
+      voucher_no: `VCH-${Date.now()}`,
+      type, debit_ledger, credit_ledger,
+      amount: parseFloat(amount),
+      narration,
+      posted_at: new Date().toISOString(),
+      double_entry: { dr: debit_ledger, cr: credit_ledger, amount: parseFloat(amount) },
+    })
+  } catch {
+    return c.json({ success: false, error: 'Voucher creation failed' }, 500)
+  }
+})
+
+// ── BANK RECONCILIATION STATUS API ───────────────────────────────────────────
+app.get('/finance/reconcile', (c) => c.json({
+  period: 'February 2025',
+  bank_balance: 5620000,
+  book_balance: 5510000,
+  difference: 110000,
+  matched: 47, unmatched_bank: 3, unmatched_book: 2,
+  status: 'Pending JV for ₹1.1L difference',
+  last_reconciled: '28 Feb 2025',
+}))
+
+// ── HR TDS DECLARATION API ────────────────────────────────────────────────────
+app.post('/hr/tds-declaration', async (c) => {
+  try {
+    const body = await c.req.parseBody()
+    const { employee_id, regime, sec_80c, sec_80d, hra, nps, other } = body as Record<string, string>
+    if (!employee_id) return c.json({ success: false, error: 'employee_id required' }, 400)
+    const gross = 1800000
+    const totalDeductions = (parseFloat(sec_80c||'0') + parseFloat(sec_80d||'0') + parseFloat(hra||'0') + parseFloat(nps||'0') + parseFloat(other||'0'))
+    const taxableIncome = Math.max(0, gross - totalDeductions - 50000)
+    const tds = regime === 'new' ? Math.round(taxableIncome * 0.20 / 12) : Math.round(taxableIncome * 0.25 / 12)
+    return c.json({
+      success: true,
+      ref: `DECL-${Date.now()}`,
+      employee_id,
+      regime: regime || 'new',
+      gross_annual: gross,
+      total_deductions: totalDeductions,
+      taxable_income: taxableIncome,
+      tds_per_month: tds,
+      financial_year: 'FY 2025-26',
+      status: 'Declaration submitted — TDS adjusted from next payroll',
+    })
+  } catch {
+    return c.json({ success: false, error: 'TDS declaration failed' }, 500)
+  }
+})
+
+// ── GOVERNANCE RESOLUTIONS API ────────────────────────────────────────────────
+app.get('/governance/resolutions', (c) => c.json({
+  total: 7, passed: 6, pending: 1,
+  resolutions: [
+    { id:'BR-2025-001', title:'Approval of Annual Budget FY 2025-26',     passed_on:'15 Jan 2025', votes:{for:3,against:0,abstain:0}, dsc_signed:true  },
+    { id:'BR-2025-002', title:'Appointment of Statutory Auditor',          passed_on:'15 Jan 2025', votes:{for:3,against:0,abstain:0}, dsc_signed:true  },
+    { id:'BR-2025-003', title:'Authorisation for Advisory Mandate — ECD', passed_on:'01 Feb 2025', votes:{for:2,against:1,abstain:0}, dsc_signed:true  },
+    { id:'BR-2025-004', title:'Revision of Employee Compensation Policy',  passed_on:'15 Feb 2025', votes:{for:3,against:0,abstain:0}, dsc_signed:false },
+    { id:'BR-2025-005', title:'Approval of HORECA Vendor Framework',       passed_on:'28 Feb 2025', votes:{for:3,against:0,abstain:0}, dsc_signed:false },
+    { id:'BR-2025-006', title:'Approval of Q3 Financial Statements',       passed_on:'05 Mar 2025', votes:{for:3,against:0,abstain:0}, dsc_signed:false },
+    { id:'BR-2025-007', title:'Authorisation for NCR Entertainment PMC',   passed_on:null,           votes:{for:1,against:1,abstain:1}, dsc_signed:false, status:'Pending' },
   ],
 }))
 

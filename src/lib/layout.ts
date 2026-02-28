@@ -16,6 +16,9 @@ export function layout(title: string, content: string, opts?: {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none';">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta name="description" content="${desc}">
 <meta property="og:title" content="${title} — India Gully">
 <meta property="og:description" content="${desc}">
@@ -606,6 +609,46 @@ const SCRIPTS = `
   window.igViewPDF = function(filename, msg){
     igToast(msg || ('Opening '+filename+' in viewer …'), 'success');
   };
+
+  /* ── DOCUMENT WATERMARK ───────────────────────────────────────────────── */
+  window.igWatermark = function(docEl, userLabel){
+    if(!docEl) return;
+    userLabel = userLabel || 'CONFIDENTIAL — India Gully';
+    var wm = document.createElement('div');
+    wm.style.cssText = 'position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;';
+    for(var y=0;y<6;y++){for(var x=0;x<4;x++){
+      var s=document.createElement('span');
+      s.style.cssText='position:absolute;left:'+(x*26)+'%;top:'+(y*18)+'%;transform:rotate(-30deg);font-size:.65rem;color:rgba(0,0,0,.08);font-weight:700;white-space:nowrap;user-select:none;letter-spacing:.06em;';
+      s.textContent=userLabel; wm.appendChild(s);
+    }}
+    docEl.style.position='relative'; docEl.appendChild(wm);
+  };
+
+  /* ── DPDP CONSENT BANNER ──────────────────────────────────────────────── */
+  (function(){
+    if(window.location.pathname.startsWith('/admin')||window.location.pathname.startsWith('/portal')) return;
+    var key='ig_dpdp_consent_v2';
+    if(localStorage.getItem(key)) return;
+    var banner=document.createElement('div');
+    banner.id='dpdp-banner';
+    banner.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:8888;background:#0A0A0A;border-top:2px solid var(--gold);padding:1rem 1.5rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;';
+    banner.innerHTML='<div style="flex:1;min-width:260px;"><div style="font-size:.75rem;font-weight:700;color:#fff;margin-bottom:.25rem;letter-spacing:.06em;">🔒 DPDP Act 2023 — Data Consent</div>'
+      +'<div style="font-size:.72rem;color:rgba(255,255,255,.55);line-height:1.55;">India Gully collects limited personal data (name, email, organisation) for advisory and business purposes under the Digital Personal Data Protection Act, 2023. We do not sell your data. <a href="/legal/privacy" style="color:var(--gold);text-decoration:underline;">Privacy Policy</a></div></div>'
+      +'<div style="display:flex;gap:.625rem;flex-shrink:0;">'
+      +'<button id="dpdp-accept" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.75rem;font-weight:700;cursor:pointer;letter-spacing:.06em;">Accept & Continue</button>'
+      +'<button id="dpdp-decline" style="background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;">Manage Preferences</button>'
+      +'</div>';
+    document.body.appendChild(banner);
+    document.getElementById('dpdp-accept').onclick=function(){
+      localStorage.setItem(key,'accepted_'+Date.now());
+      banner.style.transition='transform .4s'; banner.style.transform='translateY(100%)';
+      setTimeout(function(){banner.remove();},400);
+    };
+    document.getElementById('dpdp-decline').onclick=function(){
+      igToast('Data preferences: Only essential cookies used. No marketing data collected.','success');
+      localStorage.setItem(key,'essential_'+Date.now()); banner.remove();
+    };
+  })();
 
 })();
 </script>

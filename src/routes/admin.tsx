@@ -18,6 +18,9 @@ function adminShell(pageTitle: string, active: string, body: string) {
     { id:'sales',        icon:'funnel-dollar',   label:'Sales Force',    g:'ERP',      badge:'5' },
     { id:'integrations', icon:'plug',            label:'Integrations',   g:'Platform', badge:'' },
     { id:'reports',      icon:'chart-pie',       label:'BI & Reports',   g:'Platform', badge:'' },
+    { id:'kpi',          icon:'bullseye',        label:'KPI & OKRs',     g:'Platform', badge:'' },
+    { id:'risk',         icon:'exclamation-triangle', label:'Risk Dashboard', g:'Platform', badge:'2' },
+    { id:'api-docs',     icon:'code',            label:'API Docs',       g:'Platform', badge:'' },
     { id:'config',       icon:'cog',             label:'System Config',  g:'Platform', badge:'' },
     { id:'security',     icon:'shield-alt',      label:'Security Audit', g:'Platform', badge:'!' },
   ]
@@ -1307,7 +1310,7 @@ app.get('/finance', (c) => {
 
   <!-- Tab navigation (Phase 6: added Ledger, Bank Recon, e-Invoice) -->
   <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);overflow-x:auto;">
-    ${['Invoices','P&L Statement','Ledger','Bank Recon','Expenses','GST / e-Invoice','Reports'].map((t,i)=>`<button onclick="igFinTab(${i})" id="fin-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
+    ${['Invoices','P&L Statement','Ledger','Bank Recon','Expenses','GST / e-Invoice','Reports','Multi-Entity','E-Way Bill','TDS 26Q & Close'].map((t,i)=>`<button onclick="igFinTab(${i})" id="fin-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
   </div>
 
   <!-- Tab 0: Invoices -->
@@ -1696,10 +1699,214 @@ app.get('/finance', (c) => {
     </div>
   </div>
 
+  <!-- fin-pane-7: Multi-Entity Ledger -->
+  <div id="fin-pane-7" style="display:none;">
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Multi-Entity Consolidated Ledger</h3>
+        <div style="display:flex;gap:.5rem;">
+          <select class="ig-input" style="font-size:.75rem;max-width:180px;">
+            <option>India Gully Pvt Ltd (HQ)</option>
+            <option>IG HORECA Solutions LLP</option>
+            <option>IG Real Estate Advisory</option>
+            <option>Consolidated View</option>
+          </select>
+          <select class="ig-input" style="font-size:.75rem;max-width:130px;">
+            <option>FY 2025-26</option><option>FY 2024-25</option>
+          </select>
+        </div>
+      </div>
+      <!-- Entity Summary Cards -->
+      <div style="padding:1.25rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem;">
+        ${[
+          {entity:'India Gully Pvt Ltd',      rev:'₹89.5L', exp:'₹56.2L', profit:'₹33.3L', pct:'37.2%', c:'#B8960C'},
+          {entity:'IG HORECA Solutions LLP',   rev:'₹24.1L', exp:'₹18.7L', profit:'₹5.4L',  pct:'22.4%', c:'#2563eb'},
+          {entity:'IG Real Estate Advisory',   rev:'₹12.8L', exp:'₹9.1L',  profit:'₹3.7L',  pct:'28.9%', c:'#16a34a'},
+        ].map(e=>`<div style="border:2px solid ${e.c}22;padding:1rem;">
+          <div style="font-size:.72rem;font-weight:700;color:${e.c};margin-bottom:.5rem;">${e.entity}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;">
+            <div style="font-size:.68rem;color:var(--ink-muted);">Revenue</div><div style="font-size:.78rem;font-weight:600;color:var(--ink);">${e.rev}</div>
+            <div style="font-size:.68rem;color:var(--ink-muted);">Expenses</div><div style="font-size:.78rem;font-weight:600;color:#dc2626;">${e.exp}</div>
+            <div style="font-size:.68rem;color:var(--ink-muted);">Net Profit</div><div style="font-size:.78rem;font-weight:700;color:#16a34a;">${e.profit} <span style="color:var(--ink-muted);font-weight:400;">(${e.pct})</span></div>
+          </div>
+        </div>`).join('')}
+      </div>
+      <!-- Intercompany Eliminations -->
+      <div style="padding:0 1.25rem 1.25rem;">
+        <div style="font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin-bottom:.75rem;">Intercompany Transactions to Eliminate</div>
+        <table class="ig-tbl"><thead><tr><th>From Entity</th><th>To Entity</th><th>Type</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>
+          ${[
+            {from:'India Gully Pvt Ltd',to:'IG HORECA Solutions LLP',   type:'Management Fee', amt:'₹3.5L', s:'Pending'},
+            {from:'India Gully Pvt Ltd',to:'IG Real Estate Advisory',   type:'Cost Allocation', amt:'₹1.8L', s:'Eliminated'},
+            {from:'IG HORECA Solutions',to:'India Gully Pvt Ltd',       type:'Loan Interest',   amt:'₹0.6L', s:'Eliminated'},
+          ].map(r=>`<tr>
+            <td style="font-size:.75rem;">${r.from}</td>
+            <td style="font-size:.75rem;">${r.to}</td>
+            <td style="font-size:.72rem;color:var(--ink-muted);">${r.type}</td>
+            <td style="font-size:.78rem;font-weight:600;color:var(--gold);">${r.amt}</td>
+            <td><span class="badge ${r.s==='Eliminated'?'b-gr':'b-g'}" style="font-size:.6rem;">${r.s}</span></td>
+            <td><button onclick="igToast('${r.type} elimination journal posted','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">Eliminate</button></td>
+          </tr>`).join('')}
+        </tbody></table>
+        <div style="display:flex;gap:.75rem;margin-top:1rem;">
+          <button onclick="igToast('Consolidated P&L report generated — 3 entities','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-layer-group" style="margin-right:.4rem;"></i>Generate Consolidated P&L</button>
+          <button onclick="igToast('Consolidated Balance Sheet downloading…','success')" style="background:var(--ink);color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-balance-scale" style="margin-right:.4rem;"></i>Balance Sheet</button>
+        </div>
+      </div>
+    </div>
+    <!-- Period Closing Checklist -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Month-End Closing Checklist — February 2025</h3>
+      </div>
+      <div style="padding:1.25rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.625rem;">
+          ${[
+            {task:'Post all sales invoices',          done:true, responsible:'Finance'},
+            {task:'Post purchase bills & vendor dues', done:true, responsible:'Finance'},
+            {task:'Bank reconciliation completed',     done:true, responsible:'Finance'},
+            {task:'Depreciation journal entry',        done:true, responsible:'Finance'},
+            {task:'Accruals & prepayments posted',     done:false,responsible:'Finance'},
+            {task:'Payroll journal posted',            done:true, responsible:'HR'},
+            {task:'GST return filed (GSTR-1)',         done:true, responsible:'Finance'},
+            {task:'TDS deposited',                     done:false,responsible:'Finance'},
+            {task:'Intercompany eliminations done',    done:false,responsible:'Finance'},
+            {task:'P&L reviewed by CFO',              done:false,responsible:'Director'},
+          ].map(t=>`<div style="display:flex;align-items:center;gap:.625rem;padding:.5rem .875rem;border:1px solid ${t.done?'#86efac':'var(--border)'};background:${t.done?'#f0fdf4':'#fff'};">
+            <i class="fas fa-${t.done?'check-circle':'circle'}" style="color:${t.done?'#16a34a':'#94a3b8'};font-size:.85rem;flex-shrink:0;"></i>
+            <div style="flex:1;font-size:.78rem;color:${t.done?'#16a34a':'var(--ink)'};">${t.task}</div>
+            <span style="font-size:.65rem;color:var(--ink-muted);">${t.responsible}</span>
+          </div>`).join('')}
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:.75rem;">
+          <button onclick="igToast('Period lock initiated — February 2025 closing started','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-lock" style="margin-right:.4rem;"></i>Lock Period</button>
+          <button onclick="igToast('CFO sign-off email sent for February 2025 financials','success')" style="background:none;border:1px solid var(--border);padding:.5rem 1rem;font-size:.78rem;cursor:pointer;color:var(--ink);"><i class="fas fa-paper-plane" style="margin-right:.4rem;"></i>Request CFO Sign-off</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- fin-pane-8: E-Way Bill -->
+  <div id="fin-pane-8" style="display:none;">
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">E-Way Bill Generation & Register</h3>
+        <button onclick="togglePanel('new-ewb-panel')" style="background:var(--gold);color:#fff;border:none;padding:.4rem .875rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.4rem;"></i>Generate EWB</button>
+      </div>
+      <!-- New EWB Form -->
+      <div id="new-ewb-panel" class="ig-panel" style="margin:1.25rem;display:none;">
+        <h4 style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.875rem;">New E-Way Bill</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.875rem;">
+          <div><label class="ig-label">Transaction Type</label><select class="ig-input" style="font-size:.82rem;"><option>Outward — Supply</option><option>Inward — Supply</option><option>Job Work</option></select></div>
+          <div><label class="ig-label">Document No.</label><input type="text" class="ig-input" placeholder="INV-2025-004" style="font-size:.82rem;"></div>
+          <div><label class="ig-label">Document Date</label><input type="date" class="ig-input" value="2025-03-05" style="font-size:.82rem;"></div>
+          <div><label class="ig-label">From GSTIN</label><input type="text" class="ig-input" value="07XXXXXX000XXX" style="font-size:.82rem;"></div>
+          <div><label class="ig-label">To GSTIN / State</label><input type="text" class="ig-input" placeholder="27YYYYYY999ZZZ / Maharashtra" style="font-size:.82rem;"></div>
+          <div><label class="ig-label">HSN Code</label><input type="text" class="ig-input" value="998313" style="font-size:.82rem;"></div>
+          <div><label class="ig-label">Taxable Value (₹)</label><input type="number" class="ig-input" placeholder="0" style="font-size:.82rem;"></div>
+          <div><label class="ig-label">Transport Mode</label><select class="ig-input" style="font-size:.82rem;"><option>Road</option><option>Rail</option><option>Air</option><option>Ship</option></select></div>
+          <div><label class="ig-label">Vehicle / LR No.</label><input type="text" class="ig-input" placeholder="DL01AB1234" style="font-size:.82rem;"></div>
+        </div>
+        <button onclick="igToast('E-Way Bill EWB-2025-'+Math.floor(Math.random()*9000+1000)+' generated — valid 24h','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;margin-top:.875rem;"><i class="fas fa-truck" style="margin-right:.4rem;"></i>Generate EWB</button>
+      </div>
+      <!-- EWB Register -->
+      <table class="ig-tbl"><thead><tr><th>EWB No.</th><th>Type</th><th>Document</th><th>From</th><th>To</th><th>Value</th><th>Valid Till</th><th>Status</th><th>Action</th></tr></thead><tbody>
+        ${[
+          {ewb:'EWB-2025-1042',type:'Outward',doc:'INV-2025-003',from:'Delhi (07)',to:'Mumbai (27)', val:'₹4.2L', valid:'06 Mar 2025 17:00',s:'Active'},
+          {ewb:'EWB-2025-0998',type:'Inward', doc:'PO-2025-018', from:'Mumbai (27)',to:'Delhi (07)', val:'₹1.8L', valid:'02 Mar 2025 14:00',s:'Expired'},
+          {ewb:'EWB-2025-0887',type:'Outward',doc:'INV-2025-001',from:'Delhi (07)',to:'Jaipur (08)', val:'₹8.5L', valid:'25 Feb 2025 12:00',s:'Cancelled'},
+        ].map(e=>`<tr>
+          <td style="font-size:.78rem;font-weight:600;color:var(--gold);">${e.ewb}</td>
+          <td style="font-size:.72rem;">${e.type}</td>
+          <td style="font-size:.72rem;">${e.doc}</td>
+          <td style="font-size:.72rem;">${e.from}</td>
+          <td style="font-size:.72rem;">${e.to}</td>
+          <td style="font-size:.78rem;font-weight:600;">₹${e.val}</td>
+          <td style="font-size:.68rem;color:var(--ink-muted);">${e.valid}</td>
+          <td><span class="badge ${e.s==='Active'?'b-gr':e.s==='Expired'?'b-re':'b-g'}" style="font-size:.6rem;">${e.s}</span></td>
+          <td><button onclick="igToast('${e.ewb} PDF downloaded','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button></td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>
+
+  <!-- fin-pane-9: TDS 26Q & Period Closing -->
+  <div id="fin-pane-9" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+      <!-- TDS 26Q Return -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">TDS Returns — Form 26Q (Non-Salary)</h3></div>
+        <div style="padding:1.25rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;">
+            ${[
+              {q:'Q3 FY 2024-25 (Oct–Dec)',due:'15 Jan 2025',filed:'12 Jan 2025',tds:'₹1,24,500',s:'Filed'},
+              {q:'Q4 FY 2024-25 (Jan–Mar)',due:'31 May 2025',filed:null,         tds:'₹98,000',s:'Pending'},
+            ].map(r=>`<div style="border:1px solid ${r.s==='Filed'?'#86efac':'#fcd34d'};background:${r.s==='Filed'?'#f0fdf4':'#fffbeb'};padding:.875rem;">
+              <div style="font-size:.72rem;font-weight:700;color:var(--ink);margin-bottom:.4rem;">${r.q}</div>
+              <div style="font-size:.68rem;color:var(--ink-muted);">Due: ${r.due}</div>
+              <div style="font-size:.68rem;color:var(--ink-muted);">Filed: ${r.filed||'—'}</div>
+              <div style="font-size:.78rem;font-weight:600;color:var(--gold);margin:.3rem 0;">TDS Amount: ${r.tds}</div>
+              <span class="badge ${r.s==='Filed'?'b-gr':'b-g'}" style="font-size:.6rem;">${r.s}</span>
+            </div>`).join('')}
+          </div>
+          <div style="font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin-bottom:.625rem;">Vendor-Wise TDS Summary — Q4 FY 2024-25</div>
+          <table class="ig-tbl"><thead><tr><th>Vendor</th><th>PAN</th><th>Section</th><th>Payment</th><th>TDS Rate</th><th>TDS Amt</th><th>Form 16A</th></tr></thead><tbody>
+            ${[
+              {v:'ABC Consultants Pvt',pan:'AAAAA1234A',sec:'194J',pay:'₹5.5L',rate:'10%',tds:'₹55,000',f16a:true},
+              {v:'XYZ Tech Solutions', pan:'BBBBB5678B',sec:'194C',pay:'₹2.2L',rate:'2%', tds:'₹4,400', f16a:true},
+              {v:'Rent — Office Space',pan:'CCCCC9012C',sec:'194I',pay:'₹6.0L',rate:'10%',tds:'₹60,000',f16a:false},
+            ].map(r=>`<tr>
+              <td style="font-size:.75rem;">${r.v}</td>
+              <td style="font-size:.72rem;font-family:monospace;">${r.pan}</td>
+              <td style="font-size:.72rem;">${r.sec}</td>
+              <td style="font-size:.75rem;">${r.pay}</td>
+              <td style="font-size:.72rem;">${r.rate}</td>
+              <td style="font-size:.78rem;font-weight:600;color:var(--gold);">${r.tds}</td>
+              <td><button onclick="igToast('Form 16A for ${r.v} downloaded','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:${r.f16a?'var(--gold)':'var(--ink-muted)'};"><i class="fas fa-${r.f16a?'file-pdf':'clock'}"></i></button></td>
+            </tr>`).join('')}
+          </tbody></table>
+          <div style="display:flex;gap:.75rem;margin-top:1rem;">
+            <button onclick="igToast('26Q return for Q4 prepared — review before filing on TRACES','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-file-alt" style="margin-right:.4rem;"></i>Prepare Q4 Return</button>
+            <button onclick="igToast('All Form 16A certificates for Q3 emailed to vendors','success')" style="background:none;border:1px solid var(--border);padding:.5rem 1rem;font-size:.78rem;cursor:pointer;color:var(--ink);"><i class="fas fa-envelope" style="margin-right:.4rem;"></i>Email 16A Certs</button>
+          </div>
+        </div>
+      </div>
+      <!-- Year-End Consolidation -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Year-End Closing & Consolidation</h3></div>
+        <div style="padding:1.25rem;">
+          <div class="ig-warn" style="margin-bottom:1rem;"><i class="fas fa-exclamation-triangle"></i><div>FY 2024-25 closing due by 31 March 2025. 7 tasks pending.</div></div>
+          <div style="display:flex;flex-direction:column;gap:.5rem;">
+            ${[
+              {task:'Close all income accounts to P&L',          pct:100, s:'Done'},
+              {task:'Close all expense accounts to P&L',         pct:100, s:'Done'},
+              {task:'Transfer P&L to Retained Earnings',         pct:100, s:'Done'},
+              {task:'Depreciation schedule — final run',         pct:80,  s:'In Progress'},
+              {task:'Provision for doubtful debts',              pct:0,   s:'Pending'},
+              {task:'Statutory audit adjustments',               pct:0,   s:'Pending'},
+              {task:'Tax computation & advance tax',             pct:50,  s:'In Progress'},
+              {task:'ROC filing preparation (AOC-4, MGT-7)',     pct:0,   s:'Pending'},
+              {task:'Final signed financial statements',         pct:0,   s:'Pending'},
+            ].map(t=>`<div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.25rem;">
+                <span style="font-size:.75rem;color:var(--ink);">${t.task}</span>
+                <span class="badge ${t.s==='Done'?'b-gr':t.s==='In Progress'?'b-g':'b-re'}" style="font-size:.58rem;flex-shrink:0;margin-left:.5rem;">${t.s}</span>
+              </div>
+              <div style="background:#f1f5f9;height:4px;border-radius:2px;overflow:hidden;">
+                <div style="height:100%;background:${t.pct===100?'#16a34a':t.pct>0?'#d97706':'#e2e8f0'};width:${t.pct}%;transition:width .6s;"></div>
+              </div>
+            </div>`).join('')}
+          </div>
+          <button onclick="igToast('Year-end closing workflow triggered — CFO approval required','success')" style="background:var(--ink);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;margin-top:1rem;width:100%;"><i class="fas fa-lock" style="margin-right:.4rem;"></i>Initiate FY 2024-25 Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
   // ── Finance Tab Switcher ───────────────────────────────────────────────────
   window.igFinTab = function(idx){
-    for(var i=0;i<7;i++){
+    for(var i=0;i<10;i++){
       var pane=document.getElementById('fin-pane-'+i);
       var tab=document.getElementById('fin-tab-'+i);
       if(pane) pane.style.display = i===idx?'block':'none';
@@ -1873,7 +2080,7 @@ app.get('/hr', (c) => {
 
   <!-- HR Tab Nav -->
   <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
-    ${['Employees','Attendance','Leave Mgmt','Payroll','Reports'].map((t,i)=>`<button onclick="igHrTab(${i})" id="hr-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;">${t}</button>`).join('')}
+    ${['Employees','Attendance','Leave Mgmt','Payroll','Reports','Tax Declaration','Onboarding'].map((t,i)=>`<button onclick="igHrTab(${i})" id="hr-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
   </div>
 
   <!-- Tab 0: Employees -->
@@ -2177,6 +2384,182 @@ app.get('/hr', (c) => {
     </div>
   </div>
 
+  <!-- hr-pane-5: Tax Declaration (Investment Declaration Portal) -->
+  <div id="hr-pane-5" style="display:none;">
+    <div class="ig-info" style="margin-bottom:1.25rem;"><i class="fas fa-info-circle"></i><div>Employees can submit investment declarations for FY 2025-26. Deadline: <strong>31 March 2025</strong>. Declared amounts are used for monthly TDS calculation.</div></div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;">
+      <!-- Declaration Form -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Investment Declaration — FY 2025-26</h3>
+          <select id="decl-emp-select" class="ig-input" style="font-size:.78rem;max-width:200px;" onchange="igUpdateTDS()">
+            <option value="1800000">Arun Manikonda (₹18L)</option>
+            <option value="2400000">Amit Jhingan (₹24L)</option>
+            <option value="1500000">Pavan Manikonda (₹15L)</option>
+          </select>
+        </div>
+        <div style="padding:1.25rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <!-- Section 80C -->
+            <div style="border:1px solid var(--border);padding:1rem;">
+              <div style="font-size:.75rem;font-weight:700;color:#7c3aed;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.75rem;">Section 80C (Max ₹1,50,000)</div>
+              ${[
+                {l:'PPF / VPF',       id:'d80c-ppf',   ph:'0'},
+                {l:'ELSS Funds',      id:'d80c-elss',  ph:'0'},
+                {l:'LIC Premium',     id:'d80c-lic',   ph:'0'},
+                {l:'Home Loan (P)',    id:'d80c-home',  ph:'0'},
+                {l:'5-yr FD / NSC',   id:'d80c-fd',    ph:'0'},
+              ].map(f=>`<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;">
+                <label style="font-size:.72rem;color:var(--ink-muted);width:100px;flex-shrink:0;">${f.l}</label>
+                <input type="number" id="${f.id}" class="ig-input" placeholder="${f.ph}" style="font-size:.75rem;" oninput="igUpdateTDS()">
+              </div>`).join('')}
+            </div>
+            <!-- Other Sections -->
+            <div style="border:1px solid var(--border);padding:1rem;">
+              <div style="font-size:.75rem;font-weight:700;color:#2563eb;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.75rem;">Other Deductions</div>
+              ${[
+                {l:'80D — Mediclaim',  id:'d80d',  ph:'0', note:'Max ₹25,000 (₹50K sr. citizen)'},
+                {l:'HRA Exemption',    id:'dhra',  ph:'0', note:'Metro/non-metro calculation'},
+                {l:'LTA Claimed',      id:'dlta',  ph:'0', note:'Twice in 4-year block'},
+                {l:'NPS — 80CCD(1B)',  id:'dnps',  ph:'0', note:'Additional ₹50,000 over 80C'},
+                {l:'Other Deductions', id:'doth',  ph:'0', note:'80E/80G/80U as applicable'},
+              ].map(f=>`<div style="margin-bottom:.5rem;">
+                <label style="font-size:.72rem;color:var(--ink-muted);display:block;margin-bottom:.15rem;">${f.l} <span style="font-size:.6rem;color:var(--ink-faint);">(${f.note})</span></label>
+                <input type="number" id="${f.id}" class="ig-input" placeholder="${f.ph}" style="font-size:.75rem;" oninput="igUpdateTDS()">
+              </div>`).join('')}
+            </div>
+          </div>
+          <!-- Tax Regime Toggle -->
+          <div style="display:flex;align-items:center;gap:.875rem;padding:.75rem;background:var(--parch-dk);border:1px solid var(--border);margin-bottom:1rem;">
+            <span style="font-size:.78rem;font-weight:600;color:var(--ink);">Tax Regime:</span>
+            <label style="display:flex;align-items:center;gap:.35rem;cursor:pointer;"><input type="radio" name="regime" value="new" checked onchange="igUpdateTDS()"><span style="font-size:.78rem;">New Regime (default)</span></label>
+            <label style="display:flex;align-items:center;gap:.35rem;cursor:pointer;"><input type="radio" name="regime" value="old" onchange="igUpdateTDS()"><span style="font-size:.78rem;">Old Regime (with deductions)</span></label>
+          </div>
+          <button onclick="igSubmitDecl()" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-paper-plane" style="margin-right:.4rem;"></i>Submit Declaration</button>
+        </div>
+      </div>
+      <!-- Live TDS Calculator -->
+      <div>
+        <div style="background:#1E1E1E;color:#fff;padding:1.25rem;margin-bottom:1rem;">
+          <div style="font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.5rem;">Live TDS Estimator</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;font-size:.72rem;">
+            <div style="display:flex;justify-content:space-between;"><span style="color:rgba(255,255,255,.6);">Gross Annual CTC</span><span id="tds-gross" style="font-weight:600;">₹18,00,000</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:rgba(255,255,255,.6);">Total Deductions</span><span id="tds-deduct" style="color:#86efac;">₹0</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:rgba(255,255,255,.6);">Standard Deduction</span><span style="color:#86efac;">₹50,000</span></div>
+            <div style="height:1px;background:rgba(255,255,255,.1);margin:.3rem 0;"></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:rgba(255,255,255,.6);">Net Taxable Income</span><span id="tds-taxable" style="font-weight:700;color:#fcd34d;">₹17,50,000</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:rgba(255,255,255,.6);">Income Tax + Cess</span><span id="tds-tax" style="color:#fca5a5;">₹3,22,500</span></div>
+            <div style="height:1px;background:rgba(255,255,255,.1);margin:.3rem 0;"></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:#fff;font-weight:700;">TDS per Month</span><span id="tds-pm" style="font-size:1rem;font-weight:700;color:var(--gold);">₹26,875</span></div>
+          </div>
+        </div>
+        <!-- Declaration Status -->
+        <div style="background:#fff;border:1px solid var(--border);">
+          <div style="padding:.875rem 1rem;border-bottom:1px solid var(--border);font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Declaration Status</div>
+          <div style="padding:.875rem;">
+            ${[
+              {e:'Arun Manikonda',   s:'Submitted', d:'10 Mar 2025', regime:'New'},
+              {e:'Amit Jhingan',     s:'Submitted', d:'08 Mar 2025', regime:'Old'},
+              {e:'Pavan Manikonda',  s:'Pending',   d:'—',           regime:'—'},
+            ].map(e=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border);">
+              <div>
+                <div style="font-size:.75rem;font-weight:500;">${e.e}</div>
+                <div style="font-size:.63rem;color:var(--ink-muted);">${e.d} · ${e.regime}</div>
+              </div>
+              <span class="badge ${e.s==='Submitted'?'b-gr':'b-re'}" style="font-size:.58rem;">${e.s}</span>
+            </div>`).join('')}
+            <button onclick="igToast('Reminder sent to pending employees','success')" style="background:none;border:1px solid var(--border);padding:.35rem .75rem;font-size:.7rem;cursor:pointer;color:var(--ink);margin-top:.75rem;width:100%;"><i class="fas fa-bell" style="margin-right:.3rem;"></i>Send Reminders</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- hr-pane-6: Onboarding Wizard -->
+  <div id="hr-pane-6" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:1.5rem;">
+      <!-- Wizard Steps -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Onboarding Wizard</h3></div>
+        <div style="padding:1rem;">
+          ${[
+            {n:1,label:'Basic Details',         done:true,  active:false},
+            {n:2,label:'Documents Upload',       done:true,  active:false},
+            {n:3,label:'Bank & PF Setup',        done:false, active:true},
+            {n:4,label:'IT Declaration',         done:false, active:false},
+            {n:5,label:'Asset Allocation',       done:false, active:false},
+            {n:6,label:'System Access Grant',    done:false, active:false},
+            {n:7,label:'Induction Schedule',     done:false, active:false},
+          ].map(s=>`<div onclick="igHrOnboard(${s.n})" style="display:flex;align-items:center;gap:.875rem;padding:.75rem;border-left:3px solid ${s.done?'#16a34a':s.active?'var(--gold)':'var(--border)'};background:${s.active?'#fffbeb':'#fff'};margin-bottom:.3rem;cursor:pointer;">
+            <div style="width:28px;height:28px;border-radius:50%;background:${s.done?'#16a34a':s.active?'var(--gold)':'#e2e8f0'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-size:.65rem;font-weight:700;color:#fff;">${s.done?'✓':s.n}</span>
+            </div>
+            <span style="font-size:.8rem;font-weight:${s.active?'700':'400'};color:${s.done?'#16a34a':s.active?'var(--gold)':'var(--ink-muted)'};">${s.label}</span>
+          </div>`).join('')}
+          <div style="margin-top:1rem;padding:.75rem;background:var(--parch-dk);border:1px solid var(--border);">
+            <div style="font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.4rem;">Completion</div>
+            <div class="ig-progress-track" style="height:8px;"><div class="ig-progress-fill" style="width:28.5%;background:var(--gold);"></div></div>
+            <div style="font-size:.72rem;color:var(--ink-muted);margin-top:.3rem;">2 of 7 steps done</div>
+          </div>
+        </div>
+      </div>
+      <!-- Active Step Content -->
+      <div id="onboard-content" style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Step 3: Bank Account & PF Setup</h3>
+        </div>
+        <div style="padding:1.5rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+            <div>
+              <div style="font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);margin-bottom:.75rem;">Salary Bank Account</div>
+              ${[
+                {l:'Bank Name',          id:'ob-bank',    ph:'HDFC Bank'},
+                {l:'Account Number',     id:'ob-acc',     ph:'XXXXXXXXXXXX'},
+                {l:'IFSC Code',          id:'ob-ifsc',    ph:'HDFC0001234'},
+                {l:'Account Type',       id:'ob-acctype', ph:'Savings'},
+              ].map(f=>`<div style="margin-bottom:.5rem;"><label class="ig-label">${f.l}</label><input type="text" id="${f.id}" class="ig-input" placeholder="${f.ph}" style="font-size:.82rem;"></div>`).join('')}
+            </div>
+            <div>
+              <div style="font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);margin-bottom:.75rem;">EPF / UAN Details</div>
+              ${[
+                {l:'UAN (if existing)',   id:'ob-uan',  ph:'Leave blank if new'},
+                {l:'Previous PF Account',id:'ob-pf',   ph:'MH/BAN/000000/000000 or None'},
+                {l:'Nomination Name',    id:'ob-nom',  ph:'Spouse / Parent Name'},
+              ].map(f=>`<div style="margin-bottom:.5rem;"><label class="ig-label">${f.l}</label><input type="text" id="${f.id}" class="ig-input" placeholder="${f.ph}" style="font-size:.82rem;"></div>`).join('')}
+              <div style="margin-top:.875rem;padding:.75rem;background:var(--parch-dk);border:1px solid var(--border);">
+                <div style="font-size:.68rem;color:var(--ink-muted);">PF Contribution: <strong>12% Employee + 12% Employer</strong></div>
+                <div style="font-size:.68rem;color:var(--ink-muted);margin-top:.2rem;">ESIC: Applicable if salary ≤ ₹21,000/mo</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:.75rem;">
+            <button onclick="igToast('Bank & PF details saved. Step 3 complete.','success')" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-arrow-right" style="margin-right:.4rem;"></i>Save & Continue</button>
+            <button onclick="igToast('Onboarding checklist emailed to employee','success')" style="background:none;border:1px solid var(--border);padding:.55rem 1rem;font-size:.78rem;cursor:pointer;color:var(--ink);"><i class="fas fa-envelope" style="margin-right:.4rem;"></i>Email Checklist</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Active Onboardings -->
+    <div style="margin-top:1.5rem;background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Active Onboardings</h3></div>
+      <table class="ig-tbl"><thead><tr><th>Employee</th><th>Role</th><th>DOJ</th><th>Step</th><th>Progress</th><th>Days Left</th><th>Action</th></tr></thead><tbody>
+        ${[
+          {name:'Rohan Sharma',   role:'Senior Analyst',    doj:'10 Mar 2025', step:'3/7', pct:43, days:21},
+          {name:'Priya Nair',     role:'Finance Executive',  doj:'01 Mar 2025', step:'6/7', pct:86, days:7},
+          {name:'Sumit Verma',    role:'HR Coordinator',    doj:'15 Mar 2025', step:'1/7', pct:14, days:26},
+        ].map(e=>`<tr>
+          <td style="font-size:.82rem;font-weight:500;">${e.name}</td>
+          <td style="font-size:.75rem;">${e.role}</td>
+          <td style="font-size:.72rem;color:var(--ink-muted);">${e.doj}</td>
+          <td style="font-size:.75rem;font-weight:600;color:var(--gold);">${e.step}</td>
+          <td style="min-width:100px;"><div style="background:#f1f5f9;height:6px;border-radius:3px;overflow:hidden;"><div style="height:100%;background:${e.pct>=80?'#16a34a':e.pct>=40?'#d97706':'#dc2626'};width:${e.pct}%;"></div></div><span style="font-size:.62rem;color:var(--ink-muted);">${e.pct}%</span></td>
+          <td style="font-size:.75rem;color:${e.days<=7?'#dc2626':'var(--ink-muted)'};">${e.days}d</td>
+          <td><button onclick="igToast('Opening onboarding for ${e.name}','info')" style="background:none;border:1px solid var(--border);padding:.25rem .625rem;font-size:.68rem;cursor:pointer;color:var(--gold);">Continue</button></td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>
+
   <!-- Employee Profile Modal -->
   <div id="emp-profile-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;">
     <div style="background:#fff;width:500px;max-width:95vw;border-top:4px solid var(--gold);">
@@ -2204,12 +2587,56 @@ app.get('/hr', (c) => {
 
   <script>
   window.igHrTab = function(idx){
-    for(var i=0;i<5;i++){
+    for(var i=0;i<7;i++){
       var p=document.getElementById('hr-pane-'+i);
       var t=document.getElementById('hr-tab-'+i);
       if(p) p.style.display=i===idx?'block':'none';
       if(t){ t.style.color=i===idx?'var(--gold)':'var(--ink-muted)'; t.style.borderBottom=i===idx?'2px solid var(--gold)':'2px solid transparent'; }
     }
+  };
+  // ── TDS Live Calculator ──────────────────────────────────────────────────
+  window.igUpdateTDS = function(){
+    var gross=parseFloat((document.getElementById('decl-emp-select')||{value:'1800000'}).value)||1800000;
+    var c80c=(['d80c-ppf','d80c-elss','d80c-lic','d80c-home','d80c-fd'].reduce(function(s,id){var el=document.getElementById(id);return s+(el?parseFloat(el.value)||0:0);},0));
+    var c80c_capped=Math.min(c80c,150000);
+    var c80d=parseFloat((document.getElementById('d80d')||{value:'0'}).value)||0;
+    var hra=parseFloat((document.getElementById('dhra')||{value:'0'}).value)||0;
+    var lta=parseFloat((document.getElementById('dlta')||{value:'0'}).value)||0;
+    var nps=parseFloat((document.getElementById('dnps')||{value:'0'}).value)||0;
+    var oth=parseFloat((document.getElementById('doth')||{value:'0'}).value)||0;
+    var regime=(document.querySelector('input[name="regime"]:checked')||{value:'new'}).value;
+    var stdDed=50000;
+    var totalDed=regime==='old'?(c80c_capped+Math.min(c80d,25000)+hra+lta+Math.min(nps,50000)+oth+stdDed):stdDed;
+    var taxable=Math.max(0,gross-totalDed);
+    var tax=0;
+    if(regime==='new'){
+      if(taxable>1500000) tax=150000+(taxable-1500000)*0.30;
+      else if(taxable>1200000) tax=90000+(taxable-1200000)*0.20;
+      else if(taxable>900000) tax=45000+(taxable-900000)*0.15;
+      else if(taxable>600000) tax=15000+(taxable-600000)*0.10;
+      else if(taxable>300000) tax=(taxable-300000)*0.05;
+    } else {
+      if(taxable>1000000) tax=112500+(taxable-1000000)*0.30;
+      else if(taxable>500000) tax=12500+(taxable-500000)*0.20;
+      else if(taxable>250000) tax=(taxable-250000)*0.05;
+    }
+    tax=Math.round(tax*1.04); // +4% cess
+    var tdspm=Math.round(tax/12);
+    var fmt=function(n){return '₹'+Math.round(n).toLocaleString('en-IN');};
+    var el=function(id){return document.getElementById(id);};
+    if(el('tds-gross')) el('tds-gross').textContent=fmt(gross);
+    if(el('tds-deduct')) el('tds-deduct').textContent=fmt(regime==='old'?totalDed-stdDed:0);
+    if(el('tds-taxable')) el('tds-taxable').textContent=fmt(taxable);
+    if(el('tds-tax')) el('tds-tax').textContent=fmt(tax);
+    if(el('tds-pm')) el('tds-pm').textContent=fmt(tdspm);
+  };
+  window.igSubmitDecl = function(){
+    var emp=(document.getElementById('decl-emp-select')||{options:[{text:''}]});
+    var empName=emp.options?emp.options[emp.selectedIndex].text:'Employee';
+    igToast('Investment declaration for '+empName+' submitted — TDS adjusted from Apr 2025','success');
+  };
+  window.igHrOnboard = function(step){
+    igToast('Navigating to onboarding step '+step,'info');
   };
   window.igAddEmployee = function(){
     var name=document.getElementById('emp-name').value.trim();
@@ -2307,7 +2734,7 @@ app.get('/governance', (c) => {
 
   <!-- Tab Nav -->
   <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
-    ${['Board Meetings','Voting Engine','Directors & KYC','Statutory Registers','Compliance'].map((t,i)=>`<button onclick="igGovTab(${i})" id="gov-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;">${t}</button>`).join('')}
+    ${['Board Meetings','Voting Engine','Directors & KYC','Statutory Registers','Compliance','DSC & Signatures','SS-1/SS-2 Notices'].map((t,i)=>`<button onclick="igGovTab(${i})" id="gov-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
   </div>
 
   <!-- Tab 0: Board Meetings -->
@@ -2562,8 +2989,179 @@ app.get('/governance', (c) => {
   </div>
 
   <script>
+  <!-- gov-pane-5: DSC & Digital Signatures -->
+  <div id="gov-pane-5" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+      <!-- DSC Registry -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DSC (Digital Signature Certificate) Registry</h3>
+          <button onclick="igToast('New DSC enrollment form opened','info')" style="background:var(--gold);color:#fff;border:none;padding:.35rem .75rem;font-size:.72rem;font-weight:600;cursor:pointer;">Enroll DSC</button>
+        </div>
+        <div style="padding:1.25rem;">
+          <table class="ig-tbl"><thead><tr><th>Director / KMP</th><th>DSC Class</th><th>Issued By</th><th>Valid Till</th><th>Status</th><th>Action</th></tr></thead><tbody>
+            ${[
+              {name:'Arun Manikonda',  class:'Class 3',  issuer:'eMudhra',     valid:'31 Dec 2025', s:'Active'},
+              {name:'Pavan Manikonda', class:'Class 3',  issuer:'Sify Trust',  valid:'15 Jun 2025', s:'Active'},
+              {name:'Amit Jhingan',    class:'Class 3',  issuer:'eMudhra',     valid:'20 Mar 2025', s:'Expiring'},
+            ].map(d=>`<tr>
+              <td style="font-size:.82rem;font-weight:500;">${d.name}</td>
+              <td style="font-size:.72rem;">${d.class}</td>
+              <td style="font-size:.72rem;color:var(--ink-muted);">${d.issuer}</td>
+              <td style="font-size:.72rem;color:${d.s==='Expiring'?'#dc2626':'var(--ink-muted)'};">${d.valid}</td>
+              <td><span class="badge ${d.s==='Active'?'b-gr':'b-re'}" style="font-size:.6rem;">${d.s}</span></td>
+              <td><button onclick="igToast('DSC renewal initiated for ${d.name}','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">Renew</button></td>
+            </tr>`).join('')}
+          </tbody></table>
+          <div class="ig-warn" style="margin-top:1rem;"><i class="fas fa-exclamation-triangle"></i><div>Amit Jhingan's DSC expires in 15 days. Renew to avoid signing delays.</div></div>
+        </div>
+      </div>
+      <!-- Pending Digital Signatures -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Pending Digital Signatures</h3></div>
+        <div style="padding:.875rem;">
+          ${[
+            {doc:'Board Resolution — Q4 Financials',   signers:['Arun Manikonda','Pavan Manikonda'],   due:'10 Mar 2025', signed:0},
+            {doc:'Advisory Agreement — EVL (MND-003)',  signers:['Arun Manikonda'],                     due:'12 Mar 2025', signed:1},
+            {doc:'Annual Return MGT-7 (FY 2024-25)',   signers:['Arun Manikonda','Pavan Manikonda'],   due:'30 Sep 2025', signed:0},
+            {doc:'Financial Statements (AOC-4)',        signers:['Arun Manikonda','Pavan Manikonda'],   due:'30 Oct 2025', signed:0},
+          ].map(d=>`<div style="border:1px solid var(--border);padding:.875rem;margin-bottom:.5rem;background:var(--parch-dk);">
+            <div style="font-size:.82rem;font-weight:600;color:var(--ink);margin-bottom:.3rem;">${d.doc}</div>
+            <div style="font-size:.68rem;color:var(--ink-muted);margin-bottom:.3rem;">Signers: ${d.signers.join(', ')} · Due: ${d.due}</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-size:.68rem;color:${d.signed===d.signers.length?'#16a34a':'#d97706'};">${d.signed}/${d.signers.length} signed</div>
+              <div style="display:flex;gap:.4rem;">
+                <button onclick="igToast('Signing reminder sent for ${d.doc}','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--ink-muted);"><i class="fas fa-bell"></i></button>
+                <button onclick="igToast('Document sent to DocuSign for ${d.doc}','success')" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.65rem;cursor:pointer;">Sign Now</button>
+              </div>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <!-- Digital Director Attendance -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Director Digital Attendance — Board Meetings FY 2024-25</h3>
+      </div>
+      <div style="padding:1.25rem;overflow-x:auto;">
+        <table class="ig-tbl"><thead><tr><th>Director / KMP</th><th>BM-01 (15 Jan)</th><th>BM-02 (15 Feb)</th><th>BM-03 (05 Mar)</th><th>Attendance %</th><th>Min. Required</th><th>Status</th></tr></thead><tbody>
+          ${[
+            {name:'Arun Manikonda',  din:'00000001', meetings:[true,true,true]},
+            {name:'Pavan Manikonda', din:'00000002', meetings:[true,true,false]},
+            {name:'Amit Jhingan',    din:'—',        meetings:[true,false,true]},
+          ].map(d=>{
+            const attended = d.meetings.filter(Boolean).length;
+            const pct = Math.round(attended/3*100);
+            return `<tr>
+              <td style="font-size:.82rem;font-weight:500;">${d.name} <span style="font-size:.65rem;color:var(--ink-muted);">DIN: ${d.din}</span></td>
+              ${d.meetings.map(m=>`<td><span class="badge ${m?'b-gr':'b-re'}" style="font-size:.6rem;">${m?'Present':'Absent'}</span></td>`).join('')}
+              <td style="font-size:.82rem;font-weight:700;color:${pct>=75?'#16a34a':'#dc2626'};">${pct}%</td>
+              <td style="font-size:.75rem;color:var(--ink-muted);">75%</td>
+              <td><span class="badge ${pct>=75?'b-gr':'b-re'}" style="font-size:.6rem;">${pct>=75?'Compliant':'Non-Compliant'}</span></td>
+            </tr>`;
+          }).join('')}
+        </tbody></table>
+        <div style="margin-top:1rem;display:flex;gap:.75rem;">
+          <button onclick="igToast('Attendance register exported — SS-1 compliant format','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-download" style="margin-right:.4rem;"></i>Export SS-1 Format</button>
+          <button onclick="igToast('Digital attendance confirmation sent to all directors','success')" style="background:none;border:1px solid var(--border);padding:.5rem 1rem;font-size:.78rem;cursor:pointer;color:var(--ink);"><i class="fas fa-signature" style="margin-right:.4rem;"></i>Request Confirmations</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- gov-pane-6: SS-1/SS-2 Notices -->
+  <div id="gov-pane-6" style="display:none;">
+    <div class="ig-info" style="margin-bottom:1.25rem;"><i class="fas fa-info-circle"></i><div><strong>Secretarial Standards:</strong> SS-1 governs Board Meetings; SS-2 governs General Meetings. Issued by ICSI, mandatory under Companies Act 2013 Section 118(10).</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+      <!-- SS-1 Board Meeting Notices -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">SS-1 — Board Meeting Notices</h3>
+          <button onclick="togglePanel('new-ss1-panel')" style="background:var(--gold);color:#fff;border:none;padding:.35rem .75rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.3rem;"></i>Draft Notice</button>
+        </div>
+        <div id="new-ss1-panel" class="ig-panel" style="margin:1.25rem;display:none;">
+          <h4 style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem;">Draft SS-1 Board Meeting Notice</h4>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+            <div><label class="ig-label">Meeting Date</label><input type="date" class="ig-input" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">Time</label><input type="time" class="ig-input" value="10:00" style="font-size:.82rem;"></div>
+            <div style="grid-column:span 2;"><label class="ig-label">Venue</label><input type="text" class="ig-input" placeholder="Registered Office / Video Conference" style="font-size:.82rem;"></div>
+            <div style="grid-column:span 2;"><label class="ig-label">Agenda Items</label><textarea class="ig-input" rows="3" placeholder="1. Adoption of financial statements&#10;2. Declaration of dividend&#10;3. Any other business" style="font-size:.82rem;"></textarea></div>
+          </div>
+          <div class="ig-info" style="margin-top:.75rem;"><i class="fas fa-clock"></i><div>SS-1 requires notice at least <strong>7 days</strong> before the meeting date (shorter notice with consent of all directors).</div></div>
+          <button onclick="igToast('SS-1 notice drafted — sent to Company Secretary for review','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;margin-top:.75rem;">Draft & Send for Review</button>
+        </div>
+        <div style="padding:1.25rem;">
+          ${[
+            {ref:'BM-NTC-003', date:'05 Mar 2025', issued:'26 Feb 2025', notice_days:7, signatories:'All Directors', s:'Issued', compliant:true},
+            {ref:'BM-NTC-002', date:'15 Feb 2025', issued:'07 Feb 2025', notice_days:8, signatories:'All Directors', s:'Archived', compliant:true},
+            {ref:'BM-NTC-001', date:'15 Jan 2025', issued:'08 Jan 2025', notice_days:7, signatories:'All Directors', s:'Archived', compliant:true},
+          ].map(n=>`<div style="border:1px solid ${n.compliant?'#86efac':'#fca5a5'};padding:.875rem;margin-bottom:.625rem;background:${n.compliant?'#f0fdf4':'#fff5f5'};">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.3rem;">
+              <div style="font-size:.78rem;font-weight:600;color:var(--gold);">${n.ref}</div>
+              <span class="badge ${n.s==='Issued'?'b-gr':'b-dk'}" style="font-size:.6rem;">${n.s}</span>
+            </div>
+            <div style="font-size:.72rem;color:var(--ink-muted);">Meeting: ${n.date} · Issued: ${n.issued} (${n.notice_days} days notice)</div>
+            <div style="font-size:.72rem;color:var(--ink-muted);">Sent to: ${n.signatories}</div>
+            <div style="display:flex;align-items:center;gap:.5rem;margin-top:.3rem;">
+              <span class="badge ${n.compliant?'b-gr':'b-re'}" style="font-size:.58rem;">SS-1 ${n.compliant?'Compliant':'Non-Compliant'}</span>
+              <button onclick="igToast('Downloading ${n.ref} PDF','success')" style="background:none;border:1px solid var(--border);padding:.15rem .4rem;font-size:.6rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <!-- SS-2 AGM/EGM Notices -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">SS-2 — General Meeting Notices</h3>
+          <button onclick="igToast('SS-2 AGM notice template opened','info')" style="background:var(--gold);color:#fff;border:none;padding:.35rem .75rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.3rem;"></i>Draft Notice</button>
+        </div>
+        <div style="padding:1.25rem;">
+          <div class="ig-warn" style="margin-bottom:1rem;"><i class="fas fa-calendar-times"></i><div>Annual General Meeting for FY 2024-25 due by <strong>30 September 2025</strong>. Plan for August 2025.</div></div>
+          ${[
+            {ref:'AGM-2024', date:'25 Sep 2024', type:'AGM', notice_days:21, quorum:'Quorum met (2 members present)', s:'Completed', compliant:true},
+            {ref:'EGM-2024-01', date:'15 Nov 2024', type:'EGM', notice_days:14, quorum:'Quorum met (2 members present)', s:'Completed', compliant:true},
+            {ref:'AGM-2025', date:'TBD (Sep 2025)', type:'AGM', notice_days:21, quorum:'—', s:'Upcoming', compliant:null},
+          ].map(n=>`<div style="border:1px solid ${n.compliant===null?'#fcd34d':n.compliant?'#86efac':'#fca5a5'};padding:.875rem;margin-bottom:.625rem;background:${n.compliant===null?'#fffbeb':n.compliant?'#f0fdf4':'#fff5f5'};">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.3rem;">
+              <div><span class="badge b-dk" style="font-size:.6rem;margin-right:.4rem;">${n.type}</span><span style="font-size:.78rem;font-weight:600;color:var(--gold);">${n.ref}</span></div>
+              <span class="badge ${n.s==='Completed'?'b-gr':n.s==='Upcoming'?'b-g':'b-re'}" style="font-size:.6rem;">${n.s}</span>
+            </div>
+            <div style="font-size:.72rem;color:var(--ink-muted);">Date: ${n.date} · Notice: ${n.notice_days} days required</div>
+            <div style="font-size:.72rem;color:var(--ink-muted);">${n.quorum}</div>
+            ${n.compliant!==null?`<span class="badge ${n.compliant?'b-gr':'b-re'}" style="font-size:.58rem;margin-top:.3rem;display:inline-block;">SS-2 ${n.compliant?'Compliant':'Non-Compliant'}</span>`:''}
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <!-- Companies Act 2013 Checklist -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Companies Act 2013 — Key Compliance Checklist</h3></div>
+      <div style="padding:1.25rem;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;">
+          ${[
+            {req:'Minimum 4 Board Meetings per year',           s:'Done',    note:'3 held, 1 planned Q4'},
+            {req:'Gap between meetings ≤120 days',              s:'Compliant',note:'All gaps within 120 days'},
+            {req:'Quorum: ⅓ or 2 directors (higher of two)',   s:'Compliant',note:'Both meetings had quorum'},
+            {req:'AGM within 6 months of FY end',              s:'Due',     note:'Due by 30 Sep 2025'},
+            {req:'Board minutes within 30 days of meeting',     s:'Compliant',note:'Minutes filed on time'},
+            {req:'Director disclosure of interest (Form MBP-1)',s:'Done',    note:'All directors submitted'},
+            {req:'Annual Return MGT-7 (within 60 days AGM)',    s:'Pending', note:'Post AGM — Sep 2025'},
+            {req:'Financial Statements AOC-4 (within 30 days)', s:'Pending', note:'Post AGM — Oct 2025'},
+            {req:'Statutory Audit completed',                   s:'In Progress',note:'Auditors appointed'},
+          ].map(r=>`<div style="padding:.75rem;border:1px solid ${r.s==='Compliant'||r.s==='Done'?'#86efac':r.s==='Pending'?'#fca5a5':r.s==='Due'?'#fcd34d':'var(--border)'};background:${r.s==='Compliant'||r.s==='Done'?'#f0fdf4':r.s==='Pending'?'#fff5f5':r.s==='Due'?'#fffbeb':'#fff'};">
+            <div style="font-size:.75rem;color:var(--ink);margin-bottom:.25rem;">${r.req}</div>
+            <div style="font-size:.65rem;color:var(--ink-muted);margin-bottom:.3rem;">${r.note}</div>
+            <span class="badge ${r.s==='Compliant'||r.s==='Done'?'b-gr':r.s==='Pending'?'b-re':r.s==='Due'?'b-g':'b-dk'}" style="font-size:.58rem;">${r.s}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
   window.igGovTab = function(idx){
-    for(var i=0;i<5;i++){
+    for(var i=0;i<7;i++){
       var p=document.getElementById('gov-pane-'+i);
       var t=document.getElementById('gov-tab-'+i);
       if(p) p.style.display=i===idx?'block':'none';
@@ -2630,7 +3228,7 @@ app.get('/horeca', (c) => {
 
   <!-- Tab Nav -->
   <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
-    ${['Catalogue','Inventory Ledger','Vendors','Quote Builder','Purchase Orders'].map((t,i)=>`<button onclick="igHorecaTab(${i})" id="hrc-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;">${t}</button>`).join('')}
+    ${['Catalogue','Inventory Ledger','Vendors','Quote Builder','Purchase Orders','Customer Portal'].map((t,i)=>`<button onclick="igHorecaTab(${i})" id="hrc-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
   </div>
 
   <!-- Tab 0: Catalogue -->
@@ -2839,9 +3437,87 @@ app.get('/horeca', (c) => {
     </div>
   </div>
 
+  <!-- hrc-pane-5: Customer Portal Management -->
+  <div id="hrc-pane-5" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+      <!-- Portal Accounts -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">HORECA Customer Portal Accounts</h3>
+          <button onclick="igToast('New HORECA customer account creation form opened','info')" style="background:var(--gold);color:#fff;border:none;padding:.35rem .75rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-user-plus" style="margin-right:.3rem;"></i>Add Account</button>
+        </div>
+        <div style="padding:.875rem;">
+          <table class="ig-tbl"><thead><tr><th>Customer</th><th>Type</th><th>Pricing Tier</th><th>Last Login</th><th>Orders</th><th>Status</th></tr></thead><tbody>
+            ${[
+              {name:'Rajasthan Resort Group',  type:'Hotel Chain',   tier:'Premium (negotiated)',  last:'05 Mar 2025', orders:8, s:'Active'},
+              {name:'Goa Hospitality Ventures',type:'Resort',        tier:'Standard',              last:'03 Mar 2025', orders:3, s:'Active'},
+              {name:'Heritage Hotels Ltd.',    type:'Heritage Hotel',tier:'Preferred',             last:'28 Feb 2025', orders:5, s:'Active'},
+              {name:'NCR Entertainment Pvt',  type:'Venue',         tier:'Trial (30-day)',         last:'01 Mar 2025', orders:1, s:'Trial'},
+              {name:'Delhi NCR Retail Park',   type:'F&B Operator',  tier:'Standard',              last:'15 Jan 2025', orders:0, s:'Inactive'},
+            ].map(c=>`<tr>
+              <td style="font-size:.82rem;font-weight:500;">${c.name}<div style="font-size:.65rem;color:var(--ink-muted);">${c.type}</div></td>
+              <td style="font-size:.68rem;">${c.tier}</td>
+              <td style="font-size:.68rem;color:var(--ink-muted);">${c.last}</td>
+              <td style="font-size:.78rem;font-weight:600;color:var(--gold);">${c.orders}</td>
+              <td><span class="badge ${c.s==='Active'?'b-gr':c.s==='Trial'?'b-g':'b-re'}" style="font-size:.6rem;">${c.s}</span></td>
+            </tr>`).join('')}
+          </tbody></table>
+          <div style="padding:.75rem;border-top:1px solid var(--border);display:flex;gap:.75rem;">
+            <button onclick="igToast('Portal access link sent to all active customers','success')" style="background:var(--ink);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-link" style="margin-right:.3rem;"></i>Send Portal Links</button>
+            <a href="/horeca/portal" target="_blank" style="background:var(--gold);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;"><i class="fas fa-external-link-alt" style="margin-right:.3rem;"></i>Preview Portal</a>
+          </div>
+        </div>
+      </div>
+      <!-- Pricing Tier Config -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Role-Based Pricing Tiers</h3></div>
+        <div style="padding:1.25rem;">
+          ${[
+            {tier:'Premium',   disc:'20%', moq:'₹5L', lead:'Priority 3-day', badge:'b-gr', note:'Custom negotiated rates'},
+            {tier:'Preferred', disc:'12%', moq:'₹2L', lead:'5 days',         badge:'b-g',  note:'Volume-based clients'},
+            {tier:'Standard',  disc:'5%',  moq:'₹50K',lead:'7 days',         badge:'b-dk', note:'Default new clients'},
+            {tier:'Trial',     disc:'0%',  moq:'₹10K',lead:'10 days',        badge:'b-re', note:'30-day trial access'},
+          ].map(t=>`<div style="padding:.875rem;border:1px solid var(--border);margin-bottom:.5rem;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;">
+                <span class="badge ${t.badge}" style="font-size:.6rem;">${t.tier}</span>
+                <span style="font-size:.72rem;font-weight:600;color:var(--gold);">${t.disc} discount</span>
+              </div>
+              <div style="font-size:.65rem;color:var(--ink-muted);">Min order: ${t.moq} · Lead: ${t.lead}</div>
+              <div style="font-size:.63rem;color:var(--ink-faint);">${t.note}</div>
+            </div>
+            <button onclick="igToast('Editing ${t.tier} tier pricing','info')" style="background:none;border:1px solid var(--border);padding:.25rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">Edit</button>
+          </div>`).join('')}
+          <button onclick="igToast('Pricing tier changes saved — live on portal','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;width:100%;margin-top:.25rem;"><i class="fas fa-save" style="margin-right:.4rem;"></i>Save Pricing Tiers</button>
+        </div>
+      </div>
+    </div>
+    <!-- Recent Portal Orders -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Recent Portal Orders</h3></div>
+      <table class="ig-tbl"><thead><tr><th>Order No.</th><th>Customer</th><th>Items</th><th>Value</th><th>Placed</th><th>Delivery</th><th>Status</th><th>Action</th></tr></thead><tbody>
+        ${[
+          {oid:'PO-HRC-2025-018',cust:'Rajasthan Resort Group',   items:'Linen Bundle — 200 sets',         val:'₹8.4L', placed:'04 Mar 2025',del:'12 Mar 2025',s:'Processing'},
+          {oid:'PO-HRC-2025-017',cust:'Heritage Hotels Ltd.',     items:'Kitchen Equipment × 12 SKUs',      val:'₹3.2L', placed:'02 Mar 2025',del:'10 Mar 2025',s:'Shipped'},
+          {oid:'PO-HRC-2025-016',cust:'Goa Hospitality Ventures', items:'F&B Setup — Bar Package',          val:'₹1.8L', placed:'28 Feb 2025',del:'05 Mar 2025',s:'Delivered'},
+          {oid:'PO-HRC-2025-015',cust:'NCR Entertainment Pvt',   items:'Event Crockery — 500 covers',      val:'₹0.9L', placed:'25 Feb 2025',del:'02 Mar 2025',s:'Delivered'},
+        ].map(o=>`<tr>
+          <td style="font-size:.75rem;font-weight:600;color:var(--gold);">${o.oid}</td>
+          <td style="font-size:.75rem;">${o.cust}</td>
+          <td style="font-size:.72rem;color:var(--ink-muted);">${o.items}</td>
+          <td style="font-size:.82rem;font-weight:600;">${o.val}</td>
+          <td style="font-size:.7rem;color:var(--ink-muted);">${o.placed}</td>
+          <td style="font-size:.7rem;color:var(--ink-muted);">${o.del}</td>
+          <td><span class="badge ${o.s==='Delivered'?'b-gr':o.s==='Shipped'?'b-g':'b-dk'}" style="font-size:.6rem;">${o.s}</span></td>
+          <td><button onclick="igToast('Tracking for ${o.oid} opened','info')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-truck"></i></button></td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>
+
   <script>
   window.igHorecaTab = function(idx){
-    for(var i=0;i<5;i++){
+    for(var i=0;i<6;i++){
       var p=document.getElementById('hrc-pane-'+i);
       var t=document.getElementById('hrc-tab-'+i);
       if(p) p.style.display=i===idx?'block':'none';
@@ -2919,7 +3595,7 @@ app.get('/contracts', (c) => {
 
   <!-- Tab Nav -->
   <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
-    ${['All Contracts','New Contract','Template Library','Clause Library'].map((t,i)=>`<button onclick="igCtTab(${i})" id="ct-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;">${t}</button>`).join('')}
+    ${['All Contracts','New Contract','Template Library','Clause Library','Renewals','Version Diff','Risk Scanner'].map((t,i)=>`<button onclick="igCtTab(${i})" id="ct-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
   </div>
 
   <!-- Tab 0: All Contracts -->
@@ -2975,7 +3651,10 @@ app.get('/contracts', (c) => {
           <div style="display:flex;gap:.75rem;">
             <button onclick="igCreateContract()" style="background:#4f46e5;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-file-contract" style="margin-right:.4rem;"></i>Save as Draft</button>
             <button onclick="igToast('Contract PDF preview generated','success')" style="background:var(--ink);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-eye" style="margin-right:.4rem;"></i>Preview PDF</button>
+            <button onclick="igAiClauseScan()" style="background:#7c3aed;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-magic" style="margin-right:.4rem;"></i>AI Risk Scan</button>
           </div>
+          <!-- AI Clause Scan Output -->
+          <div id="clause-scan-output" style="margin-top:.875rem;"></div>
         </div>
       </div>
       <div style="background:#fff;border:1px solid var(--border);">
@@ -3039,6 +3718,178 @@ app.get('/contracts', (c) => {
     </div>
   </div>
 
+  <!-- ct-pane-4: Renewal Tracker -->
+  <div id="ct-pane-4" style="display:none;">
+    <div class="ig-warn" style="margin-bottom:1.25rem;"><i class="fas fa-bell"></i><div>2 contracts expiring in <strong>30 days</strong>. Renewal workflows can be auto-triggered from this panel.</div></div>
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Contract Renewal Dashboard</h3>
+        <div style="display:flex;gap:.5rem;">
+          <select class="ig-input" style="font-size:.75rem;max-width:130px;"><option>All Contracts</option><option>Expiring 30 days</option><option>Expiring 60 days</option><option>Expired</option></select>
+        </div>
+      </div>
+      <table class="ig-tbl"><thead><tr><th>Contract</th><th>Party</th><th>Type</th><th>Expiry</th><th>Days Left</th><th>Auto-Renew</th><th>Status</th><th>Action</th></tr></thead><tbody>
+        ${[
+          {id:'CTR-001',name:'Advisory Retainer — Heritage Hotels',   party:'Heritage Hotels Ltd',         type:'Retainer',  exp:'31 Mar 2025', days:25,  auto:false, s:'Expiring Soon'},
+          {id:'CTR-002',name:'NDA — Goa Hospitality Ventures',        party:'Goa Hospitality Ventures',    type:'NDA',       exp:'10 Mar 2025', days:4,   auto:false, s:'Critical'},
+          {id:'CTR-003',name:'Mandate Agreement — Entertainment City',party:'NCR Entertainment Pvt Ltd',  type:'Mandate',   exp:'30 Jun 2025', days:117, auto:true,  s:'Active'},
+          {id:'CTR-004',name:'Vendor Agreement — Office Supplies',     party:'ABC Suppliers Ltd',          type:'Vendor',    exp:'31 Dec 2025', days:300, auto:true,  s:'Active'},
+          {id:'CTR-005',name:'Lease — Registered Office',              party:'City Properties Ltd',        type:'Lease',     exp:'31 Aug 2025', days:178, auto:false, s:'Active'},
+          {id:'CTR-006',name:'Advisory Agreement — Mumbai RE Fund',    party:'Mumbai Real Estate Fund',    type:'Advisory',  exp:'28 Feb 2025', days:-1,  auto:false, s:'Expired'},
+        ].map(c=>`<tr>
+          <td style="font-size:.75rem;font-weight:600;color:var(--gold);">${c.id}</td>
+          <td style="font-size:.78rem;">${c.name}<div style="font-size:.65rem;color:var(--ink-muted);">${c.party}</div></td>
+          <td><span class="badge b-dk" style="font-size:.6rem;">${c.type}</span></td>
+          <td style="font-size:.72rem;color:${c.days<0?'#dc2626':c.days<=30?'#d97706':'var(--ink-muted)'};">${c.exp}</td>
+          <td style="font-size:.82rem;font-weight:700;color:${c.days<0?'#dc2626':c.days<=30?'#d97706':'#16a34a'};">${c.days<0?'Expired':c.days+'d'}</td>
+          <td><span class="badge ${c.auto?'b-gr':'b-re'}" style="font-size:.6rem;">${c.auto?'Yes':'No'}</span></td>
+          <td><span class="badge ${c.s==='Active'?'b-gr':c.s==='Expired'?'b-re':c.s==='Critical'?'b-re':'b-g'}" style="font-size:.6rem;">${c.s}</span></td>
+          <td>
+            <div style="display:flex;gap:.3rem;">
+              <button onclick="igToast('Renewal workflow started for ${c.id}','success')" style="background:var(--gold);color:#fff;border:none;padding:.2rem .45rem;font-size:.62rem;cursor:pointer;">Renew</button>
+              <button onclick="igToast('Reminder sent for ${c.id}','success')" style="background:none;border:1px solid var(--border);padding:.2rem .4rem;font-size:.62rem;cursor:pointer;color:var(--ink-muted);"><i class="fas fa-bell"></i></button>
+            </div>
+          </td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>
+    <!-- Auto-Renewal Settings -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Renewal Reminder Settings</h3></div>
+      <div style="padding:1.25rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+        ${[
+          {l:'First reminder',  v:'90', unit:'days before expiry'},
+          {l:'Second reminder', v:'30', unit:'days before expiry'},
+          {l:'Final reminder',  v:'7',  unit:'days before expiry'},
+          {l:'Notify',         v:'Finance, Legal, MD', unit:'(roles)'},
+          {l:'Auto-escalate',  v:'3',  unit:'days after first missed reminder'},
+          {l:'Auto-draft renewal',v:'Enabled', unit:'for mandate-type contracts'},
+        ].map(s=>`<div style="padding:.75rem;border:1px solid var(--border);background:var(--parch-dk);">
+          <div style="font-size:.72rem;font-weight:700;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;">${s.l}</div>
+          <div style="font-size:.85rem;font-weight:600;color:var(--ink);">${s.v}</div>
+          <div style="font-size:.65rem;color:var(--ink-muted);">${s.unit}</div>
+        </div>`).join('')}
+      </div>
+      <div style="padding:0 1.25rem 1.25rem;">
+        <button onclick="igToast('Renewal reminder settings saved','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-save" style="margin-right:.4rem;"></i>Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ct-pane-5: Version Diff -->
+  <div id="ct-pane-5" style="display:none;">
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Contract Version History & Diff Viewer</h3>
+        <select class="ig-input" style="font-size:.75rem;max-width:240px;" onchange="igToast('Loading version history for selected contract','info')">
+          <option>CTR-001 — Advisory Retainer</option>
+          <option>CTR-003 — Mandate Agreement ECD</option>
+          <option>CTR-004 — Vendor Agreement</option>
+        </select>
+      </div>
+      <div style="padding:1.25rem;">
+        <!-- Version List -->
+        <div style="display:grid;grid-template-columns:220px 1fr;gap:1.5rem;">
+          <div>
+            <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);margin-bottom:.625rem;">Versions</div>
+            ${[
+              {v:'v3.0', date:'05 Mar 2025', author:'Arun Manikonda', note:'Fees revised upward — ₹4.5L',    active:true},
+              {v:'v2.1', date:'15 Feb 2025', author:'Pavan Manikonda',note:'Termination clause amended',      active:false},
+              {v:'v2.0', date:'01 Feb 2025', author:'Amit Jhingan',   note:'Scope extended to Q3 FY 2025', active:false},
+              {v:'v1.0', date:'01 Jan 2025', author:'Arun Manikonda', note:'Initial contract execution',    active:false},
+            ].map(v=>`<div onclick="igToast('Loading diff for ${v.v}','info')" style="padding:.625rem .75rem;border:1px solid ${v.active?'var(--gold)':'var(--border)'};background:${v.active?'#fffbeb':'#fff'};margin-bottom:.3rem;cursor:pointer;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.15rem;">
+                <span style="font-size:.78rem;font-weight:700;color:${v.active?'var(--gold)':'var(--ink)'};">${v.v}</span>
+                ${v.active?'<span class="badge b-g" style="font-size:.55rem;">Current</span>':''}
+              </div>
+              <div style="font-size:.65rem;color:var(--ink-muted);">${v.date} · ${v.author}</div>
+              <div style="font-size:.65rem;color:var(--ink);margin-top:.15rem;">${v.note}</div>
+            </div>`).join('')}
+          </div>
+          <!-- Diff View -->
+          <div>
+            <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);margin-bottom:.625rem;">Diff: v2.1 → v3.0</div>
+            <div style="background:#0f172a;border:1px solid #334155;padding:1.25rem;font-family:monospace;font-size:.72rem;line-height:1.8;overflow-x:auto;">
+              <div style="color:#94a3b8;">// Section 4 — Advisory Fees</div>
+              <div style="background:#7f1d1d;color:#fca5a5;padding:2px 4px;">- 4.1 Monthly retainer: ₹3,50,000 + GST applicable</div>
+              <div style="background:#14532d;color:#86efac;padding:2px 4px;">+ 4.1 Monthly retainer: ₹4,50,000 + GST applicable</div>
+              <div style="color:#94a3b8; margin-top:.5rem;">// Section 7 — Term & Termination</div>
+              <div style="color:#e2e8f0;">  7.1 This Agreement shall be valid for a period of twelve (12) months</div>
+              <div style="color:#e2e8f0;">  commencing from the Effective Date.</div>
+              <div style="background:#14532d;color:#86efac;padding:2px 4px;">+ 7.4 Either party may terminate with 30 days written notice.</div>
+              <div style="background:#14532d;color:#86efac;padding:2px 4px;">+ 7.5 Termination fee of 2 months retainer applies within first 6 months.</div>
+            </div>
+            <div style="display:flex;gap:.75rem;margin-top:1rem;">
+              <button onclick="igToast('Diff PDF for CTR-001 v2.1→v3.0 generated','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class="fas fa-file-pdf" style="margin-right:.35rem;"></i>Export Diff PDF</button>
+              <button onclick="igToast('Reverting to v2.1 — confirmation required','warn')" style="background:none;border:1px solid #dc2626;padding:.45rem 1rem;font-size:.75rem;cursor:pointer;color:#dc2626;"><i class="fas fa-undo" style="margin-right:.35rem;"></i>Revert to v2.1</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ct-pane-6: AI Risk Scanner -->
+  <div id="ct-pane-6" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <!-- Scanner Input -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">AI Clause Risk Scanner</h3></div>
+        <div style="padding:1.25rem;">
+          <div style="margin-bottom:1rem;">
+            <label class="ig-label">Select Contract to Scan</label>
+            <select class="ig-input" style="font-size:.82rem;margin-bottom:.75rem;">
+              <option>CTR-001 — Advisory Retainer — Heritage Hotels</option>
+              <option>CTR-003 — Mandate Agreement — Entertainment City</option>
+              <option>CTR-005 — Lease — Registered Office</option>
+            </select>
+            <label class="ig-label">Or Paste Contract Text</label>
+            <textarea class="ig-input" rows="6" placeholder="Paste contract clause text for AI analysis..." style="font-size:.78rem;"></textarea>
+          </div>
+          <div style="margin-bottom:1rem;">
+            <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);margin-bottom:.5rem;">Scan For</div>
+            <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+              ${['Missing Clauses','Liability Caps','Unfair Terms','IP Assignment Issues','Indemnity Exposure','Governing Law Conflicts','Arbitration Gaps','Data Protection'].map(r=>`<label style="display:flex;align-items:center;gap:.3rem;font-size:.72rem;cursor:pointer;"><input type="checkbox" checked style="accent-color:var(--gold);"> ${r}</label>`).join('')}
+            </div>
+          </div>
+          <button onclick="igRunRiskScan()" style="background:#7c3aed;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;"><i class="fas fa-robot" style="margin-right:.4rem;"></i>Run AI Risk Scan</button>
+        </div>
+      </div>
+      <!-- Scan Results -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Scan Results — CTR-001</h3></div>
+        <div style="padding:1.25rem;">
+          <div style="display:flex;align-items:center;gap:1rem;padding:1rem;background:linear-gradient(135deg,#fdf4ff,#f5f3ff);border:1px solid #e9d5ff;margin-bottom:1.25rem;">
+            <div style="text-align:center;">
+              <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:#7c3aed;line-height:1;">72</div>
+              <div style="font-size:.6rem;font-weight:700;color:#6d28d9;letter-spacing:.08em;text-transform:uppercase;">Risk Score</div>
+            </div>
+            <div>
+              <div style="font-size:.85rem;font-weight:600;color:#6d28d9;">Medium Risk</div>
+              <div style="font-size:.72rem;color:#7c3aed;">3 issues found · 1 high risk</div>
+            </div>
+          </div>
+          ${[
+            {risk:'High',   issue:'Unlimited Liability Exposure',    clause:'Section 9.2',   detail:'No cap on liability — recommend capping at 12 months\' fees',   icon:'fire'},
+            {risk:'Medium', issue:'Missing Dispute Resolution',      clause:'Section 11',    detail:'No arbitration clause — defaults to court litigation',             icon:'balance-scale'},
+            {risk:'Medium', issue:'IP Ownership Ambiguity',          clause:'Section 6.3',   detail:'Advisory deliverables ownership not clearly assigned to client',   icon:'question-circle'},
+            {risk:'Low',    issue:'Notice Period Inconsistency',     clause:'Section 7.1',   detail:'30-day notice in clause 7.1 but 15-day in clause 7.4 — conflict', icon:'exclamation'},
+          ].map(r=>`<div style="border-left:4px solid ${r.risk==='High'?'#dc2626':r.risk==='Medium'?'#d97706':'#16a34a'};padding:.75rem 1rem;background:${r.risk==='High'?'#fff5f5':r.risk==='Medium'?'#fffbeb':'#f0fdf4'};margin-bottom:.625rem;">
+            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem;">
+              <i class="fas fa-${r.icon}" style="color:${r.risk==='High'?'#dc2626':r.risk==='Medium'?'#d97706':'#16a34a'};font-size:.78rem;"></i>
+              <span class="badge ${r.risk==='High'?'b-re':r.risk==='Medium'?'b-g':'b-gr'}" style="font-size:.6rem;">${r.risk}</span>
+              <span style="font-size:.78rem;font-weight:600;color:var(--ink);">${r.issue}</span>
+            </div>
+            <div style="font-size:.68rem;color:#7c3aed;margin-bottom:.2rem;">${r.clause}</div>
+            <div style="font-size:.7rem;color:var(--ink-muted);">${r.detail}</div>
+            <button onclick="igToast('Suggested fix for ${r.issue} applied to draft','success')" style="background:none;border:1px solid ${r.risk==='High'?'#dc2626':r.risk==='Medium'?'#d97706':'#16a34a'};padding:.2rem .5rem;font-size:.62rem;cursor:pointer;color:${r.risk==='High'?'#dc2626':r.risk==='Medium'?'#d97706':'#16a34a'};margin-top:.35rem;">Apply Fix</button>
+          </div>`).join('')}
+          <button onclick="igToast('Risk scan report exported as PDF','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;width:100%;margin-top:.5rem;"><i class="fas fa-file-pdf" style="margin-right:.4rem;"></i>Export Risk Report</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- E-Sign Modal -->
   <div id="esign-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;">
     <div style="background:#fff;width:480px;max-width:95vw;border-top:4px solid #7c3aed;">
@@ -3062,12 +3913,16 @@ app.get('/contracts', (c) => {
 
   <script>
   window.igCtTab = function(idx){
-    for(var i=0;i<4;i++){
+    for(var i=0;i<7;i++){
       var p=document.getElementById('ct-pane-'+i);
       var t=document.getElementById('ct-tab-'+i);
       if(p) p.style.display=i===idx?'block':'none';
       if(t){ t.style.color=i===idx?'var(--gold)':'var(--ink-muted)'; t.style.borderBottom=i===idx?'2px solid var(--gold)':'2px solid transparent'; }
     }
+  };
+  window.igRunRiskScan = function(){
+    igToast('AI scanning contract...','info');
+    setTimeout(function(){ igToast('Risk scan complete — 4 issues found (1 High, 2 Medium, 1 Low)','warn'); },1500);
   };
   var selectedClauses = [];
   window.igAddClause = function(name, idx){
@@ -3108,6 +3963,27 @@ app.get('/contracts', (c) => {
     if(!email){igToast('Enter signatory email','warn');return;}
     document.getElementById('esign-modal').style.display='none';
     igToast('E-sign request sent to '+email+'. DocuSign workflow initiated.','success');
+  };
+  window.igAiClauseScan = function(){
+    var out = document.getElementById('clause-scan-output');
+    if(!out) return;
+    out.innerHTML = '<div style="padding:1.5rem;text-align:center;"><i class="fas fa-circle-notch fa-spin" style="font-size:1.25rem;color:#7c3aed;"></i><div style="font-size:.78rem;color:var(--ink-muted);margin-top:.75rem;">AI scanning contract for risks, missing clauses, deviations…</div></div>';
+    setTimeout(function(){
+      out.innerHTML = '<div style="border-top:3px solid #7c3aed;padding:1.25rem;">'
+        +'<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.875rem;"><div style="width:28px;height:28px;background:#7c3aed;display:flex;align-items:center;justify-content:center;"><i class="fas fa-magic" style="color:#fff;font-size:.65rem;"></i></div><div style="font-size:.85rem;font-weight:700;color:var(--ink);">AI Clause Analysis Complete</div><span class="badge" style="background:#fef2f233;color:#dc2626;border:1px solid #dc262644;font-size:.6rem;">Risk: Medium (Score 68/100)</span></div>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">'
+        +'<div><div style="font-size:.72rem;font-weight:700;color:#dc2626;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem;"><i class="fas fa-times-circle" style="margin-right:.3rem;"></i>Missing Clauses</div>'
+        +['Force Majeure','Limitation of Liability','Dispute Resolution — Arbitration'].map(m=>'<div style="background:#fef2f2;border:1px solid #fecaca;padding:.4rem .625rem;font-size:.75rem;margin-bottom:.3rem;"><i class="fas fa-exclamation" style="color:#dc2626;margin-right:.3rem;font-size:.6rem;"></i>'+m+'</div>').join('')
+        +'</div>'
+        +'<div><div style="font-size:.72rem;font-weight:700;color:#d97706;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem;"><i class="fas fa-exclamation-triangle" style="margin-right:.3rem;"></i>Risky Clauses</div>'
+        +'<div style="background:#fffbeb;border:1px solid #fde68a;padding:.5rem .625rem;font-size:.75rem;margin-bottom:.3rem;"><strong>Payment Terms:</strong> No late-payment interest specified</div>'
+        +'<div style="background:#fef2f2;border:1px solid #fecaca;padding:.5rem .625rem;font-size:.75rem;"><strong>IP Ownership:</strong> Co-developed materials ownership ambiguous — HIGH risk</div>'
+        +'</div></div>'
+        +'<div style="margin-top:.875rem;background:#f0fdf4;border:1px solid #bbf7d0;padding:.75rem;font-size:.75rem;"><i class="fas fa-check-circle" style="color:#16a34a;margin-right:.4rem;"></i><strong>Compliant:</strong> Confidentiality, Governing Law (Delhi courts), Termination, Non-Solicitation, GST Applicability</div>'
+        +'<div style="margin-top:.75rem;display:flex;gap:.5rem;"><button onclick="igToast(\'Risk report downloaded\',\'success\')" style="background:#7c3aed;color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;">Download Report</button><button onclick="igToast(\'Missing clauses added to editor\',\'success\')" style="background:var(--gold);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;">Add Missing Clauses</button></div>'
+        +'</div>';
+      igToast('AI clause scan complete — 3 missing, 2 risky clauses detected','warn');
+    }, 1800);
   };
   </script>`
   return c.html(layout('Contracts', adminShell('Contract Management', 'contracts', body), {noNav:true,noFooter:true}))
@@ -3435,8 +4311,8 @@ app.get('/security', (c) => {
   </div>
 
   <!-- Tab Nav -->
-  <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
-    ${['Audit Log','RBAC Matrix','TOTP / 2FA','Rate Limiting','IP Whitelist'].map((t,i)=>`<button onclick="igSecTab(${i})" id="sec-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;">${t}</button>`).join('')}
+  <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);overflow-x:auto;">
+    ${['Audit Log','RBAC Matrix','TOTP / 2FA','Rate Limiting','IP Whitelist','Zero-Trust'].map((t,i)=>`<button onclick="igSecTab(${i})" id="sec-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
   </div>
 
   <!-- Tab 0: Audit Log -->
@@ -3657,9 +4533,117 @@ app.get('/security', (c) => {
     </div>
   </div>
 
+  <!-- Tab 5: Zero-Trust -->
+  <div id="sec-pane-5" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+      <!-- Zero-Trust Policy Engine -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Zero-Trust Policy Engine</h3>
+          <span class="badge b-gr" style="font-size:.6rem;">Active</span>
+        </div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:.875rem;">
+          ${[
+            {label:'Re-authenticate for sensitive actions',  on:true,  desc:'Prompt password+TOTP before Finance approvals, contract signing, user management'},
+            {label:'Device fingerprint verification',        on:true,  desc:'Block unrecognised devices; require admin approval for new device login'},
+            {label:'Geo-anomaly detection',                  on:true,  desc:'Alert when login from new city/country — force re-auth or block'},
+            {label:'Continuous session risk scoring',        on:false, desc:'Score each session every 15 min; auto-terminate if risk >80'},
+            {label:'Least-privilege enforcement',            on:true,  desc:'API routes validate role+action ABAC at gateway — deny-by-default'},
+            {label:'Mutual TLS for admin API calls',         on:false, desc:'Require client certificates for /admin/* API endpoints'},
+          ].map(p=>`<div style="display:flex;align-items:flex-start;justify-content:space-between;padding:.625rem .875rem;background:var(--parch-dk);border:1px solid var(--border);gap:1rem;">
+            <div style="flex:1;">
+              <div style="font-size:.82rem;color:var(--ink);font-weight:500;margin-bottom:.2rem;">${p.label}</div>
+              <div style="font-size:.68rem;color:var(--ink-muted);">${p.desc}</div>
+            </div>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;margin-top:.2rem;"><input type="checkbox" ${p.on?'checked':''} style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;inset:0;background:${p.on?'#16a34a':'#94a3b8'};border-radius:24px;display:flex;align-items:center;${p.on?'justify-content:flex-end;padding-right:3px':'justify-content:flex-start;padding-left:3px'};"><span style="width:18px;height:18px;background:#fff;border-radius:50%;display:block;"></span></span></label>
+          </div>`).join('')}
+          <button onclick="igToast('Zero-Trust policy saved — active on next session','success')" style="background:#1E1E1E;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:fit-content;"><i class="fas fa-shield-alt" style="margin-right:.4rem;"></i>Save Policy</button>
+        </div>
+      </div>
+      <!-- Device Trust Registry -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Device Trust Registry</h3></div>
+        <div style="padding:.875rem;">
+          ${[
+            {user:'superadmin@indiagully.com',device:'Chrome 121 / Win 11',fp:'d4f8a2...',added:'01 Feb 2025',trusted:true},
+            {user:'akm@indiagully.com',       device:'Safari 17 / macOS',  fp:'7c3b91...',added:'15 Jan 2025',trusted:true},
+            {user:'pavan@indiagully.com',     device:'Chrome 120 / Win 11',fp:'9e1d44...',added:'10 Jan 2025',trusted:true},
+            {user:'demo@indiagully.com',      device:'Chrome / Android 14', fp:'2f7c38...',added:'27 Feb 2025',trusted:true},
+            {user:'Unknown',                   device:'curl/7.68 / Linux',   fp:'a1b2c3...',added:'27 Feb 2025',trusted:false},
+          ].map(d=>`<div style="padding:.625rem .875rem;border:1px solid ${d.trusted?'var(--border)':'#fecaca'};margin-bottom:.4rem;background:${d.trusted?'#fff':'#fff5f5'};">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem;">
+              <span style="font-size:.75rem;font-weight:600;color:var(--ink);">${d.user}</span>
+              <span class="badge ${d.trusted?'b-gr':'b-re'}" style="font-size:.58rem;">${d.trusted?'Trusted':'Blocked'}</span>
+            </div>
+            <div style="font-size:.68rem;color:var(--ink-muted);">${d.device} · FP: <code style="font-size:.63rem;">${d.fp}</code></div>
+            <div style="font-size:.65rem;color:var(--ink-faint);">Registered: ${d.added}</div>
+            <div style="display:flex;gap:.4rem;margin-top:.4rem;">
+              <button onclick="igToast('Device ${d.fp} ${d.trusted?'revoked':'approved'}','${d.trusted?'warn':'success'}')" style="background:none;border:1px solid ${d.trusted?'#dc2626':'#16a34a'};color:${d.trusted?'#dc2626':'#16a34a'};padding:.15rem .5rem;font-size:.62rem;cursor:pointer;">${d.trusted?'Revoke':'Approve'}</button>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <!-- Re-auth Sensitive Actions Config -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Sensitive Actions — Re-authentication Required</h3></div>
+      <div style="padding:1.25rem;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem;">
+          ${[
+            {action:'Approve Invoice >₹1L',  module:'Finance',    reauth:'Password + TOTP', status:'Enabled'},
+            {action:'Sign Contract',          module:'Contracts',  reauth:'Password + TOTP', status:'Enabled'},
+            {action:'Bulk User Changes',      module:'Admin',      reauth:'Password + TOTP', status:'Enabled'},
+            {action:'Export Payroll Data',    module:'HR ERP',     reauth:'Password',        status:'Enabled'},
+            {action:'Cast Board Vote',        module:'Governance', reauth:'Password + TOTP', status:'Enabled'},
+            {action:'Delete Audit Logs',      module:'Security',   reauth:'Password + TOTP', status:'Disabled'},
+            {action:'Change GST Credentials', module:'Finance',    reauth:'Password + TOTP', status:'Enabled'},
+            {action:'IP Whitelist Changes',   module:'Security',   reauth:'Password + TOTP', status:'Enabled'},
+            {action:'PAN/Aadhaar View',       module:'HR/Finance', reauth:'Password',        status:'Enabled'},
+          ].map(a=>`<div style="padding:.75rem;border:1px solid var(--border);background:var(--parch-dk);">
+            <div style="font-size:.78rem;font-weight:600;color:var(--ink);margin-bottom:.2rem;">${a.action}</div>
+            <div style="font-size:.65rem;color:var(--ink-muted);">Module: ${a.module}</div>
+            <div style="font-size:.65rem;color:#7c3aed;margin-top:.2rem;"><i class="fas fa-key" style="margin-right:.25rem;"></i>${a.reauth}</div>
+            <span class="badge ${a.status==='Enabled'?'b-gr':'b-re'}" style="font-size:.58rem;margin-top:.3rem;display:inline-block;">${a.status}</span>
+          </div>`).join('')}
+        </div>
+        <button onclick="igToast('Re-auth rules updated — applied immediately','success')" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-lock" style="margin-right:.4rem;"></i>Save Re-auth Rules</button>
+      </div>
+    </div>
+    <!-- CSP & Headers Config -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Content Security Policy & HTTP Headers</h3></div>
+      <div style="padding:1.25rem;">
+        <div style="background:#0f172a;border:1px solid #334155;padding:1.25rem;margin-bottom:1rem;overflow-x:auto;">
+          <pre style="font-family:monospace;font-size:.7rem;color:#e2e8f0;margin:0;white-space:pre-wrap;line-height:1.7;">Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none';
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;">
+          ${[
+            {h:'X-Frame-Options',         v:'DENY',    ok:true},
+            {h:'X-Content-Type-Options',  v:'nosniff', ok:true},
+            {h:'HSTS',                    v:'max-age=31536000',ok:true},
+            {h:'CSP',                     v:'Configured',ok:true},
+            {h:'Referrer-Policy',         v:'strict-origin',ok:true},
+            {h:'Permissions-Policy',      v:'Configured',ok:true},
+          ].map(h=>`<div style="padding:.625rem .875rem;border:1px solid ${h.ok?'#86efac':'#fca5a5'};background:${h.ok?'#f0fdf4':'#fff5f5'};display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-size:.72rem;font-weight:600;color:var(--ink);">${h.h}</div>
+              <code style="font-size:.62rem;color:#7c3aed;">${h.v}</code>
+            </div>
+            <i class="fas fa-${h.ok?'check-circle':'times-circle'}" style="color:${h.ok?'#16a34a':'#dc2626'};"></i>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
   window.igSecTab = function(idx){
-    for(var i=0;i<5;i++){
+    for(var i=0;i<6;i++){
       var p=document.getElementById('sec-pane-'+i);
       var t=document.getElementById('sec-tab-'+i);
       if(p) p.style.display=i===idx?'block':'none';
@@ -3678,6 +4662,367 @@ app.get('/security', (c) => {
   };
   </script>`
   return c.html(layout('Security & Audit', adminShell('Security & Audit', 'security', body), {noNav:true,noFooter:true}))
+})
+
+// ── API DOCUMENTATION (/admin/api-docs) ───────────────────────────────────────
+app.get('/api-docs', (c) => {
+  const endpoints = [
+    { method:'GET',  path:'/api/health',              tag:'System',    auth:'None',    desc:'Platform health check, version, module list, route count' },
+    { method:'POST', path:'/api/auth/login',           tag:'Auth',      auth:'None',    desc:'Portal login (client / employee / board). Returns redirect.' },
+    { method:'POST', path:'/api/auth/admin',           tag:'Auth',      auth:'None',    desc:'Admin login with TOTP. Returns redirect to /admin/dashboard.' },
+    { method:'POST', path:'/api/auth/reset',           tag:'Auth',      auth:'None',    desc:'Trigger password reset email for registered portal user.' },
+    { method:'POST', path:'/api/enquiry',              tag:'Public',    auth:'None',    desc:'Submit a mandate / advisory enquiry. Returns ref ID.' },
+    { method:'POST', path:'/api/horeca-enquiry',       tag:'Public',    auth:'None',    desc:'Submit a HORECA procurement enquiry. Returns ref ID.' },
+    { method:'POST', path:'/api/subscribe',            tag:'Public',    auth:'None',    desc:'Subscribe to India Gully Research Bulletin.' },
+    { method:'GET',  path:'/api/listings',             tag:'Mandates',  auth:'None',    desc:'List all public active mandates with sector, value, status.' },
+    { method:'GET',  path:'/api/mandates',             tag:'Mandates',  auth:'Portal',  desc:'Client-specific mandates with progress %, advisor, timeline.' },
+    { method:'GET',  path:'/api/invoices',             tag:'Finance',   auth:'Portal',  desc:'Invoice register: base, GST, total, status, due date.' },
+    { method:'GET',  path:'/api/finance/summary',      tag:'Finance',   auth:'Admin',   desc:'Revenue, expense, profit, GST, bank balance KPIs.' },
+    { method:'GET',  path:'/api/employees',            tag:'HR',        auth:'Admin',   desc:'Employee directory with designation, CTC, email, status.' },
+    { method:'POST', path:'/api/attendance/checkin',   tag:'HR',        auth:'Portal',  desc:'Mark employee check-in or check-out with timestamp.' },
+    { method:'POST', path:'/api/leave/apply',          tag:'HR',        auth:'Portal',  desc:'Submit leave application for manager approval.' },
+    { method:'GET',  path:'/api/compliance',           tag:'Governance',auth:'Admin',   desc:'Upcoming compliance dates, forms, penalties, responsible module.' },
+    { method:'GET',  path:'/api/horeca/catalogue',     tag:'HORECA',    auth:'None',    desc:'HORECA catalogue categories with SKU counts and icons.' },
+    { method:'GET',  path:'/api/kpi/summary',          tag:'Analytics', auth:'Admin',   desc:'OKR/KPI summary for current quarter by department.' },
+    { method:'GET',  path:'/api/risk/mandates',        tag:'Analytics', auth:'Admin',   desc:'Mandate risk scores, weighted pipeline, concentration flags.' },
+    { method:'GET',  path:'/api/contracts/expiring',   tag:'Contracts', auth:'Admin',   desc:'Contracts expiring within 30/60/90 days with renewal flags.' },
+    { method:'POST', path:'/api/contracts/clause-check',tag:'Contracts',auth:'Admin',  desc:'AI clause risk scanner — returns risk level + missing clauses.' },
+    { method:'POST', path:'/api/finance/voucher',      tag:'Finance',   auth:'Admin',   desc:'Create double-entry voucher (Sales/Purchase/Payment/Journal).' },
+    { method:'GET',  path:'/api/finance/reconcile',    tag:'Finance',   auth:'Admin',   desc:'Bank reconciliation status: matched, unmatched, pending JV.' },
+    { method:'POST', path:'/api/hr/tds-declaration',   tag:'HR',        auth:'Portal',  desc:'Employee investment declaration for 80C/80D/HRA/NPS TDS calc.' },
+    { method:'GET',  path:'/api/governance/resolutions',tag:'Governance',auth:'Board', desc:'Board resolutions register with voting tally and DSC status.' },
+  ]
+  const tagColors: Record<string,string> = {System:'#64748b',Auth:'#dc2626',Public:'#16a34a',Mandates:'#B8960C',Finance:'#2563eb',HR:'#7c3aed',Governance:'#d97706',HORECA:'#0891b2',Analytics:'#0f766e',Contracts:'#9333ea'}
+  const methodColor: Record<string,string> = {GET:'#16a34a',POST:'#2563eb',PUT:'#d97706',DELETE:'#dc2626',PATCH:'#7c3aed'}
+  const tags = [...new Set(endpoints.map(e=>e.tag))]
+  const body = `
+  <!-- Header Banner -->
+  <div style="background:linear-gradient(135deg,#0f172a,#1e293b);padding:2rem;margin-bottom:1.5rem;border:1px solid rgba(255,255,255,.07);">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <div style="font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#38bdf8;margin-bottom:.5rem;">India Gully Enterprise Platform</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;">API Reference</div>
+        <div style="font-size:.78rem;color:rgba(255,255,255,.5);margin-top:.35rem;">OpenAPI-compatible · Version 2025.03 · ${endpoints.length} endpoints across ${tags.length} tags</div>
+      </div>
+      <div style="display:flex;gap:.625rem;flex-wrap:wrap;">
+        <div style="background:rgba(22,163,74,.15);border:1px solid rgba(22,163,74,.3);padding:.4rem 1rem;font-size:.72rem;color:#4ade80;display:flex;align-items:center;gap:.4rem;"><span style="width:6px;height:6px;background:#4ade80;border-radius:50%;display:inline-block;"></span>API Status: Operational</div>
+        <button onclick="igToast('OpenAPI JSON spec copied to clipboard','success')" style="background:#38bdf8;color:#0f172a;border:none;padding:.4rem 1rem;font-size:.72rem;font-weight:700;cursor:pointer;"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export OpenAPI JSON</button>
+        <button onclick="igToast('Postman collection downloaded','success')" style="background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.15);padding:.4rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-satellite-dish" style="margin-right:.3rem;"></i>Postman Collection</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1.5rem;">
+      ${[
+        {label:'Total Endpoints',value:endpoints.length.toString(),icon:'code',color:'#38bdf8'},
+        {label:'Tags / Domains',value:tags.length.toString(),icon:'tag',color:'#a78bfa'},
+        {label:'Auth Required',value:endpoints.filter(e=>e.auth!=='None').length.toString(),icon:'shield-alt',color:'#fbbf24'},
+        {label:'Base URL',value:'india-gully.pages.dev',icon:'globe',color:'#34d399'},
+      ].map(s=>`<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.875rem;">
+        <div style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${s.color};margin-bottom:.3rem;">${s.label}</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">${s.value}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <!-- Tag Filter -->
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+    <button onclick="igApiFilter('')" id="api-tag-all" style="padding:.35rem .875rem;font-size:.72rem;font-weight:600;border:none;cursor:pointer;background:#0f172a;color:#fff;">All</button>
+    ${tags.map(t=>`<button onclick="igApiFilter('${t}')" id="api-tag-${t}" style="padding:.35rem .875rem;font-size:.72rem;font-weight:600;border:none;cursor:pointer;background:${tagColors[t]||'#64748b'}22;color:${tagColors[t]||'#64748b'};border:1px solid ${tagColors[t]||'#64748b'}44;">${t}</button>`).join('')}
+    <input type="text" placeholder="🔍 Search endpoints..." oninput="igApiSearch(this.value)" style="margin-left:auto;border:1px solid var(--border);padding:.35rem .75rem;font-size:.78rem;min-width:200px;">
+  </div>
+
+  <!-- Endpoint List -->
+  <div id="api-endpoint-list">
+    ${endpoints.map((e,i)=>`
+    <div class="api-endpoint-row" data-tag="${e.tag}" style="background:#fff;border:1px solid var(--border);margin-bottom:.5rem;overflow:hidden;">
+      <div onclick="igApiToggle(${i})" style="display:flex;align-items:center;gap:.75rem;padding:.875rem 1.25rem;cursor:pointer;">
+        <span style="background:${methodColor[e.method]||'#64748b'};color:#fff;font-size:.6rem;font-weight:800;letter-spacing:.1em;padding:.2rem .55rem;min-width:42px;text-align:center;flex-shrink:0;">${e.method}</span>
+        <code style="font-size:.82rem;color:var(--ink);font-weight:600;flex:1;">${e.path}</code>
+        <span style="background:${tagColors[e.tag]||'#64748b'}22;color:${tagColors[e.tag]||'#64748b'};font-size:.6rem;font-weight:700;padding:.2rem .5rem;letter-spacing:.08em;text-transform:uppercase;flex-shrink:0;">${e.tag}</span>
+        <span style="background:${e.auth==='None'?'#f0fdf4':'#fff7ed'};color:${e.auth==='None'?'#15803d':'#9a3412'};border:1px solid ${e.auth==='None'?'#bbf7d0':'#fed7aa'};font-size:.6rem;font-weight:600;padding:.2rem .5rem;flex-shrink:0;">${e.auth==='None'?'Public':e.auth}</span>
+        <i class="fas fa-chevron-down" id="api-arr-${i}" style="color:var(--ink-muted);font-size:.6rem;flex-shrink:0;transition:transform .2s;"></i>
+      </div>
+      <div id="api-detail-${i}" style="display:none;border-top:1px solid var(--border);background:#f8fafc;padding:1.25rem;">
+        <div style="margin-bottom:.875rem;"><span style="font-size:.68rem;font-weight:700;color:var(--ink-muted);letter-spacing:.1em;text-transform:uppercase;">Description</span><div style="font-size:.85rem;color:var(--ink);margin-top:.3rem;">${e.desc}</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div>
+            <span style="font-size:.68rem;font-weight:700;color:var(--ink-muted);letter-spacing:.1em;text-transform:uppercase;">Request</span>
+            <div style="background:#0f172a;color:#e2e8f0;font-size:.75rem;font-family:monospace;padding:.875rem;margin-top:.4rem;border-radius:2px;">
+              ${e.method} ${e.path}<br>
+              Content-Type: application/json<br>
+              ${e.auth!=='None'?'Authorization: Bearer {token}':'// No auth required'}
+            </div>
+          </div>
+          <div>
+            <span style="font-size:.68rem;font-weight:700;color:var(--ink-muted);letter-spacing:.1em;text-transform:uppercase;">Response (200)</span>
+            <div style="background:#0f172a;color:#e2e8f0;font-size:.75rem;font-family:monospace;padding:.875rem;margin-top:.4rem;border-radius:2px;">
+              {<br>
+              &nbsp;&nbsp;"success": true,<br>
+              ${e.tag==='Finance'?'&nbsp;&nbsp;"data": { ... },':''}
+              ${e.tag==='Auth'?'&nbsp;&nbsp;"redirect": "/portal/...",':''}
+              ${e.tag==='HR'?'&nbsp;&nbsp;"ref": "LV-XXXXX",':''}
+              &nbsp;&nbsp;"timestamp": "2025-03-05T..."<br>
+              }
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:.875rem;display:flex;gap:.5rem;">
+          <button onclick="igToast('Try It: ${e.method} ${e.path} → 200 OK (demo)','success')" style="background:#0f172a;color:#38bdf8;border:1px solid #38bdf833;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-play" style="margin-right:.3rem;font-size:.6rem;"></i>Try it</button>
+          <button onclick="igToast('cURL command copied','success')" style="background:none;border:1px solid var(--border);padding:.35rem .875rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);"><i class="fas fa-terminal" style="margin-right:.3rem;font-size:.6rem;"></i>cURL</button>
+        </div>
+      </div>
+    </div>`).join('')}
+  </div>
+
+  <!-- Versioning & Rate Limits -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:1.5rem;">
+    <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+      <div style="font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:.875rem;letter-spacing:.06em;text-transform:uppercase;">Rate Limits</div>
+      ${[
+        {endpoint:'Auth endpoints',limit:'5 req/min per IP',action:'429 + lockout 15 min'},
+        {endpoint:'Public enquiry',limit:'10 req/hour per IP',action:'429 response'},
+        {endpoint:'Admin APIs',limit:'100 req/min',action:'429 + audit log'},
+        {endpoint:'Portal APIs',limit:'60 req/min per session',action:'429 response'},
+      ].map(r=>`<div style="display:flex;align-items:flex-start;gap:.625rem;padding:.5rem 0;border-bottom:1px solid var(--border);">
+        <i class="fas fa-tachometer-alt" style="color:#d97706;font-size:.7rem;margin-top:.2rem;flex-shrink:0;"></i>
+        <div style="flex:1;">
+          <div style="font-size:.78rem;font-weight:600;color:var(--ink);">${r.endpoint}</div>
+          <div style="font-size:.68rem;color:var(--ink-muted);">${r.limit} · ${r.action}</div>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+      <div style="font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:.875rem;letter-spacing:.06em;text-transform:uppercase;">Versioning & Changelog</div>
+      ${[
+        {v:'2025.03',date:'05 Mar 2025',change:'Sales Force Engine, CMS v2, Phase 6 all modules live'},
+        {v:'2025.02',date:'28 Feb 2025',change:'BI dashboards, HORECA inventory+vendor, Finance e-invoice'},
+        {v:'2025.01',date:'15 Feb 2025',change:'HR payroll builder, Governance voting engine, KYC upload'},
+        {v:'2024.12',date:'01 Jan 2025',change:'Client portal, Employee portal, Board portal initial release'},
+      ].map(v=>`<div style="display:flex;align-items:flex-start;gap:.625rem;padding:.5rem 0;border-bottom:1px solid var(--border);">
+        <span style="background:#0f172a;color:#38bdf8;font-size:.6rem;font-weight:800;padding:.15rem .45rem;flex-shrink:0;border-radius:2px;">${v.v}</span>
+        <div style="flex:1;">
+          <div style="font-size:.72rem;color:var(--ink);">${v.change}</div>
+          <div style="font-size:.62rem;color:var(--ink-muted);">${v.date}</div>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <script>
+  window.igApiToggle = function(idx){
+    var d=document.getElementById('api-detail-'+idx);
+    var a=document.getElementById('api-arr-'+idx);
+    if(d.style.display==='none'){ d.style.display='block'; if(a) a.style.transform='rotate(180deg)'; }
+    else { d.style.display='none'; if(a) a.style.transform=''; }
+  };
+  window.igApiFilter = function(tag){
+    document.querySelectorAll('.api-endpoint-row').forEach(function(r){
+      r.style.display=(!tag||r.dataset.tag===tag)?'block':'none';
+    });
+  };
+  window.igApiSearch = function(q){
+    q=q.toLowerCase();
+    document.querySelectorAll('.api-endpoint-row').forEach(function(r){
+      r.style.display=r.textContent.toLowerCase().includes(q)?'block':'none';
+    });
+  };
+  </script>`
+  return c.html(layout('API Reference', adminShell('API Reference', 'api-docs', body), {noNav:true,noFooter:true}))
+})
+
+// ── KPI / OKR TRACKER (/admin/kpi) ────────────────────────────────────────────
+app.get('/kpi', (c) => {
+  const okrs = [
+    { dept:'Finance',    obj:'Achieve ₹15 Cr revenue in FY 2025',     progress:82, owner:'Arun Manikonda',
+      krs:[
+        {label:'Advisory revenue MTD',      target:'₹12.4L/mo',  actual:'₹12.4L', pct:100},
+        {label:'Invoice collection rate',   target:'>90%',         actual:'87%',    pct:87},
+        {label:'EBITDA margin',             target:'>35%',         actual:'37.1%',  pct:100},
+        {label:'GST compliance — on time',  target:'100%',         actual:'100%',   pct:100},
+      ], color:'#2563eb' },
+    { dept:'Sales',      obj:'Close ₹25 Cr in new engagements FY25',  progress:70, owner:'Amit Jhingan',
+      krs:[
+        {label:'Pipeline value',            target:'₹50 Cr+',      actual:'₹52.4 Cr',pct:100},
+        {label:'Lead to proposal rate',     target:'>50%',         actual:'43%',    pct:86},
+        {label:'Proposals won',             target:'6 deals',      actual:'3 deals',pct:50},
+        {label:'Avg deal closure time',     target:'<90 days',     actual:'104 days',pct:87},
+      ], color:'#B8960C' },
+    { dept:'HR',         obj:'Hire 5 key roles, 0% attrition FY25',   progress:60, owner:'Pavan Manikonda',
+      krs:[
+        {label:'Positions filled',          target:'5',            actual:'2',      pct:40},
+        {label:'Employee satisfaction NPS', target:'>40',          actual:'52',     pct:100},
+        {label:'Training hours/employee',   target:'40h/yr',       actual:'28h',    pct:70},
+        {label:'Payroll accuracy',          target:'100%',         actual:'100%',   pct:100},
+      ], color:'#7c3aed' },
+    { dept:'Governance', obj:'100% statutory compliance, 4 board mtgs',progress:75, owner:'Arun Manikonda',
+      krs:[
+        {label:'Board meetings held',       target:'4/year',       actual:'2',      pct:50},
+        {label:'ROC filings on time',       target:'100%',         actual:'100%',   pct:100},
+        {label:'Resolutions passed',        target:'12',           actual:'7',      pct:58},
+        {label:'DSC validity',              target:'All valid',    actual:'All valid',pct:100},
+      ], color:'#16a34a' },
+    { dept:'HORECA',     obj:'₹2 Cr HORECA revenue, 3 new hotel clients',progress:55, owner:'Amit Jhingan',
+      krs:[
+        {label:'Active hotel clients',      target:'3',            actual:'1',      pct:33},
+        {label:'HORECA revenue YTD',        target:'₹2 Cr',        actual:'₹85L',   pct:43},
+        {label:'PO conversion rate',        target:'>60%',         actual:'78%',    pct:100},
+        {label:'Vendor onboarding',         target:'20 vendors',   actual:'14',     pct:70},
+      ], color:'#d97706' },
+  ]
+  const body = `
+  <!-- Overall OKR Health -->
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-bottom:1.5rem;">
+    ${okrs.map(o=>`<div style="background:#fff;border:1px solid var(--border);border-top:3px solid ${o.color};padding:1rem;">
+      <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.35rem;">${o.dept}</div>
+      <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:${o.color};line-height:1;margin-bottom:.5rem;">${o.progress}%</div>
+      <div style="background:#f1f5f9;height:6px;border-radius:3px;overflow:hidden;">
+        <div style="height:100%;background:${o.color};width:${o.progress}%;border-radius:3px;transition:width .6s;"></div>
+      </div>
+      <div style="font-size:.65rem;color:var(--ink-muted);margin-top:.35rem;">Progress to objective</div>
+    </div>`).join('')}
+  </div>
+
+  <!-- Department OKR Cards -->
+  ${okrs.map(o=>`
+  <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+    <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);background:${o.color}08;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <div style="width:32px;height:32px;background:${o.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-${o.dept==='Finance'?'chart-bar':o.dept==='Sales'?'handshake':o.dept==='HR'?'user-friends':o.dept==='Governance'?'gavel':'boxes'}" style="color:#fff;font-size:.7rem;"></i>
+        </div>
+        <div>
+          <div style="font-size:.85rem;font-weight:700;color:var(--ink);">${o.dept} — ${o.obj}</div>
+          <div style="font-size:.68rem;color:var(--ink-muted);">Owner: ${o.owner} · FY 2024-25</div>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:${o.color};">${o.progress}%</div>
+        <div style="font-size:.62rem;color:${o.progress>=80?'#16a34a':o.progress>=60?'#d97706':'#dc2626'};">${o.progress>=80?'On Track':o.progress>=60?'At Risk':'Behind'}</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="ig-tbl">
+        <thead><tr><th>Key Result</th><th>Target</th><th>Actual</th><th>Progress</th><th>Status</th></tr></thead>
+        <tbody>
+          ${o.krs.map(k=>`<tr>
+            <td style="font-size:.82rem;">${k.label}</td>
+            <td style="font-size:.78rem;color:var(--ink-muted);">${k.target}</td>
+            <td style="font-size:.82rem;font-weight:600;color:${o.color};">${k.actual}</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:.5rem;">
+                <div style="background:#f1f5f9;height:6px;border-radius:3px;overflow:hidden;width:80px;">
+                  <div style="height:100%;background:${k.pct>=80?'#16a34a':k.pct>=60?'#d97706':'#dc2626'};width:${k.pct}%;"></div>
+                </div>
+                <span style="font-size:.72rem;font-weight:700;color:${k.pct>=80?'#16a34a':k.pct>=60?'#d97706':'#dc2626'};">${k.pct}%</span>
+              </div>
+            </td>
+            <td><span class="badge ${k.pct>=80?'b-gr':k.pct>=60?'b-g':'b-re'}" style="font-size:.6rem;">${k.pct>=80?'On Track':k.pct>=60?'At Risk':'Behind'}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`).join('')}
+
+  <!-- Add OKR -->
+  <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;margin-top:1.25rem;">
+    <div style="font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:.875rem;letter-spacing:.06em;text-transform:uppercase;">Add New OKR / Key Result</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.875rem;">
+      <div><label class="ig-label">Department</label><select class="ig-input" style="font-size:.82rem;"><option>Finance</option><option>Sales</option><option>HR</option><option>Governance</option><option>HORECA</option><option>Technology</option></select></div>
+      <div style="grid-column:span 2;"><label class="ig-label">Objective</label><input type="text" class="ig-input" style="font-size:.82rem;" placeholder="e.g. Achieve 100% compliance across all statutory filings"></div>
+      <div><label class="ig-label">Key Result / KPI</label><input type="text" id="okr-kr" class="ig-input" style="font-size:.82rem;" placeholder="e.g. GSTR-1 filed on time"></div>
+      <div><label class="ig-label">Target</label><input type="text" id="okr-target" class="ig-input" style="font-size:.82rem;" placeholder="e.g. 100% or ₹5 Cr"></div>
+      <div><label class="ig-label">Owner</label><select class="ig-input" style="font-size:.82rem;"><option>Arun Manikonda</option><option>Pavan Manikonda</option><option>Amit Jhingan</option></select></div>
+    </div>
+    <button onclick="igToast('OKR added to tracking dashboard','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;margin-top:.875rem;"><i class="fas fa-plus" style="margin-right:.35rem;"></i>Add Key Result</button>
+  </div>`
+  return c.html(layout('KPI & OKR Tracker', adminShell('KPI & OKR Tracker', 'kpi', body), {noNav:true,noFooter:true}))
+})
+
+// ── MANDATE RISK SCORING (/admin/risk) ────────────────────────────────────────
+app.get('/risk', (c) => {
+  const mandates = [
+    { id:'MND-001', name:'Entertainment Destination — Maharashtra', sector:'Entertainment', value:'₹4,500 Cr', score:72, factors:{regulatory:65,counterparty:80,timeline:70,financial:72,legal:75}, trend:'stable',   assigned:'Arun Manikonda' },
+    { id:'MND-002', name:'Retail Leasing — Mumbai MMR',             sector:'Real Estate',   value:'₹2,100 Cr', score:88, factors:{regulatory:90,counterparty:85,timeline:95,financial:88,legal:82}, trend:'improving', assigned:'Amit Jhingan' },
+    { id:'MND-003', name:'Heritage Hotel Portfolio — Rajasthan',    sector:'Hospitality',   value:'₹620 Cr',   score:61, factors:{regulatory:70,counterparty:55,timeline:60,financial:62,legal:58}, trend:'declining', assigned:'Arun Manikonda' },
+    { id:'MND-004', name:'Luxury Resort Rollout — Rajasthan+Goa',   sector:'Hospitality',   value:'₹350 Cr',   score:79, factors:{regulatory:82,counterparty:78,timeline:75,financial:80,legal:80}, trend:'stable',    assigned:'Amit Jhingan' },
+    { id:'MND-005', name:'Entertainment City — Delhi NCR',           sector:'Entertainment', value:'₹1,200 Cr', score:55, factors:{regulatory:45,counterparty:60,timeline:55,financial:58,legal:58}, trend:'declining', assigned:'Arun Manikonda' },
+    { id:'MND-006', name:'Desi Brand — Retail Expansion',           sector:'Retail',        value:'₹45 Cr',    score:91, factors:{regulatory:95,counterparty:90,timeline:92,financial:88,legal:90}, trend:'improving', assigned:'Pavan Manikonda' },
+  ]
+  const riskBand = (s: number) => s>=80?{label:'Low Risk',c:'#16a34a'}:s>=65?{label:'Medium',c:'#d97706'}:{label:'High Risk',c:'#dc2626'}
+  const body = `
+  <!-- Risk Portfolio Summary -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+    ${[
+      {label:'Portfolio Value',     value:'₹8,815 Cr', sub:'6 active mandates', c:'#B8960C', icon:'chart-bar'},
+      {label:'Low Risk',            value:mandates.filter(m=>m.score>=80).length.toString(), sub:'Score ≥80', c:'#16a34a', icon:'check-circle'},
+      {label:'Medium Risk',         value:mandates.filter(m=>m.score>=65&&m.score<80).length.toString(), sub:'Score 65–79', c:'#d97706', icon:'exclamation-triangle'},
+      {label:'High Risk',           value:mandates.filter(m=>m.score<65).length.toString(), sub:'Score <65 — action required', c:'#dc2626', icon:'fire'},
+    ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1.1rem;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;">
+        <div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);">${s.label}</div>
+        <div style="width:28px;height:28px;background:${s.c};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${s.icon}" style="color:#fff;font-size:.6rem;"></i></div>
+      </div>
+      <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:${s.c};line-height:1;margin-bottom:.2rem;">${s.value}</div>
+      <div style="font-size:.68rem;color:var(--ink-muted);">${s.sub}</div>
+    </div>`).join('')}
+  </div>
+
+  <!-- Risk Score Cards -->
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-bottom:1.5rem;">
+    ${mandates.map(m=>{
+      const rb = riskBand(m.score)
+      return `<div style="background:#fff;border:1px solid var(--border);border-left:4px solid ${rb.c};">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;">
+          <div>
+            <div style="font-size:.72rem;font-weight:700;color:var(--gold);margin-bottom:.2rem;">${m.id} · ${m.sector}</div>
+            <div style="font-size:.85rem;font-weight:600;color:var(--ink);">${m.name}</div>
+            <div style="font-size:.68rem;color:var(--ink-muted);margin-top:.15rem;">₹ Value: ${m.value} · Owner: ${m.assigned}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;margin-left:1rem;">
+            <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:${rb.c};line-height:1;">${m.score}</div>
+            <div style="font-size:.6rem;font-weight:700;color:${rb.c};letter-spacing:.08em;text-transform:uppercase;">${rb.label}</div>
+            <div style="font-size:.62rem;color:${m.trend==='improving'?'#16a34a':m.trend==='declining'?'#dc2626':'#64748b'};margin-top:.2rem;"><i class="fas fa-${m.trend==='improving'?'arrow-up':m.trend==='declining'?'arrow-down':'minus'}" style="font-size:.55rem;margin-right:.2rem;"></i>${m.trend}</div>
+          </div>
+        </div>
+        <div style="padding:.875rem 1.25rem;">
+          ${Object.entries(m.factors).map(([k,v])=>`<div style="display:flex;align-items:center;gap:.625rem;margin-bottom:.4rem;">
+            <div style="font-size:.68rem;color:var(--ink-muted);width:90px;flex-shrink:0;text-transform:capitalize;">${k}</div>
+            <div style="flex:1;background:#f1f5f9;height:5px;border-radius:3px;overflow:hidden;">
+              <div style="height:100%;background:${v>=80?'#16a34a':v>=65?'#d97706':'#dc2626'};width:${v}%;"></div>
+            </div>
+            <div style="font-size:.68rem;font-weight:700;color:${v>=80?'#16a34a':v>=65?'#d97706':'#dc2626'};width:28px;text-align:right;">${v}</div>
+          </div>`).join('')}
+          <div style="display:flex;gap:.5rem;margin-top:.75rem;">
+            <button onclick="igToast('Risk report for ${m.id} generated','success')" style="background:var(--gold);color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-file-alt" style="margin-right:.3rem;"></i>Report</button>
+            <button onclick="igToast('Mitigation plan opened for ${m.id}','success')" style="background:none;border:1px solid ${rb.c};color:${rb.c};padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">Mitigate</button>
+          </div>
+        </div>
+      </div>`
+    }).join('')}
+  </div>
+
+  <!-- Concentration Risk -->
+  <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+    <div style="font-size:.85rem;font-weight:700;color:var(--ink);margin-bottom:1rem;letter-spacing:.06em;text-transform:uppercase;">Sector Concentration Risk</div>
+    ${[
+      {sector:'Entertainment',pct:65,value:'₹5,700 Cr',risk:'High Concentration',rc:'#dc2626'},
+      {sector:'Real Estate',  pct:24,value:'₹2,100 Cr',risk:'Moderate',rc:'#d97706'},
+      {sector:'Hospitality',  pct:11,value:'₹970 Cr',  risk:'Acceptable',rc:'#16a34a'},
+      {sector:'Retail',       pct:1, value:'₹45 Cr',   risk:'Low',rc:'#16a34a'},
+    ].map(s=>`<div style="margin-bottom:.875rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;">
+        <span style="font-size:.78rem;font-weight:600;color:var(--ink);">${s.sector}</span>
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <span style="font-size:.72rem;font-weight:700;color:var(--gold);">${s.value} (${s.pct}%)</span>
+          <span class="badge" style="background:${s.rc}22;color:${s.rc};border:1px solid ${s.rc}44;font-size:.58rem;">${s.risk}</span>
+        </div>
+      </div>
+      <div style="background:#f1f5f9;height:10px;border-radius:3px;overflow:hidden;">
+        <div style="height:100%;background:${s.rc};width:${s.pct}%;border-radius:3px;"></div>
+      </div>
+    </div>`).join('')}
+    <div class="ig-warn" style="margin-top:1rem;"><i class="fas fa-exclamation-triangle"></i><div>Entertainment sector represents 65% of portfolio. Recommended max concentration: 40%. Consider diversification into Healthcare Real Estate or Infrastructure Advisory.</div></div>
+  </div>`
+  return c.html(layout('Mandate Risk Dashboard', adminShell('Risk Dashboard', 'risk', body), {noNav:true,noFooter:true}))
 })
 
 export default app

@@ -226,4 +226,150 @@ app.get('/', (c) => {
   }))
 })
 
+// ── HORECA CUSTOMER PORTAL ────────────────────────────────────────────────────
+app.get('/portal', (c) => {
+  const categories = [
+    {cat:'Kitchen Equipment', icon:'utensils',       color:'#0d9488', skus:24, inStock:21},
+    {cat:'Crockery & Cutlery',icon:'concierge-bell', color:'#2563eb', skus:56, inStock:52},
+    {cat:'Linen & Fabrics',   icon:'bed',            color:'#7c3aed', skus:18, inStock:15},
+    {cat:'Front Office',      icon:'bell',           color:'#d97706', skus:12, inStock:12},
+    {cat:'Housekeeping',      icon:'broom',          color:'#16a34a', skus:31, inStock:28},
+    {cat:'Food & Beverage',   icon:'wine-glass-alt', color:'#dc2626', skus:45, inStock:40},
+    {cat:'Maintenance',       icon:'tools',          color:'#475569', skus:19, inStock:17},
+    {cat:'Technology',        icon:'desktop',        color:'#9f1239', skus:8,  inStock:8},
+  ]
+  const products = [
+    {id:'SKU-KE-001',cat:'Kitchen Equipment',name:'Commercial Induction Range — 4 Burner',brand:'Vollrath',unit:'Unit',price:185000,tier_price:148000,stock:5,moq:1},
+    {id:'SKU-KE-002',cat:'Kitchen Equipment',name:'Blast Freezer — 10-tray',              brand:'Williams',unit:'Unit',price:320000,tier_price:256000,stock:2,moq:1},
+    {id:'SKU-CC-001',cat:'Crockery & Cutlery',name:'Fine Dining Crockery Set — 12 pieces', brand:'Wedgwood',unit:'Set', price:12500, tier_price:10000, stock:80,moq:10},
+    {id:'SKU-CC-002',cat:'Crockery & Cutlery',name:'Silver-plate Cutlery — 24 piece set',  brand:'Oneida',  unit:'Set', price:8500,  tier_price:6800,  stock:45,moq:5},
+    {id:'SKU-LF-001',cat:'Linen & Fabrics',   name:'Hotel Cotton Bedsheet Set — King',     brand:'Trident', unit:'Set', price:4200,  tier_price:3360,  stock:200,moq:20},
+    {id:'SKU-LF-002',cat:'Linen & Fabrics',   name:'Bath Towel Set — 6 pcs (600 GSM)',     brand:'Spaces',  unit:'Set', price:2800,  tier_price:2240,  stock:150,moq:10},
+    {id:'SKU-FB-001',cat:'Food & Beverage',   name:'Commercial Espresso Machine — 2 Group',brand:'La Marzocco',unit:'Unit',price:580000,tier_price:464000,stock:3,moq:1},
+    {id:'SKU-FB-002',cat:'Food & Beverage',   name:'Bar Blender — Commercial Grade',       brand:'Vitamix', unit:'Unit',price:45000, tier_price:36000, stock:10,moq:1},
+  ]
+  const body = `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>India Gully HORECA — Customer Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+      :root{--gold:#B8960C;--ink:#111111;--border:#E8E0D0;}
+      body{font-family:'DM Sans',sans-serif;background:#f8f6f1;margin:0;}
+      .ig-label{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#64748b;display:block;margin-bottom:.3rem;}
+      .ig-input{width:100%;border:1px solid var(--border);padding:.5rem .75rem;font-size:.82rem;background:#fff;box-sizing:border-box;}
+      .ig-input:focus{outline:none;border-color:var(--gold);}
+      .badge{display:inline-flex;align-items:center;padding:.15rem .5rem;font-size:.65rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:2px;}
+    </style>
+  </head>
+  <body>
+  <!-- Portal Header -->
+  <div style="background:#1E1E1E;border-bottom:2px solid var(--gold);padding:.875rem 2rem;display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:#fff;">India Gully <span style="color:var(--gold);">HORECA</span></div>
+      <span style="font-size:.62rem;background:var(--gold);color:#fff;padding:.15rem .5rem;font-weight:700;letter-spacing:.06em;">CUSTOMER PORTAL</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:1.5rem;">
+      <div style="font-size:.72rem;color:rgba(255,255,255,.7);">Welcome, <strong style="color:#fff;">Rajasthan Resort Group</strong> <span style="color:var(--gold);">Premium Tier</span></div>
+      <button onclick="igToast('Cart opened','info')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;position:relative;"><i class="fas fa-shopping-cart" style="margin-right:.35rem;"></i>Cart <span style="background:#dc2626;color:#fff;border-radius:50%;width:16px;height:16px;font-size:.58rem;display:inline-flex;align-items:center;justify-content:center;margin-left:.3rem;">3</span></button>
+      <a href="/horeca" style="font-size:.68rem;color:rgba(255,255,255,.5);text-decoration:none;"><i class="fas fa-arrow-left" style="margin-right:.3rem;"></i>Back to Site</a>
+    </div>
+  </div>
+
+  <div style="max-width:1280px;margin:0 auto;padding:2rem;">
+    <!-- Portal Stats -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;">
+      ${[
+        {label:'Your Orders',    value:'8',      sub:'Total placed', c:'#B8960C', icon:'box'},
+        {label:'Pending Delivery',value:'1',     sub:'1 order in transit', c:'#d97706', icon:'truck'},
+        {label:'Account Credit',  value:'₹2.5L', sub:'Available for use', c:'#16a34a', icon:'wallet'},
+        {label:'Your Discount',   value:'20%',   sub:'Premium tier rate', c:'#7c3aed', icon:'tag'},
+      ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;">
+          <span style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#64748b;">${s.label}</span>
+          <i class="fas fa-${s.icon}" style="color:${s.c};font-size:.75rem;"></i>
+        </div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:${s.c};line-height:1;margin-bottom:.2rem;">${s.value}</div>
+        <div style="font-size:.65rem;color:#94a3b8;">${s.sub}</div>
+      </div>`).join('')}
+    </div>
+
+    <!-- Catalogue & Order Section -->
+    <div style="display:grid;grid-template-columns:220px 1fr;gap:1.5rem;">
+      <!-- Category Sidebar -->
+      <div style="background:#fff;border:1px solid var(--border);height:fit-content;">
+        <div style="padding:.875rem 1rem;border-bottom:1px solid var(--border);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#64748b;">Browse Categories</div>
+        ${['All Categories',...categories.map(c=>c.cat)].map((cat,i)=>`<div onclick="igHorcFilter('${cat}')" style="padding:.625rem 1rem;border-bottom:1px solid ${i===0?'var(--gold)':'var(--border)'};cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:${i===0?'#fffbeb':'#fff'};" onmouseover="this.style.background='#fffbeb'" onmouseout="this.style.background='${i===0?'#fffbeb':'#fff'}'">
+          <span style="font-size:.78rem;color:var(--ink);">${cat}</span>
+          ${i>0?`<span style="font-size:.63rem;color:#94a3b8;">${categories[i-1].inStock}</span>`:`<span style="font-size:.63rem;color:#94a3b8;">${categories.reduce((a,c)=>a+c.inStock,0)}</span>`}
+        </div>`).join('')}
+      </div>
+
+      <!-- Products Grid -->
+      <div>
+        <!-- Search -->
+        <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;">
+          <div style="flex:1;position:relative;">
+            <i class="fas fa-search" style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:.72rem;"></i>
+            <input type="text" class="ig-input" placeholder="Search products by name, SKU, brand..." style="padding-left:2.25rem;">
+          </div>
+          <select class="ig-input" style="max-width:160px;"><option>Sort: Featured</option><option>Price: Low-High</option><option>In Stock First</option></select>
+        </div>
+
+        <!-- Product Cards -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;" id="product-grid">
+          ${products.map(p=>`<div style="background:#fff;border:1px solid var(--border);">
+            <div style="padding:1rem;border-bottom:1px solid var(--border);">
+              <div style="font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;margin-bottom:.25rem;">${p.id} · ${p.brand}</div>
+              <div style="font-size:.85rem;font-weight:600;color:var(--ink);margin-bottom:.35rem;line-height:1.35;">${p.name}</div>
+              <div style="display:flex;align-items:baseline;gap:.5rem;">
+                <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.15rem;color:var(--gold);">₹${p.tier_price.toLocaleString('en-IN')}</span>
+                <span style="font-size:.7rem;color:#94a3b8;text-decoration:line-through;">₹${p.price.toLocaleString('en-IN')}</span>
+                <span style="font-size:.62rem;background:#f0fdf4;color:#16a34a;padding:1px 4px;font-weight:700;">20% off</span>
+              </div>
+              <div style="font-size:.65rem;color:#94a3b8;margin-top:.2rem;">Per ${p.unit} · MOQ: ${p.moq} ${p.unit}</div>
+            </div>
+            <div style="padding:.875rem;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.625rem;">
+                <span style="font-size:.72rem;color:${p.stock>5?'#16a34a':p.stock>0?'#d97706':'#dc2626'};font-weight:600;"><i class="fas fa-circle" style="font-size:.5rem;margin-right:.3rem;"></i>${p.stock>0?p.stock+' in stock':'Out of stock'}</span>
+                <button onclick="igToast('Stock check for ${p.id}: ${p.stock} units available','info')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.62rem;cursor:pointer;color:#64748b;"><i class="fas fa-sync" style="margin-right:.2rem;"></i>Check</button>
+              </div>
+              <div style="display:flex;gap:.5rem;">
+                <input type="number" min="${p.moq}" value="${p.moq}" style="width:55px;border:1px solid var(--border);padding:.3rem .5rem;font-size:.78rem;text-align:center;">
+                <button onclick="igAddToCart('${p.id}','${p.name.replace(/'/g,'')}')" style="flex:1;background:var(--gold);color:#fff;border:none;padding:.4rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-cart-plus" style="margin-right:.3rem;"></i>Add to Cart</button>
+              </div>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  function igToast(msg,type){
+    var t=document.createElement('div');
+    var bg=type==='success'?'#16a34a':type==='warn'?'#d97706':type==='info'?'#2563eb':'#dc2626';
+    t.style.cssText='position:fixed;bottom:1.5rem;right:1.5rem;background:'+bg+';color:#fff;padding:.75rem 1.25rem;font-size:.78rem;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);';
+    t.textContent=msg; document.body.appendChild(t);
+    setTimeout(function(){t.remove();},3000);
+  }
+  var cartCount=3;
+  function igAddToCart(sku,name){
+    cartCount++;
+    document.querySelector('.fas.fa-shopping-cart').nextElementSibling.nextElementSibling.textContent=cartCount;
+    igToast(name+' added to cart','success');
+  }
+  function igHorcFilter(cat){
+    igToast('Filtering: '+cat,'info');
+  }
+  </script>
+  </body>
+  </html>`
+  return c.html(body)
+})
+
 export default app
