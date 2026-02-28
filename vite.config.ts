@@ -10,5 +10,16 @@ export default defineConfig({
       adapter,
       entry: 'src/index.tsx'
     })
-  ]
+  ],
+  build: {
+    // Cloudflare Workers: 1MB uncompressed ≈ 250KB gzipped — well within limits
+    // esbuild handles minification for the Worker bundle via @hono/vite-build
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        // Inline dynamic imports — required for Cloudflare Workers (no chunk splitting)
+        inlineDynamicImports: true,
+      }
+    }
+  }
 })

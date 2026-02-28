@@ -1,34 +1,74 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "webapp",
+  "name": "india-gully",
   "compatibility_date": "2026-02-27",
   "pages_build_output_dir": "./dist",
   "compatibility_flags": [
     "nodejs_compat"
-  ]
-  // "vars": {
-  //   "MY_VAR": "my-variable"
-  // },
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "MY_KV_NAMESPACE",
-  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //   }
-  // ],
-  // "r2_buckets": [
-  //   {
-  //     "binding": "MY_BUCKET",
-  //     "bucket_name": "my-bucket"
-  //   }
-  // ],
-  // "d1_databases": [
-  //   {
-  //     "binding": "MY_DB",
-  //     "database_name": "my-database",
-  //     "database_id": ""
-  //   }
-  // ],
-  // "ai": {
-  //   "binding": "AI"
-  // }
+  ],
+
+  // ── KV Namespaces ────────────────────────────────────────────────────────────
+  // ig_session_kv:   server-side session storage (replaces in-memory SESSION_STORE)
+  // ig_ratelimit_kv: rate-limit counters + lockout timers per IP
+  // ig_audit_kv:     append-only audit event log
+  "kv_namespaces": [
+    {
+      "binding": "IG_SESSION_KV",
+      "id": "e649ea31983d43b38e679de75dd061d8"
+    },
+    {
+      "binding": "IG_RATELIMIT_KV",
+      "id": "aafa0f0466e84939b9bfb20bd48e0b6b"
+    },
+    {
+      "binding": "IG_AUDIT_KV",
+      "id": "26df48cf2353429a9de6d677d3257578"
+    }
+  ],
+
+  // ── D1 Database ──────────────────────────────────────────────────────────────
+  // Production D1 — create with: npx wrangler d1 create india-gully-production
+  // Local dev uses automatic --local SQLite in .wrangler/state/v3/d1
+  // Requires Cloudflare API token with D1:Edit permission
+  // After creation, replace "PENDING_D1_ID" with real database_id from wrangler output
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "india-gully-production",
+      "database_id": "PENDING_D1_ID"
+    }
+  ],
+
+  // ── R2 Storage ───────────────────────────────────────────────────────────────
+  // Document storage: board packs, contracts, employee files
+  // Create with: npx wrangler r2 bucket create india-gully-docs
+  "r2_buckets": [
+    {
+      "binding": "DOCS_BUCKET",
+      "bucket_name": "india-gully-docs"
+    }
+  ],
+
+  // ── Environment Variables (non-secret) ───────────────────────────────────────
+  "vars": {
+    "PLATFORM_ENV":       "production",
+    "PLATFORM_VERSION":   "2026.04",
+    "DPDP_DPO_EMAIL":     "dpo@indiagully.com",
+    "SUPPORT_EMAIL":      "admin@indiagully.com",
+    "SESSION_TTL_SECS":   "1800",
+    "RATE_MAX_ATTEMPTS":  "5",
+    "LOCKOUT_SECS":       "300"
+  }
+
+  // ── Secrets (set via: wrangler pages secret put SECRET_NAME) ─────────────────
+  // These are NEVER in wrangler.jsonc — use Cloudflare dashboard or CLI:
+  //
+  //   wrangler pages secret put RAZORPAY_KEY_ID      --project-name india-gully
+  //   wrangler pages secret put RAZORPAY_KEY_SECRET  --project-name india-gully
+  //   wrangler pages secret put SENDGRID_API_KEY     --project-name india-gully
+  //   wrangler pages secret put DOCUSIGN_API_KEY     --project-name india-gully
+  //   wrangler pages secret put DOCUSIGN_ACCOUNT_ID  --project-name india-gully
+  //   wrangler pages secret put GST_GSP_API_KEY      --project-name india-gully
+  //   wrangler pages secret put JWT_SECRET           --project-name india-gully
+  //   wrangler pages secret put TOTP_ENCRYPT_KEY     --project-name india-gully
 }
