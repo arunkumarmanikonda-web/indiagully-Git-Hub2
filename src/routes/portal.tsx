@@ -205,42 +205,52 @@ app.get('/board', (c) => {
   }), { noNav:true, noFooter:true }))
 })
 
-// ── DEMO ACCESS GUIDE (replaces on-login-page credential display) ─────────────
+// ── DEMO ACCESS GUIDE — credentials NOT displayed; contact administrator ──────
 app.get('/demo-access', (c) => {
   const content = `
 <div style="min-height:100vh;background:linear-gradient(135deg,#080808 0%,#141414 100%);display:flex;align-items:center;justify-content:center;padding:2rem 1.5rem;">
-  <div style="width:100%;max-width:560px;">
+  <div style="width:100%;max-width:540px;">
     <div style="background:#fff;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.5);">
       <div style="background:#1A3A6B;padding:2rem;text-align:center;">
         <div style="width:48px;height:48px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;"><i class="fas fa-user-shield" style="color:#fff;font-size:1.25rem;"></i></div>
-        <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;margin-bottom:.25rem;">Demo Access Guide</h1>
-        <p style="font-size:.75rem;color:rgba(255,255,255,.55);">For authorised evaluators &amp; technical reviewers only</p>
+        <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;margin-bottom:.25rem;">Access Support</h1>
+        <p style="font-size:.75rem;color:rgba(255,255,255,.55);">Enterprise Platform Login Help</p>
       </div>
-      <div style="background:#fef2f2;border-bottom:1px solid #fecaca;padding:.875rem 1.5rem;display:flex;gap:.6rem;">
-        <i class="fas fa-exclamation-triangle" style="color:#dc2626;font-size:.75rem;margin-top:.2rem;flex-shrink:0;"></i>
-        <p style="font-size:.75rem;color:#991b1b;">This page is for demo evaluation only. In production, credentials are provisioned by the administrator. Remove this page before go-live.</p>
+      <div style="background:#f0f9ff;border-bottom:1px solid #bae6fd;padding:.875rem 1.5rem;display:flex;gap:.6rem;">
+        <i class="fas fa-info-circle" style="color:#0369a1;font-size:.75rem;margin-top:.2rem;flex-shrink:0;"></i>
+        <p style="font-size:.75rem;color:#0c4a6e;">Credentials are provisioned individually by the system administrator. Passwords and TOTP secrets are never displayed in the portal for security reasons.</p>
       </div>
       <div style="padding:1.75rem;">
-        <h3 style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:.875rem;">Portal Credentials</h3>
+        <h3 style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:1rem;">Available Portals</h3>
         ${[
-          {portal:'Super Admin', url:'/admin',          id:'superadmin@indiagully.com', pw:'Admin@IG2024!',  color:'#6B1A1A'},
-          {portal:'Client',      url:'/portal/client',   id:'demo@indiagully.com',        pw:'Client@IG2024', color:'#B8960C'},
-          {portal:'Employee',    url:'/portal/employee', id:'IG-EMP-0001',                pw:'Emp@IG2024',    color:'#1A3A6B'},
-          {portal:'Board & KMP', url:'/portal/board',    id:'IG-KMP-0001',                pw:'Board@IG2024',  color:'#1E1E1E'},
-        ].map(p=>`<div style="background:#f8f9fa;border:1px solid var(--border);padding:.875rem 1rem;margin-bottom:.625rem;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem;">
-            <span style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:${p.color};">${p.portal}</span>
-            <a href="${p.url}" style="font-size:.68rem;color:var(--gold);text-decoration:none;">Open Login &rarr;</a>
+          {portal:'Client Portal',   url:'/portal/client',   icon:'user-tie',   color:'#B8960C', desc:'Advisory services, mandates, invoices, deliverables'},
+          {portal:'Employee Portal', url:'/portal/employee', icon:'users',      color:'#1A3A6B', desc:'HR, payroll, leave, attendance, Form-16'},
+          {portal:'Board & KMP',     url:'/portal/board',    icon:'gavel',      color:'#1E1E1E', desc:'Governance, board packs, voting, statutory registers'},
+          {portal:'Super Admin',     url:'/admin',           icon:'shield-alt', color:'#6B1A1A', desc:'Platform administration, ERP, user management'},
+        ].map(p=>`<div style="background:#f8f9fa;border:1px solid var(--border);padding:.875rem 1rem;margin-bottom:.625rem;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:.75rem;">
+            <div style="width:36px;height:36px;background:${p.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${p.icon}" style="color:#fff;font-size:.8rem;"></i></div>
+            <div>
+              <div style="font-size:.82rem;font-weight:600;color:var(--ink);">${p.portal}</div>
+              <div style="font-size:.7rem;color:var(--ink-muted);">${p.desc}</div>
+            </div>
           </div>
-          <div style="font-size:.78rem;color:var(--ink);line-height:1.8;">
-            <strong>ID:</strong> <code style="background:#fff;border:1px solid var(--border);padding:1px 6px;font-size:.72rem;user-select:all;">${p.id}</code><br>
-            <strong>Password:</strong> <code style="background:#fff;border:1px solid var(--border);padding:1px 6px;font-size:.72rem;user-select:all;">${p.pw}</code>
-          </div>
+          <a href="${p.url}" style="font-size:.72rem;color:var(--gold);text-decoration:none;white-space:nowrap;margin-left:1rem;">Login &rarr;</a>
         </div>`).join('')}
-        <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:1rem;margin-bottom:1.25rem;">
-          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#0369a1;margin-bottom:.5rem;"><i class="fas fa-mobile-alt" style="margin-right:.4rem;"></i>2FA / TOTP Setup</div>
-          <p style="font-size:.78rem;color:#0c4a6e;line-height:1.8;">1. Install <strong>Google Authenticator</strong> or <strong>Authy</strong> on your phone.<br>2. Add a new account &rarr; "Enter setup key manually".<br>3. Account name: <code style="background:#fff;border:1px solid #bae6fd;padding:1px 6px;font-size:.72rem;">India Gully Demo</code><br>4. Secret key: <code style="background:#fff;border:1px solid #bae6fd;padding:1px 6px;font-size:.72rem;user-select:all;font-weight:700;">JBSWY3DPEHPK3PXP</code><br>5. Time-based (TOTP): <strong>Yes</strong><br><span style="font-size:.68rem;color:#0369a1;margin-top:.3rem;display:block;"><i class="fas fa-lock" style="margin-right:.25rem;"></i>This is the shared demo secret only. Each user receives a unique provisioned secret in production.</span></p>
+
+        <div style="background:#fffbeb;border:1px solid #fde68a;padding:1rem;margin-top:1.25rem;margin-bottom:1rem;">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#92400e;margin-bottom:.5rem;"><i class="fas fa-mobile-alt" style="margin-right:.4rem;"></i>2FA / TOTP — Authenticator App Required</div>
+          <p style="font-size:.78rem;color:#78350f;line-height:1.8;">All portals require a 6-digit code from an authenticator app (Google Authenticator, Authy, or Microsoft Authenticator).<br>Your TOTP secret is provisioned by the administrator when your account is created. It is never displayed on screen.</p>
         </div>
+
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;padding:1rem;margin-bottom:1.25rem;">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#166534;margin-bottom:.5rem;"><i class="fas fa-envelope" style="margin-right:.4rem;"></i>Request Access</div>
+          <p style="font-size:.78rem;color:#166534;line-height:1.8;">Contact your system administrator for login credentials:<br>
+            <strong>Email:</strong> <a href="mailto:admin@indiagully.com" style="color:#16a34a;">admin@indiagully.com</a><br>
+            <strong>Phone:</strong> +91 8988 988 988
+          </p>
+        </div>
+
         <div style="text-align:center;">
           <a href="/portal" style="font-size:.78rem;color:var(--gold);">&larr; Back to Portal Selection</a>
         </div>
@@ -248,7 +258,7 @@ app.get('/demo-access', (c) => {
     </div>
   </div>
 </div>`
-  return c.html(layout('Demo Access', content, { noNav:true, noFooter:true }))
+  return c.html(layout('Access Support', content, { noNav:true, noFooter:true }))
 })
 
 // ── PASSWORD RESET ────────────────────────────────────────────────────────────

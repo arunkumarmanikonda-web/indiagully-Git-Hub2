@@ -117,10 +117,10 @@ app.get('/', (c) => {
         <p style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);">India Gully Enterprise Platform</p>
         <div style="margin-top:.875rem;display:inline-flex;align-items:center;gap:.4rem;background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.3);padding:.3rem .75rem;"><i class="fas fa-exclamation-triangle" style="color:#ef4444;font-size:.6rem;"></i><span style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#ef4444;">Restricted Access</span></div>
       </div>
-      <div style="background:#fffbeb;border-bottom:1px solid #fde68a;padding:.875rem 1.5rem;display:flex;gap:.6rem;">
-        <i class="fas fa-key" style="color:#d97706;font-size:.75rem;margin-top:.15rem;flex-shrink:0;"></i>
-        <div><p style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#92400e;margin-bottom:.3rem;">Demo Access</p>
-        <p style="font-size:.75rem;color:#78350f;line-height:1.7;"><strong>Username:</strong> <code style="background:#fef3c7;padding:1px 5px;font-size:.72rem;">superadmin@indiagully.com</code><br><strong>Password:</strong> <code style="background:#fef3c7;padding:1px 5px;font-size:.72rem;">Admin@IG2024!</code><br><strong>2FA Code:</strong> <span id="demo-otp-admin" style="background:#fef3c7;padding:1px 5px;font-size:.72rem;font-family:monospace;">Generating…</span> <span style="font-size:.62rem;color:#92400e;">(refreshes every 30s)</span></p></div>
+      <div style="background:#f0f9ff;border-bottom:1px solid #bae6fd;padding:.875rem 1.5rem;display:flex;gap:.6rem;">
+        <i class="fas fa-shield-alt" style="color:#0369a1;font-size:.75rem;margin-top:.15rem;flex-shrink:0;"></i>
+        <div><p style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0c4a6e;margin-bottom:.3rem;">2FA Required</p>
+        <p style="font-size:.75rem;color:#0369a1;line-height:1.7;">Open your authenticator app and enter the 6-digit code for <strong>India Gully Super Admin</strong>. Credentials are provisioned by your system administrator.<br><a href="/portal/demo-access" style="color:#0369a1;text-decoration:underline;font-size:.72rem;">Demo evaluator? See access guide &rarr;</a></p></div>
       </div>
       ${eb}
       <div style="padding:2rem;">
@@ -140,10 +140,9 @@ app.get('/', (c) => {
   var csrf=Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');
   var ce=document.getElementById('csrf-admin'); if(ce) ce.value=csrf;
   sessionStorage.setItem('ig_csrf_admin',csrf);
-  /* ── TOTP simulator ── */
-  function igTOTP(){var t=Math.floor(Date.now()/30000);var seed='admin|'+t+'|IGDemo2025';var h=0;for(var i=0;i<seed.length;i++){h=(Math.imul(31,h)+seed.charCodeAt(i))|0;}h=Math.abs(h);return String(h%1000000).padStart(6,'0');}
-  function igUpdateOTP(){var code=igTOTP();var el=document.getElementById('demo-otp-admin');if(el)el.textContent=code;var rem=30-Math.floor((Date.now()/1000)%30);var cd=document.getElementById('otp-countdown-admin');if(cd)cd.textContent='(refreshes in '+rem+'s)';}
-  igUpdateOTP(); setInterval(igUpdateOTP,1000);
+  /* ── TOTP countdown indicator (no code generation on client) ── */
+  function igUpdateTOTPCountdown(){var rem=30-Math.floor((Date.now()/1000)%30);var cd=document.getElementById('otp-countdown-admin');if(cd)cd.textContent='('+rem+'s remaining)';}
+  igUpdateTOTPCountdown(); setInterval(igUpdateTOTPCountdown,1000);
   /* ── Rate limiting ── */
   var attKey='ig_attempts_admin';var lockKey='ig_lock_admin';
   function igCheckLock(){var lock=parseInt(localStorage.getItem(lockKey)||'0');if(lock>Date.now()){var btn=document.getElementById('login-btn-admin');if(btn)btn.disabled=true;var banner=document.getElementById('lockout-banner-admin');if(banner)banner.style.display='block';var tEl=document.getElementById('lockout-timer-admin');var iv=setInterval(function(){var rem=Math.ceil((parseInt(localStorage.getItem(lockKey)||'0')-Date.now())/1000);if(rem<=0){clearInterval(iv);localStorage.removeItem(lockKey);localStorage.setItem(attKey,'0');location.reload();}else if(tEl)tEl.textContent=String(rem);},1000);return true;}return false;}

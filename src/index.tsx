@@ -18,7 +18,24 @@ import { layout } from './lib/layout'
 
 const app = new Hono()
 
-app.use('/api/*', cors())
+// ── SECURITY HEADERS MIDDLEWARE (defense-in-depth alongside _headers file) ────
+app.use('*', async (c, next) => {
+  await next()
+  c.header('X-Frame-Options', 'DENY')
+  c.header('X-Content-Type-Options', 'nosniff')
+  c.header('Referrer-Policy', 'strict-origin-when-cross-origin')
+  c.header('X-XSS-Protection', '1; mode=block')
+  c.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
+  c.header('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()')
+  // Do NOT set CSP here — it is managed in _headers to allow Cloudflare Pages cache headers to work correctly
+})
+
+app.use('/api/*', cors({
+  origin: ['https://india-gully.pages.dev', 'http://localhost:3000'],
+  allowMethods: ['GET', 'POST', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'X-CSRF-Token', 'Authorization'],
+  credentials: true,
+}))
 app.use('/static/*', serveStatic({ root: './' }))
 app.use('/assets/*', serveStatic({ root: './' }))
 
