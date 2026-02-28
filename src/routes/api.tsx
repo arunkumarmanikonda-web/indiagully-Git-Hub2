@@ -322,8 +322,9 @@ function isDemoMode(env?: Partial<Bindings>): boolean {
 const USER_STORE = {
   'superadmin@indiagully.com': {
     salt: 'ig-salt-admin-v3-2026',
-    // PBKDF2(SHA-256) of the admin demo password, 100k iterations
-    hash: '9f4c2e8a1b7d3f6e5c2a9b4d8e1f7c3a6b9d2e5f8c1a4b7e0d3f6a9c2b5e8f1',
+    // PBKDF2(SHA-256, 100k iterations) — password set 2026-02-28
+    // Plain-text never stored; hash regenerated via scripts/hash-credentials.ts
+    hash: '531e7f8d58df22dc04f4883380c7def8ea1f7a548938d62065d46cf1c011ec1c',
     role: 'Super Admin',
     portal: 'admin',
     dashboard: '/admin/dashboard',
