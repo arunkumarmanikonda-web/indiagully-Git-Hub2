@@ -10,7 +10,8 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://cdb2edad.india-gully.pages.dev |
+| **Latest Deploy** | https://61b1f9d3.india-gully.pages.dev |
+| **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
 | **Sandbox Preview** | http://localhost:3000 |
@@ -206,3 +207,74 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | e-Invoice IRN | NIC sandbox → production API integration | High |
 | PF/ESIC Portal | EPFO ECR live upload integration | Medium |
 | Hindi Full i18n | Complete UI translation (currently nav labels only) | Low |
+
+---
+
+## 🔍 Final Deep-Audit Report — v2026.03-FINAL (28 Feb 2026)
+
+**Live Report:** https://india-gully.pages.dev/audit
+
+### Audit Summary
+
+| Metric | Result |
+|--------|--------|
+| Overall Risk Rating | **CRITICAL** (demo-grade only) |
+| Security Score | 18/100 |
+| Compliance Score | 47/100 (7 Pass · 17 Partial · 12 Fail) |
+| Functional Completeness | 72/100 |
+| Production Readiness | ❌ NOT READY — P0 phase must complete first |
+| Critical Findings | 8 |
+| High Findings | 14 |
+| Medium Findings | 11 |
+| Low/Info Findings | 9 |
+| Total Requirements Assessed | 36 (Companies Act, GST, DPDP, Labour Laws, IT Act) |
+
+### Critical Pre-Production Gates (P0)
+
+1. Replace hard-coded credentials in api.tsx with real identity provider
+2. Implement server-side session middleware (Cloudflare KV + signed cookies)
+3. Deploy HTTP security response headers (`_headers` file — HSTS, X-Frame-Options, X-Content-Type-Options)
+4. Implement server-side CSRF validation
+5. Server-side rate limiting via Cloudflare KV
+6. Remove all demo credentials from HTML login pages
+7. Restrict CORS to allowed origins
+8. Provision Cloudflare D1 for data persistence
+
+### Compliance Gaps (Top Priority)
+
+- **DPDP Act 2023:** No consent management, no DPO, no data principal rights portal
+- **Companies Act 2013:** Statutory registers CRUD not functional; MCA/ROC filing not integrated
+- **GST Acts:** GSTR filing is UI stub; no live GSP/IRP API calls
+- **Income Tax Act:** TRACES API not integrated for Form 16/26Q; challan generation absent
+- **Labour Codes (2019-2020):** Minimum wage validation, gratuity calculation absent
+- **FSSAI:** Compliance module entirely absent for HORECA food business
+
+### B-Round Verification (B1–B10)
+
+| ID | Status | Notes |
+|----|--------|-------|
+| B1 TOTP Simulator | ⚠️ Partial | RFC 6238 non-compliant; `000000` still accepted in server auth |
+| B2 CSRF Tokens | ⚠️ Partial | Client-side only; no server validation |
+| B3 Rate Limiting | ⚠️ Partial | Client JS only; server has no rate limiting |
+| B4 Session Timeout | ⚠️ Partial | Client JS redirect; no real server session |
+| B5 Form 26AS + ITR | ✅ Pass | Full UI complete (demo scope) |
+| B6 Form 16 Portal | ✅ Pass | Full UI complete (demo scope) |
+| B7 Agenda Builder | ✅ Pass | Full UI complete (demo scope) |
+| B8 E-Sign + Versioning | ✅ Pass | Full UI complete; DocuSign not configured |
+| B9 GraphQL Playground | ✅ Pass | Schema explorer complete |
+| B10 Build + Deploy | ✅ Pass | All routes HTTP 200 |
+
+### C-Round Verification (C1–C9)
+
+| ID | Status | Notes |
+|----|--------|-------|
+| C1 Remove on-screen TOTP | ⚠️ Partial | admin.tsx line 123 still shows credentials |
+| C2 Statutory Registers CRUD | ❌ Open | Not implemented |
+| C3 PII Masking | ⚠️ Partial | UI toggles only; no server-side enforcement |
+| C4 Audit-Trail Viewer | ⚠️ Partial | Static demo logs; no real capture |
+| C5 Password Reset | ⚠️ Partial | Returns success; no email sent |
+| C6 E-Sign + Razorpay | ❌ Open | Both "Not Configured" |
+| C7 AI CMS Copy Assist | ⚠️ Partial | Template switcher; no LLM call |
+| C8 Remove Demo Credentials | ❌ Open | Still visible in source |
+| C9 Build + Deploy | ✅ Pass | HTTP 200 all routes |
+
