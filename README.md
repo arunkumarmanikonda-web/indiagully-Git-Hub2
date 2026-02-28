@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://2fd4e7b4.india-gully.pages.dev |
+| **Latest Deploy** | https://e1e2e59e.india-gully.pages.dev |
 | **Sandbox Preview** | http://localhost:3000 |
 
 ---
@@ -59,7 +59,11 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 - **Dashboard** — alert banner, 8 KPI cards, quick-action bar, activity feed, compliance grid
 - **CMS** — full page editor with slug, SEO, hero, body HTML, OG image, publish
 - **Users** — 8 user accounts, add/edit/deactivate, role management
-- **Workflows** — 6 automated workflows with step/trigger viewer
+- **Workflows** (fully rebuilt — 4 tabs):
+  - Workflow library with visual step pipeline display
+  - **Visual Builder** — drag-and-drop canvas, 6 block types (Approval, Automated, Notify, Document, Condition, Wait), step editor panel with SLA/role/escalation config
+  - **Run History** — 6 recent runs with duration, status, per-workflow analytics bars
+  - **Settings** — global SLA matrix, escalation config
 - **Finance ERP** (tabbed):
   - Invoices with GST calc, auto-number, mark-paid, AR total
   - **Live P&L Statement** with period selector (Feb, Jan, Dec, FY 2024-25)
@@ -84,11 +88,15 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 - **System Config** — Platform, SMTP, Security settings
 - **Security & Audit** — Audit log, IP whitelist, 2FA stats
 
-### Phase 5 — UX & Interactivity Enhancements (LIVE)
-- **Notification bells** on all portals (Client, Employee, Admin) with dropdown panels
-- **Breadcrumb navigation** in all portal headers
+### Phase 5 — UX & Interactivity Enhancements (LIVE ✅)
+- **Notification bells** on ALL portals (Client, Employee, Board, Admin) with dropdown panels
+- **Breadcrumbs** in all portal headers (Portal → Section → Page)
 - **Sidebar badges** showing pending item counts
-- **Admin notification alerts** (5 live alerts)
+- **Admin notification alerts** (5 categorised live alerts)
+- **Board & KMP Portal** — upgraded header with notifications, breadcrumbs, user badge
+- **Visual Workflow Builder** — 4-tab Workflow Engine (Library, Builder, Run History, Settings)
+- **API deduplication** — single canonical set of endpoints, no duplicate routes
+- **API health v2025.03** — full endpoint manifest, 11 modules, 68 routes documented
 
 ---
 
@@ -119,10 +127,10 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 |------|-------|-------------|
 | `src/routes/portal.tsx` | 1,846 | All portal routes (Client, Employee, Board) |
 | `src/routes/admin.tsx` | 1,843 | Super Admin ERP console |
-| `src/routes/api.tsx` | 233 | REST API endpoints |
+| `src/routes/api.tsx` | 255 | REST API endpoints (deduplicated) |
 | `src/lib/layout.ts` | 624 | Master layout, CSS, navigation |
 | `src/index.tsx` | 135 | App entry, route mounting |
-| **Total** | **4,681** | **525 KB compiled worker** |
+| **Total** | **4,830+** | **573 KB compiled worker** |
 
 ---
 
