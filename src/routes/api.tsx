@@ -74,11 +74,31 @@ function successRedirect(backUrl: string, msg: string): string {
 app.get('/health', (c) => c.json({
   status: 'ok',
   platform: 'India Gully Enterprise Platform',
-  version: '2025.02',
+  version: '2025.03',
   timestamp: new Date().toISOString(),
-  modules: ['CMS','Finance ERP','HR ERP','Governance','HORECA','Contracts','Workflows','Security'],
-  portals: ['Client','Employee','Board','Super Admin'],
-  routes_count: 60,
+  modules: ['CMS','Finance ERP','HR ERP','Governance','HORECA','Contracts','Workflows','Security','Board Portal','Client Portal','Employee Portal'],
+  portals: ['Client Portal','Employee Portal','Board & KMP Portal','Super Admin'],
+  api_endpoints: [
+    'GET /api/health',
+    'GET /api/listings',
+    'GET /api/mandates',
+    'GET /api/invoices',
+    'GET /api/employees',
+    'GET /api/finance/summary',
+    'GET /api/compliance',
+    'GET /api/horeca/catalogue',
+    'POST /api/enquiry',
+    'POST /api/horeca-enquiry',
+    'POST /api/subscribe',
+    'POST /api/auth/login',
+    'POST /api/auth/admin',
+    'POST /api/auth/reset',
+    'POST /api/attendance/checkin',
+    'POST /api/leave/apply',
+  ],
+  routes_count: 68,
+  deployment: 'Cloudflare Pages',
+  last_updated: '2025-03-05',
 }))
 
 // ── MANDATE ENQUIRY ───────────────────────────────────────────────────────────
@@ -141,57 +161,6 @@ app.get('/listings', (c) => c.json({
     { id:'desi-brand-retail',         title:'Desi Brand — 15-City Retail Expansion',location:'Tier 1 & 2 Cities',value:'₹45 Cr',    sector:'Retail',        status:'Active'           },
   ]
 }))
-
-// ── MANDATES API ──────────────────────────────────────────────────────────────
-app.get('/mandates', (c) => c.json({
-  total: 3,
-  mandates: [
-    { id:'MND-001', title:'Retail Leasing — Mumbai', sector:'Real Estate', value:'₹2,100 Cr', advisor:'Amit Jhingan',  status:'Active',      progress:75, start:'01 Jan 2025', milestones:['Agreement Signed','NDA Executed','Site Visits Complete','Term Sheet Pending','Close'] },
-    { id:'MND-002', title:'Hotel Pre-Opening PMC',   sector:'Hospitality', value:'₹45 Cr',    advisor:'Arun Manikonda',status:'In Progress', progress:45, start:'15 Feb 2025', milestones:['Agreement Signed','Kickoff Meeting','Vendor Onboarding','PMC Handover','Close'] },
-    { id:'MND-003', title:'Entertainment Feasibility',sector:'Entertainment',value:'₹4,500 Cr',advisor:'Arun Manikonda',status:'Review',     progress:20, start:'01 Mar 2025', milestones:['Agreement Signed','Data Collection','Draft Report','Final Report','Presentation'] },
-  ]
-}))
-
-// ── INVOICES API ──────────────────────────────────────────────────────────────
-app.get('/invoices', (c) => {
-  const { client } = c.req.query()
-  return c.json({
-    summary: { total_billed: 750160, amount_paid: 250160, amount_due: 500000, overdue: 180000 },
-    invoices: [
-      { id:'INV-2025-001', desc:'Advisory Retainer — Jan 2025',    base:212000, gst:38160, total:250160, due:'2025-02-15', status:'Paid',    paid_on:'2025-02-14' },
-      { id:'INV-2025-002', desc:'Hotel PMC — Phase 1',              base:152542, gst:27458, total:180000, due:'2025-02-28', status:'Overdue', paid_on:null         },
-      { id:'INV-2025-003', desc:'Entertainment Feasibility Study',  base:271186, gst:48814, total:320000, due:'2025-03-31', status:'Draft',   paid_on:null         },
-    ]
-  })
-})
-
-// ── EMPLOYEES API ─────────────────────────────────────────────────────────────
-app.get('/employees', (c) => {
-  // In production: require auth token
-  return c.json({
-    total: 3,
-    employees: [
-      { id:'IG-0001', name:'Arun Manikonda',  designation:'Managing Director',     dept:'Leadership', email:'akm@indiagully.com',   status:'Active', ctc_annual:1800000 },
-      { id:'IG-0002', name:'Pavan Manikonda', designation:'Executive Director',    dept:'Operations', email:'pavan@indiagully.com', status:'Active', ctc_annual:1500000 },
-      { id:'IG-0003', name:'Amit Jhingan',    designation:'President, Real Estate',dept:'Advisory',   email:'amit.j@indiagully.com',status:'Active', ctc_annual:2100000 },
-    ]
-  })
-})
-
-// ── FINANCE SUMMARY API ───────────────────────────────────────────────────────
-app.get('/finance/summary', (c) => {
-  const { period } = c.req.query()
-  const p = period || 'feb-2025'
-  return c.json({
-    period: p,
-    revenue: { total: 1240000, mtd_growth: 0.083 },
-    expenses: { total: 780000, mtd_change: -0.021 },
-    net_profit: { total: 460000, margin: 0.371 },
-    gst: { cgst_collected: 111600, sgst_collected: 111600, itc_available: 82000, net_payable: 141200, due_date: '2025-03-20' },
-    bank_balance: 5620000,
-    receivables: 3480000,
-  })
-})
 
 // ── ATTENDANCE API ────────────────────────────────────────────────────────────
 app.post('/attendance/checkin', async (c) => {

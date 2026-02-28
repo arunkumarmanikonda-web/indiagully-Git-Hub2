@@ -1468,6 +1468,12 @@ function boardShell(pageTitle: string, active: string, body: string) {
     { id:'finance',    icon:'chart-bar',      label:'Finance Reports' },
     { id:'compliance', icon:'shield-alt',     label:'Compliance'      },
   ]
+  const notifs = [
+    {msg:'Board Meeting Q1 Review — 15 Mar 2025 confirmed',type:'info',  time:'1h ago'},
+    {msg:'Resolution BM-2025-003 — Vote closes in 2 days', type:'warn',  time:'3h ago'},
+    {msg:'GSTR-1 due 11 Mar — Finance team notified',      type:'warn',  time:'1d ago'},
+    {msg:'DIN renewal reminder — Arun Manikonda expiry',   type:'danger', time:'2d ago'},
+  ]
   return `
 <div style="display:flex;height:100vh;overflow:hidden;background:#f7f7f7;">
   <aside style="width:240px;flex-shrink:0;background:#1E1E1E;display:flex;flex-direction:column;min-height:100vh;">
@@ -1486,18 +1492,54 @@ function boardShell(pageTitle: string, active: string, body: string) {
     </div>
   </aside>
   <main style="flex:1;overflow-y:auto;display:flex;flex-direction:column;">
-    <div style="background:#fff;border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <div style="background:#fff;border-bottom:1px solid var(--border);padding:.875rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
       <div>
-        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.2rem;color:var(--ink);">${pageTitle}</h2>
-        <p style="font-size:.72rem;color:var(--ink-muted);">Board & KMP Portal · Governance & Compliance</p>
+        <div style="font-size:.62rem;color:var(--ink-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.15rem;">
+          <a href="/portal" style="color:var(--ink-muted);text-decoration:none;">Portal</a>
+          <i class="fas fa-chevron-right" style="font-size:.5rem;margin:0 .35rem;"></i>
+          <a href="/portal/board/dashboard" style="color:var(--ink-muted);text-decoration:none;">Board & KMP</a>
+          <i class="fas fa-chevron-right" style="font-size:.5rem;margin:0 .35rem;"></i>
+          <span style="color:var(--ink);">${pageTitle}</span>
+        </div>
+        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.15rem;color:var(--ink);">${pageTitle}</h2>
       </div>
-      <div style="width:34px;height:34px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;">
-        <i class="fas fa-gavel" style="color:var(--gold);font-size:.75rem;"></i>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <!-- Notification Bell -->
+        <div style="position:relative;">
+          <button id="brd-notif-btn" onclick="toggleBrdNotif()" style="background:none;border:1px solid var(--border);width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;">
+            <i class="fas fa-bell" style="font-size:.75rem;color:var(--ink-muted);"></i>
+            <span style="position:absolute;top:-3px;right:-3px;width:16px;height:16px;background:#dc2626;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:.5rem;color:#fff;font-weight:700;">4</span>
+          </button>
+          <div id="brd-notif-panel" style="display:none;position:absolute;right:0;top:calc(100% + 8px);width:320px;background:#fff;border:1px solid var(--border);box-shadow:0 12px 40px rgba(0,0,0,.15);z-index:9999;">
+            <div style="padding:.75rem 1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);">Board Alerts</span>
+              <button onclick="igToast('All alerts cleared','success')" style="font-size:.65rem;color:var(--gold);background:none;border:none;cursor:pointer;">Clear All</button>
+            </div>
+            ${notifs.map(n=>`<div style="padding:.75rem 1rem;border-bottom:1px solid var(--border);display:flex;gap:.625rem;">
+              <i class="fas fa-${n.type==='danger'?'exclamation-circle':n.type==='warn'?'exclamation-triangle':'info-circle'}" style="color:${n.type==='danger'?'#dc2626':n.type==='warn'?'#d97706':'#2563eb'};font-size:.75rem;margin-top:.1rem;flex-shrink:0;"></i>
+              <div><div style="font-size:.78rem;color:var(--ink);line-height:1.4;">${n.msg}</div><div style="font-size:.65rem;color:var(--ink-muted);margin-top:.15rem;">${n.time}</div></div>
+            </div>`).join('')}
+          </div>
+        </div>
+        <!-- User badge -->
+        <div style="display:flex;align-items:center;gap:.5rem;">
+          <div style="text-align:right;">
+            <div style="font-size:.72rem;font-weight:600;color:var(--ink);">Board Member</div>
+            <div style="font-size:.6rem;color:var(--ink-muted);">Governance Portal</div>
+          </div>
+          <div style="width:34px;height:34px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;cursor:pointer;" title="Board & KMP Member" onclick="igToast('Board & KMP Portal · Governance Access','info')">
+            <i class="fas fa-gavel" style="color:var(--gold);font-size:.75rem;"></i>
+          </div>
+        </div>
       </div>
     </div>
     <div style="flex:1;padding:2rem;overflow-y:auto;">${body}</div>
   </main>
-</div>`
+</div>
+<script>
+function toggleBrdNotif(){var p=document.getElementById('brd-notif-panel');p.style.display=p.style.display==='none'?'block':'none';}
+document.addEventListener('click',function(e){var btn=document.getElementById('brd-notif-btn');var panel=document.getElementById('brd-notif-panel');if(panel&&!panel.contains(e.target)&&btn&&!btn.contains(e.target))panel.style.display='none';});
+</script>`
 }
 
 app.get('/board/dashboard', (c) => {

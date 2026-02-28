@@ -486,45 +486,433 @@ app.get('/users', (c) => {
 // ── WORKFLOWS ─────────────────────────────────────────────────────────────────
 app.get('/workflows', (c) => {
   const WF = [
-    {id:'wf0', name:'Invoice Approval',      steps:['Submit Invoice','Finance Review','Director Approval','GST Filing','Archive'],    trigger:'Amount > ₹50,000', active:true},
-    {id:'wf1', name:'Mandate Onboarding',    steps:['Enquiry Received','KYC Verification','NDA Execution','Engagement Letter','Active'],trigger:'New client enquiry', active:true},
-    {id:'wf2', name:'Leave Approval',        steps:['Employee Request','Reporting Manager','HR Confirmation','Attendance Update'],      trigger:'Leave request submitted', active:true},
-    {id:'wf3', name:'Contract Renewal',      steps:['Auto Alert 30d','Legal Review','Director Sign','Archive'],                         trigger:'30 days before expiry', active:false},
-    {id:'wf4', name:'Vendor Onboarding',     steps:['Vendor Request','Compliance Check','Finance Approval','Active Vendor'],            trigger:'New vendor form', active:true},
-    {id:'wf5', name:'Board Resolution',      steps:['Draft Resolution','Director Review','Vote','File with ROC'],                       trigger:'Board meeting scheduled', active:true},
+    {id:'wf0', name:'Invoice Approval',    cat:'Finance',    icon:'file-invoice',   color:'#2563eb',
+     steps:[{n:'Submit Invoice',role:'Submitter',sla:2,action:'Form submission'},{n:'Finance Review',role:'Finance Manager',sla:24,action:'Amount & GST check'},{n:'Director Approval',role:'Director',sla:48,action:'Digital signature required'},{n:'GST Filing',role:'Finance',sla:24,action:'Auto-file to GST portal'},{n:'Archive',role:'System',sla:1,action:'Auto-archive to R2'}],
+     trigger:'Invoice amount > ₹50,000 submitted', active:true, runs:24, lastRun:'28 Feb 2025', avgTime:'38h'},
+    {id:'wf1', name:'Mandate Onboarding', cat:'Operations', icon:'handshake',       color:'#B8960C',
+     steps:[{n:'Enquiry Received',role:'Sales',sla:2,action:'Log in CRM'},{n:'KYC Verification',role:'Compliance',sla:48,action:'PAN/Aadhar check'},{n:'NDA Execution',role:'Legal',sla:72,action:'DocuSign NDA'},{n:'Engagement Letter',role:'Director',sla:48,action:'EL approval & signing'},{n:'Activate Mandate',role:'System',sla:1,action:'Create portal & folders'}],
+     trigger:'New client enquiry form submitted', active:true, runs:8, lastRun:'25 Feb 2025', avgTime:'5d'},
+    {id:'wf2', name:'Leave Approval',     cat:'HR',         icon:'calendar-check',  color:'#16a34a',
+     steps:[{n:'Employee Request',role:'Employee',sla:1,action:'Submit leave form'},{n:'Reporting Manager',role:'Manager',sla:24,action:'Approve/reject'},{n:'HR Confirmation',role:'HR',sla:4,action:'Update leave ledger'},{n:'Attendance Update',role:'System',sla:1,action:'Auto-update attendance records'}],
+     trigger:'Leave application submitted by employee', active:true, runs:12, lastRun:'05 Mar 2025', avgTime:'28h'},
+    {id:'wf3', name:'Contract Renewal',   cat:'Legal',      icon:'file-signature',  color:'#7c3aed',
+     steps:[{n:'Auto Alert 30d',role:'System',sla:1,action:'Email to Director'},{n:'Legal Review',role:'Legal',sla:48,action:'Review terms & update'},{n:'Director Sign',role:'Director',sla:72,action:'DocuSign renewal'},{n:'Archive Old',role:'System',sla:1,action:'Archive expired contract'}],
+     trigger:'Contract expiry within 30 days', active:false, runs:3, lastRun:'15 Jan 2025', avgTime:'4d'},
+    {id:'wf4', name:'Vendor Onboarding',  cat:'Finance',    icon:'store',           color:'#d97706',
+     steps:[{n:'Vendor Request',role:'Finance',sla:4,action:'Submit vendor form'},{n:'Compliance Check',role:'Compliance',sla:48,action:'GSTIN & PAN verify'},{n:'Finance Approval',role:'CFO',sla:24,action:'Approve vendor terms'},{n:'Activate Vendor',role:'System',sla:1,action:'Create vendor in Vyapar'}],
+     trigger:'New vendor onboarding form submitted', active:true, runs:6, lastRun:'20 Feb 2025', avgTime:'3d'},
+    {id:'wf5', name:'Board Resolution',   cat:'Governance', icon:'gavel',           color:'#dc2626',
+     steps:[{n:'Draft Resolution',role:'Director',sla:24,action:'Draft in portal'},{n:'Director Review',role:'All Directors',sla:48,action:'Comments & edits'},{n:'Vote',role:'Board',sla:72,action:'Digital vote'},{n:'File ROC',role:'CS',sla:48,action:'MGT-14 with ROC'}],
+     trigger:'Board meeting scheduled', active:true, runs:5, lastRun:'28 Feb 2025', avgTime:'6d'},
   ]
+
+  const runHistory = [
+    {wf:'Invoice Approval',    id:'RUN-INV-047', started:'28 Feb 10:14', ended:'28 Feb 22:07', duration:'11h 53m', status:'Completed', triggered:'INV-2025-003 submitted'},
+    {wf:'Leave Approval',      id:'RUN-LV-012',  started:'05 Mar 09:30', ended:'05 Mar 12:45', duration:'3h 15m',  status:'Completed', triggered:'Amit Jhingan leave request'},
+    {wf:'Mandate Onboarding',  id:'RUN-MND-008', started:'25 Feb 14:00', ended:null,           duration:'—',       status:'In Progress',triggered:'New HORECA client enquiry'},
+    {wf:'Contract Renewal',    id:'RUN-CR-003',  started:'01 Mar 00:00', ended:'04 Mar 11:30', duration:'3d 11h',  status:'Completed', triggered:'EY Retainer expiry alert'},
+    {wf:'Invoice Approval',    id:'RUN-INV-046', started:'25 Feb 16:22', ended:'26 Feb 09:14', duration:'16h 52m', status:'Completed', triggered:'INV-2025-002 submitted'},
+    {wf:'Board Resolution',    id:'RUN-BR-005',  started:'28 Feb 11:00', ended:null,           duration:'—',       status:'In Progress',triggered:'Q1 Board meeting scheduled'},
+  ]
+
   const body = `
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
-    ${WF.map((w,i)=>`
-    <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
-      <div style="display:flex;justify-content:space-between;margin-bottom:.75rem;">
-        <h4 style="font-size:.875rem;font-weight:600;color:var(--ink);">${w.name}</h4>
-        <span class="badge ${w.active?'b-gr':'b-re'}">${w.active?'Active':'Paused'}</span>
-      </div>
-      <!-- Step visual -->
-      <div style="display:flex;gap:.2rem;margin-bottom:.75rem;flex-wrap:wrap;">
-        ${w.steps.map((s,si)=>`<span style="font-size:.62rem;background:${w.active?'#dbeafe':'#f1f5f9'};color:${w.active?'#1d4ed8':'#475569'};padding:2px 6px;border-radius:2px;">${si+1}. ${s}</span>`).join('')}
-      </div>
-      <p style="font-size:.72rem;color:var(--ink-faint);margin-bottom:.875rem;">Trigger: ${w.trigger}</p>
-      <div style="display:flex;gap:.5rem;">
-        <button onclick="togglePanel('wf-edit-${i}')" style="font-size:.72rem;background:none;border:1px solid var(--border);padding:.3rem .75rem;cursor:pointer;color:var(--gold);">Edit Flow</button>
-        <button onclick="igConfirm('${w.active?'Pause':'Activate'} the ${w.name} workflow?',function(){ igToast('${w.name} ${w.active?'paused':'activated'}','${w.active?'warn':'success'}'); })" style="font-size:.72rem;background:none;border:1px solid var(--border);padding:.3rem .75rem;cursor:pointer;color:var(--ink-muted);">${w.active?'Pause':'Activate'}</button>
-      </div>
-      <div id="wf-edit-${i}" class="ig-panel" style="margin-top:.875rem;">
-        <label class="ig-label">Workflow Name</label>
-        <input type="text" class="ig-input" value="${w.name}" style="font-size:.82rem;margin-bottom:.75rem;">
-        <label class="ig-label">Trigger Condition</label>
-        <input type="text" class="ig-input" value="${w.trigger}" style="font-size:.82rem;margin-bottom:.75rem;">
-        <label class="ig-label">SLA (hours per step)</label>
-        <input type="number" class="ig-input" value="24" style="font-size:.82rem;margin-bottom:.875rem;">
-        <div style="display:flex;gap:.5rem;">
-          <button onclick="igToast('Workflow ${w.name} saved','success');togglePanel('wf-edit-${i}')" style="background:var(--gold);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;">Save</button>
-          <button onclick="togglePanel('wf-edit-${i}')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+  <!-- Summary Cards -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+    ${[
+      {label:'Total Workflows',  value:'6',    sub:'5 active · 1 paused', c:'#2563eb'},
+      {label:'Runs This Month',  value:'14',   sub:'4 completed today',    c:'#16a34a'},
+      {label:'Avg Completion',   value:'38h',  sub:'Within SLA targets',   c:'#B8960C'},
+      {label:'SLA Breaches',     value:'0',    sub:'All on time',          c:'#16a34a'},
+    ].map(s=>`<div class="am"><div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.4rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:${s.c};line-height:1;">${s.value}</div><div style="font-size:.68rem;color:var(--ink-muted);margin-top:.2rem;">${s.sub}</div></div>`).join('')}
+  </div>
+
+  <!-- Tab Nav -->
+  <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
+    ${['Workflow Library','Visual Builder','Run History','Settings'].map((t,i)=>`<button onclick="igWfTab(${i})" id="wf-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;">${t}</button>`).join('')}
+  </div>
+
+  <!-- Tab 0: Workflow Library -->
+  <div id="wf-pane-0">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+      ${WF.map((w,i)=>`
+      <div style="background:#fff;border:1px solid var(--border);border-top:3px solid ${w.color};">
+        <div style="padding:1rem 1.1rem .75rem;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.625rem;">
+            <div style="display:flex;align-items:center;gap:.5rem;">
+              <div style="width:28px;height:28px;background:${w.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-${w.icon}" style="color:#fff;font-size:.68rem;"></i>
+              </div>
+              <div>
+                <div style="font-size:.85rem;font-weight:600;color:var(--ink);">${w.name}</div>
+                <span class="badge b-dk" style="font-size:.55rem;">${w.cat}</span>
+              </div>
+            </div>
+            <span class="badge ${w.active?'b-gr':'b-re'}" style="font-size:.6rem;">${w.active?'Active':'Paused'}</span>
+          </div>
+          <!-- Visual step pipeline -->
+          <div style="display:flex;align-items:center;gap:.2rem;margin-bottom:.75rem;overflow-x:auto;padding:.25rem 0;">
+            ${w.steps.map((s,si)=>`
+              <div style="display:flex;align-items:center;flex-shrink:0;">
+                <div style="background:${w.active?w.color:'#94a3b8'};color:#fff;font-size:.55rem;font-weight:700;padding:.2rem .45rem;white-space:nowrap;position:relative;">${si+1}</div>
+                <div style="font-size:.62rem;color:${w.active?'var(--ink)':'var(--ink-muted)'};background:${w.active?'#f0f9ff':'#f8fafc'};padding:.2rem .45rem;white-space:nowrap;border:1px solid ${w.active?'#bae6fd':'#e2e8f0'};">${s.n}</div>
+                ${si<w.steps.length-1?`<div style="color:${w.color};font-size:.6rem;margin:0 .1rem;">→</div>`:''}
+              </div>`).join('')}
+          </div>
+          <div style="font-size:.68rem;color:var(--ink-muted);margin-bottom:.5rem;"><i class="fas fa-bolt" style="color:#d97706;margin-right:.3rem;font-size:.6rem;"></i>${w.trigger}</div>
+          <div style="display:flex;gap:1rem;font-size:.65rem;color:var(--ink-muted);border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem;">
+            <span><b style="color:var(--ink);">${w.runs}</b> runs</span>
+            <span>Last: <b style="color:var(--ink);">${w.lastRun}</b></span>
+            <span>Avg: <b style="color:var(--ink);">${w.avgTime}</b></span>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding:.625rem 1rem;display:flex;gap:.5rem;background:#fafaf8;">
+          <button onclick="igWfOpen(${i})" style="flex:1;background:${w.color};color:#fff;border:none;padding:.35rem .5rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-sitemap" style="margin-right:.3rem;"></i>Edit Flow</button>
+          <button onclick="igConfirm('${w.active?'Pause':'Activate'} &quot;${w.name}&quot; workflow?',function(){ igToast('${w.name} ${w.active?'paused':'activated'}','${w.active?'warn':'success'}'); })" style="background:none;border:1px solid var(--border);padding:.35rem .65rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);" title="${w.active?'Pause':'Activate'}"><i class="fas fa-${w.active?'pause':'play'}"></i></button>
+          <button onclick="igToast('Test run started for ${w.name}','success')" style="background:none;border:1px solid var(--border);padding:.35rem .65rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);" title="Test Run"><i class="fas fa-vial"></i></button>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div style="margin-top:1rem;">
+      <button onclick="igWfTab(1)" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.4rem;"></i>Create New Workflow</button>
+    </div>
+  </div>
+
+  <!-- Tab 1: Visual Builder -->
+  <div id="wf-pane-1" style="display:none;">
+    <div style="display:grid;grid-template-columns:280px 1fr;gap:1.25rem;">
+      <!-- Config Panel -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1rem;border-bottom:1px solid var(--border);font-weight:600;font-size:.825rem;color:var(--ink);">⚙️ Workflow Config</div>
+        <div style="padding:1rem;">
+          <label class="ig-label">Workflow Name</label>
+          <input type="text" id="wfb-name" class="ig-input" placeholder="e.g. New Client KYC" style="font-size:.82rem;margin-bottom:.75rem;">
+          <label class="ig-label">Category</label>
+          <select id="wfb-cat" class="ig-input" style="font-size:.82rem;margin-bottom:.75rem;">
+            <option>Finance</option><option>HR</option><option>Operations</option><option>Legal</option><option>Governance</option><option>IT</option>
+          </select>
+          <label class="ig-label">Trigger Event</label>
+          <select id="wfb-trigger" class="ig-input" style="font-size:.82rem;margin-bottom:.75rem;">
+            <option>Form submitted</option>
+            <option>Invoice created</option>
+            <option>Leave requested</option>
+            <option>Contract expiring</option>
+            <option>New employee added</option>
+            <option>Scheduled (daily)</option>
+            <option>Scheduled (weekly)</option>
+            <option>Board meeting created</option>
+            <option>Custom webhook</option>
+          </select>
+          <label class="ig-label">Trigger Condition</label>
+          <input type="text" id="wfb-condition" class="ig-input" placeholder="e.g. amount > 50000" style="font-size:.82rem;margin-bottom:.75rem;">
+          <label class="ig-label">Overall SLA</label>
+          <select class="ig-input" style="font-size:.82rem;margin-bottom:.875rem;">
+            <option>24 hours</option><option>48 hours</option><option>72 hours</option><option>5 business days</option><option>7 days</option><option>Custom</option>
+          </select>
+          <label class="ig-label">Notifications</label>
+          <div style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:.875rem;">
+            ${['Email on step complete','Email on SLA breach','WhatsApp alerts','In-app notifications'].map(n=>`<label style="display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--ink);cursor:pointer;"><input type="checkbox" ${n.includes('Email')||n.includes('In-app')?'checked':''} style="cursor:pointer;">${n}</label>`).join('')}
+          </div>
+          <hr style="border:none;border-top:1px solid var(--border);margin:.875rem 0;">
+          <h5 style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.625rem;">Add Step Block</h5>
+          ${[
+            {icon:'user-check',  color:'#2563eb',  type:'Approval',    desc:'Human approval gate'},
+            {icon:'robot',       color:'#7c3aed',  type:'Automated',   desc:'System auto-action'},
+            {icon:'envelope',    color:'#d97706',  type:'Notify',      desc:'Send email/WhatsApp'},
+            {icon:'file-alt',    color:'#16a34a',  type:'Document',    desc:'Create/file document'},
+            {icon:'code-branch', color:'#dc2626',  type:'Condition',   desc:'Branch on condition'},
+            {icon:'clock',       color:'#475569',  type:'Wait',        desc:'Time delay / SLA hold'},
+          ].map(b=>`<button onclick="igAddWfStep('${b.type}')" style="display:flex;align-items:center;gap:.5rem;width:100%;background:#f8fafc;border:1px solid var(--border);padding:.45rem .625rem;margin-bottom:.35rem;cursor:pointer;text-align:left;">
+            <div style="width:24px;height:24px;background:${b.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-${b.icon}" style="color:#fff;font-size:.55rem;"></i>
+            </div>
+            <div>
+              <div style="font-size:.72rem;font-weight:600;color:var(--ink);">${b.type}</div>
+              <div style="font-size:.62rem;color:var(--ink-muted);">${b.desc}</div>
+            </div>
+          </button>`).join('')}
         </div>
       </div>
-    </div>`).join('')}
-  </div>`
-  return c.html(layout('Workflows', adminShell('Workflow Engine', 'workflows', body), {noNav:true,noFooter:true}))
+      <!-- Canvas -->
+      <div>
+        <div style="background:#fff;border:1px solid var(--border);padding:1rem;margin-bottom:1rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+            <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Flow Canvas</h3>
+            <div style="display:flex;gap:.5rem;">
+              <button onclick="igWfSave()" style="background:var(--gold);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-save" style="margin-right:.3rem;"></i>Save Workflow</button>
+              <button onclick="igWfClear()" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Clear</button>
+            </div>
+          </div>
+          <!-- Trigger node -->
+          <div style="display:flex;align-items:center;margin-bottom:.5rem;">
+            <div style="background:#fef3c7;border:2px solid #d97706;padding:.625rem 1rem;font-size:.78rem;font-weight:600;color:#92400e;min-width:160px;text-align:center;">
+              <i class="fas fa-bolt" style="margin-right:.4rem;"></i>TRIGGER
+            </div>
+            <div style="width:40px;height:2px;background:#d97706;"></div>
+            <div style="font-size:.68rem;color:#92400e;background:#fffbeb;border:1px solid #fde68a;padding:.3rem .6rem;">Form submitted</div>
+          </div>
+          <!-- Steps canvas -->
+          <div id="wfb-canvas" style="border:2px dashed var(--border);min-height:280px;padding:1.25rem;background:#fafaf8;position:relative;">
+            <div id="wfb-steps-container">
+              <!-- Steps rendered here by JS -->
+              <div id="wfb-empty" style="text-align:center;color:var(--ink-muted);font-size:.82rem;padding:3rem 0;">
+                <i class="fas fa-plus-circle" style="font-size:2rem;color:var(--border);display:block;margin-bottom:.75rem;"></i>
+                Add step blocks from the left panel to build your workflow
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Step Detail Editor (shown when clicking a step) -->
+        <div id="wfb-step-editor" style="display:none;background:#fff;border:1px solid var(--border);border-left:4px solid #2563eb;">
+          <div style="padding:.75rem 1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-weight:600;font-size:.82rem;color:var(--ink);" id="wfb-step-title">Step Configuration</div>
+            <button onclick="document.getElementById('wfb-step-editor').style.display='none'" style="background:none;border:none;cursor:pointer;color:var(--ink-muted);font-size:1rem;">✕</button>
+          </div>
+          <div style="padding:1rem;display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
+            <div><label class="ig-label">Step Name</label><input type="text" id="wfb-sname" class="ig-input" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">Assigned Role</label><select id="wfb-srole" class="ig-input" style="font-size:.82rem;"><option>Director</option><option>Finance Manager</option><option>HR Manager</option><option>Compliance Officer</option><option>Company Secretary</option><option>System (Auto)</option></select></div>
+            <div><label class="ig-label">SLA (hours)</label><input type="number" id="wfb-ssla" class="ig-input" value="24" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">Action Required</label><input type="text" id="wfb-saction" class="ig-input" placeholder="e.g. Review and approve" style="font-size:.82rem;"></div>
+            <div style="grid-column:span 2;"><label class="ig-label">Escalation After SLA Breach</label><select class="ig-input" style="font-size:.82rem;"><option>Email Director</option><option>WhatsApp alert</option><option>Auto-escalate to MD</option><option>Skip step</option></select></div>
+            <div style="grid-column:span 2;"><label class="ig-label">Notes / Instructions</label><textarea class="ig-input" rows="2" style="font-size:.82rem;" placeholder="Instructions for the assignee..."></textarea></div>
+            <div style="grid-column:span 2;display:flex;gap:.75rem;">
+              <button onclick="igSaveWfStep()" style="background:#2563eb;color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Save Step</button>
+              <button onclick="igDeleteWfStep()" style="background:#dc2626;color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Delete Step</button>
+              <button onclick="document.getElementById('wfb-step-editor').style.display='none'" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: Run History -->
+  <div id="wf-pane-2" style="display:none;">
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Workflow Run History</h3>
+        <button onclick="igToast('Run history exported','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export</button>
+      </div>
+      <table class="ig-tbl">
+        <thead><tr><th>Run ID</th><th>Workflow</th><th>Trigger</th><th>Started</th><th>Ended</th><th>Duration</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+          ${runHistory.map(r=>`<tr>
+            <td style="font-size:.75rem;font-weight:600;color:var(--gold);">${r.id}</td>
+            <td style="font-size:.82rem;font-weight:500;">${r.wf}</td>
+            <td style="font-size:.75rem;color:var(--ink-muted);">${r.triggered}</td>
+            <td style="font-size:.78rem;">${r.started}</td>
+            <td style="font-size:.78rem;color:${r.ended?'var(--ink)':'var(--ink-muted)'};">${r.ended||'—'}</td>
+            <td style="font-size:.78rem;">${r.duration}</td>
+            <td><span class="badge ${r.status==='Completed'?'b-gr':r.status==='In Progress'?'b-g':'b-re'}">${r.status}</span></td>
+            <td><button onclick="igToast('Run ${r.id} — viewing audit trail','success')" style="background:none;border:1px solid var(--border);padding:.22rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">View</button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <!-- Run Analytics -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.25rem;">
+      ${WF.map(w=>`<div style="background:#fff;border:1px solid var(--border);border-left:3px solid ${w.color};padding:1rem;">
+        <div style="font-size:.78rem;font-weight:600;color:var(--ink);margin-bottom:.375rem;">${w.name}</div>
+        <div style="display:flex;gap:1rem;font-size:.72rem;color:var(--ink-muted);">
+          <span>Runs: <b style="color:var(--ink);">${w.runs}</b></span>
+          <span>Avg: <b style="color:var(--ink);">${w.avgTime}</b></span>
+          <span class="badge ${w.active?'b-gr':'b-re'}" style="font-size:.55rem;">${w.active?'Active':'Paused'}</span>
+        </div>
+        <div style="margin-top:.5rem;background:var(--parch-dk);height:4px;border-radius:2px;">
+          <div style="height:100%;background:${w.color};width:${Math.floor(60+Math.random()*35)}%;border-radius:2px;"></div>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <!-- Tab 3: Settings -->
+  <div id="wf-pane-3" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);font-weight:600;font-size:.85rem;color:var(--ink);">Global Workflow Settings</div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:.875rem;">
+          <div><label class="ig-label">Default SLA for Approval Steps (hours)</label><input type="number" class="ig-input" value="24" style="font-size:.82rem;"></div>
+          <div><label class="ig-label">SLA Escalation Email</label><input type="email" class="ig-input" value="akm@indiagully.com" style="font-size:.82rem;"></div>
+          <div><label class="ig-label">Workflow Engine Mode</label><select class="ig-input" style="font-size:.82rem;"><option selected>Standard (Manual Triggers)</option><option>Automated (All triggers live)</option><option>Sandbox (Test mode)</option></select></div>
+          <div style="display:flex;flex-direction:column;gap:.5rem;">
+            <label class="ig-label">Global Options</label>
+            ${['Enable email notifications','Enable WhatsApp alerts','Log all workflow events','Auto-archive completed runs after 90 days','Send weekly digest to Director'].map((o,i)=>`<label style="display:flex;align-items:center;gap:.5rem;font-size:.78rem;cursor:pointer;"><input type="checkbox" ${i<3?'checked':''} style="cursor:pointer;">${o}</label>`).join('')}
+          </div>
+          <button onclick="igToast('Global workflow settings saved','success')" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;align-self:flex-start;">Save Settings</button>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);font-weight:600;font-size:.85rem;color:var(--ink);">SLA & Escalation Matrix</div>
+        <div style="padding:1.25rem;">
+          <table class="ig-tbl">
+            <thead><tr><th>Category</th><th>Default SLA</th><th>Escalate To</th><th>Method</th></tr></thead>
+            <tbody>
+              ${[
+                {cat:'Finance',    sla:'24h',  esc:'MD',       method:'Email'},
+                {cat:'HR',         sla:'48h',  esc:'Director', method:'Email + WA'},
+                {cat:'Legal',      sla:'72h',  esc:'MD',       method:'Email'},
+                {cat:'Governance', sla:'96h',  esc:'MD + CS',  method:'Email + WA'},
+                {cat:'Operations', sla:'48h',  esc:'Director', method:'Email'},
+              ].map(r=>`<tr>
+                <td><span class="badge b-dk">${r.cat}</span></td>
+                <td style="font-size:.82rem;">${r.sla}</td>
+                <td style="font-size:.82rem;">${r.esc}</td>
+                <td style="font-size:.75rem;color:var(--ink-muted);">${r.method}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+          <button onclick="igToast('SLA matrix updated','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;margin-top:1rem;">Update Matrix</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workflow Detail Modal -->
+  <div id="wf-detail-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#fff;width:720px;max-width:95vw;max-height:90vh;overflow-y:auto;border-top:4px solid #2563eb;">
+      <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);" id="wf-modal-title">Workflow Detail</div>
+        <button onclick="document.getElementById('wf-detail-modal').style.display='none'" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--ink-muted);">✕</button>
+      </div>
+      <div style="padding:1.5rem;" id="wf-modal-body"></div>
+    </div>
+  </div>
+
+  <script>
+  var WF_DATA = ${JSON.stringify(WF)};
+  var wfbSteps = [];
+  var wfbActiveStep = -1;
+
+  window.igWfTab = function(idx){
+    for(var i=0;i<4;i++){
+      var p=document.getElementById('wf-pane-'+i);
+      var t=document.getElementById('wf-tab-'+i);
+      if(p) p.style.display=i===idx?'block':'none';
+      if(t){ t.style.color=i===idx?'var(--gold)':'var(--ink-muted)'; t.style.borderBottom=i===idx?'2px solid var(--gold)':'2px solid transparent'; }
+    }
+  };
+
+  window.igWfOpen = function(idx){
+    var w = WF_DATA[idx];
+    if(!w) return;
+    document.getElementById('wf-modal-title').textContent = w.name + ' — Workflow Detail';
+    var stepColors = {Approval:'#2563eb',Automated:'#7c3aed',Notify:'#d97706',Document:'#16a34a',Condition:'#dc2626',Wait:'#475569'};
+    var html = '<div style="margin-bottom:1.25rem;padding:.875rem;background:#f0f9ff;border:1px solid #bae6fd;"><div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#1d4ed8;margin-bottom:.25rem;">Trigger</div><div style="font-size:.875rem;color:var(--ink);"><i class="fas fa-bolt" style="color:#d97706;margin-right:.4rem;"></i>'+w.trigger+'</div></div>';
+    html += '<h4 style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:1rem;">Steps ('+w.steps.length+')</h4>';
+    html += '<div style="display:flex;flex-direction:column;gap:.625rem;">';
+    w.steps.forEach(function(s,i){
+      html += '<div style="display:grid;grid-template-columns:32px 1fr;gap:.75rem;align-items:start;">';
+      html += '<div style="width:32px;height:32px;background:#2563eb;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.75rem;font-weight:700;flex-shrink:0;">'+(i+1)+'</div>';
+      html += '<div style="background:#f8fafc;border:1px solid var(--border);padding:.75rem;">';
+      html += '<div style="font-size:.875rem;font-weight:600;color:var(--ink);margin-bottom:.4rem;">'+s.n+'</div>';
+      html += '<div style="display:flex;gap:1rem;font-size:.72rem;color:var(--ink-muted);">';
+      html += '<span><i class="fas fa-user" style="margin-right:.3rem;"></i>'+s.role+'</span>';
+      html += '<span><i class="fas fa-clock" style="margin-right:.3rem;"></i>SLA: '+s.sla+'h</span>';
+      html += '<span><i class="fas fa-tasks" style="margin-right:.3rem;"></i>'+s.action+'</span>';
+      html += '</div></div></div>';
+    });
+    html += '</div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.875rem;margin-top:1.25rem;">';
+    html += '<div style="text-align:center;padding:.75rem;background:#f8fafc;border:1px solid var(--border);"><div style="font-size:1.5rem;font-weight:700;color:#16a34a;">'+w.runs+'</div><div style="font-size:.72rem;color:var(--ink-muted);">Total Runs</div></div>';
+    html += '<div style="text-align:center;padding:.75rem;background:#f8fafc;border:1px solid var(--border);"><div style="font-size:1.5rem;font-weight:700;color:#2563eb;">'+w.avgTime+'</div><div style="font-size:.72rem;color:var(--ink-muted);">Avg Time</div></div>';
+    html += '<div style="text-align:center;padding:.75rem;background:#f8fafc;border:1px solid var(--border);"><div style="font-size:1.5rem;font-weight:700;color:'+(w.active?'#16a34a':'#dc2626')+';">'+(w.active?'Active':'Paused')+'</div><div style="font-size:.72rem;color:var(--ink-muted);">Status</div></div>';
+    html += '</div>';
+    html += '<div style="margin-top:1.25rem;display:flex;gap:.75rem;">';
+    html += '<button onclick="igToast(\\'Test run started for '+w.name+'\\',\\'success\\');document.getElementById(\\'wf-detail-modal\\').style.display=\\'none\\';" style="background:#2563eb;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class=\\'fas fa-vial\\' style=\\'margin-right:.4rem;\\'></i>Run Test</button>';
+    html += '<button onclick="document.getElementById(\\'wf-detail-modal\\').style.display=\\'none\\';" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Close</button>';
+    html += '</div>';
+    document.getElementById('wf-modal-body').innerHTML = html;
+    var m=document.getElementById('wf-detail-modal'); m.style.display='flex'; m.style.alignItems='center'; m.style.justifyContent='center';
+  };
+
+  window.igAddWfStep = function(type){
+    var colorMap = {Approval:'#2563eb',Automated:'#7c3aed',Notify:'#d97706',Document:'#16a34a',Condition:'#dc2626',Wait:'#475569'};
+    var iconMap  = {Approval:'user-check',Automated:'robot',Notify:'envelope',Document:'file-alt',Condition:'code-branch',Wait:'clock'};
+    var idx = wfbSteps.length;
+    wfbSteps.push({type:type, name:type+' Step '+(idx+1), role:'Director', sla:24, action:''});
+    renderWfCanvas();
+    igToast(type+' step added to canvas','success');
+    editWfStep(idx);
+  };
+
+  function renderWfCanvas(){
+    var c = document.getElementById('wfb-steps-container');
+    var e = document.getElementById('wfb-empty');
+    if(wfbSteps.length===0){ if(e) e.style.display='block'; return; }
+    if(e) e.style.display='none';
+    var colorMap = {Approval:'#2563eb',Automated:'#7c3aed',Notify:'#d97706',Document:'#16a34a',Condition:'#dc2626',Wait:'#475569'};
+    var iconMap  = {Approval:'user-check',Automated:'robot',Notify:'envelope',Document:'file-alt',Condition:'code-branch',Wait:'clock'};
+    var html = '<div style="display:flex;align-items:flex-start;gap:.5rem;flex-wrap:wrap;">';
+    wfbSteps.forEach(function(s,i){
+      html += '<div style="display:flex;align-items:center;">';
+      html += '<div onclick="editWfStep('+i+')" style="cursor:pointer;background:#fff;border:2px solid '+(wfbActiveStep===i?colorMap[s.type]||'#2563eb':'var(--border)')+';padding:.75rem;min-width:120px;text-align:center;position:relative;">';
+      html += '<div style="width:28px;height:28px;background:'+(colorMap[s.type]||'#2563eb')+';margin:0 auto .4rem;display:flex;align-items:center;justify-content:center;">';
+      html += '<i class="fas fa-'+(iconMap[s.type]||'circle')+'" style="color:#fff;font-size:.6rem;"></i></div>';
+      html += '<div style="font-size:.7rem;font-weight:600;color:var(--ink);">'+s.name+'</div>';
+      html += '<div style="font-size:.6rem;color:var(--ink-muted);margin-top:.2rem;">'+s.role+'</div>';
+      html += '<div style="font-size:.58rem;color:var(--ink-muted);">SLA: '+s.sla+'h</div>';
+      html += '</div>';
+      if(i<wfbSteps.length-1) html += '<div style="width:32px;height:2px;background:'+(colorMap[s.type]||'#2563eb')+'margin:0 .1rem;flex-shrink:0;"></div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    c.innerHTML = html;
+  }
+
+  function editWfStep(idx){
+    wfbActiveStep = idx;
+    var s = wfbSteps[idx];
+    if(!s) return;
+    document.getElementById('wfb-step-title').textContent = 'Editing: ' + s.name;
+    document.getElementById('wfb-sname').value = s.name;
+    document.getElementById('wfb-ssla').value = s.sla;
+    document.getElementById('wfb-saction').value = s.action||'';
+    document.getElementById('wfb-step-editor').style.display='block';
+    renderWfCanvas();
+  }
+  window.editWfStep = editWfStep;
+
+  window.igSaveWfStep = function(){
+    if(wfbActiveStep<0) return;
+    wfbSteps[wfbActiveStep].name   = document.getElementById('wfb-sname').value||wfbSteps[wfbActiveStep].name;
+    wfbSteps[wfbActiveStep].sla    = parseInt(document.getElementById('wfb-ssla').value)||24;
+    wfbSteps[wfbActiveStep].action = document.getElementById('wfb-saction').value;
+    renderWfCanvas();
+    document.getElementById('wfb-step-editor').style.display='none';
+    wfbActiveStep = -1;
+    igToast('Step saved','success');
+  };
+
+  window.igDeleteWfStep = function(){
+    if(wfbActiveStep<0) return;
+    wfbSteps.splice(wfbActiveStep,1);
+    wfbActiveStep = -1;
+    renderWfCanvas();
+    document.getElementById('wfb-step-editor').style.display='none';
+    igToast('Step removed','warn');
+  };
+
+  window.igWfSave = function(){
+    var name = document.getElementById('wfb-name').value.trim();
+    if(!name){ igToast('Enter a workflow name','warn'); return; }
+    if(wfbSteps.length===0){ igToast('Add at least one step','warn'); return; }
+    igToast('Workflow "'+name+'" saved with '+wfbSteps.length+' steps','success');
+    igWfTab(0);
+    document.getElementById('wfb-name').value='';
+    wfbSteps=[];
+    wfbActiveStep=-1;
+    renderWfCanvas();
+  };
+
+  window.igWfClear = function(){
+    igConfirm('Clear all steps from the canvas?',function(){
+      wfbSteps=[]; wfbActiveStep=-1;
+      renderWfCanvas();
+      document.getElementById('wfb-step-editor').style.display='none';
+      igToast('Canvas cleared','warn');
+    });
+  };
+  </script>`
+  return c.html(layout('Workflow Engine', adminShell('Workflow Engine', 'workflows', body), {noNav:true,noFooter:true}))
 })
 
 // ── FINANCE ERP ───────────────────────────────────────────────────────────────
