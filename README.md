@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://e1e2e59e.india-gully.pages.dev |
+| **Latest Deploy** | https://4e34aadd.india-gully.pages.dev |
 | **Sandbox Preview** | http://localhost:3000 |
 
 ---
@@ -37,66 +37,53 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Board & KMP | `/portal/board` | IG-KMP-0001 / Board@IG2024 / OTP: 000000 |
 | Super Admin | `/admin` | superadmin@indiagully.com / Admin@IG2024! / OTP: 000000 |
 
-#### Client Portal Pages (27 routes)
-- Dashboard, Active Mandates with progress tracker, Proposals with e-sign
-- **Invoices with payment flow** — view modal, payment modal, UTR capture
-- Documents with download simulation, Messages with conversation UI
+#### Client Portal
+- Dashboard, Active Mandates, Proposals with e-sign (DocuSign flow)
+- **Invoices** — view modal, Razorpay/UPI/NEFT/Cheque payment gateway, UTR capture
+- **Documents** — KYC upload module (6 document types), download simulation
+- **Messages** — read receipts (✓✓), file attachments, conversation switcher
 - Profile with edit panel
 
-#### Employee Portal Pages
-- Dashboard with notices + quick actions
-- **Attendance** — calendar heatmap, check in/out with live clock, MTD stats
-- Leave management — apply, balance, history
-- **Payslips** — full breakdown modal, **TDS/Tax Estimator** (New Regime FY 2025-26)
+#### Employee Portal
+- Dashboard, Attendance heatmap, Leave management & approval
+- Payslips with TDS/Tax Estimator (New Regime FY 2025-26)
 - Form-16, Policies, Directory, Profile
 
 #### Board & KMP Portal
-- Dashboard, Meetings register, Voting with audit trail
-- Statutory registers (expandable), Board packs (collapsible folders)
-- Finance snapshot, Compliance calendar
+- Dashboard, Meetings register, Voting audit trail
+- Statutory registers, Board packs, Finance snapshot, Compliance calendar
 
 #### Super Admin Console
-- **Dashboard** — alert banner, 8 KPI cards, quick-action bar, activity feed, compliance grid
-- **CMS** — full page editor with slug, SEO, hero, body HTML, OG image, publish
-- **Users** — 8 user accounts, add/edit/deactivate, role management
-- **Workflows** (fully rebuilt — 4 tabs):
-  - Workflow library with visual step pipeline display
-  - **Visual Builder** — drag-and-drop canvas, 6 block types (Approval, Automated, Notify, Document, Condition, Wait), step editor panel with SLA/role/escalation config
-  - **Run History** — 6 recent runs with duration, status, per-workflow analytics bars
-  - **Settings** — global SLA matrix, escalation config
-- **Finance ERP** (tabbed):
-  - Invoices with GST calc, auto-number, mark-paid, AR total
-  - **Live P&L Statement** with period selector (Feb, Jan, Dec, FY 2024-25)
-  - Expense ledger with category breakdown + donut
-  - GSTR-3B filing, GST calendar
-  - 9 report types (PDF + Excel export)
-- **HR ERP** (tabbed):
-  - Employee directory with onboarding, profile modal
-  - Today's attendance + MTD summary
-  - **Leave approval/reject flow** with pending queue
-  - **Payroll register** with process workflow + bank transfer file
-  - 6 HR report types
-- **Governance** — board meeting scheduler, compliance calendar, statutory registers
-- **HORECA** — SKU catalogue, quote builder with live calculator, PDF generation
-- **Contracts** (tabbed):
-  - Contract register with e-sign status
-  - **Contract builder** with clause library (12 clauses)
-  - Template library (6 templates)
-  - **E-sign modal** (DocuSign workflow)
-- **Integrations** — 9 services (GST Portal, Vyapar, Gmail, WhatsApp, R2, DocuSign, Zoho, SendGrid, Tally)
-- **BI & Reports** — 9 report types with filters + PDF/Excel download
+- **Dashboard** — KPI cards, alert banner, activity feed, compliance grid
+- **CMS** — full page editor with SEO, hero, body HTML, OG image, publish
+- **Users** — 8 accounts, role management, add/deactivate
+- **Workflows** — 4-tab engine (Library, Visual Builder, Run History, Settings)
+- **Finance ERP** (7 tabs): Invoices, P&L, **Account Ledger + Voucher entry** (NEW), **Bank Reconciliation** (NEW), Expenses, **GST / e-Invoice with IRN** (NEW), Reports
+- **HR ERP** (5 tabs): Employees, Attendance, Leave, **Payroll Builder + TDS + Salary Structure** (NEW), Reports
+- **Governance** (5 tabs): **Board Meeting Register + Agenda Builder**, **Voting Engine** (digital vote + tally), **Directors & KMP KYC Upload**, **Statutory Registers** (9 registers), Compliance Calendar
+- **HORECA** (5 tabs): Catalogue, **Inventory Ledger** (stock levels, low-stock alerts), **Vendor Management** (7 vendors, tier rating), **Quote Builder** (→ convert to PO), **Purchase Orders** with approval flow
+- **Contracts** — register, builder with clause library, template library, e-sign
+- **Integrations** — 9 services (GST, Vyapar, Gmail, WhatsApp, R2, DocuSign, Zoho, SendGrid, Tally)
+- **BI & Reports** — **Interactive Chart.js dashboards** (revenue vs expenses bar, expense doughnut, pipeline bar, monthly trend), **Self-Service Analytics Builder**, **Scheduled Reports** (4 configured), 9 on-demand reports
 - **System Config** — Platform, SMTP, Security settings
-- **Security & Audit** — Audit log, IP whitelist, 2FA stats
+- **Security & Audit** (5 tabs): **Full Audit Log with risk scoring**, **RBAC Matrix** (6 roles), **TOTP / 2FA per-user enrollment**, **Rate Limiting + PAN masking config**, **IP Whitelist + Session Management**
 
 ### Phase 5 — UX & Interactivity Enhancements (LIVE ✅)
-- **Notification bells** on ALL portals (Client, Employee, Board, Admin) with dropdown panels
-- **Breadcrumbs** in all portal headers (Portal → Section → Page)
-- **Sidebar badges** showing pending item counts
-- **Admin notification alerts** (5 categorised live alerts)
-- **Board & KMP Portal** — upgraded header with notifications, breadcrumbs, user badge
-- **Visual Workflow Builder** — 4-tab Workflow Engine (Library, Builder, Run History, Settings)
-- **API deduplication** — single canonical set of endpoints, no duplicate routes
-- **API health v2025.03** — full endpoint manifest, 11 modules, 68 routes documented
+- Notification bells on all portals, breadcrumbs, sidebar badges
+- Admin notification alerts, Board & KMP portal upgrade
+- Visual Workflow Builder, API deduplication, health v2025.03
+
+### Phase 6 — Enterprise Security, ERP Depth, Interactive BI (LIVE ✅)
+
+| Module | What's New |
+|--------|-----------|
+| **Security** | Security score banner, TOTP/2FA per-user enrollment table, RBAC matrix (6 roles), rate limiting rules, PAN/Aadhaar/bank masking config, IP whitelist + blocked IPs, active session termination |
+| **Governance** | Digital voting engine (cast For/Against/Abstain, live tally), KYC upload per director, 9 statutory registers with view/export/add, agenda builder (add/remove items), meeting register with minutes editor |
+| **HR ERP** | Salary structure config (8 components), TDS declaration table (auto-calculated taxable income + TDS/month per employee), expanded payroll register with medical allowance + payslip download, PF Challan generation |
+| **Finance ERP** | Account ledger with opening/closing balance, voucher entry (Sales/Purchase/Payment/Receipt/Journal/Contra), bank reconciliation (auto-match + create JV for unmatched), e-Invoice with IRN generation + QR code, GST filing calendar with one-click filing |
+| **Client Portal** | Multi-method payment gateway (Razorpay card/UPI/NEFT/Cheque), KYC upload module (6 document types), message read receipts (✓✓) + file attachment button |
+| **HORECA** | Inventory ledger with stock levels + low-stock alerts + reorder button, vendor management (7 vendors, tier/rating/lead-time), purchase orders with approval workflow, quote-to-PO conversion |
+| **BI & Reports** | 4 interactive Chart.js charts (revenue bar, expense doughnut, pipeline, trend), self-service analytics builder (dimension/metric/filter/chart selector), scheduled reports table (4 configured), on-demand export grid |
 
 ---
 
@@ -125,71 +112,37 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 
 | File | Lines | Description |
 |------|-------|-------------|
-| `src/routes/portal.tsx` | 1,846 | All portal routes (Client, Employee, Board) |
-| `src/routes/admin.tsx` | 1,843 | Super Admin ERP console |
-| `src/routes/api.tsx` | 255 | REST API endpoints (deduplicated) |
-| `src/lib/layout.ts` | 624 | Master layout, CSS, navigation |
-| `src/index.tsx` | 135 | App entry, route mounting |
-| **Total** | **4,830+** | **573 KB compiled worker** |
+| `src/routes/admin.tsx` | 3,300 | Super Admin ERP console (all modules) |
+| `src/routes/portal.tsx` | 1,999 | All portal routes (Client, Employee, Board) |
+| `src/lib/layout.ts` | 624 | Master layout, design system, utilities |
+| `src/routes/api.tsx` | 269 | REST API endpoints |
+| `src/index.tsx` | 135 | App entry point + legal pages |
+| **Total** | **~6,327** | Compiled worker: 677 KB |
 
 ---
 
-## 🏗️ Data Architecture
+## 🏗️ Architecture
 
-### Data Models
-- Users, Employees, Directors, Clients, Mandates, Enquiries
-- Invoices, Vouchers, Expenses, GST Records
-- Board Meetings, Resolutions, Minutes
-- HORECA SKUs, Quotes, Orders
-- CMS Pages, Audit Logs, Workflows, Contracts
-
-### Storage Services (Planned)
-- **Cloudflare D1:** All relational data
-- **Cloudflare KV:** Session tokens, cache
-- **Cloudflare R2:** Documents, contracts, payslips
-
----
+- **Platform:** Cloudflare Pages / Workers (edge runtime)
+- **Framework:** Hono (TypeScript)
+- **Frontend:** Server-side HTML + Tailwind CSS CDN + FontAwesome + Chart.js
+- **Storage:** Cloudflare R2 (documents) — D1/KV ready
+- **Integrations:** GST Portal, Vyapar, Gmail SMTP, WhatsApp Business, DocuSign, Zoho CRM, SendGrid, Tally Prime
+- **Security:** TOTP 2FA, RBAC, IP whitelist, rate limiting, PAN masking, immutable audit log
 
 ## 👥 Leadership
 
-| Name | Role | Contact |
-|------|------|---------|
-| Arun Manikonda | Managing Director | akm@indiagully.com · +91 9810889134 |
-| Pavan Manikonda | Executive Director | pavan@indiagully.com · +91 6282556067 |
-| Amit Jhingan | President, Real Estate | amit.jhingan@indiagully.com · +91 9899993543 |
+| Name | Role | Email |
+|------|------|-------|
+| Arun Manikonda | Managing Director | akm@indiagully.com |
+| Pavan Manikonda | Executive Director | pavan@indiagully.com |
+| Amit Jhingan | President, Real Estate | amit.jhingan@indiagully.com |
 
 ---
 
-## 🚀 Deployment
+## 🚀 Deployment Status
 
-- **Platform:** Cloudflare Pages
-- **Project:** india-gully
-- **Build:** `npm run build` → `dist/`
-- **Tech:** Hono v4 + TypeScript + Cloudflare Workers
-- **Status:** ✅ Active and Live
-
-```bash
-npm install        # Install dependencies
-npm run build      # Build for production
-npx wrangler pages deploy dist --project-name india-gully  # Deploy
-```
-
----
-
-## 🔮 Remaining Enhancements
-
-### Phase 6 — Backend Database
-- [ ] Cloudflare D1 database setup + migrations
-- [ ] JWT authentication with real 2FA (TOTP via OTPAUTH)
-- [ ] Form data persistence (enquiries, attendance, invoices → D1)
-- [ ] Session management with KV tokens
-- [ ] Email notifications via SMTP
-
-### Phase 7 — Integrations
-- [ ] Vyapar CSV/API sync
-- [ ] GST Portal auto-filing
-- [ ] WhatsApp Business notifications
-- [ ] R2 document storage + signed URLs
-- [ ] DocuSign webhook integration
-
-*Last Updated: February 2025 · Phase 5 Complete*
+- **Platform:** Cloudflare Pages · Project: `india-gully`
+- **Status:** ✅ Active — Phase 6 deployed (commit c982434)
+- **Last Updated:** 28 Feb 2025
+- **Tech Stack:** Hono + TypeScript + TailwindCSS CDN + Chart.js

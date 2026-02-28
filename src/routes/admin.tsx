@@ -15,6 +15,7 @@ function adminShell(pageTitle: string, active: string, body: string) {
     { id:'governance',   icon:'gavel',           label:'Governance',     g:'ERP',      badge:'' },
     { id:'horeca',       icon:'boxes',           label:'HORECA',         g:'ERP',      badge:'' },
     { id:'contracts',    icon:'file-signature',  label:'Contracts',      g:'ERP',      badge:'' },
+    { id:'sales',        icon:'funnel-dollar',   label:'Sales Force',    g:'ERP',      badge:'5' },
     { id:'integrations', icon:'plug',            label:'Integrations',   g:'Platform', badge:'' },
     { id:'reports',      icon:'chart-pie',       label:'BI & Reports',   g:'Platform', badge:'' },
     { id:'config',       icon:'cog',             label:'System Config',  g:'Platform', badge:'' },
@@ -30,7 +31,7 @@ function adminShell(pageTitle: string, active: string, body: string) {
   const nav = ['Main','ERP','Platform'].map(g =>
     `<div class="sb-sec">${g}</div>` +
     S.filter(s => s.g === g).map(s =>
-      `<a href="/admin/${s.id==='dashboard'?'dashboard':s.id}" class="sb-lk ${active===s.id?'on':''}">
+      `<a href="/admin/${s.id==='dashboard'?'dashboard':s.id==='sales'?'sales/dashboard':s.id}" class="sb-lk ${active===s.id?'on':''}">
         <i class="fas fa-${s.icon}" style="width:16px;font-size:.72rem;text-align:center;"></i>${s.label}
         ${s.badge ? `<span class="${s.badge==='!'?'sb-dot':'sb-badge'}">${s.badge==='!'?'':s.badge}</span>` : ''}
       </a>`
@@ -252,98 +253,480 @@ app.get('/dashboard', (c) => {
 // ── CMS ───────────────────────────────────────────────────────────────────────
 app.get('/cms', (c) => {
   const pages = [
-    {page:'Home Page',     slug:'/',         lastEdit:'27 Feb 2025', editor:'pavan@indiagully.com'},
-    {page:'About Page',    slug:'/about',    lastEdit:'25 Feb 2025', editor:'akm@indiagully.com'},
-    {page:'Services Page', slug:'/services', lastEdit:'20 Feb 2025', editor:'pavan@indiagully.com'},
-    {page:'HORECA Page',   slug:'/horeca',   lastEdit:'18 Feb 2025', editor:'pavan@indiagully.com'},
-    {page:'Listings Page', slug:'/listings', lastEdit:'26 Feb 2025', editor:'akm@indiagully.com'},
-    {page:'Contact Page',  slug:'/contact',  lastEdit:'15 Feb 2025', editor:'pavan@indiagully.com'},
+    {page:'Home Page',     slug:'/',         lastEdit:'27 Feb 2025', editor:'pavan@indiagully.com', status:'Published'},
+    {page:'About Page',    slug:'/about',    lastEdit:'25 Feb 2025', editor:'akm@indiagully.com',   status:'Published'},
+    {page:'Services Page', slug:'/services', lastEdit:'20 Feb 2025', editor:'pavan@indiagully.com', status:'Published'},
+    {page:'HORECA Page',   slug:'/horeca',   lastEdit:'18 Feb 2025', editor:'pavan@indiagully.com', status:'Published'},
+    {page:'Listings Page', slug:'/listings', lastEdit:'26 Feb 2025', editor:'akm@indiagully.com',   status:'Published'},
+    {page:'Contact Page',  slug:'/contact',  lastEdit:'15 Feb 2025', editor:'pavan@indiagully.com', status:'Draft'},
   ]
+  const approvals = [
+    {id:'APR-001',page:'Home Page',change:'Updated hero headline + CTA',submitted:'27 Feb 2025',by:'pavan@indiagully.com',status:'Pending'},
+    {id:'APR-002',page:'Services Page',change:'Added Debt & Special Situations section',submitted:'26 Feb 2025',by:'akm@indiagully.com',status:'Approved'},
+    {id:'APR-003',page:'Listings Page',change:'New mandate card — Tata Hotels',submitted:'25 Feb 2025',by:'pavan@indiagully.com',status:'Pending'},
+    {id:'APR-004',page:'HORECA Page',change:'SKU pricing update Q1 2025',submitted:'24 Feb 2025',by:'pavan@indiagully.com',status:'Rejected'},
+  ]
+  const templates = [
+    {name:'Advisory Insight Article',desc:'Long-form thought leadership with hero image, key stats and CTA',icon:'newspaper',color:'#2563eb'},
+    {name:'Mandate Showcase',desc:'Mandate card with financial details, sector tags and inquiry CTA',icon:'building',color:'#B8960C'},
+    {name:'Service Vertical Landing',desc:'Full-page vertical layout with hero, capabilities list and contact',icon:'briefcase',color:'#7c3aed'},
+    {name:'Leadership Profile',desc:'Director / KMP bio with photo, credentials, social links',icon:'user-tie',color:'#16a34a'},
+    {name:'Press Release',desc:'Branded PR layout with logo, dateline, boilerplate footer',icon:'bullhorn',color:'#d97706'},
+    {name:'HORECA Catalogue Page',desc:'SKU grid with category filters, request-quote CTA',icon:'boxes',color:'#dc2626'},
+  ]
+  const blocks = ['Hero Banner','Rich Text','Image + Text (L/R)','Stats Row','Card Grid','Testimonial','CTA Banner','Accordion / FAQ','Video Embed','Divider']
   const body = `
-  <!-- Page Cards -->
-  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:1.5rem;">
-    ${pages.map((p,i)=>`
-    <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem;">
-        <div>
-          <div style="font-weight:600;font-size:.9rem;color:var(--ink);">${p.page}</div>
-          <div style="font-size:.72rem;color:var(--ink-muted);margin-top:.15rem;">Slug: <code style="background:var(--parch-dk);padding:1px 4px;">${p.slug}</code></div>
-        </div>
-        <span class="badge b-gr">Published</span>
-      </div>
-      <div style="font-size:.72rem;color:var(--ink-faint);margin-bottom:.875rem;">Last edited ${p.lastEdit} · ${p.editor}</div>
-      <div style="display:flex;gap:.75rem;">
-        <button onclick="togglePanel('cms-panel-${i}')" style="background:var(--gold);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;">Edit Content</button>
-        <a href="${p.slug}" target="_blank" style="display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;color:var(--ink-muted);padding:.4rem .875rem;border:1px solid var(--border);">Preview <i class="fas fa-external-link-alt" style="font-size:.6rem;"></i></a>
-      </div>
-      <div id="cms-panel-${i}" class="ig-panel" style="margin-top:1rem;">
-        <h4 style="font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:1rem;letter-spacing:.06em;text-transform:uppercase;">${p.page} — Content Editor</h4>
-        <div style="display:flex;flex-direction:column;gap:.875rem;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
-            <div><label class="ig-label">Page Title / H1</label><input type="text" class="ig-input" value="${p.page.replace(' Page','')}" style="font-size:.875rem;"></div>
-            <div><label class="ig-label">URL Slug</label><input type="text" class="ig-input" value="${p.slug}" style="font-size:.875rem;"></div>
-          </div>
-          <div><label class="ig-label">Meta Title (SEO)</label><input type="text" class="ig-input" value="${p.page.replace(' Page','')} — India Gully · Celebrating Desiness" style="font-size:.82rem;"></div>
-          <div><label class="ig-label">Meta Description</label><textarea class="ig-input" rows="2" style="font-size:.82rem;min-height:60px;">India Gully — ${p.page.replace(' Page','')} section. Advisory services across Real Estate, Retail, Hospitality and Entertainment.</textarea></div>
-          <div><label class="ig-label">Hero Headline</label><input type="text" class="ig-input" value="Celebrating Desiness" style="font-size:.875rem;"></div>
-          <div><label class="ig-label">Hero Subheading</label><textarea class="ig-input" rows="2" style="font-size:.82rem;min-height:60px;">India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality and Entertainment.</textarea></div>
-          <div><label class="ig-label">Page Body Content (HTML allowed)</label><textarea class="ig-input" rows="4" style="font-size:.78rem;font-family:monospace;min-height:80px;" placeholder="<p>Page content here...</p>"></textarea></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
-            <div><label class="ig-label">OG Image URL</label><input type="text" class="ig-input" value="https://india-gully.pages.dev/static/og.jpg" style="font-size:.78rem;"></div>
-            <div><label class="ig-label">Status</label><select class="ig-input" style="font-size:.82rem;"><option>Published</option><option>Draft</option><option>Scheduled</option></select></div>
-          </div>
-          <div style="background:#fffbeb;border:1px solid #fde68a;padding:.75rem;font-size:.75rem;color:#78350f;display:flex;align-items:center;gap:.5rem;">
-            <i class="fas fa-info-circle" style="color:#d97706;"></i>
-            Last saved by <strong>${p.editor}</strong> on ${p.lastEdit}. Changes will go live immediately on save.
-          </div>
-          <div style="display:flex;gap:.75rem;">
-            <button onclick="igCmsSave(${i},'${p.page}')" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.4rem;"><i class="fas fa-save" style="font-size:.65rem;"></i>Publish Changes</button>
-            <button onclick="igToast('${p.page} saved as draft','success')" style="background:var(--ink);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save Draft</button>
-            <a href="${p.slug}" target="_blank" style="display:inline-flex;align-items:center;gap:.3rem;font-size:.78rem;color:var(--ink-muted);padding:.55rem 1.25rem;border:1px solid var(--border);">Preview <i class="fas fa-external-link-alt" style="font-size:.6rem;"></i></a>
-            <button onclick="togglePanel('cms-panel-${i}')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>`).join('')}
+  <!-- CMS Tab Bar -->
+  <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.5rem;background:#fff;padding:0 .25rem;">
+    ${['Pages','Page Builder','AI Copy Assist','Approval Workflow','Templates','SEO'].map((t,i)=>`<button id="cms-tab-${i}" onclick="igCmsTab(${i})" style="padding:.625rem 1.1rem;font-size:.78rem;font-weight:600;border:none;background:none;cursor:pointer;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;">${t}</button>`).join('')}
   </div>
-  <!-- SEO Table -->
-  <div style="background:#fff;border:1px solid var(--border);">
-    <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">SEO & Meta Tags</h3>
-      <button onclick="igToast('All SEO tags saved','success')" style="background:var(--gold);color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;">Save All</button>
+
+  <!-- TAB 0: PAGES -->
+  <div id="cms-pane-0">
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;">
+      ${pages.map((p,i)=>`
+      <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem;">
+          <div>
+            <div style="font-weight:600;font-size:.9rem;color:var(--ink);">${p.page}</div>
+            <div style="font-size:.72rem;color:var(--ink-muted);margin-top:.15rem;">Slug: <code style="background:var(--parch-dk);padding:1px 4px;">${p.slug}</code></div>
+          </div>
+          <span class="badge ${p.status==='Published'?'b-gr':'b-dk'}" style="font-size:.6rem;">${p.status}</span>
+        </div>
+        <div style="font-size:.72rem;color:var(--ink-faint);margin-bottom:.875rem;">Last edited ${p.lastEdit} · ${p.editor}</div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button onclick="togglePanel('cms-panel-${i}')" style="background:var(--gold);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-pen" style="margin-right:.3rem;font-size:.6rem;"></i>Edit</button>
+          <button onclick="igCmsAiAssist('${p.page}')" style="background:#7c3aed;color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-magic" style="margin-right:.3rem;font-size:.6rem;"></i>AI Assist</button>
+          <button onclick="igCmsSubmitApproval('${p.page}')" style="background:#2563eb;color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-paper-plane" style="margin-right:.3rem;font-size:.6rem;"></i>Submit</button>
+          <a href="${p.slug}" target="_blank" style="display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;color:var(--ink-muted);padding:.4rem .875rem;border:1px solid var(--border);">Preview <i class="fas fa-external-link-alt" style="font-size:.6rem;"></i></a>
+        </div>
+        <div id="cms-panel-${i}" class="ig-panel" style="margin-top:1rem;">
+          <h4 style="font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:1rem;letter-spacing:.06em;text-transform:uppercase;">${p.page} — Content Editor</h4>
+          <div style="display:flex;flex-direction:column;gap:.875rem;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
+              <div><label class="ig-label">Page Title / H1</label><input type="text" class="ig-input" value="${p.page.replace(' Page','')}" style="font-size:.875rem;"></div>
+              <div><label class="ig-label">URL Slug</label><input type="text" class="ig-input" value="${p.slug}" style="font-size:.875rem;"></div>
+            </div>
+            <div><label class="ig-label">Meta Title (SEO)</label><input type="text" class="ig-input" value="${p.page.replace(' Page','')} — India Gully · Celebrating Desiness" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">Meta Description</label><textarea class="ig-input" rows="2" style="font-size:.82rem;min-height:60px;">India Gully — ${p.page.replace(' Page','')} section. Advisory services across Real Estate, Retail, Hospitality and Entertainment.</textarea></div>
+            <div><label class="ig-label">Hero Headline</label><input type="text" class="ig-input" value="Celebrating Desiness" style="font-size:.875rem;"></div>
+            <div><label class="ig-label">Hero Subheading</label><textarea class="ig-input" rows="2" style="font-size:.82rem;min-height:60px;">India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality and Entertainment.</textarea></div>
+            <div><label class="ig-label">Page Body Content (HTML allowed)</label><textarea class="ig-input" rows="4" id="cms-body-${i}" style="font-size:.78rem;font-family:monospace;min-height:80px;" placeholder="<p>Page content here...</p>"></textarea></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
+              <div><label class="ig-label">OG Image URL</label><input type="text" class="ig-input" value="https://india-gully.pages.dev/static/og.jpg" style="font-size:.78rem;"></div>
+              <div><label class="ig-label">Status</label><select class="ig-input" style="font-size:.82rem;"><option>Published</option><option>Draft</option><option>Scheduled</option></select></div>
+            </div>
+            <div style="background:#fffbeb;border:1px solid #fde68a;padding:.75rem;font-size:.75rem;color:#78350f;display:flex;align-items:center;gap:.5rem;">
+              <i class="fas fa-info-circle" style="color:#d97706;"></i>
+              Last saved by <strong>${p.editor}</strong> on ${p.lastEdit}. Saved changes require approval before going live.
+            </div>
+            <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+              <button onclick="igCmsSave(${i},'${p.page}')" style="background:var(--gold);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-save" style="margin-right:.35rem;font-size:.65rem;"></i>Publish</button>
+              <button onclick="igToast('${p.page} saved as draft','success')" style="background:var(--ink);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save Draft</button>
+              <button onclick="igCmsAiAssist('${p.page}')" style="background:#7c3aed;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-magic" style="margin-right:.35rem;font-size:.65rem;"></i>AI Rewrite</button>
+              <button onclick="togglePanel('cms-panel-${i}')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>`).join('')}
     </div>
-    <table class="ig-tbl"><thead><tr><th>Page</th><th>Title</th><th>Keywords</th><th>OG Image</th><th>Actions</th></tr></thead><tbody>
-      ${[
-        {page:'Home',     title:'India Gully — Celebrating Desiness',        kw:'real estate advisory, hospitality consulting, India'},
-        {page:'About',    title:'About India Gully — Leadership & Mission',   kw:'Arun Manikonda, India Gully team, advisory firm'},
-        {page:'Listings', title:'Active Mandates — India Gully',              kw:'investment mandates, ₹10000 Cr pipeline, India'},
-        {page:'HORECA',   title:'HORECA Solutions — India Gully',             kw:'hotel procurement, restaurant supplies, HORECA India'},
-      ].map(r=>`<tr>
-        <td style="font-weight:500;">${r.page}</td>
-        <td><input type="text" value="${r.title}" style="border:1px solid var(--border);padding:.35rem .5rem;font-size:.78rem;width:100%;"></td>
-        <td><input type="text" value="${r.kw}" style="border:1px solid var(--border);padding:.35rem .5rem;font-size:.78rem;width:100%;"></td>
-        <td><span style="font-size:.72rem;color:var(--gold);">og.jpg</span></td>
-        <td><button onclick="igToast('SEO for ${r.page} saved','success')" style="background:var(--gold);color:#fff;border:none;padding:.3rem .6rem;font-size:.68rem;font-weight:600;cursor:pointer;">Save</button></td>
-      </tr>`).join('')}
-    </tbody></table>
   </div>
+
+  <!-- TAB 1: PAGE BUILDER -->
+  <div id="cms-pane-1" style="display:none;">
+    <div style="display:grid;grid-template-columns:260px 1fr;gap:1.25rem;min-height:600px;">
+      <!-- Block Library -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);font-size:.82rem;font-weight:700;color:var(--ink);letter-spacing:.06em;text-transform:uppercase;">Block Library</div>
+        <div style="padding:.75rem;">
+          ${blocks.map((b,bi)=>`<div draggable="true" ondragstart="igPbDrag(${bi})" onclick="igPbAddBlock('${b}')" style="background:#f8fafc;border:1px solid var(--border);padding:.625rem .875rem;margin-bottom:.5rem;cursor:grab;display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--ink);font-weight:500;">
+            <i class="fas fa-${['image','align-left','columns','hashtag','th','quote-right','megaphone','list-ul','play','minus'][bi]||'square'}" style="color:var(--gold);font-size:.7rem;width:14px;text-align:center;"></i>${b}
+            <i class="fas fa-plus" style="margin-left:auto;color:var(--ink-muted);font-size:.6rem;"></i>
+          </div>`).join('')}
+        </div>
+      </div>
+      <!-- Canvas -->
+      <div>
+        <div style="background:#fff;border:1px solid var(--border);margin-bottom:.875rem;padding:.875rem 1.25rem;display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:.75rem;">
+            <select id="pb-page-sel" class="ig-input" style="font-size:.78rem;width:auto;">
+              ${pages.map(p=>`<option>${p.page}</option>`).join('')}
+            </select>
+            <button onclick="igToast('Preview opened in new tab','success')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);"><i class="fas fa-eye" style="margin-right:.35rem;"></i>Preview</button>
+          </div>
+          <div style="display:flex;gap:.5rem;">
+            <button onclick="igToast('Layout saved as draft','success')" style="background:var(--ink);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;">Save Draft</button>
+            <button onclick="igToast('Page layout published!','success')" style="background:var(--gold);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;">Publish</button>
+          </div>
+        </div>
+        <div id="pb-canvas" ondragover="event.preventDefault()" ondrop="igPbDrop(event)" style="background:#f7f7f7;border:2px dashed var(--border);min-height:480px;padding:1.25rem;">
+          <div style="text-align:center;padding:3rem;color:var(--ink-muted);">
+            <i class="fas fa-layer-group" style="font-size:2.5rem;margin-bottom:1rem;opacity:.25;display:block;"></i>
+            <div style="font-size:.875rem;font-weight:500;">Drag blocks from the library or click <strong>+</strong> to add</div>
+            <div style="font-size:.75rem;margin-top:.5rem;">Your page structure will appear here</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: AI COPY ASSIST -->
+  <div id="cms-pane-2" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+      <!-- Input Panel -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#7c3aed11,#4f46e511);display:flex;align-items:center;gap:.625rem;">
+          <div style="width:30px;height:30px;background:#7c3aed;display:flex;align-items:center;justify-content:center;">
+            <i class="fas fa-magic" style="color:#fff;font-size:.7rem;"></i>
+          </div>
+          <div>
+            <div style="font-size:.85rem;font-weight:700;color:var(--ink);">AI Copy Assist</div>
+            <div style="font-size:.68rem;color:var(--ink-muted);">Powered by India Gully AI · GPT-4 class</div>
+          </div>
+        </div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:.875rem;">
+          <div>
+            <label class="ig-label">Content Type</label>
+            <select id="ai-content-type" class="ig-input" style="font-size:.82rem;">
+              <option>Hero Headline</option><option>Page Subheading</option><option>Service Description</option>
+              <option>Insights Article Intro</option><option>Mandate Summary</option><option>Team Bio</option>
+              <option>Email Subject Line</option><option>CTA Button Text</option><option>Meta Description</option>
+            </select>
+          </div>
+          <div>
+            <label class="ig-label">Vertical / Context</label>
+            <select id="ai-vertical" class="ig-input" style="font-size:.82rem;">
+              <option>Real Estate Advisory</option><option>Retail Strategy</option><option>Hospitality PMC</option>
+              <option>Entertainment Feasibility</option><option>HORECA Procurement</option><option>General / Brand</option>
+            </select>
+          </div>
+          <div>
+            <label class="ig-label">Tone</label>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+              ${['Professional','Persuasive','Authoritative','Conversational','Premium'].map(t=>`<label style="display:flex;align-items:center;gap:.3rem;font-size:.75rem;cursor:pointer;"><input type="radio" name="ai-tone" value="${t}" ${t==='Professional'?'checked':''}> ${t}</label>`).join('')}
+            </div>
+          </div>
+          <div>
+            <label class="ig-label">Brief / Keywords (optional)</label>
+            <textarea id="ai-brief" class="ig-input" rows="3" style="font-size:.82rem;" placeholder="e.g. luxury hotel pre-opening, 250 rooms, Rajasthan, 5-star, F&B and spa..."></textarea>
+          </div>
+          <div>
+            <label class="ig-label">Number of Variants</label>
+            <select id="ai-variants" class="ig-input" style="font-size:.82rem;">
+              <option value="3">3 Variants</option><option value="5">5 Variants</option><option value="1">1 (Best only)</option>
+            </select>
+          </div>
+          <button onclick="igAiGenerate()" style="background:#7c3aed;color:#fff;border:none;padding:.625rem 1.5rem;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:.5rem;width:100%;justify-content:center;">
+            <i class="fas fa-magic"></i>Generate Copy
+          </button>
+        </div>
+      </div>
+
+      <!-- Output Panel -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-size:.85rem;font-weight:700;color:var(--ink);">Generated Variants</div>
+          <button onclick="igAiClear()" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);">Clear All</button>
+        </div>
+        <div id="ai-output" style="padding:1.25rem;min-height:420px;">
+          <div style="text-align:center;padding:3rem;color:var(--ink-muted);">
+            <i class="fas fa-magic" style="font-size:2.5rem;margin-bottom:1rem;opacity:.15;display:block;"></i>
+            <div style="font-size:.82rem;">Your AI-generated copy will appear here</div>
+            <div style="font-size:.72rem;margin-top:.35rem;">Select content type, set tone, and click Generate</div>
+          </div>
+        </div>
+        <!-- History -->
+        <div style="border-top:1px solid var(--border);padding:.875rem 1.25rem;">
+          <div style="font-size:.75rem;font-weight:700;color:var(--ink-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem;">Recent History</div>
+          ${[
+            {type:'Hero Headline',result:'Celebrating Desiness — India\'s Premier Advisory',ago:'2h ago'},
+            {type:'Service Description',result:'End-to-end hospitality consulting from concept…',ago:'1d ago'},
+            {type:'Meta Description',result:'India Gully: Multi-vertical advisory across Real Estate…',ago:'2d ago'},
+          ].map(h=>`<div style="display:flex;align-items:flex-start;gap:.625rem;padding:.5rem 0;border-bottom:1px solid var(--border);">
+            <i class="fas fa-history" style="color:var(--ink-muted);font-size:.65rem;margin-top:.2rem;flex-shrink:0;"></i>
+            <div style="flex:1;">
+              <div style="font-size:.68rem;font-weight:600;color:var(--gold);">${h.type}</div>
+              <div style="font-size:.72rem;color:var(--ink);">${h.result}</div>
+            </div>
+            <div style="font-size:.62rem;color:var(--ink-muted);white-space:nowrap;">${h.ago}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: APPROVAL WORKFLOW -->
+  <div id="cms-pane-3" style="display:none;">
+    <!-- Summary -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem;">
+      ${[
+        {label:'Pending Review', value:'2', color:'#d97706', icon:'clock'},
+        {label:'Approved',       value:'1', color:'#16a34a', icon:'check-circle'},
+        {label:'Rejected',       value:'1', color:'#dc2626', icon:'times-circle'},
+        {label:'Total Submissions',value:'4',color:'#2563eb', icon:'file-alt'},
+      ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.875rem;">
+        <div style="width:36px;height:36px;background:${s.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-${s.icon}" style="color:#fff;font-size:.75rem;"></i>
+        </div>
+        <div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:var(--ink);line-height:1;">${s.value}</div>
+          <div style="font-size:.65rem;color:var(--ink-muted);">${s.label}</div>
+        </div>
+      </div>`).join('')}
+    </div>
+    <!-- Approval Queue -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Approval Queue</h3>
+        <button onclick="igToast('Reminder sent to pending approvers','success')" style="background:none;border:1px solid var(--border);padding:.35rem .875rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);"><i class="fas fa-bell" style="margin-right:.35rem;"></i>Send Reminders</button>
+      </div>
+      <div id="approval-list">
+        ${approvals.map((a,ai)=>`<div id="apr-row-${ai}" style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:1rem;">
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:.625rem;margin-bottom:.35rem;">
+              <span style="font-size:.78rem;font-weight:700;color:var(--gold);">${a.id}</span>
+              <span style="font-size:.78rem;font-weight:600;color:var(--ink);">${a.page}</span>
+              <span class="badge ${a.status==='Approved'?'b-gr':a.status==='Rejected'?'b-re':'b-dk'}" style="font-size:.6rem;" id="apr-badge-${ai}">${a.status}</span>
+            </div>
+            <div style="font-size:.78rem;color:var(--ink-muted);">${a.change}</div>
+            <div style="font-size:.68rem;color:var(--ink-faint);margin-top:.25rem;">Submitted ${a.submitted} by ${a.by}</div>
+          </div>
+          ${a.status==='Pending'?`<div style="display:flex;gap:.5rem;flex-shrink:0;">
+            <button onclick="igCmsApprove(${ai},'${a.id}')" style="background:#16a34a;color:#fff;border:none;padding:.35rem .75rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-check" style="margin-right:.3rem;"></i>Approve</button>
+            <button onclick="igCmsReject(${ai},'${a.id}')" style="background:#dc2626;color:#fff;border:none;padding:.35rem .75rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-times" style="margin-right:.3rem;"></i>Reject</button>
+          </div>`:`<div style="font-size:.72rem;color:var(--ink-muted);flex-shrink:0;">—</div>`}
+        </div>`).join('')}
+      </div>
+    </div>
+    <!-- Approval Settings -->
+    <div style="background:#fff;border:1px solid var(--border);margin-top:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Workflow Settings</h3>
+      </div>
+      <div style="padding:1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+        <div>
+          <label class="ig-label">Required Approver</label>
+          <select class="ig-input" style="font-size:.82rem;">
+            <option>Arun Manikonda (MD)</option><option>Pavan Manikonda (ED)</option><option>Any Director</option>
+          </select>
+        </div>
+        <div>
+          <label class="ig-label">Approval SLA</label>
+          <select class="ig-input" style="font-size:.82rem;">
+            <option>24 hours</option><option>48 hours</option><option>72 hours</option>
+          </select>
+        </div>
+        <div>
+          <label class="ig-label">Auto-publish after Approval</label>
+          <select class="ig-input" style="font-size:.82rem;">
+            <option>Yes — immediately</option><option>Yes — next business day</option><option>No — manual publish only</option>
+          </select>
+        </div>
+        <div>
+          <label class="ig-label">Notify on Submission</label>
+          <select class="ig-input" style="font-size:.82rem;">
+            <option>Email only</option><option>Email + WhatsApp</option><option>None</option>
+          </select>
+        </div>
+        <div style="grid-column:span 2;display:flex;gap:.75rem;">
+          <button onclick="igToast('Approval workflow settings saved','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: BRANDED TEMPLATES -->
+  <div id="cms-pane-4" style="display:none;">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.5rem;">
+      ${templates.map((t,ti)=>`<div style="background:#fff;border:1px solid var(--border);overflow:hidden;">
+        <div style="background:${t.color};padding:2rem;display:flex;align-items:center;justify-content:center;">
+          <i class="fas fa-${t.icon}" style="color:#fff;font-size:2rem;opacity:.85;"></i>
+        </div>
+        <div style="padding:1.1rem;">
+          <div style="font-weight:700;font-size:.875rem;color:var(--ink);margin-bottom:.4rem;">${t.name}</div>
+          <div style="font-size:.72rem;color:var(--ink-muted);line-height:1.5;margin-bottom:.875rem;">${t.desc}</div>
+          <div style="display:flex;gap:.5rem;">
+            <button onclick="igCmsUseTemplate('${t.name}')" style="background:var(--gold);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;flex:1;"><i class="fas fa-plus" style="margin-right:.3rem;font-size:.6rem;"></i>Use Template</button>
+            <button onclick="igToast('${t.name} preview opened','success')" style="background:none;border:1px solid var(--border);padding:.4rem .75rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);" title="Preview"><i class="fas fa-eye"></i></button>
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>
+    <!-- Custom Template Creator -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Create Custom Template</h3>
+      </div>
+      <div style="padding:1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
+        <div><label class="ig-label">Template Name</label><input type="text" id="tpl-name" class="ig-input" placeholder="e.g. Case Study Layout" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Category</label><select id="tpl-cat" class="ig-input" style="font-size:.82rem;"><option>Article</option><option>Landing Page</option><option>Profile</option><option>Showcase</option><option>Report</option></select></div>
+        <div style="grid-column:span 2;"><label class="ig-label">Description</label><textarea id="tpl-desc" class="ig-input" rows="2" style="font-size:.82rem;" placeholder="Describe the layout and its best use case..."></textarea></div>
+        <div><label class="ig-label">Accent Color</label><input type="color" id="tpl-color" class="ig-input" value="#B8960C" style="font-size:.82rem;height:38px;cursor:pointer;"></div>
+        <div><label class="ig-label">Icon</label><select id="tpl-icon" class="ig-input" style="font-size:.82rem;"><option>newspaper</option><option>building</option><option>briefcase</option><option>user-tie</option><option>chart-bar</option><option>star</option></select></div>
+        <div style="grid-column:span 2;">
+          <button onclick="igCreateTemplate()" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.35rem;"></i>Create Template</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 5: SEO -->
+  <div id="cms-pane-5" style="display:none;">
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">SEO & Meta Tags</h3>
+        <button onclick="igToast('All SEO tags saved','success')" style="background:var(--gold);color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;">Save All</button>
+      </div>
+      <table class="ig-tbl"><thead><tr><th>Page</th><th>Title</th><th>Keywords</th><th>OG Image</th><th>Score</th><th>Actions</th></tr></thead><tbody>
+        ${[
+          {page:'Home',     title:'India Gully — Celebrating Desiness',        kw:'real estate advisory, hospitality consulting, India', score:87},
+          {page:'About',    title:'About India Gully — Leadership & Mission',   kw:'Arun Manikonda, India Gully team, advisory firm',    score:82},
+          {page:'Listings', title:'Active Mandates — India Gully',              kw:'investment mandates, ₹10000 Cr pipeline, India',     score:79},
+          {page:'HORECA',   title:'HORECA Solutions — India Gully',             kw:'hotel procurement, restaurant supplies, HORECA India',score:91},
+          {page:'Services', title:'Advisory Services — India Gully',            kw:'real estate services, retail advisory India',         score:75},
+          {page:'Contact',  title:'Contact India Gully — Get In Touch',         kw:'India Gully contact, advisory enquiry Delhi',         score:68},
+        ].map(r=>`<tr>
+          <td style="font-weight:500;">${r.page}</td>
+          <td><input type="text" value="${r.title}" style="border:1px solid var(--border);padding:.35rem .5rem;font-size:.78rem;width:100%;min-width:180px;"></td>
+          <td><input type="text" value="${r.kw}" style="border:1px solid var(--border);padding:.35rem .5rem;font-size:.78rem;width:100%;min-width:150px;"></td>
+          <td><span style="font-size:.72rem;color:var(--gold);">og.jpg</span></td>
+          <td>
+            <div style="display:flex;align-items:center;gap:.35rem;">
+              <div style="width:40px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;background:${r.score>=80?'#16a34a':r.score>=70?'#d97706':'#dc2626'};width:${r.score}%;"></div></div>
+              <span style="font-size:.72rem;font-weight:700;color:${r.score>=80?'#16a34a':r.score>=70?'#d97706':'#dc2626'};">${r.score}</span>
+            </div>
+          </td>
+          <td><button onclick="igToast('SEO for ${r.page} saved','success')" style="background:var(--gold);color:#fff;border:none;padding:.3rem .6rem;font-size:.68rem;font-weight:600;cursor:pointer;">Save</button></td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>
+    <!-- Schema / Sitemap -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+      <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+        <div style="font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:.875rem;letter-spacing:.06em;text-transform:uppercase;">Schema Markup</div>
+        ${[
+          {type:'Organization',status:'Active',icon:'building'},
+          {type:'LocalBusiness',status:'Active',icon:'map-marker-alt'},
+          {type:'Person (Directors)',status:'Active',icon:'user-tie'},
+          {type:'ProfessionalService',status:'Missing',icon:'briefcase'},
+        ].map(s=>`<div style="display:flex;align-items:center;gap:.625rem;padding:.5rem 0;border-bottom:1px solid var(--border);">
+          <i class="fas fa-${s.icon}" style="color:${s.status==='Active'?'#16a34a':'#dc2626'};font-size:.75rem;width:16px;text-align:center;"></i>
+          <span style="font-size:.78rem;flex:1;">${s.type}</span>
+          <span class="badge ${s.status==='Active'?'b-gr':'b-re'}" style="font-size:.6rem;">${s.status}</span>
+          ${s.status==='Missing'?`<button onclick="igToast('${s.type} schema added','success')" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;">Add</button>`:''}
+        </div>`).join('')}
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+        <div style="font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:.875rem;letter-spacing:.06em;text-transform:uppercase;">Sitemap & Robots</div>
+        <div style="background:#f8fafc;border:1px solid var(--border);padding:.875rem;margin-bottom:.875rem;font-size:.72rem;font-family:monospace;color:var(--ink);">
+          Sitemap: https://india-gully.pages.dev/sitemap.xml<br>
+          Robots: https://india-gully.pages.dev/robots.txt<br>
+          Last generated: 28 Feb 2025 · 12 URLs indexed
+        </div>
+        <div style="display:flex;gap:.625rem;">
+          <button onclick="igToast('Sitemap regenerated — 12 URLs indexed','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-sync-alt" style="margin-right:.35rem;"></i>Regenerate</button>
+          <button onclick="igToast('Sitemap submitted to Google Search Console','success')" style="background:#2563eb;color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fab fa-google" style="margin-right:.35rem;"></i>Submit to Google</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
-  function igCmsSave(idx, pageName){
-    var btn = event.currentTarget;
-    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="margin-right:.4rem;font-size:.65rem;"></i>Publishing…';
-    btn.disabled = true;
+  window.igCmsTab = function(idx){
+    for(var i=0;i<6;i++){
+      var p=document.getElementById('cms-pane-'+i);
+      var t=document.getElementById('cms-tab-'+i);
+      if(p) p.style.display=i===idx?'block':'none';
+      if(t){ t.style.color=i===idx?'var(--gold)':'var(--ink-muted)'; t.style.borderBottom=i===idx?'2px solid var(--gold)':'2px solid transparent'; }
+    }
+  };
+  window.igCmsSave = function(idx, pageName){
+    igToast(pageName + ' submitted for approval. Awaiting review.', 'success');
+    setTimeout(function(){ togglePanel('cms-panel-'+idx); }, 800);
+  };
+  window.igCmsAiAssist = function(page){
+    document.getElementById('ai-brief').value = 'Page: '+page+'. India Gully advisory firm, multi-vertical, premium brand.';
+    igCmsTab(2);
+    igToast('AI Assist opened for '+page,'success');
+  };
+  window.igCmsSubmitApproval = function(page){
+    igToast(page+' change submitted for approval — APR-'+Math.floor(Math.random()*900+100),'success');
+  };
+  window.igAiGenerate = function(){
+    var type = document.getElementById('ai-content-type').value;
+    var vert = document.getElementById('ai-vertical').value;
+    var variants = parseInt(document.getElementById('ai-variants').value)||3;
+    var output = document.getElementById('ai-output');
+    output.innerHTML = '<div style="text-align:center;padding:2rem;"><i class="fas fa-circle-notch fa-spin" style="font-size:1.5rem;color:#7c3aed;"></i><div style="font-size:.82rem;color:var(--ink-muted);margin-top:.75rem;">Generating copy with India Gully AI…</div></div>';
+    var variantData = {
+      'Hero Headline': ['Celebrating Desiness — Where Vision Meets Advisory Excellence','India\'s Most Trusted Multi-Vertical Advisory Firm','From Real Estate to Hospitality — One Partner, Endless Possibilities','Pioneering Desiness: Advisory at the Intersection of Culture & Commerce','Building Tomorrow\'s Icons — Advisory That Goes Beyond Transactions'],
+      'Service Description': ['End-to-end advisory spanning Real Estate, Retail, Hospitality and Entertainment — crafted for discerning clients who demand precision.','From site acquisition to brand positioning, our multi-vertical expertise delivers measurable outcomes across India\'s most dynamic sectors.','We don\'t just advise. We partner. Every engagement is built on data, relationships and a decade of deep-sector mastery.','India Gully\'s advisory practice combines market intelligence with on-ground execution — bridging strategy and reality for our clients.','Trusted by developers, hoteliers, retailers and entertainment brands alike — India Gully brings institutional-grade advisory to every mandate.'],
+      'Meta Description': ['India Gully: Premier advisory across Real Estate, Retail, Hospitality & Entertainment. ₹10,000 Cr+ in active mandates. New Delhi.','Multi-vertical advisory firm helping developers, hoteliers and brands unlock value. Celebrating Desiness since 2017.','Expert advisory in Real Estate, Hospitality, Retail and Entertainment. Contact India Gully — New Delhi\'s trusted advisory partner.','From concept to completion — India Gully\'s advisory spans 5 verticals, 50+ mandates and a ₹10,000 Cr active pipeline.','India Gully: Where Indian enterprise meets world-class advisory. Real Estate · Retail · Hospitality · Entertainment · HORECA.'],
+    };
     setTimeout(function(){
-      btn.innerHTML = '<i class="fas fa-check" style="margin-right:.4rem;font-size:.65rem;"></i>Published ✓';
-      btn.style.background = '#15803d';
-      igToast(pageName + ' published successfully. Changes are now live.', 'success');
-      setTimeout(function(){
-        btn.innerHTML = '<i class="fas fa-save" style="margin-right:.4rem;font-size:.65rem;"></i>Publish Changes';
-        btn.style.background = 'var(--gold)';
-        btn.disabled = false;
-        togglePanel('cms-panel-'+idx);
-      }, 2500);
-    }, 1200);
-  }
+      var bank = variantData[type] || variantData['Hero Headline'];
+      var html = '';
+      for(var i=0;i<Math.min(variants,bank.length);i++){
+        html += '<div style="background:#f8fafc;border:1px solid var(--border);border-left:3px solid #7c3aed;padding:1rem;margin-bottom:.875rem;">';
+        html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">';
+        html += '<div style="font-size:.65rem;font-weight:700;color:#7c3aed;letter-spacing:.1em;text-transform:uppercase;">Variant '+(i+1)+'</div>';
+        html += '<div style="display:flex;gap:.35rem;">';
+        html += '<button onclick="igToast(\'Copied to clipboard\',\'success\')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.62rem;cursor:pointer;color:var(--ink-muted);"><i class=\'fas fa-copy\'></i></button>';
+        html += '<button onclick="igToast(\'Added to editor\',\'success\')" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;font-weight:600;">Use</button>';
+        html += '</div></div>';
+        html += '<div style="font-size:.875rem;color:var(--ink);line-height:1.6;">'+bank[i]+'</div>';
+        html += '</div>';
+      }
+      output.innerHTML = html;
+      igToast(variants+' variants generated for '+type,'success');
+    }, 1500);
+  };
+  window.igAiClear = function(){
+    document.getElementById('ai-output').innerHTML = '<div style="text-align:center;padding:3rem;color:var(--ink-muted);"><i class="fas fa-magic" style="font-size:2.5rem;margin-bottom:1rem;opacity:.15;display:block;"></i><div style="font-size:.82rem;">Output cleared</div></div>';
+  };
+  window.igCmsApprove = function(idx, id){
+    var badge = document.getElementById('apr-badge-'+idx);
+    if(badge){ badge.textContent='Approved'; badge.className='badge b-gr'; badge.style.fontSize='.6rem'; }
+    document.querySelectorAll('#apr-row-'+idx+' button').forEach(function(b){b.remove();});
+    igToast(id+' approved — page will go live','success');
+  };
+  window.igCmsReject = function(idx, id){
+    var badge = document.getElementById('apr-badge-'+idx);
+    if(badge){ badge.textContent='Rejected'; badge.className='badge b-re'; badge.style.fontSize='.6rem'; }
+    document.querySelectorAll('#apr-row-'+idx+' button').forEach(function(b){b.remove();});
+    igToast(id+' rejected — author notified','warn');
+  };
+  window.igCmsUseTemplate = function(name){
+    igToast('Template "'+name+'" loaded into Page Builder','success');
+    igCmsTab(1);
+    var canvas = document.getElementById('pb-canvas');
+    if(canvas) canvas.innerHTML = '<div style="background:#fff;border:1px solid var(--border);border-left:4px solid var(--gold);padding:1rem;margin-bottom:.75rem;"><div style="font-size:.75rem;font-weight:700;color:var(--gold);margin-bottom:.25rem;">HERO BANNER</div><div style="font-size:.78rem;color:var(--ink-muted);">Template: '+name+'</div></div><div style="background:#fff;border:1px solid var(--border);border-left:4px solid #7c3aed;padding:1rem;margin-bottom:.75rem;"><div style="font-size:.75rem;font-weight:700;color:#7c3aed;margin-bottom:.25rem;">RICH TEXT</div><div style="font-size:.78rem;color:var(--ink-muted);">Main body content block</div></div><div style="background:#fff;border:1px solid var(--border);border-left:4px solid #2563eb;padding:1rem;"><div style="font-size:.75rem;font-weight:700;color:#2563eb;margin-bottom:.25rem;">CTA BANNER</div><div style="font-size:.78rem;color:var(--ink-muted);">Call-to-action section</div></div>';
+  };
+  window.igCreateTemplate = function(){
+    var name = document.getElementById('tpl-name').value.trim();
+    if(!name){igToast('Enter a template name','warn');return;}
+    igToast('Template "'+name+'" created successfully','success');
+    document.getElementById('tpl-name').value='';
+    document.getElementById('tpl-desc').value='';
+  };
+  var _pbDragBlock = '';
+  window.igPbDrag = function(idx){ _pbDragBlock = ['Hero Banner','Rich Text','Image + Text','Stats Row','Card Grid','Testimonial','CTA Banner','Accordion / FAQ','Video Embed','Divider'][idx]||'Block'; };
+  window.igPbDrop = function(e){
+    e.preventDefault();
+    igPbAddBlock(_pbDragBlock);
+  };
+  window.igPbAddBlock = function(name){
+    var canvas = document.getElementById('pb-canvas');
+    var colors = {'Hero Banner':'var(--gold)','Rich Text':'#7c3aed','Image + Text':'#2563eb','Stats Row':'#d97706','Card Grid':'#16a34a','CTA Banner':'#dc2626','Testimonial':'#0891b2','Accordion / FAQ':'#78350f','Video Embed':'#1d4ed8','Divider':'#94a3b8'};
+    var c = colors[name]||'var(--gold)';
+    var empty = canvas.querySelector('.pb-empty');
+    if(empty) empty.remove();
+    var d = document.createElement('div');
+    d.style.cssText = 'background:#fff;border:1px solid var(--border);border-left:4px solid '+c+';padding:.875rem;margin-bottom:.5rem;display:flex;align-items:center;justify-content:space-between;cursor:default;';
+    d.innerHTML = '<div><div style="font-size:.72rem;font-weight:700;color:'+c+';letter-spacing:.08em;text-transform:uppercase;">'+name+'</div><div style="font-size:.68rem;color:var(--ink-muted);margin-top:.2rem;">Click to configure</div></div><div style="display:flex;gap:.35rem;"><button onclick="igToast(\''+name+' configured\',\'success\')" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.6rem;cursor:pointer;font-weight:600;">Edit</button><button onclick="this.closest(\'div[style]\').remove();igToast(\'Block removed\',\'warn\')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.6rem;cursor:pointer;color:#dc2626;"><i class=\'fas fa-trash\'></i></button></div>';
+    canvas.appendChild(d);
+    igToast(name+' block added to canvas','success');
+  };
   </script>`
   return c.html(layout('CMS', adminShell('Content Management System', 'cms', body), {noNav:true,noFooter:true}))
 })

@@ -13,6 +13,7 @@ import contactRoute from './routes/contact'
 import portalRoute from './routes/portal'
 import adminRoute from './routes/admin'
 import apiRoute from './routes/api'
+import salesRoute from './routes/sales'
 import { layout } from './lib/layout'
 
 const app = new Hono()
@@ -130,6 +131,7 @@ app.route('/insights', insightsRoute)
 app.route('/contact', contactRoute)
 app.route('/portal', portalRoute)
 app.route('/admin', adminRoute)
+app.route('/admin/sales', salesRoute)
 app.route('/api', apiRoute)
 
 export default app
