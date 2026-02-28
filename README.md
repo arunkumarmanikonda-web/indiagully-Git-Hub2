@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://4e34aadd.india-gully.pages.dev |
+| **Latest Deploy** | https://e83c95da.india-gully.pages.dev |
 | **Sandbox Preview** | http://localhost:3000 |
 
 ---
@@ -55,7 +55,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 
 #### Super Admin Console
 - **Dashboard** — KPI cards, alert banner, activity feed, compliance grid
-- **CMS** — full page editor with SEO, hero, body HTML, OG image, publish
+- **CMS** — full page editor with SEO, hero, body HTML, OG image, publish — **NOW with 6 tabs: Pages, Page Builder (drag-and-drop), AI Copy Assist (multi-variant copy generation), Approval Workflow (queue + settings), Branded Templates (6 + custom creator), SEO scores**
 - **Users** — 8 accounts, role management, add/deactivate
 - **Workflows** — 4-tab engine (Library, Visual Builder, Run History, Settings)
 - **Finance ERP** (7 tabs): Invoices, P&L, **Account Ledger + Voucher entry** (NEW), **Bank Reconciliation** (NEW), Expenses, **GST / e-Invoice with IRN** (NEW), Reports
@@ -84,6 +84,8 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | **Client Portal** | Multi-method payment gateway (Razorpay card/UPI/NEFT/Cheque), KYC upload module (6 document types), message read receipts (✓✓) + file attachment button |
 | **HORECA** | Inventory ledger with stock levels + low-stock alerts + reorder button, vendor management (7 vendors, tier/rating/lead-time), purchase orders with approval workflow, quote-to-PO conversion |
 | **BI & Reports** | 4 interactive Chart.js charts (revenue bar, expense doughnut, pipeline, trend), self-service analytics builder (dimension/metric/filter/chart selector), scheduled reports table (4 configured), on-demand export grid |
+| **Sales Force Engine** | Dedicated `/admin/sales/*` module (7 routes): Dashboard with pipeline Kanban + conversion funnel, Leads & CRM with scoring + filters + add lead, Pipeline full Kanban view, Quotes Builder (6 quotes), Engagements tracker (5 engagements), Tasks manager (7 tasks + add), Analytics (revenue by vertical, monthly trend, team performance) — linked in Admin sidebar |
+| **CMS v2** | 6-tab upgrade: **Pages** (edit + AI Assist + Submit buttons), **Page Builder** (drag-and-drop block library: 10 block types), **AI Copy Assist** (9 content types, 5 tones, 3–5 variants, history), **Approval Workflow** (queue with approve/reject, SLA settings, auto-publish rules), **Branded Templates** (6 templates + custom creator), **SEO** (score indicator per page, schema markup, sitemap regenerate + submit to Google) |
 
 ---
 
@@ -112,12 +114,13 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 
 | File | Lines | Description |
 |------|-------|-------------|
-| `src/routes/admin.tsx` | 3,300 | Super Admin ERP console (all modules) |
+| `src/routes/admin.tsx` | ~3,700 | Super Admin ERP console (all modules incl. CMS v2) |
+| `src/routes/sales.tsx` | 805 | Sales Force Engine (7 routes) |
 | `src/routes/portal.tsx` | 1,999 | All portal routes (Client, Employee, Board) |
 | `src/lib/layout.ts` | 624 | Master layout, design system, utilities |
 | `src/routes/api.tsx` | 269 | REST API endpoints |
-| `src/index.tsx` | 135 | App entry point + legal pages |
-| **Total** | **~6,327** | Compiled worker: 677 KB |
+| `src/index.tsx` | 137 | App entry point + legal pages |
+| **Total** | **~7,534** | Compiled worker: 775 KB |
 
 ---
 
