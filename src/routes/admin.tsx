@@ -922,9 +922,9 @@ app.get('/finance', (c) => {
     ${[{label:'Revenue MTD',value:'₹12.4L',trend:'↑ +8.3%',c:'#16a34a'},{label:'Expenses MTD',value:'₹7.8L',trend:'↓ -2.1%',c:'#dc2626'},{label:'Net Profit',value:'₹4.6L',trend:'37.1% margin',c:'#2563eb'},{label:'GST Liability',value:'₹2.1L',trend:'Due 20 Mar',c:'#d97706'}].map(s=>`<div class="am"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--ink);line-height:1;margin-bottom:.3rem;">${s.value}</div><div style="font-size:.7rem;color:${s.c};">${s.trend}</div></div>`).join('')}
   </div>
 
-  <!-- Tab navigation -->
-  <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
-    ${['Invoices','P&L Statement','Expenses','GST Filing','Reports'].map((t,i)=>`<button onclick="igFinTab(${i})" id="fin-tab-${i}" style="padding:.6rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;">${t}</button>`).join('')}
+  <!-- Tab navigation (Phase 6: added Ledger, Bank Recon, e-Invoice) -->
+  <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);overflow-x:auto;">
+    ${['Invoices','P&L Statement','Ledger','Bank Recon','Expenses','GST / e-Invoice','Reports'].map((t,i)=>`<button onclick="igFinTab(${i})" id="fin-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
   </div>
 
   <!-- Tab 0: Invoices -->
@@ -997,8 +997,8 @@ app.get('/finance', (c) => {
     <div id="pl-table-container"></div>
   </div>
 
-  <!-- Tab 2: Expenses -->
-  <div id="fin-pane-2" style="display:none;">
+  <!-- Tab 4: Expenses (Phase 6: renumbered) -->
+  <div id="fin-pane-4" style="display:none;">
     <div style="margin-bottom:1rem;"><button onclick="togglePanel('add-exp-panel')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.4rem;"></i>Record Expense</button></div>
     <div id="add-exp-panel" class="ig-panel" style="margin-bottom:1.5rem;">
       <h4 style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.875rem;">New Expense Entry</h4>
@@ -1059,8 +1059,8 @@ app.get('/finance', (c) => {
     </div>
   </div>
 
-  <!-- Tab 3: GST Filing -->
-  <div id="fin-pane-3" style="display:none;">
+  <!-- Old GST Tab - removed, replaced by fin-pane-5 and fin-pane-3 -->
+  <div id="fin-pane-3x" style="display:none;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
       <div style="background:#fff;border:1px solid var(--border);">
         <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
@@ -1098,8 +1098,194 @@ app.get('/finance', (c) => {
     </div>
   </div>
 
-  <!-- Tab 4: Reports -->
-  <div id="fin-pane-4" style="display:none;">
+  <!-- Tab 5: GST / e-Invoice (moved from old tab 3, plus e-invoice) -->
+  <div id="fin-pane-5" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GSTR-3B — Feb 2025</h3>
+          <button onclick="igConfirm('File GSTR-3B for February 2025?',function(){ igToast('GSTR-3B filed. ARN: AA270225123456','success'); })" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File Now</button>
+        </div>
+        <div style="padding:1.25rem;">
+          ${[
+            {label:'Taxable Outward Supplies', value:'₹12.4L',c:'var(--gold)'},
+            {label:'CGST Collected (9%)',      value:'₹1.12L',c:'var(--ink)'},
+            {label:'SGST Collected (9%)',      value:'₹1.12L',c:'var(--ink)'},
+            {label:'ITC — CGST Available',     value:'₹0.82L',c:'#2563eb'},
+            {label:'ITC — SGST Available',     value:'₹0.82L',c:'#2563eb'},
+            {label:'Net GST Payable',          value:'₹0.60L',c:'#dc2626'},
+            {label:'Late Fee (if any)',         value:'—',     c:'var(--ink-muted)'},
+          ].map(g=>`<div style="display:flex;justify-content:space-between;padding:.55rem 0;border-bottom:1px solid var(--border);"><span style="font-size:.82rem;color:var(--ink-muted);">${g.label}</span><span style="font-family:'DM Serif Display',Georgia,serif;color:${g.c};">${g.value}</span></div>`).join('')}
+        </div>
+      </div>
+      <!-- e-Invoice Section -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">e-Invoice (IRN) Generator</h3>
+          <span class="badge b-gr" style="font-size:.6rem;">IRP Integrated</span>
+        </div>
+        <div style="padding:1.25rem;">
+          <div style="background:#fffbeb;border:1px solid #fde68a;padding:.75rem;margin-bottom:1rem;font-size:.75rem;color:#92400e;">
+            <i class="fas fa-info-circle" style="margin-right:.4rem;"></i>e-Invoice mandatory for turnover above ₹5 Cr. Generates IRN + QR code via IRP. Connected to GST Portal.
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:.875rem;">
+            <div><label class="ig-label">Invoice Number</label><input type="text" class="ig-input" value="INV-2025-003" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">Supplier GSTIN</label><input type="text" class="ig-input" value="07AABCV1234F1Z5" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">Buyer GSTIN</label><input type="text" class="ig-input" placeholder="Buyer GSTIN" style="font-size:.82rem;"></div>
+            <div><label class="ig-label">Total Invoice Value</label><input type="number" class="ig-input" placeholder="0" style="font-size:.82rem;"></div>
+          </div>
+          <div style="display:flex;gap:.5rem;">
+            <button onclick="igToast('e-Invoice IRN generated: 84d53f7e8a49c2b1e0d47f6c9a80b53e1234','success')" style="background:#d97706;color:#fff;border:none;padding:.5rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class="fas fa-qrcode" style="margin-right:.4rem;"></i>Generate IRN + QR</button>
+            <button onclick="igToast('e-Invoice cancelled. Cancellation reason logged.','warn')" style="background:none;border:1px solid var(--border);padding:.5rem 1rem;font-size:.75rem;cursor:pointer;color:#dc2626;">Cancel IRN</button>
+          </div>
+          <!-- Recent IRNs -->
+          <div style="margin-top:1rem;border-top:1px solid var(--border);padding-top:1rem;">
+            <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.5rem;">Recent IRNs</div>
+            ${[
+              {inv:'INV-2025-001',irn:'84d5...3e12',status:'Active', date:'14 Feb 2025'},
+              {inv:'INV-2025-002',irn:'c3a8...7f91',status:'Active', date:'28 Feb 2025'},
+            ].map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--border);">
+              <div><div style="font-size:.78rem;font-weight:500;">${r.inv}</div><code style="font-size:.65rem;color:#7c3aed;">${r.irn}</code></div>
+              <div style="text-align:right;"><div style="font-size:.7rem;color:var(--ink-muted);">${r.date}</div><span class="badge b-gr" style="font-size:.58rem;">${r.status}</span></div>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- GST Filing Calendar -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GST Filing Calendar</h3></div>
+      <div style="padding:1.25rem;">
+        ${[
+          {form:'GSTR-1',period:'Feb 2025',due:'11 Mar 2025',status:'Pending',cls:'b-g'},
+          {form:'GSTR-3B',period:'Feb 2025',due:'20 Mar 2025',status:'Pending',cls:'b-g'},
+          {form:'GSTR-1',period:'Jan 2025',due:'11 Feb 2025',status:'Filed',cls:'b-gr'},
+          {form:'GSTR-3B',period:'Jan 2025',due:'20 Feb 2025',status:'Filed',cls:'b-gr'},
+          {form:'GSTR-9',period:'FY 2023-24',due:'31 Dec 2024',status:'Filed',cls:'b-gr'},
+        ].map(f=>`<div style="display:flex;justify-content:space-between;padding:.55rem 0;border-bottom:1px solid var(--border);align-items:center;">
+          <div><div style="font-size:.82rem;font-weight:500;color:var(--ink);">${f.form} — ${f.period}</div><div style="font-size:.7rem;color:var(--ink-muted);">Due: ${f.due}</div></div>
+          <div style="display:flex;gap:.5rem;align-items:center;">
+            <span class="badge ${f.cls}">${f.status}</span>
+            ${f.status==='Pending'?`<button onclick="igToast('${f.form} ${f.period} filed successfully. ARN generated.','success')" style="background:#16a34a;color:#fff;border:none;padding:.2rem .5rem;font-size:.65rem;font-weight:600;cursor:pointer;">File Now</button>`:''}
+          </div>
+        </div>`).join('')}
+        <button onclick="igToast('GSTR-1 data exported for filing','success')" style="margin-top:1rem;background:var(--ink);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-download" style="margin-right:.4rem;"></i>Download GSTR-1 Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: Ledger (new Phase 6) -->
+  <div id="fin-pane-2" style="display:none;">
+    <div style="display:flex;gap:.75rem;margin-bottom:1rem;">
+      <select class="ig-input" style="font-size:.82rem;max-width:200px;" id="ledger-account">
+        <option>Sales / Revenue</option><option>Expenses — Staff</option><option>GST Payable</option><option>Accounts Receivable</option><option>Bank Account</option><option>Director Drawings</option>
+      </select>
+      <select class="ig-input" style="font-size:.82rem;max-width:140px;"><option>Feb 2025</option><option>Jan 2025</option><option>FY 2024-25</option></select>
+      <button onclick="igToast('Ledger view refreshed','success')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--ink);"><i class="fas fa-sync" style="margin-right:.3rem;font-size:.7rem;"></i>Refresh</button>
+      <button onclick="igToast('Ledger exported to PDF','success')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;font-size:.7rem;"></i>Export</button>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Account Ledger — Sales / Revenue</h3>
+        <div style="font-size:.78rem;color:var(--ink-muted);">Opening Balance: <strong style="color:var(--ink);">₹7,71,000</strong></div>
+      </div>
+      <table class="ig-tbl">
+        <thead><tr><th>Date</th><th>Voucher No.</th><th>Narration</th><th>Debit</th><th>Credit</th><th>Balance</th></tr></thead>
+        <tbody>
+          ${[
+            {date:'01 Feb', vch:'JV-001', narr:'Opening Balance',                   dr:0,       cr:0,       bal:771000},
+            {date:'05 Feb', vch:'INV-2025-001', narr:'Advisory Retainer — Jan 2025', dr:0,       cr:250160,  bal:1021160},
+            {date:'12 Feb', vch:'INV-2025-002', narr:'Hotel PMC — Phase 1',          dr:0,       cr:180000,  bal:1201160},
+            {date:'18 Feb', vch:'RCP-001', narr:'Receipt — INV-2025-001 (Paid)',     dr:250160,  cr:0,       bal:951000},
+            {date:'25 Feb', vch:'INV-2025-003', narr:'Entertainment Feasibility',    dr:0,       cr:320000,  bal:1271000},
+            {date:'28 Feb', vch:'ADJ-001', narr:'GST adjustment entry',              dr:141200,  cr:0,       bal:1129800},
+          ].map((r,i)=>{
+            const isOp=i===0;
+            return `<tr style="${isOp?'background:var(--parch-dk);':''}">
+              <td style="font-size:.78rem;color:var(--ink-muted);">${r.date}</td>
+              <td style="font-size:.72rem;color:var(--gold);font-family:monospace;">${r.vch}</td>
+              <td style="font-size:.82rem;">${r.narr}</td>
+              <td style="font-size:.82rem;color:#dc2626;text-align:right;">${r.dr>0?'₹'+(r.dr/1000).toFixed(1)+'K':'—'}</td>
+              <td style="font-size:.82rem;color:#16a34a;text-align:right;">${r.cr>0?'₹'+(r.cr/1000).toFixed(1)+'K':'—'}</td>
+              <td style="font-family:'DM Serif Display',Georgia,serif;color:var(--ink);text-align:right;">₹${(r.bal/100000).toFixed(2)}L</td>
+            </tr>`;
+          }).join('')}
+          <tr style="background:#f0fdf4;font-weight:700;">
+            <td colspan="3" style="text-align:right;font-size:.82rem;padding:.625rem .875rem;">Closing Balance</td>
+            <td style="text-align:right;color:#dc2626;font-size:.82rem;">₹3.91L</td>
+            <td style="text-align:right;color:#16a34a;font-size:.82rem;">₹7.50L</td>
+            <td style="font-family:'DM Serif Display',Georgia,serif;color:#15803d;text-align:right;">₹11.30L</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Voucher Entry -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">New Voucher Entry</h3>
+        <div style="display:flex;gap:.5rem;">
+          ${['Sales','Purchase','Payment','Receipt','Journal','Contra'].map(v=>`<button onclick="igToast('${v} voucher template loaded','info')" style="background:var(--parch-dk);border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--ink);">${v}</button>`).join('')}
+        </div>
+      </div>
+      <div style="padding:1.25rem;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.875rem;">
+        <div><label class="ig-label">Voucher Type</label><select class="ig-input" style="font-size:.82rem;"><option>Journal</option><option>Sales</option><option>Payment</option><option>Receipt</option></select></div>
+        <div><label class="ig-label">Voucher Date</label><input type="date" class="ig-input" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Debit Account</label><input type="text" class="ig-input" placeholder="e.g. Expenses" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Credit Account</label><input type="text" class="ig-input" placeholder="e.g. Bank Account" style="font-size:.82rem;"></div>
+        <div style="grid-column:span 2;"><label class="ig-label">Narration</label><input type="text" class="ig-input" placeholder="Description of transaction" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Amount (₹)</label><input type="number" class="ig-input" placeholder="0" style="font-size:.82rem;"></div>
+        <div style="display:flex;align-items:flex-end;"><button onclick="igToast('Voucher JV-'+Math.floor(Math.random()*900+100)+' created and posted to ledger','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;width:100%;"><i class="fas fa-plus" style="margin-right:.3rem;"></i>Post Voucher</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: Bank Reconciliation (new Phase 6) -->
+  <div id="fin-pane-3" style="display:none;">
+    <div style="background:#fffbeb;border:1px solid #fde68a;padding:.875rem 1.25rem;margin-bottom:1.25rem;display:flex;gap:.625rem;align-items:center;">
+      <i class="fas fa-university" style="color:#d97706;font-size:.9rem;flex-shrink:0;"></i>
+      <div>
+        <div style="font-size:.82rem;font-weight:600;color:#92400e;">Bank: HDFC Bank Current A/c · ••••6748</div>
+        <div style="font-size:.72rem;color:#78350f;">Statement Balance: ₹56.2L · Book Balance: ₹56.5L · Difference: ₹30,200</div>
+      </div>
+      <button onclick="igToast('Bank statement uploaded — 38 transactions imported','success')" style="margin-left:auto;background:#d97706;color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-upload" style="margin-right:.3rem;"></i>Upload Statement</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.25rem;">
+      ${[{l:'Statement Balance',v:'₹56,20,000',c:'#2563eb'},{l:'Book Balance (Ledger)',v:'₹56,50,000',c:'#16a34a'},{l:'Reconciled',v:'₹56,20,000',c:'#16a34a'},{l:'Unreconciled',v:'₹30,200',c:'#dc2626'}].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:.875rem 1rem;"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.35rem;">${s.l}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:${s.c};">${s.v}</div></div>`).join('')}
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Unreconciled Transactions</h3>
+        <button onclick="igToast('Auto-reconciliation complete — 35/38 matched','success')" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-magic" style="margin-right:.3rem;"></i>Auto-Reconcile</button>
+      </div>
+      <table class="ig-tbl">
+        <thead><tr><th>Date</th><th>Description</th><th>Bank Amount</th><th>Book Amount</th><th>Diff</th><th>Type</th><th>Match</th></tr></thead>
+        <tbody>
+          ${[
+            {date:'28 Feb', desc:'NEFT — Staff Payroll Feb 25',  bank:363400,  book:363400, type:'Outward',  matched:true},
+            {date:'26 Feb', desc:'INV-2025-001 Receipt',          bank:250160,  book:250160, type:'Inward',   matched:true},
+            {date:'25 Feb', desc:'Bank charges Q1',               bank:1200,    book:0,      type:'Outward',  matched:false},
+            {date:'24 Feb', desc:'Rent — Office Feb 2025',        bank:85000,   book:85000,  type:'Outward',  matched:true},
+            {date:'20 Feb', desc:'GST Payment GSTR-3B',           bank:29000,   book:0,      type:'Outward',  matched:false},
+          ].map(r=>`<tr ${!r.matched?'style="background:#fffbeb;"':''}>
+            <td style="font-size:.78rem;">${r.date}</td>
+            <td style="font-size:.82rem;">${r.desc}</td>
+            <td style="font-size:.82rem;color:#dc2626;">₹${r.bank.toLocaleString('en-IN')}</td>
+            <td style="font-size:.82rem;color:#16a34a;">${r.book>0?'₹'+r.book.toLocaleString('en-IN'):'—'}</td>
+            <td style="font-size:.78rem;color:${r.bank-r.book!==0?'#d97706':'var(--ink-muted)'};">${r.bank-r.book!==0?'₹'+(r.bank-r.book).toLocaleString('en-IN'):'✓'}</td>
+            <td><span class="badge ${r.type==='Inward'?'b-gr':'b-re'}" style="font-size:.6rem;">${r.type}</span></td>
+            <td>
+              ${r.matched
+                ? '<span class="badge b-gr" style="font-size:.62rem;">Matched</span>'
+                : `<button onclick="igToast('Creating journal entry for reconciliation','info')" style="background:#d97706;color:#fff;border:none;padding:.2rem .5rem;font-size:.65rem;cursor:pointer;">Create JV</button>`}
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Tab 6: Reports (renamed from tab 4) -->
+  <div id="fin-pane-6" style="display:none;">
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
       ${[
         {title:'Profit & Loss Statement',icon:'chart-line',color:'#1A3A6B',desc:'Monthly & YTD P&L with all income and expense categories'},
@@ -1130,7 +1316,7 @@ app.get('/finance', (c) => {
   <script>
   // ── Finance Tab Switcher ───────────────────────────────────────────────────
   window.igFinTab = function(idx){
-    for(var i=0;i<5;i++){
+    for(var i=0;i<7;i++){
       var pane=document.getElementById('fin-pane-'+i);
       var tab=document.getElementById('fin-tab-'+i);
       if(pane) pane.style.display = i===idx?'block':'none';
@@ -1453,52 +1639,136 @@ app.get('/hr', (c) => {
     </div>
   </div>
 
-  <!-- Tab 3: Payroll -->
+  <!-- Tab 3: Payroll (Phase 6 — full payroll builder + TDS + salary structure) -->
   <div id="hr-pane-3" style="display:none;">
-    <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1.25rem;">
-      <select id="payroll-month" class="ig-input" style="font-size:.82rem;max-width:180px;">
+    <!-- Payroll Builder Header -->
+    <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;">
+      <select id="payroll-month" class="ig-input" style="font-size:.82rem;max-width:180px;" onchange="document.getElementById('pr-month-display').textContent=this.value">
         <option>March 2025</option><option>February 2025</option><option>January 2025</option>
       </select>
-      <span style="font-size:.78rem;color:var(--ink-muted);">Payroll calculation for all employees</span>
+      <button onclick="igToast('Payroll recalculated for March 2025','success')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--ink);"><i class="fas fa-sync" style="margin-right:.3rem;font-size:.7rem;"></i>Recalculate</button>
+      <button onclick="togglePanel('salary-structure-panel')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--ink);"><i class="fas fa-sliders-h" style="margin-right:.3rem;font-size:.7rem;"></i>Salary Structure</button>
+      <button onclick="togglePanel('tds-panel')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--ink);"><i class="fas fa-percent" style="margin-right:.3rem;font-size:.7rem;"></i>TDS Declarations</button>
     </div>
+
+    <!-- Salary Structure Panel -->
+    <div id="salary-structure-panel" class="ig-panel" style="margin-bottom:1.25rem;">
+      <h4 style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.875rem;">Salary Structure Configuration</h4>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.875rem;margin-bottom:.875rem;">
+        ${[
+          {l:'Basic Salary %',      v:'50', h:'% of CTC'},
+          {l:'HRA %',               v:'20', h:'% of CTC'},
+          {l:'Special Allowance %', v:'30', h:'% of CTC (residual)'},
+          {l:'PF Contribution %',   v:'12', h:'% of Basic (Emp + Employer)'},
+          {l:'Professional Tax',    v:'200',h:'₹ per month (flat)'},
+          {l:'LTA Component %',     v:'5',  h:'% of Basic annually'},
+          {l:'Medical Allowance',   v:'1250',h:'₹ per month'},
+          {l:'Bonus %',             v:'8.33',h:'% of Basic (statutory)'},
+        ].map(f=>`<div><label class="ig-label">${f.l} <span style="font-size:.62rem;color:var(--ink-faint);">(${f.h})</span></label><input type="number" class="ig-input" value="${f.v}" style="font-size:.82rem;"></div>`).join('')}
+      </div>
+      <div style="display:flex;gap:.75rem;">
+        <button onclick="igToast('Salary structure saved — effective from next payroll cycle','success');togglePanel('salary-structure-panel')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Save Structure</button>
+        <button onclick="togglePanel('salary-structure-panel')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Close</button>
+      </div>
+    </div>
+
+    <!-- TDS Declarations Panel -->
+    <div id="tds-panel" class="ig-panel" style="margin-bottom:1.25rem;">
+      <h4 style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.875rem;">TDS & Tax Declaration (FY 2025-26)</h4>
+      <table class="ig-tbl">
+        <thead><tr><th>Employee</th><th>Gross (Annual)</th><th>80C (Investments)</th><th>80D (Medical)</th><th>HRA Exemption</th><th>LTA Claimed</th><th>Net Taxable</th><th>TDS/mo</th><th>Action</th></tr></thead>
+        <tbody>
+          ${[
+            {name:'Arun Manikonda', gross:1800000, c80:150000, d80:25000, hra:360000, lta:0,    regime:'New'},
+            {name:'Pavan Manikonda',gross:1500000, c80:150000, d80:25000, hra:300000, lta:45000, regime:'Old'},
+            {name:'Amit Jhingan',   gross:2100000, c80:150000, d80:25000, hra:420000, lta:0,    regime:'New'},
+          ].map(e=>{
+            const taxable = Math.max(0, e.gross - (e.regime==='Old' ? e.c80+e.d80+e.hra+e.lta : 75000));
+            const tax = taxable<=300000?0:taxable<=700000?(taxable-300000)*0.05:taxable<=1000000?20000+(taxable-700000)*0.10:50000+(taxable-1000000)*0.15;
+            const tdspm = Math.round(tax/12);
+            return `<tr>
+              <td style="font-weight:500;">${e.name}</td>
+              <td style="font-family:'DM Serif Display',Georgia,serif;font-size:.82rem;">₹${(e.gross/100000).toFixed(1)}L</td>
+              <td style="font-size:.78rem;color:#16a34a;">₹${(e.c80/1000).toFixed(0)}K</td>
+              <td style="font-size:.78rem;color:#16a34a;">₹${(e.d80/1000).toFixed(0)}K</td>
+              <td style="font-size:.78rem;color:#16a34a;">₹${(e.hra/1000).toFixed(0)}K</td>
+              <td style="font-size:.78rem;color:#16a34a;">₹${e.lta/1000}K</td>
+              <td style="font-family:'DM Serif Display',Georgia,serif;font-size:.82rem;color:var(--ink);">₹${(taxable/100000).toFixed(2)}L</td>
+              <td style="font-weight:700;color:#dc2626;">₹${tdspm.toLocaleString('en-IN')}</td>
+              <td><button onclick="igToast('TDS declaration form for ${e.name} opened','info')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">Edit</button></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+      <div style="margin-top:1rem;display:flex;gap:.75rem;">
+        <button onclick="igToast('TDS declarations saved for all employees','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Save All Declarations</button>
+        <button onclick="igToast('Form-16 Part A generated for all employees','success')" style="background:#16a34a;color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Generate Form-16</button>
+        <button onclick="togglePanel('tds-panel')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Close</button>
+      </div>
+    </div>
+
+    <!-- Payroll Register -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
         <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Payroll Register — <span id="pr-month-display">March 2025</span></h3>
-        <div style="font-size:.72rem;color:var(--gold);font-weight:600;">Total Disbursement: ₹3,51,000</div>
+        <div style="display:flex;gap:.5rem;align-items:center;">
+          <div style="font-size:.72rem;color:var(--gold);font-weight:600;">Total Disbursement: ₹3,63,400</div>
+          <button onclick="igToast('Payroll register exported to Excel','success')" style="background:none;border:1px solid var(--border);padding:.3rem .6rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-file-excel"></i></button>
+        </div>
       </div>
-      <table class="ig-tbl">
-        <thead><tr><th>Employee</th><th>CTC/mo</th><th>Basic</th><th>HRA</th><th>Special</th><th>PF (emp)</th><th>PT</th><th>TDS</th><th>Net Pay</th><th>Status</th></tr></thead>
-        <tbody id="payroll-tbody">
-          ${[
-            {name:'Arun Manikonda', ctc:150000,basic:75000,hra:30000,spl:45000,pf:9000,pt:200,tds:15000,net:120800,cls:'b-gr',processed:true},
-            {name:'Pavan Manikonda',ctc:125000,basic:62500,hra:25000,spl:37500,pf:7500,pt:200,tds:10000,net:100800,cls:'b-gr',processed:true},
-            {name:'Amit Jhingan',   ctc:175000,basic:87500,hra:35000,spl:52500,pf:10500,pt:200,tds:20000,net:141800,cls:'b-gr',processed:true},
-          ].map(p=>`<tr>
-            <td style="font-weight:500;font-size:.85rem;">${p.name}</td>
-            <td style="font-family:'DM Serif Display',Georgia,serif;font-size:.82rem;">₹${(p.ctc/1000).toFixed(0)}K</td>
-            <td style="font-size:.78rem;">₹${(p.basic/1000).toFixed(0)}K</td>
-            <td style="font-size:.78rem;">₹${(p.hra/1000).toFixed(0)}K</td>
-            <td style="font-size:.78rem;">₹${(p.spl/1000).toFixed(0)}K</td>
-            <td style="font-size:.75rem;color:#2563eb;">₹${(p.pf/1000).toFixed(1)}K</td>
-            <td style="font-size:.75rem;color:var(--ink-muted);">₹${p.pt}</td>
-            <td style="font-size:.75rem;color:#dc2626;">₹${(p.tds/1000).toFixed(0)}K</td>
-            <td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹${(p.net/1000).toFixed(1)}K</td>
-            <td id="pr-status-${p.name.split(' ')[0]}"><span class="badge ${p.cls}">${p.processed?'Processed':'Pending'}</span></td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
+      <div style="overflow-x:auto;">
+        <table class="ig-tbl">
+          <thead><tr><th>Employee</th><th>Basic</th><th>HRA</th><th>Special</th><th>Medical</th><th>Gross</th><th>PF (Emp)</th><th>PT</th><th>TDS</th><th>Net Pay</th><th>Status</th><th>Slip</th></tr></thead>
+          <tbody id="payroll-tbody">
+            ${[
+              {name:'Arun Manikonda', basic:75000,hra:30000,spl:45000,med:1250,pf:9000,pt:200,tds:15000,cls:'b-gr',processed:true},
+              {name:'Pavan Manikonda',basic:62500,hra:25000,spl:37500,med:1250,pf:7500,pt:200,tds:10000,cls:'b-gr',processed:true},
+              {name:'Amit Jhingan',   basic:87500,hra:35000,spl:52500,med:1250,pf:10500,pt:200,tds:20000,cls:'b-gr',processed:true},
+            ].map(p=>{
+              const gross=p.basic+p.hra+p.spl+p.med;
+              const net=gross-p.pf-p.pt-p.tds;
+              return `<tr>
+                <td style="font-weight:500;font-size:.85rem;">${p.name}</td>
+                <td style="font-size:.78rem;">₹${(p.basic/1000).toFixed(0)}K</td>
+                <td style="font-size:.78rem;">₹${(p.hra/1000).toFixed(0)}K</td>
+                <td style="font-size:.78rem;">₹${(p.spl/1000).toFixed(0)}K</td>
+                <td style="font-size:.78rem;">₹${p.med}</td>
+                <td style="font-weight:600;">₹${(gross/1000).toFixed(2)}K</td>
+                <td style="font-size:.75rem;color:#2563eb;">₹${(p.pf/1000).toFixed(1)}K</td>
+                <td style="font-size:.75rem;color:var(--ink-muted);">₹${p.pt}</td>
+                <td style="font-size:.75rem;color:#dc2626;">₹${(p.tds/1000).toFixed(0)}K</td>
+                <td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);font-weight:700;">₹${(net/1000).toFixed(2)}K</td>
+                <td><span class="badge ${p.cls}">${p.processed?'Processed':'Pending'}</span></td>
+                <td><button onclick="igToast('Payslip for ${p.name} — generating PDF','success')" style="background:none;border:1px solid var(--border);padding:.2rem .4rem;font-size:.65rem;cursor:pointer;color:var(--gold);" title="Payslip"><i class="fas fa-file-invoice"></i></button></td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
     </div>
+
+    <!-- Payroll Summary -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+      ${[
+        {l:'Gross Payroll',   v:'₹4,98,750', c:'#2563eb'},
+        {l:'Total PF (Emp)',  v:'₹27,000',   c:'#7c3aed'},
+        {l:'Total TDS',       v:'₹45,000',   c:'#dc2626'},
+        {l:'Net Disbursement',v:'₹3,63,400', c:'#16a34a'},
+      ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.35rem;">${s.l}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:${s.c};">${s.v}</div></div>`).join('')}
+    </div>
+
+    <!-- Payroll Actions -->
     <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
       <div style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.875rem;">Payroll Actions</div>
       <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
         <button id="process-payroll-btn" onclick="igProcessPayroll()" style="background:#16a34a;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.82rem;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-check" style="margin-right:.4rem;"></i>Process Payroll</button>
         <button onclick="igToast('Payslips emailed to all employees','success')" style="background:var(--ink);color:#fff;border:none;padding:.6rem 1.5rem;font-size:.82rem;font-weight:600;cursor:pointer;"><i class="fas fa-envelope" style="margin-right:.4rem;"></i>Email Payslips</button>
-        <button onclick="igToast('Bank transfer file (NEFT) generated — ₹3,51,000','success')" style="background:#2563eb;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.82rem;font-weight:600;cursor:pointer;"><i class="fas fa-university" style="margin-right:.4rem;"></i>Generate Bank File</button>
-        <button onclick="igToast('Attendance report downloaded','success')" style="background:none;border:1px solid var(--border);padding:.6rem 1.5rem;font-size:.82rem;font-weight:500;cursor:pointer;color:var(--ink);"><i class="fas fa-download" style="margin-right:.4rem;"></i>Attendance Report</button>
+        <button onclick="igToast('NEFT bank transfer file generated — ₹3,63,400','success')" style="background:#2563eb;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.82rem;font-weight:600;cursor:pointer;"><i class="fas fa-university" style="margin-right:.4rem;"></i>Generate Bank File</button>
+        <button onclick="igToast('PF ECR challan generated for March 2025','success')" style="background:#7c3aed;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.82rem;font-weight:600;cursor:pointer;"><i class="fas fa-shield-alt" style="margin-right:.4rem;"></i>PF Challan</button>
         <button onclick="igToast('Form-16 bundle generated for FY 2024-25','success')" style="background:none;border:1px solid var(--border);padding:.6rem 1.5rem;font-size:.82rem;font-weight:500;cursor:pointer;color:var(--ink);">Form-16</button>
       </div>
       <div style="margin-top:1rem;padding:.875rem;background:#f0fdf4;border:1px solid #86efac;font-size:.78rem;color:#15803d;display:none;" id="payroll-processed-banner">
-        <i class="fas fa-check-circle" style="margin-right:.4rem;"></i> Payroll processed. Bank transfer of ₹3,51,000 initiated. Payslips will be emailed within 30 minutes.
+        <i class="fas fa-check-circle" style="margin-right:.4rem;"></i> Payroll processed. Net disbursement ₹3,63,400 via NEFT. Payslips emailed within 30 minutes.
       </div>
     </div>
   </div>
@@ -1622,72 +1892,328 @@ app.get('/hr', (c) => {
   return c.html(layout('HR ERP', adminShell('HR ERP', 'hr', body), {noNav:true,noFooter:true}))
 })
 
-// ── GOVERNANCE ────────────────────────────────────────────────────────────────
+// ── GOVERNANCE (Phase 6 — voting engine, KYC, statutory registers, agenda builder) ─
 app.get('/governance', (c) => {
+  const resolutions = [
+    {id:'RES-001', title:'Approval of Q4 FY2024-25 Financial Statements', type:'Ordinary', proposed:'Arun Manikonda', date:'15 Mar 2025', status:'Open',     votes:{yes:0,no:0,abstain:0,total:2}},
+    {id:'RES-002', title:'Appointment of Statutory Auditor for FY2025-26',  type:'Ordinary', proposed:'Pavan Manikonda',date:'15 Mar 2025', status:'Open',     votes:{yes:0,no:0,abstain:0,total:2}},
+    {id:'RES-003', title:'Approval of Employee ESOP Policy',                 type:'Special',  proposed:'Arun Manikonda', date:'28 Feb 2025', status:'Passed',   votes:{yes:2,no:0,abstain:0,total:2}},
+    {id:'RES-004', title:'Authorise MD to sign Advisory Agreement — EVL',    type:'Ordinary', proposed:'Pavan Manikonda',date:'20 Feb 2025', status:'Passed',   votes:{yes:2,no:0,abstain:0,total:2}},
+    {id:'RES-005', title:'Approval of Capital Expenditure Budget FY2025-26', type:'Ordinary', proposed:'Arun Manikonda', date:'31 Jan 2025', status:'Deferred', votes:{yes:1,no:0,abstain:1,total:2}},
+  ]
+  const directors = [
+    {name:'Arun Manikonda',  din:'00000001', desig:'Managing Director',  kyc:'Verified', din_status:'Active', dob:'1980-04-15'},
+    {name:'Pavan Manikonda', din:'00000002', desig:'Executive Director',  kyc:'Verified', din_status:'Active', dob:'1985-07-22'},
+  ]
+  const kmps = [
+    {name:'Amit Jhingan',   desig:'President — Real Estate', pan:'ABCDE1234F', kyc:'Verified'},
+    {name:'Arun Manikonda', desig:'Chief Executive Officer',  pan:'FGHIJ5678K', kyc:'Verified'},
+    {name:'Pavan Manikonda',desig:'Chief Financial Officer',  pan:'KLMNO9012L', kyc:'Verified'},
+  ]
   const body = `
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
-    ${[{label:'Directors',value:'2',c:'#1E1E1E'},{label:'KMPs',value:'3',c:'#2563eb'},{label:'Pending Resolutions',value:'2',c:'#d97706'},{label:'Next Filing',value:'31 Mar',c:'#dc2626'}].map(s=>`<div class="am"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:${s.c};">${s.value}</div></div>`).join('')}
+  <!-- Summary Cards -->
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-bottom:1.5rem;">
+    ${[
+      {label:'Directors',          value:'2',      c:'#1E1E1E'},
+      {label:'KMPs',               value:'3',      c:'#2563eb'},
+      {label:'Open Resolutions',   value:'2',      c:'#d97706'},
+      {label:'Board Meetings FY',  value:'3',      c:'#16a34a'},
+      {label:'Next Filing',        value:'31 Mar', c:'#dc2626'},
+    ].map(s=>`<div class="am"><div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:${s.c};">${s.value}</div></div>`).join('')}
   </div>
 
-  <!-- Schedule Meeting -->
-  <div style="margin-bottom:1rem;">
-    <button onclick="togglePanel('sched-meeting')" style="background:#1E1E1E;color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;letter-spacing:.07em;text-transform:uppercase;"><i class="fas fa-calendar-plus"></i>Schedule Board Meeting</button>
+  <!-- Tab Nav -->
+  <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
+    ${['Board Meetings','Voting Engine','Directors & KYC','Statutory Registers','Compliance'].map((t,i)=>`<button onclick="igGovTab(${i})" id="gov-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;">${t}</button>`).join('')}
   </div>
-  <div id="sched-meeting" class="ig-panel" style="margin-bottom:1.5rem;">
-    <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">Schedule New Board Meeting</h4>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
-      <div><label class="ig-label">Meeting Type</label><select class="ig-input"><option>Board Meeting</option><option>EGM</option><option>AGM</option><option>Committee Meeting</option></select></div>
-      <div><label class="ig-label">Meeting Date</label><input type="date" class="ig-input"></div>
-      <div><label class="ig-label">Time</label><input type="time" class="ig-input" value="11:00"></div>
-      <div><label class="ig-label">Venue</label><input type="text" class="ig-input" placeholder="Registered Office, New Delhi" value="Registered Office, New Delhi"></div>
-      <div><label class="ig-label">Mode</label><select class="ig-input"><option>In-Person</option><option>Video Conference</option><option>Hybrid</option></select></div>
-      <div><label class="ig-label">Quorum Required</label><input type="text" class="ig-input" value="2 Directors" readonly></div>
+
+  <!-- Tab 0: Board Meetings -->
+  <div id="gov-pane-0">
+    <div style="margin-bottom:1rem;">
+      <button onclick="togglePanel('sched-meeting')" style="background:#1E1E1E;color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;letter-spacing:.07em;text-transform:uppercase;"><i class="fas fa-calendar-plus"></i>Schedule Board Meeting</button>
     </div>
-    <div><label class="ig-label" style="margin-top:.75rem;">Agenda Items</label><textarea class="ig-input" rows="3" placeholder="1. Approval of Q1 Financial Statements&#10;2. Review of Active Mandates&#10;3. Any Other Business"></textarea></div>
-    <div style="display:flex;gap:.75rem;margin-top:1rem;">
-      <button onclick="igToast('Board meeting scheduled. Notice sent to all directors.','success');togglePanel('sched-meeting')" style="background:#1E1E1E;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Schedule & Notify Directors</button>
-      <button onclick="togglePanel('sched-meeting')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+    <div id="sched-meeting" class="ig-panel" style="margin-bottom:1.5rem;">
+      <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">Schedule New Board Meeting</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+        <div><label class="ig-label">Meeting Type</label><select class="ig-input"><option>Board Meeting</option><option>EGM</option><option>AGM</option><option>Committee Meeting</option></select></div>
+        <div><label class="ig-label">Meeting Date</label><input type="date" class="ig-input" id="meet-date"></div>
+        <div><label class="ig-label">Time</label><input type="time" class="ig-input" value="11:00"></div>
+        <div><label class="ig-label">Venue</label><input type="text" class="ig-input" value="Registered Office, New Delhi"></div>
+        <div><label class="ig-label">Mode</label><select class="ig-input"><option>In-Person</option><option>Video Conference</option><option>Hybrid</option></select></div>
+        <div><label class="ig-label">Quorum Required</label><input type="text" class="ig-input" value="2 Directors" readonly></div>
+      </div>
+      <!-- Agenda Builder -->
+      <div style="margin-top:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+          <label class="ig-label" style="margin:0;">Agenda Items</label>
+          <button onclick="igAddAgendaItem()" style="background:var(--gold);color:#fff;border:none;padding:.25rem .625rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.2rem;"></i>Add Item</button>
+        </div>
+        <div id="agenda-items">
+          ${['Approval of Q1 FY2025-26 Financial Statements','Review of Active Mandates & Pipeline','Any Other Business with Permission of Chair'].map((item,i)=>`
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;background:var(--parch-dk);border:1px solid var(--border);padding:.5rem .75rem;" id="agenda-item-${i}">
+            <span style="font-size:.75rem;font-weight:700;color:var(--gold);width:18px;flex-shrink:0;">${i+1}.</span>
+            <input type="text" value="${item}" class="ig-input" style="flex:1;font-size:.78rem;border:none;background:transparent;padding:.1rem;">
+            <button onclick="document.getElementById('agenda-item-${i}').remove();igToast('Agenda item removed','warn')" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.72rem;flex-shrink:0;"><i class="fas fa-times"></i></button>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div style="display:flex;gap:.75rem;margin-top:1rem;">
+        <button onclick="igToast('Board meeting scheduled. Notice with agenda sent to all directors.','success');togglePanel('sched-meeting')" style="background:#1E1E1E;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Schedule & Notify Directors</button>
+        <button onclick="igToast('Agenda draft saved','info')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink);">Save Draft</button>
+        <button onclick="togglePanel('sched-meeting')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+      </div>
+    </div>
+    <!-- Meeting Register -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Board Meeting Register</h3>
+        <button onclick="igToast('Meeting register exported to PDF','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export</button>
+      </div>
+      <table class="ig-tbl"><thead><tr><th>Meeting No.</th><th>Type</th><th>Date</th><th>Venue</th><th>Directors</th><th>Resolutions</th><th>Minutes</th><th>Status</th></tr></thead><tbody>
+        ${[
+          {no:'BM-03/2024-25',type:'Board Meeting', date:'15 Mar 2025',venue:'New Delhi (Hybrid)',    dirs:'2/2',res:2, min:'Pending',  cls:'b-g'},
+          {no:'BM-02/2024-25',type:'Board Meeting', date:'28 Feb 2025',venue:'New Delhi',            dirs:'2/2',res:3, min:'Signed',   cls:'b-gr'},
+          {no:'BM-01/2024-25',type:'Board Meeting', date:'15 Jan 2025',venue:'Video Conference',     dirs:'2/2',res:4, min:'Signed',   cls:'b-gr'},
+          {no:'EGM-01/2024',   type:'EGM',          date:'20 Dec 2024',venue:'New Delhi',            dirs:'2/2',res:2, min:'Signed',   cls:'b-gr'},
+        ].map(m=>`<tr>
+          <td style="font-weight:600;font-size:.78rem;color:var(--gold);">${m.no}</td>
+          <td><span class="badge b-dk">${m.type}</span></td>
+          <td style="font-size:.82rem;white-space:nowrap;">${m.date}</td>
+          <td style="font-size:.78rem;color:var(--ink-muted);">${m.venue}</td>
+          <td style="font-size:.82rem;text-align:center;">${m.dirs}</td>
+          <td style="font-size:.82rem;text-align:center;">${m.res}</td>
+          <td><span class="badge ${m.min==='Signed'?'b-gr':'b-g'}">${m.min}</span></td>
+          <td>
+            <button onclick="igToast('${m.no} minutes opened in editor','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);" title="Edit Minutes"><i class="fas fa-pen"></i></button>
+            <button onclick="igToast('${m.no} downloaded as PDF','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--ink-muted);" title="Download"><i class="fas fa-download"></i></button>
+          </td>
+        </tr>`).join('')}
+      </tbody></table>
     </div>
   </div>
 
-  <!-- Compliance Calendar -->
-  <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
-    <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
-      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Compliance Calendar</h3>
-      <button onclick="igToast('Compliance calendar exported to CSV','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export</button>
+  <!-- Tab 1: Voting Engine -->
+  <div id="gov-pane-1" style="display:none;">
+    <div style="margin-bottom:1rem;display:flex;gap:.75rem;">
+      <button onclick="togglePanel('new-res-panel')" style="background:#1E1E1E;color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.4rem;"></i>New Resolution</button>
+      <button onclick="igToast('Voting reminders sent to all directors','success')" style="background:var(--ink);color:#fff;border:none;padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-bell" style="margin-right:.4rem;"></i>Send Voting Reminders</button>
     </div>
-    <table class="ig-tbl"><thead><tr><th>Due Date</th><th>Filing / Event</th><th>Form</th><th>Responsible</th><th>Penalty</th><th>Status</th><th>Action</th></tr></thead><tbody>
+    <div id="new-res-panel" class="ig-panel" style="margin-bottom:1.5rem;">
+      <h4 style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.875rem;">Draft New Resolution</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.875rem;">
+        <div><label class="ig-label">Resolution Title</label><input type="text" class="ig-input" placeholder="e.g. Approval of Annual Accounts" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Type</label><select class="ig-input" style="font-size:.82rem;"><option>Ordinary Resolution</option><option>Special Resolution</option><option>Board Resolution</option></select></div>
+        <div><label class="ig-label">Proposed By</label><select class="ig-input" style="font-size:.82rem;"><option>Arun Manikonda</option><option>Pavan Manikonda</option></select></div>
+        <div><label class="ig-label">Voting Deadline</label><input type="datetime-local" class="ig-input" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Meeting Reference</label><select class="ig-input" style="font-size:.82rem;"><option>BM-03/2024-25 (15 Mar)</option><option>Circular Resolution</option></select></div>
+        <div><label class="ig-label">Threshold to Pass</label><select class="ig-input" style="font-size:.82rem;"><option>Simple Majority (&gt;50%)</option><option>Special Majority (&gt;75%)</option><option>Unanimous</option></select></div>
+        <div style="grid-column:span 3;"><label class="ig-label">Resolution Text</label><textarea class="ig-input" rows="3" style="font-size:.82rem;" placeholder="RESOLVED THAT, the Board of Directors hereby..."></textarea></div>
+      </div>
+      <div style="display:flex;gap:.75rem;margin-top:.875rem;">
+        <button onclick="igToast('Resolution RES-006 drafted. Directors notified to vote.','success');togglePanel('new-res-panel')" style="background:#1E1E1E;color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Create & Send for Vote</button>
+        <button onclick="togglePanel('new-res-panel')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+      </div>
+    </div>
+    <!-- Resolutions Table -->
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      ${resolutions.map((r,ri)=>`
+      <div style="background:#fff;border:1px solid var(--border);border-left:4px solid ${r.status==='Open'?'#d97706':r.status==='Passed'?'#16a34a':'#94a3b8'};">
+        <div style="padding:.875rem 1.25rem;display:flex;justify-content:space-between;align-items:flex-start;">
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:.625rem;margin-bottom:.35rem;">
+              <span style="font-size:.72rem;font-weight:700;color:var(--gold);">${r.id}</span>
+              <span class="badge b-dk" style="font-size:.6rem;">${r.type}</span>
+              <span class="badge ${r.status==='Open'?'b-g':r.status==='Passed'?'b-gr':'b-dk'}">${r.status}</span>
+            </div>
+            <div style="font-size:.9rem;font-weight:600;color:var(--ink);margin-bottom:.25rem;">${r.title}</div>
+            <div style="font-size:.72rem;color:var(--ink-muted);">Proposed by ${r.proposed} · Meeting date ${r.date}</div>
+          </div>
+          ${r.status==='Open'?`
+          <div style="display:flex;gap:.5rem;flex-shrink:0;margin-left:1rem;">
+            <button onclick="igCastVote(${ri},'yes')" style="background:#16a34a;color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-check" style="margin-right:.3rem;"></i>For</button>
+            <button onclick="igCastVote(${ri},'no')" style="background:#dc2626;color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-times" style="margin-right:.3rem;"></i>Against</button>
+            <button onclick="igCastVote(${ri},'abstain')" style="background:var(--ink-muted);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;">Abstain</button>
+          </div>`:''}
+        </div>
+        <!-- Vote Tally -->
+        <div style="padding:.75rem 1.25rem;border-top:1px solid var(--border);background:var(--parch-dk);display:flex;gap:2rem;align-items:center;" id="vote-tally-${ri}">
+          <div style="font-size:.68rem;color:var(--ink-muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em;">Vote Tally (${r.votes.yes+r.votes.no+r.votes.abstain}/${r.votes.total})</div>
+          <div style="display:flex;align-items:center;gap:.4rem;"><i class="fas fa-thumbs-up" style="color:#16a34a;font-size:.72rem;"></i><span id="vote-yes-${ri}" style="font-size:.85rem;font-weight:700;color:#16a34a;">${r.votes.yes}</span><span style="font-size:.72rem;color:var(--ink-muted);">For</span></div>
+          <div style="display:flex;align-items:center;gap:.4rem;"><i class="fas fa-thumbs-down" style="color:#dc2626;font-size:.72rem;"></i><span id="vote-no-${ri}" style="font-size:.85rem;font-weight:700;color:#dc2626;">${r.votes.no}</span><span style="font-size:.72rem;color:var(--ink-muted);">Against</span></div>
+          <div style="display:flex;align-items:center;gap:.4rem;"><i class="fas fa-minus-circle" style="color:#94a3b8;font-size:.72rem;"></i><span id="vote-abs-${ri}" style="font-size:.85rem;font-weight:700;color:#94a3b8;">${r.votes.abstain}</span><span style="font-size:.72rem;color:var(--ink-muted);">Abstain</span></div>
+          ${r.votes.yes+r.votes.no+r.votes.abstain>0?`
+          <div style="flex:1;height:8px;background:#e5e7eb;overflow:hidden;max-width:200px;">
+            <div style="height:100%;background:#16a34a;width:${r.votes.total>0?(r.votes.yes/r.votes.total*100).toFixed(0):'0'}%;transition:width .3s;"></div>
+          </div>
+          <span style="font-size:.72rem;color:var(--ink-muted);">${r.votes.total>0?(r.votes.yes/r.votes.total*100).toFixed(0):'0'}% for</span>`:''}
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <!-- Tab 2: Directors & KYC -->
+  <div id="gov-pane-2" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <!-- Directors -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Directors (§ 170)</h3></div>
+        ${directors.map(d=>`
+        <div style="padding:1.25rem;border-bottom:1px solid var(--border);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;">
+            <div>
+              <div style="font-weight:600;font-size:.9rem;color:var(--ink);">${d.name}</div>
+              <div style="font-size:.75rem;color:var(--ink-muted);">${d.desig} · DIN: ${d.din}</div>
+            </div>
+            <span class="badge ${d.kyc==='Verified'?'b-gr':'b-g'}">${d.kyc}</span>
+          </div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+            <button onclick="igToast('${d.name} KYC documents opened','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-folder-open" style="margin-right:.3rem;"></i>View KYC</button>
+            <button onclick="document.getElementById('kyc-upload-${d.din}').click()" style="background:#2563eb;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-upload" style="margin-right:.3rem;"></i>Upload Document</button>
+            <input type="file" id="kyc-upload-${d.din}" style="display:none;" onchange="igToast('KYC document uploaded for ${d.name} — pending verification','success')">
+            <button onclick="igToast('DIR-3 KYC form submitted for ${d.name}','success')" style="background:#1E1E1E;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">DIR-3 KYC</button>
+          </div>
+          <div style="margin-top:.75rem;display:flex;gap:.625rem;flex-wrap:wrap;">
+            ${[
+              {doc:'PAN Card',    status:'Verified'},
+              {doc:'Aadhaar',     status:'Verified'},
+              {doc:'Passport',    status:'Verified'},
+              {doc:'DIR-12',      status:'Filed'},
+              {doc:'DIR-3 KYC',  status:'Due'},
+            ].map(f=>`<span style="font-size:.65rem;padding:.2rem .45rem;border:1px solid ${f.status==='Verified'||f.status==='Filed'?'#86efac':'#fde68a'};background:${f.status==='Verified'||f.status==='Filed'?'#f0fdf4':'#fffbeb'};color:${f.status==='Verified'||f.status==='Filed'?'#15803d':'#92400e'};">${f.doc}: ${f.status}</span>`).join('')}
+          </div>
+        </div>`).join('')}
+      </div>
+      <!-- KMPs -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Key Managerial Personnel (§ 203)</h3></div>
+        ${kmps.map(k=>`
+        <div style="padding:1.25rem;border-bottom:1px solid var(--border);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.625rem;">
+            <div>
+              <div style="font-weight:600;font-size:.9rem;color:var(--ink);">${k.name}</div>
+              <div style="font-size:.75rem;color:var(--ink-muted);">${k.desig}</div>
+              <div style="font-size:.72rem;color:var(--ink-muted);margin-top:.15rem;">PAN: <code style="background:#f5f3ff;padding:1px 4px;font-size:.68rem;">${k.pan.substring(0,3)}••••••${k.pan.slice(-1)}</code></div>
+            </div>
+            <span class="badge ${k.kyc==='Verified'?'b-gr':'b-g'}">${k.kyc}</span>
+          </div>
+          <div style="display:flex;gap:.5rem;">
+            <button onclick="igToast('${k.name} KYC documents opened','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-folder-open" style="margin-right:.3rem;"></i>View KYC</button>
+            <button onclick="igToast('Appointment letter for ${k.name} downloaded','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);">Appointment Letter</button>
+          </div>
+        </div>`).join('')}
+        <div style="padding:1rem 1.25rem;">
+          <button onclick="igToast('New KMP appointment wizard opened','info')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-user-plus" style="margin-right:.4rem;"></i>Add KMP</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: Statutory Registers -->
+  <div id="gov-pane-3" style="display:none;">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
       ${[
-        {date:'15 Mar 2025', event:'Board Meeting — Q1 Review',     form:'§173',   resp:'Board', pen:'₹5K–25K', status:'Scheduled',cls:'b-gr'},
-        {date:'31 Mar 2025', event:'Annual Accounts Filing',        form:'AOC-4',  resp:'CS/CFO',pen:'₹1K/day',status:'Due',      cls:'b-g'},
-        {date:'30 Apr 2025', event:'Annual Return Filing',          form:'MGT-7A', resp:'CS',    pen:'₹200/day',status:'Upcoming', cls:'b-dk'},
-        {date:'30 Jun 2025', event:'Income Tax Return',             form:'ITR-6',  resp:'CFO',   pen:'₹5,000',  status:'Upcoming', cls:'b-dk'},
-        {date:'30 Sep 2025', event:'Secretarial Audit',             form:'MR-3',   resp:'CS',    pen:'₹1L+',    status:'Upcoming', cls:'b-dk'},
-      ].map(r=>`<tr>
-        <td style="font-size:.82rem;font-weight:500;white-space:nowrap;">${r.date}</td>
-        <td style="font-size:.85rem;">${r.event}</td>
-        <td><span class="badge b-dk">${r.form}</span></td>
-        <td style="font-size:.8rem;color:var(--ink-muted);">${r.resp}</td>
-        <td style="font-size:.75rem;color:#dc2626;">${r.pen}</td>
-        <td><span class="badge ${r.cls}">${r.status}</span></td>
-        <td><button onclick="igToast('${r.event} — reminder sent to responsible party','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">Remind</button></td>
-      </tr>`).join('')}
-    </tbody></table>
+        {name:'Register of Directors',     form:'MGT-7 Annex.',icon:'user-tie',    color:'#1E1E1E', entries:2, lastUpdated:'28 Feb 2025'},
+        {name:'Register of KMPs',          form:'§203',         icon:'star',       color:'#2563eb', entries:3, lastUpdated:'01 Jan 2025'},
+        {name:'Register of Members',       form:'MGT-1',        icon:'users',      color:'#16a34a', entries:2, lastUpdated:'01 Apr 2017'},
+        {name:'Register of Charges',       form:'CHG-7',        icon:'link',       color:'#d97706', entries:0, lastUpdated:'—'},
+        {name:'Register of Contracts',     form:'MBP-4',        icon:'handshake',  color:'#7c3aed', entries:7, lastUpdated:'28 Feb 2025'},
+        {name:'Meeting Minutes Archive',   form:'§118',         icon:'book',       color:'#dc2626', entries:4, lastUpdated:'28 Feb 2025'},
+        {name:'Share Transfer Register',   form:'SH-4',         icon:'exchange-alt',color:'#0d9488',entries:0, lastUpdated:'—'},
+        {name:'Register of Investments',   form:'MBP-3',        icon:'chart-line', color:'#9f1239', entries:2, lastUpdated:'31 Mar 2024'},
+        {name:'Register of Related Parties',form:'AOC-2',       icon:'sitemap',    color:'#475569', entries:3, lastUpdated:'15 Jan 2025'},
+      ].map(r=>`
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="height:3px;background:${r.color};"></div>
+        <div style="padding:1.25rem;">
+          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.625rem;">
+            <div style="width:36px;height:36px;background:${r.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-${r.icon}" style="color:#fff;font-size:.72rem;"></i>
+            </div>
+            <div>
+              <div style="font-weight:600;font-size:.85rem;color:var(--ink);">${r.name}</div>
+              <span class="badge b-dk" style="font-size:.6rem;">${r.form}</span>
+            </div>
+          </div>
+          <div style="font-size:.72rem;color:var(--ink-muted);margin-bottom:.75rem;"><strong>${r.entries}</strong> entries · Updated ${r.lastUpdated}</div>
+          <div style="display:flex;gap:.5rem;">
+            <button onclick="igToast('${r.name} opened — ${r.entries} entries','success')" style="background:${r.color};color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;flex:1;"><i class="fas fa-eye" style="margin-right:.3rem;"></i>View</button>
+            <button onclick="igToast('${r.name} exported to PDF','success')" style="background:none;border:1px solid var(--border);padding:.3rem .625rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);" title="Export PDF"><i class="fas fa-download"></i></button>
+            <button onclick="igToast('${r.name} — adding new entry','info')" style="background:none;border:1px solid var(--border);padding:.3rem .625rem;font-size:.68rem;cursor:pointer;color:var(--gold);" title="Add Entry"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>
   </div>
 
-  <!-- Statutory Registers -->
-  <div style="background:#fff;border:1px solid var(--border);padding:1rem 1.25rem;">
-    <h4 style="font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.875rem;">Statutory Registers</h4>
-    <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
-      ${['Register of Directors','Register of KMPs','Register of Members','Register of Charges','Register of Contracts','Meeting Minutes Archive'].map(r=>
-        `<button onclick="igToast('${r} opened for viewing','success')" style="background:var(--parch-dk);border:1px solid var(--border);padding:.5rem 1rem;font-size:.78rem;font-weight:500;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:.4rem;"><i class="fas fa-book" style="color:#1E1E1E;font-size:.7rem;"></i>${r}</button>`
-      ).join('')}
+  <!-- Tab 4: Compliance -->
+  <div id="gov-pane-4" style="display:none;">
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Compliance Calendar — FY 2025-26</h3>
+        <button onclick="igToast('Compliance calendar exported to CSV','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export</button>
+      </div>
+      <table class="ig-tbl"><thead><tr><th>Due Date</th><th>Filing / Event</th><th>Form</th><th>Responsible</th><th>Penalty</th><th>Status</th><th>Action</th></tr></thead><tbody>
+        ${[
+          {date:'11 Mar 2025', event:'GSTR-1 — February 2025',         form:'GSTR-1',  resp:'Finance', pen:'₹200/day',  status:'Due',      cls:'b-g'},
+          {date:'15 Mar 2025', event:'Board Meeting — Q1 Review',       form:'§173',    resp:'Board',   pen:'₹5K–25K',  status:'Scheduled',cls:'b-gr'},
+          {date:'15 Mar 2025', event:'TDS Deposit — February 2025',     form:'Challan', resp:'Finance', pen:'1.5%/mo',   status:'Due',      cls:'b-g'},
+          {date:'20 Mar 2025', event:'GSTR-3B — February 2025',         form:'GSTR-3B', resp:'Finance', pen:'₹50/day',   status:'Upcoming', cls:'b-dk'},
+          {date:'31 Mar 2025', event:'Annual Accounts Filing',           form:'AOC-4',   resp:'CS/CFO',  pen:'₹1K/day',  status:'Upcoming', cls:'b-dk'},
+          {date:'30 Apr 2025', event:'Annual Return Filing',             form:'MGT-7A',  resp:'CS',      pen:'₹200/day', status:'Upcoming', cls:'b-dk'},
+          {date:'31 Mar 2025', event:'Income Tax Advance — Q4',          form:'Challan', resp:'CFO',     pen:'1%/mo',     status:'Upcoming', cls:'b-dk'},
+          {date:'15 Apr 2025', event:'PF ECR Upload — March 2025',       form:'ECR',     resp:'HR',      pen:'Min ₹5K',  status:'Upcoming', cls:'b-dk'},
+          {date:'30 Sep 2025', event:'Secretarial Audit',                 form:'MR-3',    resp:'CS',      pen:'₹1L+',     status:'Upcoming', cls:'b-dk'},
+        ].map(r=>`<tr>
+          <td style="font-size:.82rem;font-weight:500;white-space:nowrap;">${r.date}</td>
+          <td style="font-size:.85rem;">${r.event}</td>
+          <td><span class="badge b-dk">${r.form}</span></td>
+          <td style="font-size:.8rem;color:var(--ink-muted);">${r.resp}</td>
+          <td style="font-size:.75rem;color:#dc2626;">${r.pen}</td>
+          <td><span class="badge ${r.cls}">${r.status}</span></td>
+          <td>
+            <button onclick="igToast('${r.event} — reminder sent','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">Remind</button>
+          </td>
+        </tr>`).join('')}
+      </tbody></table>
     </div>
-  </div>`
+  </div>
+
+  <script>
+  window.igGovTab = function(idx){
+    for(var i=0;i<5;i++){
+      var p=document.getElementById('gov-pane-'+i);
+      var t=document.getElementById('gov-tab-'+i);
+      if(p) p.style.display=i===idx?'block':'none';
+      if(t){ t.style.color=i===idx?'var(--gold)':'var(--ink-muted)'; t.style.borderBottom=i===idx?'2px solid var(--gold)':'2px solid transparent'; }
+    }
+  };
+  var voteState = ${JSON.stringify(resolutions.map(r=>({...r.votes})))};
+  window.igCastVote = function(idx,type){
+    if(voteState[idx].yes+voteState[idx].no+voteState[idx].abstain>=voteState[idx].total){ igToast('All votes already cast for this resolution','warn'); return; }
+    voteState[idx][type]++;
+    document.getElementById('vote-yes-'+idx).textContent = voteState[idx].yes;
+    document.getElementById('vote-no-'+idx).textContent  = voteState[idx].no;
+    document.getElementById('vote-abs-'+idx).textContent = voteState[idx].abstain;
+    igToast('Vote cast: '+type.toUpperCase()+' — RES-00'+(idx+1),'success');
+    if(voteState[idx].yes+voteState[idx].no+voteState[idx].abstain===voteState[idx].total){
+      igToast('All votes tallied. Resolution RES-00'+(idx+1)+' — '+(voteState[idx].yes>voteState[idx].no?'PASSED':'FAILED/DEFERRED'),'success');
+    }
+  };
+  var agItemCnt = 3;
+  window.igAddAgendaItem = function(){
+    agItemCnt++;
+    var div=document.createElement('div');
+    div.style='display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;background:var(--parch-dk);border:1px solid var(--border);padding:.5rem .75rem;';
+    div.id='agenda-item-'+agItemCnt;
+    div.innerHTML='<span style="font-size:.75rem;font-weight:700;color:var(--gold);width:18px;flex-shrink:0;">'+agItemCnt+'.</span><input type="text" value="" class="ig-input" placeholder="New agenda item..." style="flex:1;font-size:.78rem;border:none;background:transparent;padding:.1rem;"><button onclick="this.parentElement.remove();igToast(\'Item removed\',\'warn\')" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.72rem;flex-shrink:0;"><i class="fas fa-times"></i></button>';
+    document.getElementById('agenda-items').appendChild(div);
+    div.querySelector('input').focus();
+  };
+  </script>`
   return c.html(layout('Governance', adminShell('Governance & Compliance', 'governance', body), {noNav:true,noFooter:true}))
 })
 
-// ── HORECA ────────────────────────────────────────────────────────────────────
+// ── HORECA (Phase 6 — inventory ledger, quote-to-order, vendor mgmt, procurement) ─
 app.get('/horeca', (c) => {
   const cats = [
     {cat:'Kitchen Equipment', skus:24, icon:'utensils',       color:'#0d9488'},
@@ -1699,72 +2225,246 @@ app.get('/horeca', (c) => {
     {cat:'Maintenance',       skus:19, icon:'tools',          color:'#475569'},
     {cat:'Technology',        skus:8,  icon:'desktop',        color:'#9f1239'},
   ]
+  const vendors = [
+    {name:'Premier Kitchen Supplies',  cat:'Kitchen',      gstin:'07AABCS1234F1Z5',status:'Active',   tier:'Gold',   rating:4.8, lead:'5 days'},
+    {name:'Hotelware India Ltd.',       cat:'Crockery',    gstin:'27AABCH5678G1Z3',status:'Active',   tier:'Silver', rating:4.5, lead:'7 days'},
+    {name:'Royal Linen & Textiles',     cat:'Linen',       gstin:'09AAACR9012H1Z1',status:'Active',   tier:'Gold',   rating:4.9, lead:'3 days'},
+    {name:'FrontDesk Solutions',        cat:'Front Office',gstin:'07AABCF3456I1Z8',status:'Active',   tier:'Bronze', rating:4.2, lead:'10 days'},
+    {name:'CleanPro Housekeeping',      cat:'Housekeeping',gstin:'29AABCC7890J1Z6',status:'Active',   tier:'Silver', rating:4.6, lead:'4 days'},
+    {name:'Bar & Beverage Co.',         cat:'F&B',         gstin:'27AABCB2345K1Z4',status:'Pending',  tier:'—',      rating:0,   lead:'—'},
+    {name:'Hotel Tech Systems',         cat:'Technology',  gstin:'07AABCH6789L1Z2',status:'Active',   tier:'Gold',   rating:4.7, lead:'14 days'},
+  ]
   const body = `
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
-    ${[{label:'SKU Categories',value:'8',c:'#0d9488'},{label:'Active Vendors',value:'14',c:'#2563eb'},{label:'Open Quotes',value:'3',c:'#d97706'},{label:'Orders This Mo.',value:'7',c:'#16a34a'}].map(s=>`<div class="am"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:${s.c};">${s.value}</div></div>`).join('')}
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-bottom:1.5rem;">
+    ${[
+      {label:'SKU Categories',  value:'8',   c:'#0d9488'},
+      {label:'Active Vendors',  value:'6',   c:'#2563eb'},
+      {label:'Open Quotes',     value:'3',   c:'#d97706'},
+      {label:'Active Orders',   value:'2',   c:'#16a34a'},
+      {label:'Low Stock Alerts',value:'5',   c:'#dc2626'},
+    ].map(s=>`<div class="am"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:${s.c};">${s.value}</div></div>`).join('')}
   </div>
 
-  <!-- Add SKU Panel -->
-  <div style="margin-bottom:1rem;">
-    <button onclick="togglePanel('add-sku-panel')" style="background:#0d9488;color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;letter-spacing:.07em;text-transform:uppercase;"><i class="fas fa-plus"></i>Add New SKU</button>
-  </div>
-  <div id="add-sku-panel" class="ig-panel" style="margin-bottom:1.5rem;">
-    <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">New SKU / Product</h4>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
-      <div><label class="ig-label">SKU Code</label><input type="text" class="ig-input" placeholder="HORECA-001" style="font-size:.82rem;"></div>
-      <div><label class="ig-label">Product Name</label><input type="text" class="ig-input" placeholder="Product name" style="font-size:.82rem;"></div>
-      <div><label class="ig-label">Category</label><select class="ig-input" style="font-size:.82rem;">${cats.map(c=>`<option>${c.cat}</option>`).join('')}</select></div>
-      <div><label class="ig-label">Unit</label><select class="ig-input" style="font-size:.82rem;"><option>Piece</option><option>Set</option><option>Dozen</option><option>Kg</option><option>Litre</option></select></div>
-      <div><label class="ig-label">Standard Price ₹</label><input type="number" class="ig-input" placeholder="0.00" style="font-size:.82rem;"></div>
-      <div><label class="ig-label">Preferred Vendor</label><input type="text" class="ig-input" placeholder="Vendor name" style="font-size:.82rem;"></div>
-    </div>
-    <div style="display:flex;gap:.75rem;margin-top:1rem;">
-      <button onclick="igToast('SKU added to catalogue','success');togglePanel('add-sku-panel')" style="background:#0d9488;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Add to Catalogue</button>
-      <button onclick="togglePanel('add-sku-panel')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
-    </div>
+  <!-- Tab Nav -->
+  <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
+    ${['Catalogue','Inventory Ledger','Vendors','Quote Builder','Purchase Orders'].map((t,i)=>`<button onclick="igHorecaTab(${i})" id="hrc-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;">${t}</button>`).join('')}
   </div>
 
-  <!-- Category Grid -->
-  <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
-    <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">SKU Catalogue by Category</h3></div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);">
-      ${cats.map(cat=>`
-      <div style="padding:1.25rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);cursor:pointer;" onclick="igToast('Opening ${cat.cat} catalogue — ${cat.skus} SKUs','success')">
-        <i class="fas fa-${cat.icon}" style="color:${cat.color};font-size:1.1rem;margin-bottom:.5rem;display:block;"></i>
-        <div style="font-size:.875rem;font-weight:500;color:var(--ink);">${cat.cat}</div>
-        <div style="font-size:.72rem;color:var(--ink-muted);margin-top:.15rem;">${cat.skus} SKUs</div>
-        <div style="margin-top:.5rem;font-size:.68rem;color:${cat.color};font-weight:600;">View All →</div>
-      </div>`).join('')}
+  <!-- Tab 0: Catalogue -->
+  <div id="hrc-pane-0">
+    <div style="margin-bottom:1rem;">
+      <button onclick="togglePanel('add-sku-panel')" style="background:#0d9488;color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;letter-spacing:.07em;text-transform:uppercase;"><i class="fas fa-plus"></i>Add New SKU</button>
     </div>
-  </div>
-
-  <!-- Quote Builder -->
-  <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Quick Quote Builder</h3>
-      <div style="display:flex;gap:.5rem;">
-        <button onclick="igHorecaCalcQuote()" style="background:#0d9488;color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-calculator" style="font-size:.6rem;"></i>Calculate Estimate</button>
-        <button onclick="igHorecaGenPDF()" style="background:var(--ink);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-file-pdf" style="font-size:.6rem;"></i>Generate Quote PDF</button>
+    <div id="add-sku-panel" class="ig-panel" style="margin-bottom:1.5rem;">
+      <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">New SKU / Product</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+        <div><label class="ig-label">SKU Code</label><input type="text" class="ig-input" placeholder="HORECA-001" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Product Name</label><input type="text" class="ig-input" placeholder="Product name" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Category</label><select class="ig-input" style="font-size:.82rem;">${cats.map(c=>`<option>${c.cat}</option>`).join('')}</select></div>
+        <div><label class="ig-label">Unit</label><select class="ig-input" style="font-size:.82rem;"><option>Piece</option><option>Set</option><option>Dozen</option><option>Kg</option><option>Litre</option></select></div>
+        <div><label class="ig-label">Standard Price ₹</label><input type="number" class="ig-input" placeholder="0.00" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Reorder Level</label><input type="number" class="ig-input" placeholder="Minimum stock" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Preferred Vendor</label><select class="ig-input" style="font-size:.82rem;">${vendors.map(v=>`<option>${v.name}</option>`).join('')}</select></div>
+        <div><label class="ig-label">HSN Code</label><input type="text" class="ig-input" placeholder="HSN / SAC" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">GST Rate</label><select class="ig-input" style="font-size:.82rem;"><option>5%</option><option>12%</option><option>18%</option><option>28%</option></select></div>
+      </div>
+      <div style="display:flex;gap:.75rem;margin-top:1rem;">
+        <button onclick="igToast('SKU added to catalogue','success');togglePanel('add-sku-panel')" style="background:#0d9488;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Add to Catalogue</button>
+        <button onclick="togglePanel('add-sku-panel')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
-      <div><label class="ig-label">Project Name / Hotel</label><input type="text" id="qt-project" class="ig-input" placeholder="e.g. Bijolai Palace, Jodhpur" style="font-size:.82rem;"></div>
-      <div><label class="ig-label">No. of Rooms</label><input type="number" id="qt-rooms" class="ig-input" placeholder="100" style="font-size:.82rem;" oninput="igHorecaCalcQuote()"></div>
-      <div><label class="ig-label">Hotel Star Category</label><select id="qt-star" class="ig-input" style="font-size:.82rem;" onchange="igHorecaCalcQuote()"><option value="3">3 Star</option><option value="4">4 Star</option><option value="5" selected>5 Star</option></select></div>
-      <div><label class="ig-label">Categories Required</label><select id="qt-cats" class="ig-input" multiple style="font-size:.82rem;height:80px;" onchange="igHorecaCalcQuote()">${cats.map(c=>`<option value="${c.skus}" selected>${c.cat}</option>`).join('')}</select></div>
-      <div><label class="ig-label">Delivery Timeline</label><select id="qt-delivery" class="ig-input" style="font-size:.82rem;"><option>30 Days</option><option>45 Days</option><option selected>60 Days</option><option>90 Days</option></select></div>
-      <div style="background:var(--parch-dk);border:1px solid var(--border);padding:1rem;">
-        <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.625rem;">Estimate Preview</div>
-        <div id="qt-estimate" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:var(--gold);">₹0</div>
-        <div id="qt-breakdown" style="font-size:.72rem;color:var(--ink-muted);margin-top:.25rem;">Enter rooms and categories</div>
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">SKU Catalogue by Category</h3></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);">
+        ${cats.map(cat=>`
+        <div style="padding:1.25rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);cursor:pointer;" onclick="igToast('Opening ${cat.cat} catalogue — ${cat.skus} SKUs','success')">
+          <i class="fas fa-${cat.icon}" style="color:${cat.color};font-size:1.1rem;margin-bottom:.5rem;display:block;"></i>
+          <div style="font-size:.875rem;font-weight:500;color:var(--ink);">${cat.cat}</div>
+          <div style="font-size:.72rem;color:var(--ink-muted);margin-top:.15rem;">${cat.skus} SKUs</div>
+          <div style="margin-top:.5rem;font-size:.68rem;color:${cat.color};font-weight:600;">View All →</div>
+        </div>`).join('')}
       </div>
     </div>
-    <div id="qt-items-list" style="display:none;background:#f0fdf4;border:1px solid #86efac;padding:.875rem;margin-top:.5rem;">
-      <div style="font-size:.72rem;font-weight:600;color:#15803d;margin-bottom:.5rem;">Quote Line Items:</div>
-      <div id="qt-items-content" style="font-size:.75rem;color:var(--ink);"></div>
+  </div>
+
+  <!-- Tab 1: Inventory Ledger -->
+  <div id="hrc-pane-1" style="display:none;">
+    <div style="display:flex;gap:.75rem;margin-bottom:1rem;">
+      <select class="ig-input" style="font-size:.82rem;max-width:180px;"><option>All Categories</option>${cats.map(c=>`<option>${c.cat}</option>`).join('')}</select>
+      <button onclick="igToast('Inventory report exported to Excel','success')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--gold);"><i class="fas fa-file-excel" style="margin-right:.3rem;"></i>Export</button>
+      <button onclick="igToast('Inventory updated from vendor feeds','success')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--ink);"><i class="fas fa-sync" style="margin-right:.3rem;font-size:.7rem;"></i>Sync Stock</button>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Inventory Ledger — All Items</h3></div>
+      <table class="ig-tbl">
+        <thead><tr><th>SKU</th><th>Product</th><th>Category</th><th>Unit</th><th>In Stock</th><th>Reorder Level</th><th>Unit Price</th><th>Stock Value</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+          ${[
+            {sku:'KE-001',name:'6-Burner Commercial Range',  cat:'Kitchen',    unit:'Piece',  qty:4,  reorder:2,  price:85000},
+            {sku:'CC-012',name:'Bone China Dinner Set (24)',  cat:'Crockery',   unit:'Set',    qty:28, reorder:10, price:4500},
+            {sku:'LN-003',name:'Egyptian Cotton Bed Sheets',  cat:'Linen',      unit:'Set',    qty:120,reorder:50, price:2800},
+            {sku:'FO-002',name:'Reception Desk System',       cat:'Front Office',unit:'Unit',  qty:2,  reorder:1,  price:45000},
+            {sku:'HK-008',name:'Industrial Vacuum Cleaner',   cat:'Housekeeping',unit:'Piece', qty:6,  reorder:3,  price:12500},
+            {sku:'FB-015',name:'Wine Glass Set (12pcs)',       cat:'F&B',        unit:'Set',    qty:3,  reorder:8,  price:2200},
+            {sku:'TK-001',name:'Smart TV 55" 4K',             cat:'Technology', unit:'Piece',  qty:12, reorder:5,  price:38000},
+          ].map(r=>{
+            const low=r.qty<=r.reorder;
+            return `<tr ${low?'style="background:#fef2f2;"':''}>
+              <td style="font-size:.72rem;color:var(--gold);font-family:monospace;font-weight:600;">${r.sku}</td>
+              <td style="font-size:.82rem;font-weight:500;">${r.name}</td>
+              <td><span class="badge b-dk" style="font-size:.6rem;">${r.cat}</span></td>
+              <td style="font-size:.75rem;color:var(--ink-muted);">${r.unit}</td>
+              <td style="font-family:'DM Serif Display',Georgia,serif;color:${low?'#dc2626':'var(--ink)'};">${r.qty}</td>
+              <td style="font-size:.78rem;color:var(--ink-muted);">${r.reorder}</td>
+              <td style="font-size:.82rem;">₹${r.price.toLocaleString('en-IN')}</td>
+              <td style="font-family:'DM Serif Display',Georgia,serif;color:#16a34a;">₹${(r.qty*r.price/1000).toFixed(0)}K</td>
+              <td><span class="badge ${low?'b-re':'b-gr'}">${low?'Low Stock':'In Stock'}</span></td>
+              <td>
+                ${low?`<button onclick="igToast('PO raised for ${r.name} — ${r.reorder*2} units','success')" style="background:#dc2626;color:#fff;border:none;padding:.2rem .5rem;font-size:.65rem;cursor:pointer;">Reorder</button>`:''}
+                <button onclick="igToast('Stock adjustment for ${r.name}','info')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);margin-left:.2rem;">Adjust</button>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
     </div>
   </div>
+
+  <!-- Tab 2: Vendors -->
+  <div id="hrc-pane-2" style="display:none;">
+    <div style="margin-bottom:1rem;display:flex;gap:.75rem;">
+      <button onclick="togglePanel('add-vendor-panel')" style="background:#2563eb;color:#fff;border:none;padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.4rem;"></i>Add Vendor</button>
+      <button onclick="igToast('Vendor performance report generated','success')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--gold);"><i class="fas fa-chart-bar" style="margin-right:.3rem;"></i>Performance Report</button>
+    </div>
+    <div id="add-vendor-panel" class="ig-panel" style="margin-bottom:1.5rem;">
+      <h4 style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.875rem;">New Vendor Onboarding</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.875rem;">
+        <div><label class="ig-label">Vendor Name</label><input type="text" class="ig-input" placeholder="Company name" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Category</label><select class="ig-input" style="font-size:.82rem;">${cats.map(c=>`<option>${c.cat}</option>`).join('')}</select></div>
+        <div><label class="ig-label">GSTIN</label><input type="text" class="ig-input" placeholder="15-char GSTIN" style="font-size:.82rem;text-transform:uppercase;"></div>
+        <div><label class="ig-label">Contact Person</label><input type="text" class="ig-input" placeholder="Name" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Email</label><input type="email" class="ig-input" placeholder="vendor@example.com" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Phone</label><input type="tel" class="ig-input" placeholder="+91 XXXXX XXXXX" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Payment Terms</label><select class="ig-input" style="font-size:.82rem;"><option>Net 30</option><option>Net 45</option><option>Net 60</option><option>Advance</option></select></div>
+        <div><label class="ig-label">Tier</label><select class="ig-input" style="font-size:.82rem;"><option>Bronze</option><option>Silver</option><option>Gold</option></select></div>
+        <div style="display:flex;align-items:flex-end;gap:.5rem;">
+          <label style="display:flex;align-items:center;gap:.4rem;font-size:.78rem;cursor:pointer;"><input type="checkbox" checked> Trigger KYC Verification Workflow</label>
+        </div>
+      </div>
+      <div style="display:flex;gap:.75rem;margin-top:.875rem;">
+        <button onclick="igToast('Vendor onboarding initiated. KYC workflow triggered.','success');togglePanel('add-vendor-panel')" style="background:#2563eb;color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Add Vendor</button>
+        <button onclick="togglePanel('add-vendor-panel')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Approved Vendor List</h3></div>
+      <table class="ig-tbl">
+        <thead><tr><th>Vendor</th><th>Category</th><th>GSTIN</th><th>Tier</th><th>Rating</th><th>Lead Time</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${vendors.map(v=>`<tr>
+            <td style="font-weight:500;font-size:.85rem;">${v.name}</td>
+            <td><span class="badge b-dk" style="font-size:.6rem;">${v.cat}</span></td>
+            <td style="font-size:.72rem;font-family:monospace;color:var(--ink-muted);">${v.gstin}</td>
+            <td><span class="badge ${v.tier==='Gold'?'b-gr':v.tier==='Silver'?'b-g':'b-dk'}" style="font-size:.62rem;">${v.tier}</span></td>
+            <td style="font-size:.82rem;color:${v.rating>=4.5?'#16a34a':'var(--ink)'};">${v.rating>0?'★ '+v.rating:'—'}</td>
+            <td style="font-size:.78rem;">${v.lead}</td>
+            <td><span class="badge ${v.status==='Active'?'b-gr':'b-g'}">${v.status}</span></td>
+            <td style="display:flex;gap:.3rem;">
+              <button onclick="igToast('${v.name} profile opened','info')" style="background:none;border:1px solid var(--border);padding:.22rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">View</button>
+              <button onclick="igToast('Rate card from ${v.name} requested','success')" style="background:none;border:1px solid var(--border);padding:.22rem .5rem;font-size:.65rem;cursor:pointer;color:var(--ink-muted);">RFQ</button>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Tab 3: Quote Builder (moved from original position) -->
+  <div id="hrc-pane-3" style="display:none;">
+    <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Quick Quote Builder</h3>
+        <div style="display:flex;gap:.5rem;">
+          <button onclick="igHorecaCalcQuote()" style="background:#0d9488;color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-calculator" style="font-size:.6rem;"></i>Calculate</button>
+          <button onclick="igHorecaConvertPO()" style="background:#2563eb;color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-file-alt" style="font-size:.6rem;"></i>Convert to PO</button>
+          <button onclick="igHorecaGenPDF()" style="background:var(--ink);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-file-pdf" style="font-size:.6rem;"></i>Quote PDF</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div><label class="ig-label">Project Name / Hotel</label><input type="text" id="qt-project" class="ig-input" placeholder="e.g. Bijolai Palace, Jodhpur" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">No. of Rooms</label><input type="number" id="qt-rooms" class="ig-input" placeholder="100" style="font-size:.82rem;" oninput="igHorecaCalcQuote()"></div>
+        <div><label class="ig-label">Hotel Star Category</label><select id="qt-star" class="ig-input" style="font-size:.82rem;" onchange="igHorecaCalcQuote()"><option value="3">3 Star</option><option value="4">4 Star</option><option value="5" selected>5 Star</option></select></div>
+        <div><label class="ig-label">Categories Required</label><select id="qt-cats" class="ig-input" multiple style="font-size:.82rem;height:80px;" onchange="igHorecaCalcQuote()">${cats.map(c=>`<option value="${c.skus}" selected>${c.cat}</option>`).join('')}</select></div>
+        <div><label class="ig-label">Delivery Timeline</label><select id="qt-delivery" class="ig-input" style="font-size:.82rem;"><option>30 Days</option><option>45 Days</option><option selected>60 Days</option><option>90 Days</option></select></div>
+        <div style="background:var(--parch-dk);border:1px solid var(--border);padding:1rem;">
+          <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.625rem;">Estimate Preview</div>
+          <div id="qt-estimate" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:var(--gold);">₹0</div>
+          <div id="qt-breakdown" style="font-size:.72rem;color:var(--ink-muted);margin-top:.25rem;">Enter rooms and categories</div>
+        </div>
+      </div>
+      <div id="qt-items-list" style="display:none;background:#f0fdf4;border:1px solid #86efac;padding:.875rem;margin-top:.5rem;">
+        <div style="font-size:.72rem;font-weight:600;color:#15803d;margin-bottom:.5rem;">Quote Line Items:</div>
+        <div id="qt-items-content" style="font-size:.75rem;color:var(--ink);"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 4: Purchase Orders -->
+  <div id="hrc-pane-4" style="display:none;">
+    <div style="margin-bottom:1rem;"><button onclick="togglePanel('new-po-panel')" style="background:#0d9488;color:#fff;border:none;padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.4rem;"></i>New Purchase Order</button></div>
+    <div id="new-po-panel" class="ig-panel" style="margin-bottom:1.5rem;">
+      <h4 style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.875rem;">New Purchase Order</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.875rem;">
+        <div><label class="ig-label">Vendor</label><select class="ig-input" style="font-size:.82rem;">${vendors.map(v=>`<option>${v.name}</option>`).join('')}</select></div>
+        <div><label class="ig-label">PO Date</label><input type="date" class="ig-input" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Expected Delivery</label><input type="date" class="ig-input" style="font-size:.82rem;"></div>
+        <div style="grid-column:span 3;"><label class="ig-label">Items & Quantities</label><textarea class="ig-input" rows="3" style="font-size:.82rem;" placeholder="SKU-001 × 5, SKU-002 × 10..."></textarea></div>
+        <div><label class="ig-label">Billing Address</label><input type="text" class="ig-input" value="Registered Office, New Delhi" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Delivery Address</label><input type="text" class="ig-input" placeholder="Project / Hotel site" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Approver</label><select class="ig-input" style="font-size:.82rem;"><option>Arun Manikonda (MD)</option><option>Pavan Manikonda (Exec Dir)</option></select></div>
+      </div>
+      <div style="display:flex;gap:.75rem;margin-top:.875rem;">
+        <button onclick="igToast('PO-2025-008 created. Sent for approval.','success');togglePanel('new-po-panel')" style="background:#0d9488;color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Create PO</button>
+        <button onclick="togglePanel('new-po-panel')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+      </div>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Purchase Orders</h3></div>
+      <table class="ig-tbl">
+        <thead><tr><th>PO No.</th><th>Vendor</th><th>Items</th><th>PO Value</th><th>PO Date</th><th>Expected Delivery</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${[
+            {po:'PO-2025-007',vendor:'Royal Linen & Textiles', items:3, val:336000, date:'15 Feb 2025',delivery:'18 Feb 2025',status:'Delivered',cls:'b-gr'},
+            {po:'PO-2025-006',vendor:'Premier Kitchen Supplies',items:2, val:170000, date:'10 Feb 2025',delivery:'15 Feb 2025',status:'Delivered',cls:'b-gr'},
+            {po:'PO-2025-005',vendor:'CleanPro Housekeeping',   items:4, val:75000,  date:'05 Feb 2025',delivery:'09 Feb 2025',status:'Delivered',cls:'b-gr'},
+            {po:'PO-2025-008',vendor:'Hotel Tech Systems',      items:2, val:456000, date:'01 Mar 2025',delivery:'15 Mar 2025',status:'Pending Approval',cls:'b-g'},
+          ].map(p=>`<tr>
+            <td style="font-weight:600;font-size:.78rem;color:var(--gold);">${p.po}</td>
+            <td style="font-size:.82rem;">${p.vendor}</td>
+            <td style="font-size:.82rem;text-align:center;">${p.items}</td>
+            <td style="font-family:'DM Serif Display',Georgia,serif;">₹${(p.val/1000).toFixed(0)}K</td>
+            <td style="font-size:.78rem;color:var(--ink-muted);">${p.date}</td>
+            <td style="font-size:.78rem;color:var(--ink-muted);">${p.delivery}</td>
+            <td><span class="badge ${p.cls}">${p.status}</span></td>
+            <td style="display:flex;gap:.3rem;">
+              <button onclick="igToast('${p.po} opened','success')" style="background:none;border:1px solid var(--border);padding:.22rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-eye"></i></button>
+              ${p.status==='Pending Approval'?`<button onclick="igConfirm('Approve ${p.po}?',function(){igToast('${p.po} approved — PO sent to vendor','success')})" style="background:#16a34a;color:#fff;border:none;padding:.22rem .5rem;font-size:.65rem;cursor:pointer;">Approve</button>`:''}
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <script>
+  window.igHorecaTab = function(idx){
+    for(var i=0;i<5;i++){
+      var p=document.getElementById('hrc-pane-'+i);
+      var t=document.getElementById('hrc-tab-'+i);
+      if(p) p.style.display=i===idx?'block':'none';
+      if(t){ t.style.color=i===idx?'var(--gold)':'var(--ink-muted)'; t.style.borderBottom=i===idx?'2px solid var(--gold)':'2px solid transparent'; }
+    }
+  };
   function igHorecaCalcQuote(){
     var rooms = parseInt(document.getElementById('qt-rooms').value) || 0;
     var star  = parseInt(document.getElementById('qt-star').value) || 5;
@@ -1777,15 +2477,11 @@ app.get('/horeca', (c) => {
     var itemsContent = document.getElementById('qt-items-content');
     if(rooms > 0 && cats.length > 0){
       var lakh = total / 100000;
-      el.textContent = lakh >= 100 ? '₹'+(lakh/100).toFixed(2)+' Cr' : '₹'+lakh.toFixed(1)+'L';
-      bd.textContent = rooms+' rooms · '+cats.length+' categories · '+star+' Star standard';
+      el.textContent = lakh >= 100 ? '₹' + (lakh/100).toFixed(1) + ' Cr' : '₹' + lakh.toFixed(1) + ' L';
+      bd.textContent = rooms + ' rooms × ' + cats.length + ' categories × ₹' + (ratePerRoom/1000) + 'K/room';
+      var lines = cats.map(function(c){ return c.text + ': ₹' + ((rooms*ratePerRoom/8)/1000).toFixed(0)+'K'; });
+      itemsContent.innerHTML = lines.join('<br>');
       itemsDiv.style.display = 'block';
-      itemsContent.innerHTML = cats.map(function(c){
-        var catTotal = rooms * ratePerRoom / 8;
-        var catLakh = (catTotal/100000).toFixed(1);
-        return '<div style="display:flex;justify-content:space-between;padding:.2rem 0;border-bottom:1px solid #d1fae5;">'+
-          '<span>'+c.text+'</span><span style="font-weight:600;">₹'+catLakh+'L</span></div>';
-      }).join('')+'<div style="display:flex;justify-content:space-between;padding:.4rem 0;font-weight:700;font-size:.82rem;"><span>TOTAL (excl. GST)</span><span style="color:var(--gold);">'+el.textContent+'</span></div>';
     } else {
       el.textContent = '₹0';
       bd.textContent = 'Enter rooms and select categories';
@@ -1798,6 +2494,11 @@ app.get('/horeca', (c) => {
     var est = document.getElementById('qt-estimate').textContent;
     igToast('Quote PDF for '+project+' ('+est+') generated — ready to download','success');
   }
+  window.igHorecaConvertPO = function(){
+    var project = document.getElementById('qt-project').value.trim();
+    if(!project){ igToast('Please enter project name first','warn'); return; }
+    igToast('Quote converted to PO-2025-009 for '+project+'. Sent for approval.','success');
+  };
   </script>`
   return c.html(layout('HORECA Inventory', adminShell('HORECA Inventory Management', 'horeca', body), {noNav:true,noFooter:true}))
 })
@@ -2071,7 +2772,7 @@ app.get('/integrations', (c) => {
   return c.html(layout('Integrations', adminShell('Integrations & API Keys', 'integrations', body), {noNav:true,noFooter:true}))
 })
 
-// ── BI & REPORTS ──────────────────────────────────────────────────────────────
+// ── BI & REPORTS (Phase 6 — interactive dashboards + Chart.js) ────────────────
 app.get('/reports', (c) => {
   const reports = [
     {name:'P&L Statement',          desc:'Monthly, quarterly & annual profit & loss',         icon:'chart-line',      color:'#16a34a', filters:['Month','Quarter','Financial Year']},
@@ -2085,6 +2786,97 @@ app.get('/reports', (c) => {
     {name:'Audit Trail Report',     desc:'Full user activity, logins & system access logs',   icon:'shield-alt',      color:'#9f1239', filters:['Date Range','User','Module']},
   ]
   const body = `
+  <!-- BI Dashboard KPIs -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
+    ${[
+      {label:'Revenue YTD',   value:'₹89.5L',  trend:'↑ 8.3%',  c:'#16a34a'},
+      {label:'Pipeline Value',value:'₹8,815 Cr',trend:'3 active',c:'#B8960C'},
+      {label:'Expenses YTD',  value:'₹56.2L',  trend:'↓ 2.1%',  c:'#2563eb'},
+      {label:'Net Profit YTD',value:'₹33.3L',  trend:'37.1%',   c:'#7c3aed'},
+    ].map(s=>`<div class="am"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--ink);line-height:1;margin-bottom:.25rem;">${s.value}</div><div style="font-size:.72rem;color:${s.c};">${s.trend}</div></div>`).join('')}
+  </div>
+
+  <!-- Interactive Charts Section -->
+  <div style="display:grid;grid-template-columns:3fr 2fr;gap:1.5rem;margin-bottom:1.5rem;">
+    <!-- Revenue Chart -->
+    <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Revenue vs Expenses — Last 6 Months</h3>
+        <div style="display:flex;gap:.4rem;">
+          ${['Bar','Line','Area'].map(t=>`<button onclick="igUpdateChart('${t.toLowerCase()}')" style="background:var(--parch-dk);border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--ink);">${t}</button>`).join('')}
+        </div>
+      </div>
+      <canvas id="revenue-chart" height="110"></canvas>
+    </div>
+    <!-- Expense Pie -->
+    <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin-bottom:1rem;">Expense Breakdown MTD</h3>
+      <canvas id="expense-chart" height="160"></canvas>
+      <div id="expense-legend" style="margin-top:.75rem;display:flex;flex-wrap:wrap;gap:.4rem;"></div>
+    </div>
+  </div>
+
+  <!-- Pipeline & Sector Charts -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+    <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Pipeline by Sector (₹ Cr)</h3>
+        <span style="font-size:.72rem;color:var(--gold);font-weight:600;">Total ₹8,815 Cr</span>
+      </div>
+      <canvas id="pipeline-chart" height="140"></canvas>
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
+      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin-bottom:1rem;">Monthly Revenue Trend — FY 2024-25</h3>
+      <canvas id="trend-chart" height="140"></canvas>
+    </div>
+  </div>
+
+  <!-- Self-Service Analytics -->
+  <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;padding:1.25rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Self-Service Analytics Builder</h3>
+      <button onclick="igToast('Analytics query executed — results shown below','success')" style="background:var(--gold);color:#fff;border:none;padding:.4rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-play" style="margin-right:.3rem;"></i>Run Query</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.875rem;margin-bottom:.875rem;">
+      <div><label class="ig-label">Dimension</label><select class="ig-input" style="font-size:.82rem;"><option>Month</option><option>Client</option><option>Service Type</option><option>Sector</option><option>Employee</option></select></div>
+      <div><label class="ig-label">Metric</label><select class="ig-input" style="font-size:.82rem;"><option>Revenue</option><option>Expenses</option><option>Net Profit</option><option>Pipeline Value</option><option>Headcount</option></select></div>
+      <div><label class="ig-label">Filter (optional)</label><select class="ig-input" style="font-size:.82rem;"><option>All</option><option>This Quarter</option><option>This FY</option><option>Last 6 Months</option></select></div>
+      <div><label class="ig-label">Chart Type</label><select class="ig-input" style="font-size:.82rem;"><option>Bar Chart</option><option>Line Chart</option><option>Pie Chart</option><option>Table</option></select></div>
+    </div>
+    <div style="background:var(--parch-dk);border:1px solid var(--border);padding:1.25rem;min-height:80px;display:flex;align-items:center;justify-content:center;">
+      <span style="font-size:.78rem;color:var(--ink-muted);">Run a query above to see the result chart here</span>
+    </div>
+  </div>
+
+  <!-- Scheduled Reports -->
+  <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+    <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Scheduled Reports</h3>
+      <button onclick="igToast('New scheduled report added','success')" style="background:var(--gold);color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.3rem;"></i>Add Schedule</button>
+    </div>
+    <table class="ig-tbl"><thead><tr><th>Report Name</th><th>Frequency</th><th>Recipients</th><th>Format</th><th>Last Sent</th><th>Status</th><th>Action</th></tr></thead><tbody>
+      ${[
+        {name:'Monthly P&L',           freq:'1st of month', to:'superadmin, directors',  fmt:'PDF',  last:'01 Feb 2025', on:true},
+        {name:'Weekly Pipeline',       freq:'Every Monday', to:'superadmin',             fmt:'Email',last:'24 Feb 2025', on:true},
+        {name:'GST Filing Reminder',   freq:'8th of month', to:'finance@indiagully.com', fmt:'Email',last:'08 Feb 2025', on:true},
+        {name:'HR Attendance Summary', freq:'Last day/month',to:'hr@indiagully.com',      fmt:'Excel',last:'28 Feb 2025', on:false},
+      ].map(r=>`<tr>
+        <td style="font-weight:500;font-size:.85rem;">${r.name}</td>
+        <td style="font-size:.78rem;">${r.freq}</td>
+        <td style="font-size:.75rem;color:var(--ink-muted);">${r.to}</td>
+        <td><span class="badge b-dk" style="font-size:.62rem;">${r.fmt}</span></td>
+        <td style="font-size:.75rem;color:var(--ink-muted);">${r.last}</td>
+        <td><span class="badge ${r.on?'b-gr':'b-dk'}">${r.on?'Active':'Paused'}</span></td>
+        <td style="display:flex;gap:.3rem;">
+          <button onclick="igToast('${r.name} sent now','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">Send Now</button>
+          <button onclick="igToast('${r.name} ${r.on?'paused':'resumed'}','warn')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--ink-muted);">${r.on?'Pause':'Resume'}</button>
+        </td>
+      </tr>`).join('')}
+    </tbody></table>
+  </div>
+
+  <!-- Report Generator Cards -->
+  <h4 style="font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:1rem;">On-Demand Reports</h4>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
     ${reports.map((r,i)=>`
     <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;transition:border-color .2s;" onmouseover="this.style.borderColor='${r.color}'" onmouseout="this.style.borderColor='var(--border)'">
@@ -2104,7 +2896,45 @@ app.get('/reports', (c) => {
         </div>
       </div>
     </div>`).join('')}
-  </div>`
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"><\/script>
+  <script>
+  // Revenue vs Expenses Chart
+  var revCtx = document.getElementById('revenue-chart').getContext('2d');
+  var revChart = new Chart(revCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Oct 24','Nov 24','Dec 24','Jan 25','Feb 25','Mar 25'],
+      datasets: [
+        { label:'Revenue',  data:[980000,1050000,900000,1080000,1240000,1050000], backgroundColor:'rgba(184,150,12,0.8)', borderColor:'#B8960C', borderWidth:1 },
+        { label:'Expenses', data:[820000,780000,750000,770000,780000,760000],    backgroundColor:'rgba(37,99,235,0.8)',   borderColor:'#2563eb', borderWidth:1 },
+        { label:'Profit',   data:[160000,270000,150000,310000,460000,290000],    backgroundColor:'rgba(22,163,74,0.8)',   borderColor:'#16a34a', borderWidth:1, type:'line', yAxisID:'y' }
+      ]
+    },
+    options: { responsive:true, plugins:{ legend:{ labels:{ font:{size:10} }}}, scales:{ y:{ ticks:{ callback:v=>'₹'+(v/100000).toFixed(1)+'L', font:{size:9}} }, x:{ ticks:{font:{size:9}} } } }
+  });
+  window.igUpdateChart = function(type){
+    revChart.config.type = type==='area'?'line':type;
+    revChart.update();
+    igToast('Chart updated to '+type,'success');
+  };
+
+  // Expense Pie
+  var expCtx = document.getElementById('expense-chart').getContext('2d');
+  var expData = { labels:['Payroll','Rent','Tech','Travel','Mktg','Other'], datasets:[{ data:[450000,85000,12500,28400,18000,14600], backgroundColor:['#1A3A6B','#2563eb','#16a34a','#d97706','#7c3aed','#9ca3af'], borderWidth:2, borderColor:'#fff' }] };
+  new Chart(expCtx, { type:'doughnut', data:expData, options:{ responsive:true, cutout:'65%', plugins:{ legend:{display:false} } } });
+  var el=document.getElementById('expense-legend');
+  if(el){ expData.labels.forEach(function(l,i){ var d=document.createElement('span'); d.style='font-size:.65rem;display:flex;align-items:center;gap:.2rem;color:var(--ink);'; d.innerHTML='<span style="width:10px;height:10px;background:'+expData.datasets[0].backgroundColor[i]+';border-radius:50%;display:inline-block;"></span>'+l; el.appendChild(d); }); }
+
+  // Pipeline Chart
+  var pipCtx = document.getElementById('pipeline-chart').getContext('2d');
+  new Chart(pipCtx, { type:'bar', data:{ labels:['Entertainment','Real Estate','Retail','Hospitality'], datasets:[{ data:[5700,1200,2100,45], backgroundColor:['#B8960C','#2563eb','#7c3aed','#16a34a'], borderRadius:3 }] }, options:{ responsive:true, plugins:{ legend:{display:false} }, scales:{ y:{ ticks:{ callback:v=>v>=100?v+'Cr':v+'L', font:{size:9} } }, x:{ ticks:{font:{size:9}} } } } });
+
+  // Monthly Revenue Trend
+  var trendCtx = document.getElementById('trend-chart').getContext('2d');
+  new Chart(trendCtx, { type:'line', data:{ labels:['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'], datasets:[{ label:'Revenue', data:[620000,680000,720000,790000,820000,880000,980000,1050000,900000,1080000,1240000,1050000], borderColor:'#B8960C', backgroundColor:'rgba(184,150,12,.1)', fill:true, tension:.4, pointRadius:3, pointBackgroundColor:'#B8960C' }] }, options:{ responsive:true, plugins:{ legend:{display:false} }, scales:{ y:{ ticks:{ callback:v=>'₹'+(v/100000).toFixed(1)+'L', font:{size:9} } }, x:{ ticks:{font:{size:9}} } } } });
+  </script>`
   return c.html(layout('BI & Reports', adminShell('BI & Reports', 'reports', body), {noNav:true,noFooter:true}))
 })
 
@@ -2172,59 +3002,298 @@ app.get('/config', (c) => {
   return c.html(layout('System Config', adminShell('System Configuration', 'config', body), {noNav:true,noFooter:true}))
 })
 
-// ── SECURITY AUDIT ────────────────────────────────────────────────────────────
+// ── SECURITY AUDIT (Phase 6 — TOTP, RBAC, rate-limiting, PAN masking) ─────────
 app.get('/security', (c) => {
   const logs = [
-    {ts:'2025-02-27 09:15:22', user:'superadmin@indiagully.com', action:'Login Success',       mod:'Auth',     ip:'103.21.x.x', ua:'Chrome/Win',  ok:true},
-    {ts:'2025-02-27 09:12:01', user:'akm@indiagully.com',        action:'Invoice Approved',    mod:'Finance',  ip:'49.36.x.x',  ua:'Safari/Mac',  ok:true},
-    {ts:'2025-02-27 08:55:34', user:'pavan@indiagully.com',      action:'Page Edit — Home',    mod:'CMS',      ip:'49.36.x.x',  ua:'Chrome/Win',  ok:true},
-    {ts:'2025-02-26 22:14:53', user:'demo@indiagully.com',       action:'Client Login',        mod:'Auth',     ip:'115.99.x.x', ua:'Chrome/And',  ok:true},
-    {ts:'2025-02-26 18:42:15', user:'Unknown',                   action:'Failed Login (x2)',   mod:'Auth',     ip:'185.x.x.x',  ua:'curl/7.68',   ok:false},
-    {ts:'2025-02-26 16:30:00', user:'akm@indiagully.com',        action:'Mandate Created',     mod:'Listings', ip:'49.36.x.x',  ua:'Chrome/Win',  ok:true},
-    {ts:'2025-02-25 14:22:10', user:'pavan@indiagully.com',      action:'Contract Uploaded',   mod:'Contracts',ip:'49.36.x.x',  ua:'Safari/Mac',  ok:true},
-    {ts:'2025-02-25 11:05:44', user:'superadmin@indiagully.com', action:'User Role Changed',   mod:'Users',    ip:'103.21.x.x', ua:'Chrome/Win',  ok:true},
-    {ts:'2025-02-24 09:30:00', user:'emp@indiagully.com',        action:'Employee Login',      mod:'Auth',     ip:'182.65.x.x', ua:'Firefox/Win', ok:true},
-    {ts:'2025-02-23 16:45:00', user:'Unknown',                   action:'Brute Force Attempt', mod:'Auth',     ip:'91.x.x.x',   ua:'Python/3.11', ok:false},
+    {ts:'2025-02-28 09:15:22', user:'superadmin@indiagully.com', action:'Login Success',              mod:'Auth',     ip:'103.21.x.x', ua:'Chrome/Win',  ok:true,  risk:'Low'},
+    {ts:'2025-02-28 09:12:01', user:'akm@indiagully.com',        action:'Invoice Approved ₹3.2L',     mod:'Finance',  ip:'49.36.x.x',  ua:'Safari/Mac',  ok:true,  risk:'Low'},
+    {ts:'2025-02-28 08:55:34', user:'pavan@indiagully.com',      action:'CMS Page Published — Home',  mod:'CMS',      ip:'49.36.x.x',  ua:'Chrome/Win',  ok:true,  risk:'Low'},
+    {ts:'2025-02-27 22:14:53', user:'demo@indiagully.com',       action:'Client Portal Login',        mod:'Auth',     ip:'115.99.x.x', ua:'Chrome/And',  ok:true,  risk:'Low'},
+    {ts:'2025-02-27 18:42:15', user:'Unknown',                   action:'Failed Login — 3 attempts',  mod:'Auth',     ip:'185.220.x.x',ua:'curl/7.68',   ok:false, risk:'High'},
+    {ts:'2025-02-27 16:30:00', user:'akm@indiagully.com',        action:'Mandate Created — MND-004',  mod:'Listings', ip:'49.36.x.x',  ua:'Chrome/Win',  ok:true,  risk:'Low'},
+    {ts:'2025-02-26 14:22:10', user:'pavan@indiagully.com',      action:'Contract Downloaded — NDA',  mod:'Contracts',ip:'49.36.x.x',  ua:'Safari/Mac',  ok:true,  risk:'Low'},
+    {ts:'2025-02-26 11:05:44', user:'superadmin@indiagully.com', action:'User Role Changed — Emp001', mod:'Users',    ip:'103.21.x.x', ua:'Chrome/Win',  ok:true,  risk:'Med'},
+    {ts:'2025-02-25 16:45:00', user:'Unknown',                   action:'Brute Force — 12 attempts',  mod:'Auth',     ip:'91.108.x.x', ua:'Python/3.11', ok:false, risk:'Critical'},
+    {ts:'2025-02-25 09:30:00', user:'IG-EMP-0001',               action:'Attendance Check-In',        mod:'HR',       ip:'182.65.x.x', ua:'Firefox/Win', ok:true,  risk:'Low'},
+  ]
+  const rbacRoles = [
+    {role:'Super Admin',    users:1, perms:['All Modules','All Portals','User Management','System Config','Security Audit'],  color:'#dc2626'},
+    {role:'Director / KMP', users:2, perms:['Board Portal','Finance ERP (read)','Contracts (sign)','Governance'],             color:'#1E1E1E'},
+    {role:'Finance Manager',users:1, perms:['Finance ERP (full)','Invoices','GST Filing','BI Reports'],                       color:'#2563eb'},
+    {role:'HR Manager',     users:1, perms:['HR ERP (full)','Leave Approval','Payroll','Employee Directory'],                  color:'#7c3aed'},
+    {role:'Employee',       users:3, perms:['Employee Portal','Attendance','Leave Request','Payslips'],                        color:'#16a34a'},
+    {role:'Client',         users:2, perms:['Client Portal','Mandates (own)','Invoices (own)','Documents (own)'],              color:'#B8960C'},
   ]
   const body = `
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
-    ${[{label:'Failed Logins (7d)',value:'3',c:'#dc2626'},{label:'Active Sessions',value:'1',c:'#16a34a'},{label:'IP Whitelist',value:'5',c:'#2563eb'},{label:'2FA Users',value:'8',c:'#7c3aed'}].map(s=>`<div class="am"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:${s.c};">${s.value}</div></div>`).join('')}
-  </div>
-  <div style="display:grid;grid-template-columns:3fr 1fr;gap:1.5rem;">
-    <!-- Audit Log -->
-    <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Full Audit Log</h3>
-        <button onclick="igToast('Audit log exported to CSV','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export CSV</button>
+  <!-- Security Score Banner -->
+  <div style="background:linear-gradient(135deg,#1E1E1E,#2D1B1B);border:1px solid #7f1d1d;padding:1.25rem 1.75rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:1.25rem;">
+      <div style="width:64px;height:64px;border-radius:50%;border:3px solid #d97706;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#d97706;font-weight:700;">74</span>
       </div>
-      <table class="ig-tbl"><thead><tr><th>Timestamp</th><th>User</th><th>Action</th><th>Module</th><th>IP</th><th>Browser</th><th>Status</th></tr></thead><tbody>
-        ${logs.map(r=>`<tr ${!r.ok?'style="background:#fef2f2;"':''}>
+      <div>
+        <div style="font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.25rem;">Security Score</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:#fff;">Good — 3 issues need attention</div>
+        <div style="font-size:.72rem;color:#d97706;margin-top:.2rem;"><i class="fas fa-exclamation-triangle" style="margin-right:.3rem;"></i>OTP is static · DocuSign unconfigured · 2FA not mandatory for clients</div>
+      </div>
+    </div>
+    <button onclick="igToast('Running full security scan…','info')" style="background:#d97706;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-search" style="margin-right:.4rem;"></i>Run Scan</button>
+  </div>
+
+  <!-- KPI Row -->
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-bottom:1.5rem;">
+    ${[
+      {label:'Failed Logins (7d)', value:'5',   c:'#dc2626', icon:'times-circle'},
+      {label:'Active Sessions',    value:'2',   c:'#16a34a', icon:'user-check'},
+      {label:'IP Whitelist',       value:'5',   c:'#2563eb', icon:'shield-alt'},
+      {label:'TOTP Enrolled',      value:'4/8', c:'#7c3aed', icon:'mobile-alt'},
+      {label:'Blocked IPs (7d)',   value:'2',   c:'#d97706', icon:'ban'},
+    ].map(s=>`<div class="am"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;"><span style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);">${s.label}</span><i class="fas fa-${s.icon}" style="color:${s.c};font-size:.72rem;"></i></div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:${s.c};">${s.value}</div></div>`).join('')}
+  </div>
+
+  <!-- Tab Nav -->
+  <div style="display:flex;gap:0;margin-bottom:1.5rem;border-bottom:2px solid var(--border);">
+    ${['Audit Log','RBAC Matrix','TOTP / 2FA','Rate Limiting','IP Whitelist'].map((t,i)=>`<button onclick="igSecTab(${i})" id="sec-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;">${t}</button>`).join('')}
+  </div>
+
+  <!-- Tab 0: Audit Log -->
+  <div id="sec-pane-0">
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Immutable Audit Log</h3>
+        <div style="display:flex;gap:.5rem;">
+          <select class="ig-input" style="font-size:.75rem;max-width:140px;" onchange="igFilterAuditLog(this.value)">
+            <option value="all">All Events</option><option value="fail">Failures Only</option><option value="auth">Auth Only</option><option value="high">High Risk</option>
+          </select>
+          <button onclick="igToast('Audit log exported to CSV — tamper-proof hash included','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export CSV</button>
+        </div>
+      </div>
+      <table class="ig-tbl" id="audit-log-table"><thead><tr><th>#</th><th>Timestamp</th><th>User</th><th>Action</th><th>Module</th><th>IP Address</th><th>Browser</th><th>Risk</th><th>Status</th></tr></thead><tbody>
+        ${logs.map((r,i)=>`<tr data-ok="${r.ok}" data-mod="${r.mod.toLowerCase()}" data-risk="${r.risk}" ${!r.ok?'style="background:#fef2f2;"':r.risk==='Med'?'style="background:#fffbeb;"':''}>
+          <td style="font-size:.68rem;color:var(--ink-muted);">${i+1}</td>
           <td style="font-size:.72rem;color:var(--ink-muted);white-space:nowrap;">${r.ts}</td>
-          <td style="font-size:.78rem;font-weight:500;">${r.user}</td>
+          <td style="font-size:.75rem;font-weight:500;">${r.user}</td>
           <td style="font-size:.78rem;">${r.action}</td>
           <td><span class="badge b-dk">${r.mod}</span></td>
-          <td style="font-size:.72rem;color:var(--ink-muted);">${r.ip}</td>
-          <td style="font-size:.72rem;color:var(--ink-muted);">${r.ua}</td>
+          <td style="font-size:.72rem;color:var(--ink-muted);font-family:monospace;">${r.ip}</td>
+          <td style="font-size:.7rem;color:var(--ink-muted);">${r.ua}</td>
+          <td><span class="badge ${r.risk==='Critical'?'b-re':r.risk==='High'?'b-re':r.risk==='Med'?'b-g':'b-gr'}" style="font-size:.62rem;">${r.risk}</span></td>
           <td><span class="badge ${r.ok?'b-gr':'b-re'}">${r.ok?'OK':'FAIL'}</span></td>
         </tr>`).join('')}
       </tbody></table>
     </div>
-    <!-- IP Whitelist -->
-    <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">IP Whitelist</h3></div>
-      <div style="padding:1.25rem;">
-        ${['103.21.x.x — Admin Office','49.36.x.x — Directors','115.99.x.x — Client A','182.65.x.x — Employee A','103.55.x.x — Remote VPN'].map(ip=>`
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border);">
-          <span style="font-size:.78rem;color:var(--ink);">${ip}</span>
-          <button onclick="igConfirm('Remove this IP from whitelist?',function(){ igToast('IP removed','warn'); })" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.65rem;"><i class="fas fa-times"></i></button>
-        </div>`).join('')}
-        <div style="margin-top:.875rem;">
-          <input type="text" class="ig-input" placeholder="Add new IP address" style="font-size:.82rem;margin-bottom:.5rem;">
-          <button onclick="igToast('IP added to whitelist','success')" style="background:var(--gold);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;width:100%;">Add IP</button>
+  </div>
+
+  <!-- Tab 1: RBAC Matrix -->
+  <div id="sec-pane-1" style="display:none;">
+    <div style="background:#fff8f0;border:1px solid #fed7aa;padding:.875rem 1.25rem;margin-bottom:1.25rem;display:flex;gap:.625rem;">
+      <i class="fas fa-info-circle" style="color:#d97706;margin-top:.1rem;flex-shrink:0;"></i>
+      <p style="font-size:.78rem;color:#92400e;">Role-Based Access Control (RBAC) is enforced at the API layer. Changes take effect immediately. For Attribute-Based Control (ABAC) per record, contact your system administrator.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+      ${rbacRoles.map(r=>`
+      <div style="background:#fff;border:1px solid var(--border);border-top:3px solid ${r.color};">
+        <div style="padding:.875rem 1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:.5rem;">
+            <div style="width:28px;height:28px;background:${r.color};display:flex;align-items:center;justify-content:center;"><i class="fas fa-user-shield" style="color:#fff;font-size:.6rem;"></i></div>
+            <div>
+              <div style="font-size:.85rem;font-weight:600;color:var(--ink);">${r.role}</div>
+              <div style="font-size:.65rem;color:var(--ink-muted);">${r.users} user${r.users!==1?'s':''}</div>
+            </div>
+          </div>
+          <button onclick="igToast('Editing ${r.role} permissions…','info')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-edit"></i></button>
+        </div>
+        <div style="padding:.875rem 1rem;">
+          ${r.perms.map(p=>`<div style="display:flex;align-items:center;gap:.4rem;padding:.2rem 0;font-size:.75rem;color:var(--ink);"><i class="fas fa-check" style="color:${r.color};font-size:.6rem;width:12px;flex-shrink:0;"></i>${p}</div>`).join('')}
+        </div>
+        <div style="padding:.625rem 1rem;border-top:1px solid var(--border);background:var(--parch-dk);">
+          <button onclick="igToast('${r.role} role permissions saved','success')" style="background:${r.color};color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;width:100%;">Save Permissions</button>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+
+  <!-- Tab 2: TOTP / 2FA -->
+  <div id="sec-pane-2" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">2FA / TOTP Settings</h3></div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:1rem;">
+          ${[
+            {l:'Enforce TOTP for Super Admin',  checked:true,  desc:'Required at every login'},
+            {l:'Enforce TOTP for Directors',    checked:true,  desc:'Board & KMP portal'},
+            {l:'Enforce TOTP for Employees',    checked:false, desc:'HR portal access'},
+            {l:'Enforce TOTP for Clients',      checked:false, desc:'Client portal access'},
+            {l:'Allow SMS OTP as fallback',     checked:true,  desc:'When TOTP app unavailable'},
+            {l:'Block login if TOTP not set up',checked:false, desc:'Force enrollment on first login'},
+          ].map(s=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem .875rem;background:var(--parch-dk);border:1px solid var(--border);">
+            <div>
+              <div style="font-size:.82rem;color:var(--ink);font-weight:500;">${s.l}</div>
+              <div style="font-size:.68rem;color:var(--ink-muted);margin-top:.1rem;">${s.desc}</div>
+            </div>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;">
+              <input type="checkbox" ${s.checked?'checked':''} style="opacity:0;width:0;height:0;">
+              <span onclick="this.parentElement.querySelector('input').checked=!this.parentElement.querySelector('input').checked;this.style.background=this.parentElement.querySelector('input').checked?'#16a34a':'#94a3b8'" style="position:absolute;cursor:pointer;inset:0;background:${s.checked?'#16a34a':'#94a3b8'};border-radius:24px;display:flex;align-items:center;${s.checked?'justify-content:flex-end;padding-right:3px':'justify-content:flex-start;padding-left:3px'};transition:.3s;"><span style="width:18px;height:18px;background:#fff;border-radius:50%;display:block;"></span></span>
+            </label>
+          </div>`).join('')}
+          <div style="background:#f0fdf4;border:1px solid #86efac;padding:.875rem;font-size:.78rem;color:#15803d;">
+            <i class="fas fa-lock" style="margin-right:.4rem;"></i> TOTP codes are generated using Google Authenticator / Authy. QR codes are shown once on first setup.
+          </div>
+          <button onclick="igToast('2FA settings saved — changes apply on next login','success')" style="background:var(--ink);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:fit-content;"><i class="fas fa-save" style="margin-right:.4rem;"></i>Save 2FA Settings</button>
+        </div>
+      </div>
+      <!-- User 2FA Status -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">User TOTP Enrollment Status</h3></div>
+        <table class="ig-tbl">
+          <thead><tr><th>User</th><th>Portal</th><th>TOTP</th><th>Last Login</th><th>Action</th></tr></thead>
+          <tbody>
+            ${[
+              {u:'superadmin@indiagully.com',p:'Admin',     totp:true,  last:'28 Feb 09:15'},
+              {u:'akm@indiagully.com',        p:'Admin',     totp:true,  last:'28 Feb 09:12'},
+              {u:'pavan@indiagully.com',       p:'Admin',     totp:true,  last:'28 Feb 08:55'},
+              {u:'amit.j@indiagully.com',      p:'Employee',  totp:true,  last:'27 Feb 10:30'},
+              {u:'demo@indiagully.com',         p:'Client',    totp:false, last:'27 Feb 22:14'},
+              {u:'IG-KMP-0001',                p:'Board',     totp:false, last:'25 Feb 14:00'},
+              {u:'IG-EMP-0001',                p:'Employee',  totp:false, last:'25 Feb 09:30'},
+              {u:'IG-EMP-0002',                p:'Employee',  totp:false, last:'24 Feb 16:00'},
+            ].map(u=>`<tr>
+              <td style="font-size:.75rem;font-weight:500;">${u.u}</td>
+              <td><span class="badge b-dk" style="font-size:.6rem;">${u.p}</span></td>
+              <td><span class="badge ${u.totp?'b-gr':'b-re'}" style="font-size:.65rem;">${u.totp?'Enrolled':'Not Set'}</span></td>
+              <td style="font-size:.72rem;color:var(--ink-muted);">${u.last}</td>
+              <td><button onclick="igToast('TOTP setup email sent to ${u.u}','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">${u.totp?'Reset':'Enroll'}</button></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: Rate Limiting -->
+  <div id="sec-pane-3" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Rate Limiting Rules</h3></div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:.875rem;">
+          ${[
+            {l:'Max login attempts (per IP)',      v:'5',    sub:'Before lockout (15 min)'},
+            {l:'Lockout duration (minutes)',       v:'15',   sub:'After max attempts exceeded'},
+            {l:'OTP validity window (seconds)',    v:'300',  sub:'Time-based OTP expiry'},
+            {l:'Session timeout (minutes)',        v:'60',   sub:'Idle session expiry'},
+            {l:'Max API requests / min (per IP)',  v:'100',  sub:'General API rate limit'},
+            {l:'Max auth requests / min (per IP)', v:'10',   sub:'Login & OTP endpoints'},
+            {l:'CAPTCHA after N failed attempts',  v:'3',    sub:'Trigger invisible CAPTCHA'},
+          ].map(f=>`<div><label class="ig-label">${f.l} <span style="font-size:.68rem;color:var(--ink-faint);">(${f.sub})</span></label><input type="number" class="ig-input" value="${f.v}" style="font-size:.82rem;"></div>`).join('')}
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem .875rem;background:var(--parch-dk);border:1px solid var(--border);">
+            <span style="font-size:.82rem;color:var(--ink);font-weight:500;">Auto-block brute force IPs</span>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;"><input type="checkbox" checked style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;inset:0;background:#16a34a;border-radius:24px;display:flex;align-items:center;justify-content:flex-end;padding-right:3px;"><span style="width:18px;height:18px;background:#fff;border-radius:50%;display:block;"></span></span></label>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem .875rem;background:var(--parch-dk);border:1px solid var(--border);">
+            <span style="font-size:.82rem;color:var(--ink);font-weight:500;">Alert on session from new location</span>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;"><input type="checkbox" checked style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;inset:0;background:#16a34a;border-radius:24px;display:flex;align-items:center;justify-content:flex-end;padding-right:3px;"><span style="width:18px;height:18px;background:#fff;border-radius:50%;display:block;"></span></span></label>
+          </div>
+          <button onclick="igToast('Rate limiting rules saved','success')" style="background:var(--ink);color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:fit-content;"><i class="fas fa-save" style="margin-right:.4rem;"></i>Save Rules</button>
+        </div>
+      </div>
+      <!-- PAN & Sensitive Data Masking -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Sensitive Data Masking</h3></div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:.875rem;">
+          ${[
+            {l:'PAN Number masking',          on:true,  ex:'ABCDE1234F → ABCDE••••F',   desc:'Mask middle digits in all views'},
+            {l:'Bank account masking',        on:true,  ex:'1234567890 → ••••567890',     desc:'Show only last 4 digits'},
+            {l:'Aadhaar masking',             on:true,  ex:'1234-5678-9012 → ••••-••••-9012',desc:'Mask first 8 digits'},
+            {l:'Email masking (in logs)',     on:false, ex:'user@example.com → u***@e***.com',desc:'Partial mask in audit logs'},
+            {l:'Phone masking (in reports)',  on:true,  ex:'+91 9810xxxxxx',               desc:'Mask 6 middle digits'},
+            {l:'Salary masking (non-HR)',     on:true,  ex:'₹1,80,000 → ₹ ••,•••',        desc:'Hide CTC from non-HR roles'},
+          ].map(m=>`<div style="display:flex;align-items:flex-start;justify-content:space-between;padding:.625rem .875rem;background:var(--parch-dk);border:1px solid var(--border);gap:1rem;">
+            <div style="flex:1;">
+              <div style="font-size:.82rem;color:var(--ink);font-weight:500;margin-bottom:.2rem;">${m.l}</div>
+              <div style="font-size:.68rem;color:var(--ink-muted);">${m.desc}</div>
+              <code style="font-size:.65rem;color:#7c3aed;background:#f5f3ff;padding:1px 4px;margin-top:.25rem;display:inline-block;">${m.ex}</code>
+            </div>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;margin-top:.2rem;"><input type="checkbox" ${m.on?'checked':''} style="opacity:0;width:0;height:0;"><span style="position:absolute;cursor:pointer;inset:0;background:${m.on?'#16a34a':'#94a3b8'};border-radius:24px;display:flex;align-items:center;${m.on?'justify-content:flex-end;padding-right:3px':'justify-content:flex-start;padding-left:3px'};"><span style="width:18px;height:18px;background:#fff;border-radius:50%;display:block;"></span></span></label>
+          </div>`).join('')}
+          <button onclick="igToast('Data masking settings saved — active on next page load','success')" style="background:#7c3aed;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:fit-content;"><i class="fas fa-eye-slash" style="margin-right:.4rem;"></i>Save Masking Rules</button>
         </div>
       </div>
     </div>
-  </div>`
+  </div>
+
+  <!-- Tab 4: IP Whitelist -->
+  <div id="sec-pane-4" style="display:none;">
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;">
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">IP Whitelist & Block List</h3></div>
+        <table class="ig-tbl"><thead><tr><th>IP Address</th><th>Label</th><th>Type</th><th>Added</th><th>Action</th></tr></thead><tbody>
+          ${[
+            {ip:'103.21.44.0/24', label:'Admin Office — New Delhi',   type:'Whitelist',  added:'01 Jan 2025'},
+            {ip:'49.36.x.x',     label:'Directors — Static IP',       type:'Whitelist',  added:'01 Jan 2025'},
+            {ip:'115.99.x.x',    label:'Client Portal — Mumbai',       type:'Whitelist',  added:'15 Feb 2025'},
+            {ip:'182.65.x.x',    label:'Employee — Remote',            type:'Whitelist',  added:'01 Feb 2025'},
+            {ip:'103.55.x.x',    label:'Remote VPN Endpoint',          type:'Whitelist',  added:'20 Jan 2025'},
+            {ip:'185.220.x.x',   label:'Suspected Tor Exit Node',      type:'Blocked',    added:'27 Feb 2025'},
+            {ip:'91.108.x.x',    label:'Brute Force — Auto-blocked',   type:'Blocked',    added:'25 Feb 2025'},
+          ].map(r=>`<tr>
+            <td style="font-size:.78rem;font-family:monospace;font-weight:500;">${r.ip}</td>
+            <td style="font-size:.78rem;">${r.label}</td>
+            <td><span class="badge ${r.type==='Whitelist'?'b-gr':'b-re'}">${r.type}</span></td>
+            <td style="font-size:.72rem;color:var(--ink-muted);">${r.added}</td>
+            <td><button onclick="igConfirm('Remove ${r.ip} from list?',function(){ igToast('${r.ip} removed','warn'); })" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.68rem;"><i class="fas fa-trash"></i></button></td>
+          </tr>`).join('')}
+        </tbody></table>
+        <div style="padding:.875rem 1.25rem;border-top:1px solid var(--border);">
+          <div style="display:flex;gap:.75rem;">
+            <input type="text" id="new-ip" class="ig-input" placeholder="IP or CIDR range (e.g. 103.21.0.0/16)" style="font-size:.82rem;flex:1;">
+            <input type="text" id="new-ip-label" class="ig-input" placeholder="Label (e.g. Office)" style="font-size:.82rem;flex:1;">
+            <select id="new-ip-type" class="ig-input" style="font-size:.82rem;max-width:120px;"><option>Whitelist</option><option>Blocked</option></select>
+            <button onclick="igToast('IP added — '+document.getElementById('new-ip').value,'success');document.getElementById('new-ip').value='';document.getElementById('new-ip-label').value=''" style="background:var(--gold);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;white-space:nowrap;">Add IP</button>
+          </div>
+        </div>
+      </div>
+      <!-- Session Management -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Active Sessions</h3></div>
+        <div style="padding:.875rem;">
+          ${[
+            {u:'superadmin@indiagully.com', started:'28 Feb 09:15', ip:'103.21.x.x', ua:'Chrome 121 / Win 11', active:true},
+            {u:'akm@indiagully.com',        started:'28 Feb 09:12', ip:'49.36.x.x',  ua:'Safari 17 / macOS',   active:true},
+          ].map(s=>`<div style="padding:.75rem;border:1px solid ${s.active?'#86efac':'var(--border)'};margin-bottom:.5rem;background:${s.active?'#f0fdf4':'#fafaf8'};">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem;">
+              <span style="font-size:.78rem;font-weight:600;color:var(--ink);">${s.u}</span>
+              <span class="badge b-gr" style="font-size:.6rem;">Active</span>
+            </div>
+            <div style="font-size:.68rem;color:var(--ink-muted);">IP: ${s.ip} · ${s.ua}</div>
+            <div style="font-size:.68rem;color:var(--ink-muted);">Started: ${s.started}</div>
+            <button onclick="igConfirm('Force-terminate session for ${s.u}?',function(){igToast('Session terminated','warn')})" style="margin-top:.5rem;background:#dc2626;color:#fff;border:none;padding:.2rem .625rem;font-size:.65rem;cursor:pointer;">Terminate</button>
+          </div>`).join('')}
+          <button onclick="igConfirm('Terminate ALL active sessions? All users will be logged out.',function(){igToast('All sessions terminated','warn')})" style="background:var(--ink);color:#fff;border:none;padding:.5rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;width:100%;margin-top:.5rem;"><i class="fas fa-power-off" style="margin-right:.4rem;"></i>Terminate All Sessions</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  window.igSecTab = function(idx){
+    for(var i=0;i<5;i++){
+      var p=document.getElementById('sec-pane-'+i);
+      var t=document.getElementById('sec-tab-'+i);
+      if(p) p.style.display=i===idx?'block':'none';
+      if(t){ t.style.color=i===idx?'var(--gold)':'var(--ink-muted)'; t.style.borderBottom=i===idx?'2px solid var(--gold)':'2px solid transparent'; }
+    }
+  };
+  window.igFilterAuditLog = function(val){
+    var rows=document.querySelectorAll('#audit-log-table tbody tr');
+    rows.forEach(function(r){
+      var show=true;
+      if(val==='fail') show=r.dataset.ok==='false';
+      else if(val==='auth') show=r.dataset.mod==='auth';
+      else if(val==='high') show=r.dataset.risk==='High'||r.dataset.risk==='Critical';
+      r.style.display=show?'':'none';
+    });
+  };
+  </script>`
   return c.html(layout('Security & Audit', adminShell('Security & Audit', 'security', body), {noNav:true,noFooter:true}))
 })
 

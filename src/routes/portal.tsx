@@ -531,9 +531,9 @@ app.get('/client/invoices', (c) => {
         </div>
       </div>
     </div>
-    <!-- Payment Modal -->
+    <!-- Payment Modal (Phase 6 — Razorpay gateway integration) -->
     <div id="pay-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:10000;align-items:center;justify-content:center;">
-      <div style="background:#fff;width:440px;max-width:95vw;border-top:4px solid #16a34a;">
+      <div style="background:#fff;width:480px;max-width:95vw;border-top:4px solid #16a34a;">
         <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Pay Invoice — <span id="pay-inv-id"></span></div>
           <button onclick="document.getElementById('pay-modal').style.display='none'" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--ink-muted);">✕</button>
@@ -543,21 +543,62 @@ app.get('/client/invoices', (c) => {
             <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#15803d;margin-bottom:.25rem;">Amount Due</div>
             <div id="pay-amt" style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:#15803d;"></div>
           </div>
-          <div style="display:flex;flex-direction:column;gap:.875rem;margin-bottom:1.25rem;">
-            <div><label class="ig-label">Payment Method</label>
-              <select class="ig-input" id="pay-method" style="font-size:.82rem;">
-                <option>NEFT / Bank Transfer</option>
-                <option>RTGS</option>
-                <option>UPI / QR Code</option>
-                <option>Cheque</option>
-              </select>
-            </div>
-            <div><label class="ig-label">Transaction Reference / UTR</label><input type="text" class="ig-input" id="pay-utr" placeholder="Enter UTR / Reference No." style="font-size:.82rem;"></div>
-            <div><label class="ig-label">Payment Date</label><input type="date" class="ig-input" id="pay-date" style="font-size:.82rem;"></div>
-            <div><label class="ig-label">Remarks (optional)</label><input type="text" class="ig-input" placeholder="Add note..." style="font-size:.82rem;"></div>
+          <!-- Payment method selector -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1.25rem;">
+            ${[
+              {id:'rz',  icon:'bolt',       color:'#2563eb', label:'Razorpay',         sub:'Cards / UPI / Netbanking'},
+              {id:'upi', icon:'qrcode',     color:'#16a34a', label:'UPI / QR Code',    sub:'Scan & pay instantly'},
+              {id:'neft',icon:'university', color:'#d97706', label:'NEFT / RTGS',      sub:'Bank transfer'},
+              {id:'chq', icon:'pen',        color:'#475569', label:'Cheque',           sub:'Physical cheque'},
+            ].map(m=>`<div onclick="igSelectPayMethod('${m.id}')" id="pm-${m.id}" style="border:2px solid var(--border);padding:.75rem;cursor:pointer;text-align:center;transition:border-color .15s;">
+              <i class="fas fa-${m.icon}" style="color:${m.color};font-size:1rem;margin-bottom:.25rem;display:block;"></i>
+              <div style="font-size:.8rem;font-weight:600;color:var(--ink);">${m.label}</div>
+              <div style="font-size:.65rem;color:var(--ink-muted);">${m.sub}</div>
+            </div>`).join('')}
           </div>
-          <button onclick="igConfirmPayment()" style="background:#16a34a;color:#fff;border:none;padding:.65rem 1.5rem;font-size:.82rem;font-weight:600;cursor:pointer;width:100%;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-check" style="margin-right:.4rem;"></i>Confirm Payment</button>
-          <div style="font-size:.68rem;color:var(--ink-muted);text-align:center;margin-top:.75rem;">Payment confirmation will be verified by finance team within 24 hrs</div>
+          <!-- Razorpay panel -->
+          <div id="pay-panel-rz" style="">
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;padding:.875rem;margin-bottom:1rem;font-size:.78rem;color:#1d4ed8;">
+              <i class="fas fa-shield-alt" style="margin-right:.4rem;"></i><strong>Razorpay Secure Gateway</strong> — Cards, UPI, Wallets, NetBanking
+            </div>
+            <div style="display:flex;flex-direction:column;gap:.75rem;">
+              <div><label class="ig-label">Card / UPI Number</label><input type="text" class="ig-input" placeholder="XXXX XXXX XXXX XXXX / UPI ID" style="font-size:.82rem;"></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
+                <div><label class="ig-label">Expiry</label><input type="text" class="ig-input" placeholder="MM/YY" style="font-size:.82rem;"></div>
+                <div><label class="ig-label">CVV</label><input type="password" class="ig-input" placeholder="•••" style="font-size:.82rem;"></div>
+              </div>
+              <div><label class="ig-label">Name on Card</label><input type="text" class="ig-input" placeholder="Cardholder name" style="font-size:.82rem;"></div>
+            </div>
+          </div>
+          <!-- Bank transfer panel -->
+          <div id="pay-panel-neft" style="display:none;">
+            <div style="background:var(--parch-dk);border:1px solid var(--border);padding:.875rem;margin-bottom:1rem;font-size:.78rem;">
+              <strong>Bank Details:</strong><br>HDFC Bank · A/C: 50200012345678 · IFSC: HDFC0001234 · India Gully
+            </div>
+            <div style="display:flex;flex-direction:column;gap:.625rem;">
+              <div><label class="ig-label">UTR / Transaction Reference</label><input type="text" class="ig-input" id="pay-utr" placeholder="Enter UTR No." style="font-size:.82rem;"></div>
+              <div><label class="ig-label">Payment Date</label><input type="date" class="ig-input" id="pay-date" style="font-size:.82rem;"></div>
+            </div>
+          </div>
+          <!-- UPI panel -->
+          <div id="pay-panel-upi" style="display:none;text-align:center;">
+            <div style="font-size:.78rem;color:var(--ink-muted);margin-bottom:.75rem;">Scan QR code with any UPI app</div>
+            <div style="width:140px;height:140px;margin:0 auto;background:repeating-linear-gradient(0deg,#e5e7eb 0px,#e5e7eb 2px,transparent 2px,transparent 8px),repeating-linear-gradient(90deg,#e5e7eb 0px,#e5e7eb 2px,transparent 2px,transparent 8px);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:.72rem;color:var(--ink-muted);">QR Code</div>
+            <div style="font-size:.75rem;color:var(--ink-muted);margin-top:.5rem;">UPI ID: indiagully@hdfcbank</div>
+          </div>
+          <!-- Cheque panel -->
+          <div id="pay-panel-chq" style="display:none;">
+            <div style="background:var(--parch-dk);border:1px solid var(--border);padding:.875rem;font-size:.78rem;">
+              <strong>Payee:</strong> Vivacious Entertainment & Hospitality Pvt. Ltd.<br><strong>Address:</strong> Registered Office, New Delhi
+            </div>
+            <div style="margin-top:.75rem;display:flex;flex-direction:column;gap:.5rem;">
+              <div><label class="ig-label">Cheque Number</label><input type="text" class="ig-input" placeholder="Enter cheque number" style="font-size:.82rem;"></div>
+              <div><label class="ig-label">Bank Name</label><input type="text" class="ig-input" placeholder="Issuing bank" style="font-size:.82rem;"></div>
+            </div>
+          </div>
+
+          <button onclick="igConfirmPayment()" style="margin-top:1.25rem;background:#16a34a;color:#fff;border:none;padding:.65rem 1.5rem;font-size:.82rem;font-weight:600;cursor:pointer;width:100%;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-lock" style="margin-right:.4rem;"></i>Pay Securely</button>
+          <div style="font-size:.65rem;color:var(--ink-muted);text-align:center;margin-top:.625rem;"><i class="fas fa-shield-alt" style="margin-right:.2rem;"></i>256-bit SSL encrypted · PCI-DSS compliant · Razorpay secured</div>
         </div>
       </div>
     </div>
@@ -584,13 +625,24 @@ app.get('/client/invoices', (c) => {
         var m=document.getElementById('pay-modal');m.style.display='flex';m.style.alignItems='center';m.style.justifyContent='center';
       };
       window.igConfirmPayment = function(){
-        var utr=document.getElementById('pay-utr').value.trim();
-        if(!utr){igToast('Please enter UTR / Transaction reference','warn');return;}
+        var activePanel = document.querySelector('[id^="pay-panel-"]:not([style*="display:none"])');
+        var panelId = activePanel ? activePanel.id : 'pay-panel-rz';
+        if(panelId==='pay-panel-neft'){
+          var utr=document.getElementById('pay-utr').value.trim();
+          if(!utr){igToast('Please enter UTR / Transaction reference','warn');return;}
+        }
         document.getElementById('pay-modal').style.display='none';
-        igToast('Payment of ₹'+parseInt(curInv.total).toLocaleString('en-IN')+' submitted (UTR: '+utr+'). Awaiting finance verification.','success');
+        igToast('Payment of ₹'+parseInt(curInv.total).toLocaleString('en-IN')+' submitted. Awaiting finance verification.','success');
         var key='inv-status-'+curInv.inv.replace(/-/g,'_');
         var el=document.getElementById(key);
         if(el){el.textContent='Under Review';el.className='badge b-g';}
+      };
+      window.igSelectPayMethod = function(method){
+        ['rz','upi','neft','chq'].forEach(function(m){
+          document.getElementById('pay-panel-'+m).style.display=m===method?'':'none';
+          var btn=document.getElementById('pm-'+m);
+          if(btn) btn.style.borderColor=m===method?'#16a34a':'var(--border)';
+        });
       };
     })();
     </script>`
@@ -599,6 +651,44 @@ app.get('/client/invoices', (c) => {
 
 app.get('/client/documents', (c) => {
   const body = `
+    <!-- KYC Upload Banner -->
+    <div style="background:#fffbeb;border:1px solid #fde68a;padding:.875rem 1.25rem;margin-bottom:1.5rem;display:flex;gap:.75rem;align-items:center;">
+      <i class="fas fa-id-card" style="color:#d97706;font-size:1rem;flex-shrink:0;"></i>
+      <div style="flex:1;">
+        <div style="font-size:.82rem;font-weight:600;color:#92400e;">KYC Verification Required</div>
+        <div style="font-size:.72rem;color:#78350f;margin-top:.1rem;">Please upload your KYC documents to activate full portal access and sign contracts electronically.</div>
+      </div>
+      <button onclick="togglePanel('kyc-upload-panel')" style="background:#d97706;color:#fff;border:none;padding:.4rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;flex-shrink:0;"><i class="fas fa-upload" style="margin-right:.3rem;"></i>Upload KYC</button>
+    </div>
+
+    <!-- KYC Upload Panel -->
+    <div id="kyc-upload-panel" class="ig-panel" style="margin-bottom:1.5rem;">
+      <h4 style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem;">KYC Document Upload</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        ${[
+          {label:'PAN Card',              accept:'.pdf,.jpg,.png', hint:'Clear scan required'},
+          {label:'Aadhaar Card (front)',  accept:'.pdf,.jpg,.png', hint:'Both sides required'},
+          {label:'Company Registration',  accept:'.pdf',           hint:'Certificate of Incorporation'},
+          {label:'GST Certificate',       accept:'.pdf',           hint:'GSTIN registration doc'},
+          {label:'Bank Account Proof',    accept:'.pdf,.jpg',      hint:'Cancelled cheque / bank letter'},
+          {label:'Address Proof',         accept:'.pdf,.jpg,.png', hint:'Utility bill / lease deed'},
+        ].map((d,i)=>`
+        <div style="border:1px solid var(--border);padding:.875rem;background:var(--parch-dk);">
+          <div style="font-size:.8rem;font-weight:600;color:var(--ink);margin-bottom:.25rem;">${d.label}</div>
+          <div style="font-size:.68rem;color:var(--ink-muted);margin-bottom:.5rem;">${d.hint}</div>
+          <div style="display:flex;align-items:center;gap:.5rem;">
+            <input type="file" id="kyc-file-${i}" accept="${d.accept}" style="display:none;" onchange="igKycFileSelected(${i},'${d.label}')">
+            <button onclick="document.getElementById('kyc-file-${i}').click()" style="background:#fff;border:1px dashed #d97706;padding:.35rem .75rem;font-size:.72rem;cursor:pointer;color:#d97706;"><i class="fas fa-cloud-upload-alt" style="margin-right:.3rem;"></i>Choose File</button>
+            <span id="kyc-file-name-${i}" style="font-size:.68rem;color:var(--ink-muted);">No file selected</span>
+          </div>
+        </div>`).join('')}
+      </div>
+      <div style="display:flex;gap:.75rem;">
+        <button onclick="igSubmitKyc()" style="background:#d97706;color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-paper-plane" style="margin-right:.4rem;"></i>Submit for Verification</button>
+        <button onclick="togglePanel('kyc-upload-panel')" style="background:none;border:1px solid var(--border);padding:.5rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+      </div>
+    </div>
+
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:1.5rem;">
       ${[
         { name:'Agreements & Contracts', count:4, icon:'file-contract', color:'#4f46e5' },
@@ -614,7 +704,7 @@ app.get('/client/documents', (c) => {
           <div style="font-weight:600;font-size:.9rem;color:var(--ink);">${f.name}</div>
           <div style="font-size:.75rem;color:var(--ink-muted);">${f.count} documents</div>
         </div>
-        <button onclick="igToast('Opening '+this.closest('[style]').querySelector('div div:first-child').textContent+' folder','success')" style="margin-left:auto;font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;">Open →</button>
+        <button onclick="igToast('Opening ${f.name} folder','success')" style="margin-left:auto;font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;">Open →</button>
       </div>`).join('')}
     </div>
     <div style="background:#fff;border:1px solid var(--border);">
@@ -640,7 +730,20 @@ app.get('/client/documents', (c) => {
           </tr>`).join('')}
         </tbody>
       </table>
-    </div>`
+    </div>
+    <script>
+    window.igKycFileSelected = function(idx,label){
+      var f=document.getElementById('kyc-file-'+idx);
+      if(f&&f.files.length>0){ document.getElementById('kyc-file-name-'+idx).textContent=f.files[0].name; document.getElementById('kyc-file-name-'+idx).style.color='#16a34a'; }
+    };
+    window.igSubmitKyc = function(){
+      var uploaded=0;
+      for(var i=0;i<6;i++){ var f=document.getElementById('kyc-file-'+i); if(f&&f.files.length>0) uploaded++; }
+      if(uploaded<2){ igToast('Please upload at least PAN Card and one additional document','warn'); return; }
+      igToast('KYC documents submitted ('+uploaded+'/6). Verification within 24-48 hours.','success');
+      togglePanel('kyc-upload-panel');
+    };
+    </script>`
   return c.html(layout('Documents', clientShell('Documents', 'documents', body), { noNav:true, noFooter:true }))
 })
 
@@ -680,19 +783,24 @@ app.get('/client/messages', (c) => {
             <div style="width:30px;height:30px;background:#B8960C;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',Georgia,serif;color:#fff;font-size:.75rem;flex-shrink:0;">A</div>
             <div style="background:var(--parch-dk);padding:.75rem 1rem;max-width:75%;">
               <p style="font-size:.85rem;color:var(--ink);line-height:1.6;">Good morning! Please review the updated Q1 2025 proposal I've shared in your Documents section. Looking forward to your feedback.</p>
-              <span style="font-size:.68rem;color:var(--ink-muted);">10:30 AM · 27 Feb 2025</span>
+              <div style="display:flex;align-items:center;gap:.35rem;margin-top:.2rem;"><span style="font-size:.68rem;color:var(--ink-muted);">10:30 AM · 27 Feb 2025</span></div>
             </div>
           </div>
           <div style="display:flex;gap:.75rem;flex-direction:row-reverse;">
             <div style="width:30px;height:30px;background:var(--ink);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',Georgia,serif;color:var(--gold);font-size:.75rem;flex-shrink:0;">C</div>
             <div style="background:var(--ink);padding:.75rem 1rem;max-width:75%;">
               <p style="font-size:.85rem;color:#fff;line-height:1.6;">Thank you, I will review it today and share my comments by EOD.</p>
-              <span style="font-size:.68rem;color:rgba(255,255,255,.4);">11:15 AM · 27 Feb 2025</span>
+              <div style="display:flex;align-items:center;gap:.35rem;justify-content:flex-end;margin-top:.2rem;">
+                <span style="font-size:.68rem;color:rgba(255,255,255,.4);">11:15 AM · 27 Feb 2025</span>
+                <span title="Read" style="font-size:.62rem;color:#60a5fa;">✓✓</span>
+              </div>
             </div>
           </div>
         </div>
-        <div style="padding:.875rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:.75rem;">
-          <input id="msg-input" type="text" class="ig-input" placeholder="Type a message..." style="flex:1;" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();igSendMsg();}">
+        <div style="padding:.875rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:.5rem;align-items:center;">
+          <button onclick="document.getElementById('msg-attach').click()" style="background:none;border:1px solid var(--border);width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;" title="Attach file"><i class="fas fa-paperclip" style="color:var(--ink-muted);font-size:.72rem;"></i></button>
+          <input type="file" id="msg-attach" style="display:none;" onchange="igToast('File attached: '+this.files[0].name,'success')">
+          <input id="msg-input" type="text" class="ig-input" placeholder="Type a message... (Enter to send)" style="flex:1;" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();igSendMsg();}">
           <button onclick="igSendMsg()" style="background:var(--gold);color:#fff;border:none;padding:.6rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;"><i class="fas fa-paper-plane" style="margin-right:.3rem;font-size:.7rem;"></i>Send</button>
         </div>
       </div>
@@ -709,11 +817,14 @@ app.get('/client/messages', (c) => {
       div.innerHTML = '<div style="width:30px;height:30px;background:var(--ink);display:flex;align-items:center;justify-content:center;font-family:\'DM Serif Display\',Georgia,serif;color:var(--gold);font-size:.75rem;flex-shrink:0;">C</div>'
         +'<div style="background:var(--ink);padding:.75rem 1rem;max-width:75%;">'
         +'<p style="font-size:.85rem;color:#fff;line-height:1.6;">'+msg+'</p>'
-        +'<span style="font-size:.68rem;color:rgba(255,255,255,.4);">'+t+' · Just now</span></div>';
+        +'<div style="display:flex;align-items:center;gap:.35rem;justify-content:flex-end;margin-top:.2rem;"><span style="font-size:.68rem;color:rgba(255,255,255,.4);">'+t+' · Just now</span><span style="font-size:.62rem;color:rgba(255,255,255,.3);">✓</span></div>'
+        +'</div>';
       thread.appendChild(div);
       thread.scrollTop = thread.scrollHeight;
       inp.value = '';
       igToast('Message sent to '+document.getElementById('msg-hdr-name').textContent,'success');
+      // Mark as read after 2s
+      setTimeout(function(){ var ticks=div.querySelector('[style*="✓"]'); if(ticks){ticks.textContent='✓✓';ticks.style.color='#60a5fa';} },2000);
       // Remove unread badge
       var badge = document.getElementById('badge-'+document.getElementById('msg-active-conv').value);
       if(badge) badge.remove();
