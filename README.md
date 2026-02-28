@@ -10,8 +10,9 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://b936fa45.india-gully.pages.dev |
+| **Latest Deploy** | https://cdb2edad.india-gully.pages.dev |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
+| **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
 | **Sandbox Preview** | http://localhost:3000 |
 
 ---
@@ -20,10 +21,13 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 
 | Portal | URL | ID | Password | OTP |
 |--------|-----|----|----------|-----|
-| Super Admin | `/admin` | superadmin@indiagully.com | Admin@IG2024! | 000000 |
-| Client | `/portal/client` | demo@indiagully.com | Client@IG2024 | 000000 |
-| Employee | `/portal/employee` | IG-EMP-0001 | Emp@IG2024 | 000000 |
-| Board & KMP | `/portal/board` | IG-KMP-0001 | Board@IG2024 | 000000 |
+| Super Admin | `/admin` | superadmin@indiagully.com | Admin@IG2024! | **TOTP (live — see login page)** |
+| Client | `/portal/client` | demo@indiagully.com | Client@IG2024 | **TOTP (live — see login page)** |
+| Employee | `/portal/employee` | IG-EMP-0001 | Emp@IG2024 | **TOTP (live — see login page)** |
+| Board & KMP | `/portal/board` | IG-KMP-0001 | Board@IG2024 | **TOTP (live — see login page)** |
+
+> ⚠️ Static OTP `000000` has been replaced. The login page now shows a **live time-based 6-digit TOTP code** that refreshes every 30 seconds.
+> CSRF tokens, rate limiting (5 attempts → 5-min lockout), and 30-min session timeout are now enforced client-side.
 
 ---
 
@@ -38,6 +42,22 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 - **Insights:** 6 thought leadership articles with gated access
 - **Contact:** Mandate enquiry form with 6 enquiry types
 - **Legal Pages:** Privacy Policy, Terms of Use, Disclaimer (`/legal/*`)
+
+### Security & Functional Enhancements B1–B9 (LIVE ✅ — commit a7967bd)
+
+| ID | Module | What's New |
+|----|--------|-----------| 
+| **B1** | **All Portals** | Static OTP `000000` removed — replaced with **live TOTP simulator** (HOTP-style, 30s rotating code shown on login page) |
+| **B2** | **All Login Forms** | **CSRF token** generated client-side via `crypto.getRandomValues` and injected into each login form hidden field |
+| **B3** | **All Login Forms** | **Rate limiting** — 5 failed attempts triggers a 5-minute client-side lockout with countdown timer |
+| **B4** | **All Portals** | **Session timeout** — 30-min inactivity auto-redirects to login page (events: click/keydown/mousemove/touch) |
+| **B5** | **Finance ERP** | **2 new tabs**: Form 26AS Reconciliation (TRACES data, mismatch alerts, resolution panel) + ITR Filing Tracker (advance tax challans, ITR history, tax computation summary) |
+| **B6** | **HR ERP** | **Form-16 Portal** — Part A (TDS certificate from TRACES, enrollment/filing status) + Part B (salary & deductions, taxable income, generate & email, ZIP bundle download) |
+| **B7** | **Governance** | **Dynamic Board Meeting Agenda Builder** — meeting form, drag-add agenda items (Routine / Resolution / Special), live notice preview, resolution drafts with export |
+| **B8** | **Sales / Quotes** | **2 new tabs**: E-Sign Workflow (select quote, send to signatory, status tracker: Sent/Viewed/Signed) + Version History (v1/v2 with diff view, branch new version) |
+| **B9** | **API Docs** | **GraphQL Playground** — interactive editor, query variables, demo responses for 3 query types, schema type explorer (11 types), SDL download button |
+
+---
 
 ### Phase 2–6 — Enterprise Platform (LIVE ✅)
 
