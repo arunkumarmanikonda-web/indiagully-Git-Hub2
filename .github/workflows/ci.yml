@@ -1164,8 +1164,8 @@ jobs:
           python3 -c "
           import urllib.request, json
           d = json.loads(urllib.request.urlopen('http://localhost:3000/api/health').read())
-          assert d.get('version','') >= '2026.29', f'version too old: {d.get(\"version\")}'
-          assert d.get('routes_count',0) >= 264, f'routes too few: {d.get(\"routes_count\")}'
+          assert d.get('version','') >= '2026.30', f'version too old: {d.get(\"version\")}'
+          assert d.get('routes_count',0) >= 270, f'routes too few: {d.get(\"routes_count\")}'
           assert 'dd_round' in str(d.get('security',{})), 'dd_round block missing'
           assert len(d.get('dd_round_fixes',[])) >= 6, 'dd_round_fixes < 6'
           assert d.get('open_findings_count',0) == 0, 'open findings detected'
@@ -1208,8 +1208,8 @@ jobs:
           python3 -c "
           import urllib.request, json
           d = json.loads(urllib.request.urlopen('http://localhost:3000/api/health').read())
-          assert d.get('version','') >= '2026.29', f'version too old: {d.get(\"version\")}'
-          assert d.get('routes_count',0) >= 264, f'routes too few: {d.get(\"routes_count\")}'
+          assert d.get('version','') >= '2026.30', f'version too old: {d.get(\"version\")}'
+          assert d.get('routes_count',0) >= 270, f'routes too few: {d.get(\"routes_count\")}'
           assert 'ee_round' in str(d.get('security',{})), 'ee_round block missing'
           assert len(d.get('ee_round_fixes',[])) >= 6, 'ee_round_fixes < 6'
           assert d.get('open_findings_count',0) == 0, 'open findings detected'
@@ -1220,6 +1220,50 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ee-round-test-results
+          path: playwright-report/
+
+  playwright-ff-round:
+    name: Playwright E2E FF-Round
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ github.event.inputs.run_e2e != 'false' }}
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Start Wrangler dev server
+        run: |
+          npx wrangler pages dev dist --ip 0.0.0.0 --port 3000 &
+          for i in {1..30}; do curl -sf http://localhost:3000/api/health && break || sleep 2; done
+      - name: Run FF-Round Playwright tests
+        run: npx playwright test tests/ff-round.spec.ts --timeout=15000 --retries=1 --reporter=html
+      - name: FF-Round health gate
+        run: |
+          python3 -c "
+          import urllib.request, json
+          d = json.loads(urllib.request.urlopen('http://localhost:3000/api/health').read())
+          assert d.get('version','') >= '2026.30', f'version too old: {d.get(\"version\")}'
+          assert d.get('routes_count',0) >= 270, f'routes too few: {d.get(\"routes_count\")}'
+          assert 'ff_round' in str(d.get('security',{})), 'ff_round block missing'
+          assert len(d.get('ff_round_fixes',[])) >= 6, 'ff_round_fixes < 6'
+          assert d.get('open_findings_count',0) == 0, 'open findings detected'
+          print(f'FF-Round health gate PASSED - v{d[\"version\"]} {d[\"routes_count\"]} routes')
+          "
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ff-round-test-results
           path: playwright-report/
 
   d1-migrate:

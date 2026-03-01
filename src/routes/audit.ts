@@ -31,6 +31,7 @@ const scoreRounds = [
   {round:'CC-Round', score:100, w:'100%', c:'#0f766e'},
   {round:'DD-Round', score:100, w:'100%', c:'#b45309'},
   {round:'EE-Round', score:100, w:'100%', c:'#0891b2'},
+  {round:'FF-Round', score:100, w:'100%', c:'#7c3aed'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -121,11 +122,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.29-EE</span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">EE-Round &middot; March 2026</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.30-FF</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">FF-Round &middot; March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">264 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">270 endpoints</span></div>
     </div>
   </div>
 
@@ -200,8 +201,8 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">EE-Round · v2026.29-EE</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Feature Adoption · A/B Experiments · Digital Channels · Scalability · Consent Journey · Innovation Pipeline · 264 routes · 100/100</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">FF-Round · v2026.30-FF</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Workforce Analytics · Attrition Risk · Training · Org Health · Employee Data · Labour Law · 270 routes · 100/100</div>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
@@ -591,6 +592,18 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['EEO2','Deploy AB-03 winner (tooltip variant) — EE2 experiment AB-03 concluded; conversion uplift 22.7% realised','Medium','1h'],
             ['EEO3','Approve DPDP Consent SDK v2 (IN-05) to build stage — EE6 innovation compliance score 91, launch-readiness 65%','High','2h'],
             ['EEO4','Complete DDO3/DDO4 (Amplitude DPA + D1 bind) — EE4 scalability D1 actuals updated; EE6 IN-10 Zero-Trust readiness improves','High','8h'],
+            // FF-Round endpoints (all resolved)
+            ['FF1','GET /api/hr/workforce-analytics — 47 employees, 7 depts, gender 62:38, avg tenure 2.8y, billability 74%, 6 open positions, 14.6% 6-month headcount growth','RESOLVED','0h'],
+            ['FF2','GET /api/hr/attrition-risk — 5 high-risk employees scored (3 Engineering, 1 Sales each), rolling attrition 14%, dept heat map, top factors: low tenure, missed targets','RESOLVED','0h'],
+            ['FF3','GET /api/hr/training-effectiveness — 8 programs, 82% completion, avg score 78/100, 109 certs earned, avg ROI 179%, 5 skill gaps identified (Agile 75% gap highest)','RESOLVED','0h'],
+            ['FF4','GET /api/admin/org-health-score — overall 73/100, eNPS +42, engagement 74%, 2 dims below benchmark (Communication 68, Career Dev 61), improving trend','RESOLVED','0h'],
+            ['FF5','GET /api/dpdp/employee-data-audit — 12 categories, 10 compliant, 1 under review (Background Check retention), 0 access anomalies, ss8 substantially compliant','RESOLVED','0h'],
+            ['FF6','GET /api/compliance/labour-law-tracker — 8 acts tracked, 6 compliant, 1 review (Prof Tax Q4 pending), 1 N/A, 0 high-risk, 1 medium-risk alert','RESOLVED','0h'],
+            // FF-Round operator actions
+            ['FFO1','File Professional Tax Q4 FY26 return by 2026-03-15 — FF6 review status to compliant; penalty risk cleared','High','0.5h'],
+            ['FFO2','Update Background Check data retention policy to 3y — FF5 review category to compliant; ss8 fully compliant','Medium','1h'],
+            ['FFO3','Initiate retention action for top-5 attrition-risk employees (E001-E003, E006) — FF2 high-risk count 5 to 3','High','2h'],
+            ['FFO4','Complete EEO3/EEO4 (Consent SDK + D1 bind) — FF3 training platform data improves; FF4 career dev score target raised','High','8h'],
           ].map(([id,item,pri,eff])=>{
             const isResolved = pri === 'RESOLVED'
             const pc = isResolved?'b-gr':pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'

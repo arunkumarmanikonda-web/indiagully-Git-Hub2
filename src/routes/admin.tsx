@@ -6598,6 +6598,31 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       </div>
     </div>
 
+    <!-- FF-Round buttons -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;padding:1rem;">
+      <div style="font-size:.75rem;font-weight:600;color:#7c3aed;margin-bottom:.6rem;"><i class="fas fa-users" style="margin-right:.4rem;"></i>FF-Round — HR Intelligence &amp; Workforce Analytics (v2026.30)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igWorkforceAnalytics()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-sitemap" style="margin-right:.3rem;"></i>FF1: Workforce
+        </button>
+        <button onclick="igAttritionRisk()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-user-minus" style="margin-right:.3rem;"></i>FF2: Attrition Risk
+        </button>
+        <button onclick="igTrainingEffectiveness()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-graduation-cap" style="margin-right:.3rem;"></i>FF3: Training
+        </button>
+        <button onclick="igOrgHealthScore()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-heartbeat" style="margin-right:.3rem;"></i>FF4: Org Health
+        </button>
+        <button onclick="igEmployeeDataAudit()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-user-shield" style="margin-right:.3rem;"></i>FF5: Employee Data
+        </button>
+        <button onclick="igLabourLawTracker()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-balance-scale" style="margin-right:.3rem;"></i>FF6: Labour Law
+        </button>
+      </div>
+    </div>
+
     <!-- ── Gold Certification Live Progress (W-Round) ── -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;" id="gold-cert-widget">
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
@@ -8339,6 +8364,57 @@ window.igInnovationPipeline = function() {
       return '<tr><td style="font-size:.65rem;">'+i.name+'</td><td>'+i.stage+'</td><td style="color:'+c+';">'+i.compliance_score+'</td><td>'+i.launch_readiness+'%</td></tr>';}).join('');
     igModal('EE6: Innovation Pipeline — v2026.29','<b>Total:</b> '+s.total_initiatives+' | <b>Launched:</b> '+s.launched+' | <b>Pilot:</b> '+s.in_pilot+' | <b>Build:</b> '+s.in_build+' | <b>Avg Compliance:</b> '+s.avg_compliance_score+'/100 | <b>High Reg Impact:</b> '+s.high_reg_impact+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>Initiative</th><th>Stage</th><th>Comp Score</th><th>Readiness</th></tr>'+rows+'</table>');
   }).catch(function(){igModal('EE6: Innovation Pipeline','Session expired — log in as Super Admin')});
+};
+
+window.igWorkforceAnalytics = function() {
+  fetch('/hr/workforce-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.departments||[]).map(function(dep){
+      return '<tr><td>'+dep.dept+'</td><td>'+dep.headcount+'</td><td>'+dep.open+'</td><td>'+dep.avg_tenure_y+'y</td><td>'+dep.billability_pct+'%</td></tr>';}).join('');
+    igModal('FF1: Workforce Analytics — v2026.30','<b>Headcount:</b> '+s.total_headcount+' | <b>Open:</b> '+s.total_open_positions+' | <b>Gender:</b> '+s.gender_ratio+' M:F | <b>Avg Tenure:</b> '+s.avg_tenure_years+'y | <b>Billability:</b> '+s.avg_billability_pct+'% | <b>6-Month Growth:</b> +'+s.mom_growth_pct+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Dept</th><th>HC</th><th>Open</th><th>Tenure</th><th>Billability</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('FF1: Workforce','Session expired — log in as Super Admin')});
+};
+
+window.igAttritionRisk = function() {
+  fetch('/hr/attrition-risk',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.top_flight_risk||[]).map(function(e){
+      return '<tr><td>'+e.name+'</td><td>'+e.dept+'</td><td style="color:#991b1b;font-weight:700;">'+e.score+'</td><td style="font-size:.65rem;">'+e.factors.join(', ')+'</td></tr>';}).join('');
+    igModal('FF2: Attrition Risk — v2026.30','<b>High Risk:</b> '+s.high_risk+' | <b>Medium:</b> '+s.medium_risk+' | <b>12-Month Attrition:</b> '+s.rolling_attrition_12m_pct+'% | <b>Voluntary:</b> '+s.voluntary_pct+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Employee</th><th>Dept</th><th>Risk Score</th><th>Factors</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('FF2: Attrition Risk','Session expired — log in as Super Admin')});
+};
+
+window.igTrainingEffectiveness = function() {
+  fetch('/hr/training-effectiveness',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.programs||[]).map(function(p){
+      return '<tr><td style="font-size:.65rem;">'+p.name+'</td><td>'+Math.round(p.completed/p.enrolled*100)+'%</td><td>'+p.score+'</td><td>'+p.roi_pct+'%</td><td>'+p.certs+'</td></tr>';}).join('');
+    igModal('FF3: Training Effectiveness — v2026.30','<b>Programs:</b> '+s.total_programs+' | <b>Completion:</b> '+s.overall_completion_pct+'% | <b>Avg Score:</b> '+s.avg_score+'/100 | <b>Certs Earned:</b> '+s.total_certs_earned+' | <b>Avg ROI:</b> '+s.avg_roi_pct+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Program</th><th>Completion</th><th>Score</th><th>ROI</th><th>Certs</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('FF3: Training','Session expired — log in as Super Admin')});
+};
+
+window.igOrgHealthScore = function() {
+  fetch('/admin/org-health-score',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.dimensions||[]).map(function(dim){
+      var c=dim.score>=dim.benchmark?'#065f46':'#991b1b';
+      return '<tr><td>'+dim.dim+'</td><td style="color:'+c+';">'+dim.score+'</td><td>'+dim.benchmark+'</td><td>'+dim.trend+'</td></tr>';}).join('');
+    igModal('FF4: Org Health Score — v2026.30','<b>Overall:</b> '+s.overall_health_score+'/100 | <b>eNPS:</b> +'+s.enps+' | <b>Engagement:</b> '+s.engagement_pct+'% | <b>Response Rate:</b> '+s.response_rate_pct+'% | <b>Below Benchmark:</b> '+s.below_benchmark+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Dimension</th><th>Score</th><th>Benchmark</th><th>Trend</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('FF4: Org Health','Session expired — log in as Super Admin')});
+};
+
+window.igEmployeeDataAudit = function() {
+  fetch('/dpdp/employee-data-audit',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.categories||[]).filter(function(c){return c.status!=='not_collected';}).map(function(cat){
+      var col=cat.status==='compliant'?'#065f46':'#92400e';
+      return '<tr><td style="font-size:.65rem;">'+cat.cat+'</td><td>'+cat.consent+'</td><td>'+cat.retention+'</td><td style="color:'+col+';">'+cat.status+'</td></tr>';}).join('');
+    igModal('FF5: Employee Data Audit (DPDP §8) — v2026.30','<b>Categories:</b> '+s.total_categories+' | <b>Compliant:</b> '+s.compliant+' | <b>Review:</b> '+s.under_review+' | <b>§8 Status:</b> '+s.section_8_status+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Category</th><th>Consent</th><th>Retention</th><th>Status</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('FF5: Employee Data','Session expired — log in as Super Admin')});
+};
+
+window.igLabourLawTracker = function() {
+  fetch('/compliance/labour-law-tracker',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.acts||[]).map(function(a){
+      var c=a.status==='compliant'?'#065f46':a.status==='review'?'#92400e':'#555';
+      return '<tr><td style="font-size:.65rem;">'+a.act+'</td><td>'+a.jurisdiction+'</td><td style="color:'+c+';">'+a.status+'</td><td style="color:'+(a.penalty_risk==='medium'?'#92400e':a.penalty_risk==='high'?'#991b1b':'#065f46')+';">'+a.penalty_risk+'</td></tr>';}).join('');
+    igModal('FF6: Labour Law Tracker — v2026.30','<b>Acts:</b> '+s.total_acts_tracked+' | <b>Compliant:</b> '+s.compliant+' | <b>Review:</b> '+s.under_review+' | <b>Medium Risk:</b> '+s.medium_penalty_risk+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Act</th><th>Jurisdiction</th><th>Status</th><th>Risk</th></tr>'+rows+'</table>'+(d.alerts.length?'<p style="color:#92400e;font-size:.7rem;margin-top:.4rem;">⚠ '+d.alerts.map(function(a){return a.act+': '+a.issue;}).join(' | ')+'</p>':''));
+  }).catch(function(){igModal('FF6: Labour Law','Session expired — log in as Super Admin')});
 };
 
 window.igSecTab = function(idx){
