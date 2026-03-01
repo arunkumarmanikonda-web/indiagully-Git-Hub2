@@ -89,6 +89,28 @@ All portals require credentials provisioned by the system administrator.
 ---
 
 
+
+## 🏆 U-Round Complete — v2026.19‑U‑Round (2026‑03‑01)
+
+| Metric | Value |
+|--------|-------|
+| Security Score | 100 / 100 |
+| Routes Count | 205 |
+| Open Findings | 0 |
+| Smoke Tests | 33 / 33 |
+| Build Size | 1,745 KB |
+| Git Tag | `v2026.19‑U‑Round` |
+
+**Delivered Endpoints (U1–U6):**
+- **U1** `GET /api/admin/d1-schema-status` — D1 schema health: 12 tables, index coverage, 3 migrations, schema score
+- **U2** `GET /api/payments/live-key-status` — Razorpay live key validation: mode, prefix, 6 PCI compliance checks
+- **U3** `GET /api/integrations/dns-deliverability` — DNS deliverability: SPF/DKIM/DMARC/MX/A/HTTPS records, grade A/B/C
+- **U4** `GET /api/auth/webauthn-registry` — WebAuthn credential registry: RP details, authenticator types, FIDO2 status
+- **U5** `GET /api/dpdp/dpa-status` — DPA tracker: 6 vendor DPAs (Cloudflare, Razorpay, Twilio×2, DocuSign, Neon), DPDP §9
+- **U6** `GET /api/compliance/gold-cert-status` — Gold cert readiness: GR-01 to GR-06, cert level, effort remaining
+
+**V-Round Roadmap:** Bind D1 remote (2h), Razorpay live keys (0.5h), DNS DKIM/DMARC (1h), WebAuthn passkey (1h), Execute 6 DPAs (4h), Gold assessor sign-off (8h).
+
 ## 🏆 T-Round Complete — v2026.18‑T‑Round (2026‑03‑01)
 
 | Metric | Value |

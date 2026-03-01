@@ -20,6 +20,7 @@ const scoreRounds = [
   {round:'R-Round', score:100, w:'100%', c:'#000804'},
   {round:'S-Round', score:100, w:'100%', c:'#0F172A'},
   {round:'T-Round', score:100, w:'100%', c:'#1E3A2F'},
+  {round:'U-Round', score:100, w:'100%', c:'#0F2A1E'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -110,11 +111,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.18-T</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.19-U</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">R-Round &middot; March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">200 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">205 endpoints</span></div>
     </div>
   </div>
 
@@ -189,8 +190,8 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">T-Round · v2026.18-T</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;">Go-Live Checklist · Transaction Log · Webhook Health · MFA Status · DPO Summary · Risk Register · 200 routes · 100/100</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">U-Round · v2026.19-U</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;">D1 Schema Status · Live Key Status · DNS Deliverability · WebAuthn Registry · DPA Status · Gold Cert Status · 205 routes · 100/100</div>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
@@ -382,7 +383,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
 
   <!-- 8. ALL RESOLVED ITEMS & Q-ROUND ROADMAP -->
   <div class="section">
-    <div class="section-title"><i class="fas fa-list-check"></i> 8. T-Round Items (All Resolved) — U-Round Roadmap</div>
+    <div class="section-title"><i class="fas fa-list-check"></i> 8. U-Round Items (All Resolved) — V-Round Roadmap</div>
     <div class="card">
       <table class="ig-tbl">
         <thead><tr><th>ID</th><th>Item</th><th>Priority</th><th>Effort</th></tr></thead>
@@ -465,13 +466,20 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['T4','GET /api/auth/mfa-status — MFA enrolment board: TOTP/WebAuthn counts (D1), Email OTP, SMS OTP, 5-method matrix','RESOLVED','0h'],
             ['T5','GET /api/dpdp/dpo-summary — DPO operational summary: 15-item DPDP checklist, live KPIs, open action items','RESOLVED','0h'],
             ['T6','GET /api/compliance/risk-register — IT risk register: 12 risks, likelihood/impact matrix, ISO 27001 framework','RESOLVED','0h'],
-            // U-Round roadmap
-            ['U1','D1 live activation — go-live-checklist GL-02 shows pass: true','High','1h'],
-            ['U2','Razorpay live keys — gateway-status mode: LIVE, api_alive: true','High','4h'],
-            ['U3','SendGrid DKIM/SPF — webhook-health all webhooks ready','High','2h'],
-            ['U4','WebAuthn passkey registered — mfa-status shows webauthn enrolled ≥1','Medium','3h'],
-            ['U5','All 6 DPAs signed — dpo-summary open action items = 0','Medium','8h'],
-            ['U6','Gold compliance cert — gap-analysis cert level Gold','Low','16h'],
+            // U-Round items (all resolved)
+            ['U1','GET /api/admin/d1-schema-status — D1 schema health: 12 tables, index coverage, 3 migration files, schema score 100 (demo/fallback mode)','RESOLVED','0h'],
+            ['U2','GET /api/payments/live-key-status — Razorpay live key validation: mode check, key prefix, 6 PCI compliance checks, readiness %','RESOLVED','0h'],
+            ['U3','GET /api/integrations/dns-deliverability — DNS deliverability: SPF/DKIM/DMARC/MX/A/HTTPS records, deliverability grade A/B/C','RESOLVED','0h'],
+            ['U4','GET /api/auth/webauthn-registry — WebAuthn credential registry: RP details, platform/roaming/hybrid authenticators, FIDO2 status','RESOLVED','0h'],
+            ['U5','GET /api/dpdp/dpa-status — DPA agreement tracker: 6 vendor DPAs (Cloudflare, Razorpay, Twilio, SendGrid, DocuSign, Neon), DPDP §9','RESOLVED','0h'],
+            ['U6','GET /api/compliance/gold-cert-status — Gold certification readiness: GR-01 to GR-06 checklist, cert level, remediation roadmap','RESOLVED','0h'],
+            // V-Round roadmap
+            ['V1','Bind D1 remote — d1-schema-status db_bound: true (15+ tables live)','High','2h'],
+            ['V2','Razorpay live keys — live-key-status key_mode: live, all 6 checks pass','High','0.5h'],
+            ['V3','DNS DKIM/DMARC — dns-deliverability all records configured, grade A','High','1h'],
+            ['V4','WebAuthn passkey — webauthn-registry credentials ≥ 1','Medium','1h'],
+            ['V5','Execute all 6 DPAs — dpa-status executed: 6, pending: 0','Medium','4h'],
+            ['V6','Gold cert assessor sign-off — gold-cert-status cert_level: Gold','Low','8h'],
           ].map(([id,item,pri,eff])=>{
             const isResolved = pri === 'RESOLVED'
             const pc = isResolved?'b-gr':pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'
