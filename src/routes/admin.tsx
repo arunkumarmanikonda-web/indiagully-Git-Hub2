@@ -6548,6 +6548,31 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       </div>
     </div>
 
+    <!-- DD-Round buttons -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;padding:1rem;">
+      <div style="font-size:.75rem;font-weight:600;color:#b45309;margin-bottom:.6rem;"><i class="fas fa-truck" style="margin-right:.4rem;"></i>DD-Round — Vendor &amp; Third-Party Intelligence (v2026.28)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igVendorRiskScorecard()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-user-tie" style="margin-right:.3rem;"></i>DD1: Vendor Risk
+        </button>
+        <button onclick="igProcurementAnalytics()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-shopping-cart" style="margin-right:.3rem;"></i>DD2: Procurement
+        </button>
+        <button onclick="igApiDependencyMap()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-project-diagram" style="margin-right:.3rem;"></i>DD3: API Dependency
+        </button>
+        <button onclick="igThirdPartyAudit()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-search" style="margin-right:.3rem;"></i>DD4: 3rd-Party Audit
+        </button>
+        <button onclick="igSupplyChainCompliance()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-link" style="margin-right:.3rem;"></i>DD5: Supply Chain
+        </button>
+        <button onclick="igVendorOnboardingHealth()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-handshake" style="margin-right:.3rem;"></i>DD6: Onboarding
+        </button>
+      </div>
+    </div>
+
     <!-- ── Gold Certification Live Progress (W-Round) ── -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;" id="gold-cert-widget">
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
@@ -8183,6 +8208,59 @@ window.igMaturityScorecard = function() {
       return '<tr><td>'+dom.domain+'</td><td style="color:'+c+';">L'+dom.level+'/5</td><td style="color:'+c+';">'+dom.score+'</td><td style="font-size:.65rem;">'+dom.gap+'</td></tr>';}).join('');
     igModal('CC6: GRC Maturity Scorecard — v2026.27','<b>Overall Score:</b> '+s.overall_maturity_score+'/100 ('+s.maturity_label+') | <b>Level-5 Domains:</b> '+s.domains_at_level5+' | <b>Open Gaps:</b> '+s.open_gaps+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f766e;color:#fff;"><th>Domain</th><th>Level</th><th>Score</th><th>Gap</th></tr>'+rows+'</table>');
   }).catch(function(){igModal('CC6: GRC Maturity','Session expired — log in as Super Admin')});
+};
+
+window.igVendorRiskScorecard = function() {
+  fetch('/vendors/risk-scorecard',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var p=d.portfolio; var rows=(d.vendors||[]).map(function(v){
+      var c=v.risk==='low'?'#065f46':v.risk==='medium'?'#92400e':'#991b1b';
+      return '<tr><td>'+v.name+'</td><td>'+v.cat+'</td><td>'+v.overall+'</td><td style="color:'+c+';">'+v.risk+'</td><td>T'+v.tier+'</td></tr>';}).join('');
+    igModal('DD1: Vendor Risk Scorecard — v2026.28','<b>Portfolio Avg:</b> '+p.avg_score+'/100 | <b>Low:</b> '+p.low+' | <b>Medium:</b> '+p.medium+' | <b>High:</b> '+p.high+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>Vendor</th><th>Category</th><th>Score</th><th>Risk</th><th>Tier</th></tr>'+rows+'</table>'+(d.alerts.length?'<p style="color:#991b1b;font-size:.7rem;margin-top:.4rem;">⚠ '+d.alerts.join(' | ')+'</p>':''));
+  }).catch(function(){igModal('DD1: Vendor Risk','Session expired — log in as Super Admin')});
+};
+
+window.igProcurementAnalytics = function() {
+  fetch('/finance/procurement-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.categories||[]).map(function(c){
+      return '<tr><td>'+c.cat+'</td><td>₹'+c.spend.toLocaleString()+'</td><td>'+Math.round(c.spend/c.budget*100)+'%</td><td>₹'+c.savings.toLocaleString()+'</td></tr>';}).join('');
+    igModal('DD2: Procurement Analytics — '+d.period,'<b>Total Spend:</b> ₹'+s.total_spend_inr.toLocaleString()+' / ₹'+s.total_budget_inr.toLocaleString()+' ('+s.budget_utilisation+') | <b>Savings:</b> ₹'+s.total_savings_inr.toLocaleString()+' ('+s.savings_rate+') | <b>Maverick:</b> '+s.maverick_spend_pct+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>Category</th><th>Spend</th><th>Utilisation</th><th>Savings</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('DD2: Procurement','Session expired — log in as Super Admin')});
+};
+
+window.igApiDependencyMap = function() {
+  fetch('/integrations/api-dependency-map',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.apis||[]).filter(function(a){return a.criticality==='critical'||a.criticality==='high';}).map(function(a){
+      var c=a.criticality==='critical'?'#991b1b':a.criticality==='high'?'#92400e':'#065f46';
+      return '<tr><td style="font-size:.65rem;">'+a.name+'</td><td style="color:'+c+';">'+a.criticality+'</td><td>'+a.version+'</td><td>'+(a.fallback?'✅':'❌')+'</td><td>'+a.calls_day+'</td></tr>';}).join('');
+    igModal('DD3: API Dependency Map — v2026.28','<b>Total APIs:</b> '+s.total_apis+' | <b>Critical:</b> '+s.critical+' | <b>High:</b> '+s.high+' | <b>With Fallback:</b> '+s.with_fallback+' | <b>Deprecation Alerts:</b> '+s.deprecation_alerts+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>API</th><th>Criticality</th><th>Version</th><th>Fallback</th><th>Calls/day</th></tr>'+rows+'</table>'+(d.alerts.length?'<p style="color:#b45309;font-size:.7rem;margin-top:.4rem;">⚠ '+d.alerts.join(' | ')+'</p>':''));
+  }).catch(function(){igModal('DD3: API Dependency','Session expired — log in as Super Admin')});
+};
+
+window.igThirdPartyAudit = function() {
+  fetch('/auth/third-party-audit',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.integrations||[]).map(function(i){
+      var c=i.status==='active'?'#065f46':i.status==='stale'?'#991b1b':'#92400e';
+      return '<tr><td>'+i.name+'</td><td>'+i.access_type+'</td><td>'+i.key_age_days+'d</td><td style="color:'+c+';">'+i.status+'</td><td>'+(i.excess_perms?'⚠ Yes':'✅ No')+'</td></tr>';}).join('');
+    igModal('DD4: Third-Party Access Audit — v2026.28','<b>Total:</b> '+s.total_integrations+' | <b>Active:</b> '+s.active+' | <b>Stale:</b> '+s.stale+' | <b>Review:</b> '+s.review_needed+' | <b>Keys>365d:</b> '+s.keys_over_365_days+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>Integration</th><th>Type</th><th>Key Age</th><th>Status</th><th>Excess Perms</th></tr>'+rows+'</table>'+(d.action_items.length?'<p style="color:#991b1b;font-size:.7rem;margin-top:.4rem;">⚠ '+d.action_items.map(function(a){return a.name+': '+a.issue;}).join(' | ')+'</p>':''));
+  }).catch(function(){igModal('DD4: 3rd-Party Audit','Session expired — log in as Super Admin')});
+};
+
+window.igSupplyChainCompliance = function() {
+  fetch('/dpdp/supply-chain-compliance',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.sub_processors||[]).map(function(sp){
+      var c=sp.status==='compliant'?'#065f46':'#991b1b';
+      return '<tr><td>'+sp.name+'</td><td>'+sp.location+'</td><td>'+sp.adequacy+'</td><td>'+(sp.dpa_executed?'✅':'❌')+'</td><td style="color:'+c+';">'+sp.status+'</td></tr>';}).join('');
+    igModal('DD5: Supply-Chain DPDP §8(7) — v2026.28','<b>Sub-processors:</b> '+s.total_sub_processors+' | <b>Compliant:</b> '+s.compliant+' | <b>Non-compliant:</b> '+s.non_compliant+' | <b>DPA Pending:</b> '+s.dpa_pending+' | <b>§8(7):</b> '+s.section_8_7_status+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>Processor</th><th>Location</th><th>Adequacy</th><th>DPA</th><th>Status</th></tr>'+rows+'</table>'+(d.alerts.length?'<p style="color:#991b1b;font-size:.7rem;margin-top:.4rem;">⚠ '+d.alerts.join(' | ')+'</p>':''));
+  }).catch(function(){igModal('DD5: Supply Chain','Session expired — log in as Super Admin')});
+};
+
+window.igVendorOnboardingHealth = function() {
+  fetch('/vendors/onboarding-health',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.pipeline||[]).map(function(v){
+      var c=v.status==='completed'?'#065f46':v.status==='on-hold'?'#991b1b':'#92400e';
+      return '<tr><td>'+v.vendor+'</td><td style="color:'+c+';">'+v.status+'</td><td>'+v.completed_steps+'/'+v.total_steps+'</td><td>'+(v.stalled_at||'—')+'</td><td>'+v.days_in_pipeline+'d</td></tr>';}).join('');
+    igModal('DD6: Vendor Onboarding Health — v2026.28','<b>Pipeline:</b> '+s.total_in_pipeline+' | <b>Completed:</b> '+s.completed+' | <b>In Progress:</b> '+s.in_progress+' | <b>On Hold:</b> '+s.on_hold+' | <b>Avg Days:</b> '+s.avg_days_to_onboard+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>Vendor</th><th>Status</th><th>Steps</th><th>Stalled At</th><th>Days</th></tr>'+rows+'</table>'+(d.alerts.length?'<p style="color:#92400e;font-size:.7rem;margin-top:.4rem;">⚠ '+d.alerts.join(' | ')+'</p>':''));
+  }).catch(function(){igModal('DD6: Onboarding','Session expired — log in as Super Admin')});
 };
 
 window.igSecTab = function(idx){

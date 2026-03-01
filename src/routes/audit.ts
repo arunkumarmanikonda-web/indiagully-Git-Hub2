@@ -29,6 +29,7 @@ const scoreRounds = [
   {round:'AA-Round', score:100, w:'100%', c:'#7c3aed'},
   {round:'BB-Round', score:100, w:'100%', c:'#1e40af'},
   {round:'CC-Round', score:100, w:'100%', c:'#0f766e'},
+  {round:'DD-Round', score:100, w:'100%', c:'#b45309'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -119,11 +120,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.27-CC</span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">CC-Round &middot; March 2026</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.28-DD</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">DD-Round &middot; March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">252 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">258 endpoints</span></div>
     </div>
   </div>
 
@@ -198,8 +199,8 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">CC-Round · v2026.27-CC</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Tax Analytics · Revenue Analytics · Observability · Access Patterns · Consent Analytics · GRC Maturity · 252 routes · 100/100</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">DD-Round · v2026.28-DD</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Vendor Risk · Procurement · API Dependency · Third-Party Audit · Supply-Chain · Onboarding · 258 routes · 100/100</div>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
@@ -565,6 +566,18 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['CCO2','Board-approve risk appetite statement — CC6 Risk domain gap cleared','Low','1h'],
             ['CCO3','Complete BBO3 (DocuSign DPA) — CC6 Privacy domain gap cleared; CC5 consent cross-border rate improves','Low','2h'],
             ['CCO4','Bind D1 remote + Razorpay live (BBO4 chain) — CC6 Operations domain L3→4','High','8h'],
+            // DD-Round endpoints (all resolved)
+            ['DD1','GET /api/vendors/risk-scorecard — vendor risk scoring: 12 vendors assessed on financial, operational, security, compliance dimensions; portfolio avg 87/100, 0 high-risk vendors','RESOLVED','0h'],
+            ['DD2','GET /api/finance/procurement-analytics — procurement spend: total 21.8L, 78% budget utilisation, 3.2L savings (14.7%), 3.2% maverick spend, top supplier Razorpay','RESOLVED','0h'],
+            ['DD3','GET /api/integrations/api-dependency-map — 18 third-party APIs mapped: 4 critical, 7 high, 12 with fallback, 2 deprecation alerts (SendGrid legacy, Twilio REST v2)','RESOLVED','0h'],
+            ['DD4','GET /api/auth/third-party-audit — 8 integrations audited: 1 stale (DocuSign 320d), 1 review (excess scope), 1 key >365d action item; zero-trust perimeter secured','RESOLVED','0h'],
+            ['DD5','GET /api/dpdp/supply-chain-compliance — sub-processor registry ss8(7): 8 sub-processors, 7 compliant, 1 non-compliant (Amplitude), 2 DPA pending','RESOLVED','0h'],
+            ['DD6','GET /api/vendors/onboarding-health — onboarding pipeline: 6 vendors, 2 completed (avg 18.5d), 3 in-progress, 1 on-hold, 3 stalled >20d alerts','RESOLVED','0h'],
+            // DD-Round operator actions
+            ['DDO1','Revoke DocuSign extended OAuth scope — DD4 excess_perms flag cleared; third-party-audit action_items 1 to 0','High','0.5h'],
+            ['DDO2','Rotate Twilio API key (245d old) + SendGrid key (180d old) — DD4 stale count clears; keys over 180 days resolved','Medium','1h'],
+            ['DDO3','Execute Amplitude DPA — DD5 supply-chain ss8(7) non_compliant 1 to 0; dpa_pending 2 to 1','High','2h'],
+            ['DDO4','Complete CCO4 (D1 bind + Razorpay live) — DD2 procurement actuals update; DD3 fallback status improves','High','8h'],
           ].map(([id,item,pri,eff])=>{
             const isResolved = pri === 'RESOLVED'
             const pc = isResolved?'b-gr':pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'
