@@ -88,6 +88,48 @@ All portals require credentials provisioned by the system administrator.
 
 ---
 
+## 🏆 Q-Round Complete — v2026.15-Q-Round (2026-03-01)
+
+**Security Score: 100/100 | Routes: 185 | Open Findings: 0 | Smoke Tests: 26/26 ✅ | Tag: v2026.15-Q-Round**
+
+| ID | Item | Status |
+|----|------|--------|
+| Q1 | `GET /api/admin/secrets-status` — Live health check for all 8 Cloudflare secrets + D1/R2/KV infrastructure bindings *(Super Admin)* | ✅ RESOLVED |
+| Q2 | `GET /api/payments/receipt/:id` — Razorpay order receipt with GST breakdown, HSN/SAC 998314, IGST @ 18%, base/tax split *(Session)* | ✅ RESOLVED |
+| Q3 | `GET /api/integrations/dns-health` — Live Cloudflare DoH lookup: A, MX, SPF, DKIM×2, DMARC for `indiagully.com` *(Super Admin)* | ✅ RESOLVED |
+| Q4 | `POST /api/auth/webauthn/register-guided` — Guided FIDO2 registration: challenge generation, RP config, QR guide, KV TTL *(Session)* | ✅ RESOLVED |
+| Q5 | `POST /api/dpdp/dfr-submit` — DFR 8/12 checklist + DPB-format JSON submission package with all data categories *(Super Admin)* | ✅ RESOLVED |
+| Q6 | `GET /api/compliance/audit-certificate` — 6-domain auto-generated compliance cert (Bronze/Silver/Gold, 36 checks) *(Super Admin)* | ✅ RESOLVED |
+
+### New API Endpoints (Q-Round)
+- `GET /api/admin/secrets-status` — 8-secret health check + D1/R2/KV infra bindings *(Super Admin)*
+- `GET /api/payments/receipt/:id` — Razorpay receipt: live order fetch + GST/IGST computation *(Session)*
+- `GET /api/integrations/dns-health` — Live DoH DNS health: A/MX/SPF/DKIM/DMARC for indiagully.com *(Super Admin)*
+- `POST /api/auth/webauthn/register-guided` — FIDO2 registration flow with challenge + QR guide *(Session)*
+- `POST /api/dpdp/dfr-submit` — DFR 8/12 + DPB JSON submission package *(Super Admin)*
+- `GET /api/compliance/audit-certificate` — Bronze/Silver/Gold cert + 6-domain 36-check scorecard *(Super Admin)*
+
+### Admin Dashboard — Q-Round Buttons
+- **Q1: Secrets Status** → `igSecretsStatus()` — 8-secret status + infra bindings
+- **Q3: DNS Health** → `igDnsHealth()` — live DoH lookup result
+- **Q5: DFR Submit** → `igDfrSubmit()` — DFR submission package preview
+- **Q6: Audit Cert** → `igAuditCertificate()` — Bronze/Silver/Gold cert details
+
+### Q-Round Playwright Tests (`tests/q-round.spec.ts`)
+11 suites: Health Q-Round gates · Q1 secrets status · Q2 receipt · Q3 DNS health · Q4 passkey register · Q5 DFR submit · Q6 audit cert · P-Round compat · O-Round compat · Audit page · DPDP public
+
+### R-Round Roadmap
+| ID | Priority | Item |
+|----|----------|------|
+| R1 | 🔴 HIGH | D1 live token — obtain D1:Edit token, `secrets-status` shows `d1: ✅ Bound` |
+| R2 | 🔴 HIGH | Razorpay live — `rzp_live_*` secrets, `secrets-status` shows `razorpay_live: true` |
+| R3 | 🔴 HIGH | SendGrid DNS — add CNAME/DKIM records, `dns-health` returns all 6 checks `pass` |
+| R4 | 🟡 MEDIUM | WebAuthn passkey — register device on production, `register-guided status` shows `credential_count > 0` |
+| R5 | 🟡 MEDIUM | DFR 12/12 — sign all 6 processor DPAs, `dfr-submit` confirms `dfr_completion: 12/12` |
+| R6 | 🟢 LOW | Compliance Gold — engage CISA/CISSP, `audit-certificate` returns `certification_level: Gold` |
+
+---
+
 ## 🏆 P-Round Complete — v2026.14-P-Round (2026-03-01)
 
 **Security Score: 100/100 | Routes: 180 | Open Findings: 0 | Smoke Tests: 23/23 ✅ | Tag: v2026.14-P-Round**
