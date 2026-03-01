@@ -50,7 +50,41 @@ All portals require credentials provisioned by the system administrator.
 
 ## 🛡️ J-Round Complete (LIVE ✅ — 2026-03-01)
 
-### J-Round Items — All Resolved
+### K-Round Complete — v2026.09-K-Round (2026-03-01)
+
+**Security Score: 97/100 | Routes: 155 | Open Findings: 0 | Smoke Tests: 19/19 ✅**
+
+| ID | Item | Status |
+|----|------|--------|
+| K1 | Migration 0004: R2 metadata + DPDP v2 D1 tables; `create-d1-remote.sh` K-Round enhanced | ✅ RESOLVED |
+| K2 | `scripts/set-secrets.sh` — interactive Razorpay/SendGrid/Twilio/DocuSign/GST setup | ✅ RESOLVED |
+| K3 | R2 Document Store API: upload/list/download/delete with D1 metadata + access log | ✅ RESOLVED |
+| K4 | `tests/k-round.spec.ts` — 9 Playwright suites, 34 tests (CMS CRUD, WebAuthn, webhook, R2, DPDP v2) | ✅ RESOLVED |
+| K5 | DPDP v2: granular consent withdraw (WD- refs), rights requests (RR- refs), DPO dashboard | ✅ RESOLVED |
+
+### New API Endpoints (K-Round)
+- `POST /api/dpdp/consent/withdraw` — Granular per-purpose withdraw, D1-backed, WD- ref, DPO notified
+- `POST /api/dpdp/consent/record` — Granular per-purpose consent recording (analytics/marketing/third_party)
+- `POST /api/dpdp/rights/request` — RR- ref, SLA days, DPO alert trigger
+- `GET /api/dpdp/dpo/dashboard` — Live KPIs (Super Admin): active consents, open requests, unread alerts
+- `GET /api/dpdp/dpo/withdrawals` — All withdrawal records (Super Admin)
+- `GET /api/dpdp/dpo/requests` — Rights request workbench (Super Admin)
+- `POST /api/documents/upload` — Multipart R2 upload with D1 metadata
+- `GET /api/documents` — Document list with category filter
+- `GET /api/documents/:key` — R2 download with access log
+- `DELETE /api/documents/:key` — R2 + D1 delete (Super Admin)
+
+### L-Round Roadmap
+| ID | Priority | Item |
+|----|----------|------|
+| L1 | HIGH | D1 live activation — issue D1:Edit token, run `bash scripts/create-d1-remote.sh` |
+| L2 | HIGH | Live payment test — Razorpay test-mode order + webhook delivery verification |
+| L3 | HIGH | Email/SMS live test — real OTP delivery via SendGrid + Twilio (+91) |
+| L4 | MEDIUM | R2 file upload live — create `india-gully-docs` bucket, upload board pack |
+| L5 | MEDIUM | Playwright CI — GitHub Actions workflow for k-round.spec.ts + regression.spec.ts |
+| L6 | LOW | DPDP banner v3 — granular per-purpose toggles in UI, hook to consent/record API |
+
+## J-Round Items — All Resolved
 
 | ID | Priority | Item | Status |
 |----|----------|------|--------|
@@ -310,7 +344,7 @@ npm run test:e2e:report       # Open HTML report
 
 - **Platform:** Cloudflare Pages · Project: `india-gully`
 - **Status:** ✅ Active — J-Round complete (2026-03-01)
-- **Latest Tag:** `v2026.08-J-Round`
+- **Latest Tag: v2026.09-K-Round`
 - **Security Score:** **95/100** (J-Round final)
 - **Last Updated:** 01 Mar 2026
 - **Tech Stack:** Hono + TypeScript + TailwindCSS CDN + Chart.js + @simplewebauthn/server + Playwright
@@ -360,7 +394,41 @@ npm run test:e2e:report       # Open HTML report
 | CERT-In checklist 37 items | ✅ I6 — score 91% |
 | Playwright regression suite | ✅ I8 — 42 tests, 7 suites |
 
-### J-Round Findings — All Resolved
+### K-Round Complete — v2026.09-K-Round (2026-03-01)
+
+**Security Score: 97/100 | Routes: 155 | Open Findings: 0 | Smoke Tests: 19/19 ✅**
+
+| ID | Item | Status |
+|----|------|--------|
+| K1 | Migration 0004: R2 metadata + DPDP v2 D1 tables; `create-d1-remote.sh` K-Round enhanced | ✅ RESOLVED |
+| K2 | `scripts/set-secrets.sh` — interactive Razorpay/SendGrid/Twilio/DocuSign/GST setup | ✅ RESOLVED |
+| K3 | R2 Document Store API: upload/list/download/delete with D1 metadata + access log | ✅ RESOLVED |
+| K4 | `tests/k-round.spec.ts` — 9 Playwright suites, 34 tests (CMS CRUD, WebAuthn, webhook, R2, DPDP v2) | ✅ RESOLVED |
+| K5 | DPDP v2: granular consent withdraw (WD- refs), rights requests (RR- refs), DPO dashboard | ✅ RESOLVED |
+
+### New API Endpoints (K-Round)
+- `POST /api/dpdp/consent/withdraw` — Granular per-purpose withdraw, D1-backed, WD- ref, DPO notified
+- `POST /api/dpdp/consent/record` — Granular per-purpose consent recording (analytics/marketing/third_party)
+- `POST /api/dpdp/rights/request` — RR- ref, SLA days, DPO alert trigger
+- `GET /api/dpdp/dpo/dashboard` — Live KPIs (Super Admin): active consents, open requests, unread alerts
+- `GET /api/dpdp/dpo/withdrawals` — All withdrawal records (Super Admin)
+- `GET /api/dpdp/dpo/requests` — Rights request workbench (Super Admin)
+- `POST /api/documents/upload` — Multipart R2 upload with D1 metadata
+- `GET /api/documents` — Document list with category filter
+- `GET /api/documents/:key` — R2 download with access log
+- `DELETE /api/documents/:key` — R2 + D1 delete (Super Admin)
+
+### L-Round Roadmap
+| ID | Priority | Item |
+|----|----------|------|
+| L1 | HIGH | D1 live activation — issue D1:Edit token, run `bash scripts/create-d1-remote.sh` |
+| L2 | HIGH | Live payment test — Razorpay test-mode order + webhook delivery verification |
+| L3 | HIGH | Email/SMS live test — real OTP delivery via SendGrid + Twilio (+91) |
+| L4 | MEDIUM | R2 file upload live — create `india-gully-docs` bucket, upload board pack |
+| L5 | MEDIUM | Playwright CI — GitHub Actions workflow for k-round.spec.ts + regression.spec.ts |
+| L6 | LOW | DPDP banner v3 — granular per-purpose toggles in UI, hook to consent/record API |
+
+## J-Round Findings — All Resolved
 
 | ID | Severity | Issue | Status |
 |----|----------|-------|--------|
