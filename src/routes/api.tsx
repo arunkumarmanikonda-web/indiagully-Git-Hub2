@@ -933,7 +933,7 @@ app.post('/auth/unlock', requireSession(), requireRole(['Super Admin'], ['admin'
 app.get('/health', (c) => c.json({
   status: 'ok',
   platform: 'India Gully Enterprise Platform',
-  version: '2026.06',
+  version: '2026.07',
   timestamp: new Date().toISOString(),
   security: {
     auth:             'PBKDF2-SHA256 + RFC-6238-TOTP',
@@ -949,6 +949,7 @@ app.get('/health', (c) => c.json({
     f_round:          'Security score → 68/100 (F1–F5 resolved)',
     g_round:          'Security score → 72/100 (G1–G5 resolved)',
     h_round:          'Security score → 78/100 — TOTP RFC 6238 Base32 fix (H1), session guards admin+portal (H2), real API wiring all admin pages (H3)',
+    i_round:          'Security score → 91/100 — D1 migration (I2), CERT-In 37-item checklist (I6), TOTP self-service enrolment + WebAuthn stub (I3), SendGrid email OTP (I4), Twilio SMS-OTP (I5), CSP per-request nonce PT-004 closed (I1), Playwright 42-test regression suite (I8)',
     rate_limiting:    'Server-side per-IP (5 attempts / 5-min lockout)',
     cors:             'Restricted to known origins',
     headers:          'HSTS + X-Frame-Options + X-Content-Type-Options + Referrer-Policy (via _headers)',
@@ -957,7 +958,12 @@ app.get('/health', (c) => c.json({
     pii_masking:      'PAN ABCDE••••F | Aadhaar ••••-••••-9012 | Bank ••••5678',
     dpdp_compliant:   true,
     audit_logging:    true,
-    csp:              'nonce-based (in-header via _headers)',
+    csp:              'per-request nonce on all inline scripts (I1 ✓ PT-004 closed)',
+    totp_enrolment:   'Self-service QR enrolment via /api/auth/totp/enrol/* (I3 ✓)',
+    webauthn_stub:    'FIDO2 registration stub via /api/auth/webauthn/register/* (full attestation J4)',
+    otp_email:        'SendGrid 6-digit OTP via /api/auth/otp/send channel=email (I4 ✓)',
+    otp_sms:          'Twilio SMS-OTP via /api/auth/otp/send channel=sms (I5 ✓)',
+    cert_in_report:   'CERT-In 37-item checklist 91% score via /api/security/certIn-report (I6 ✓)',
   },
   modules: [
     'Auth (RFC-6238 TOTP + Server Sessions + Rate-Limiting + Demo Mode G1/G2)',
@@ -1019,8 +1025,14 @@ app.get('/health', (c) => c.json({
     'GET  /api/monitoring/health-deep','GET  /api/abac/matrix',
     'GET  /api/hr/esic/statement','GET  /api/hr/epfo/challan/:ecr_id',
     'POST /api/horeca/fssai/renewal','GET  /api/finance/msme-vendors',
+    // I-Round new endpoints
+    'POST /api/auth/totp/enrol/begin','POST /api/auth/totp/enrol/confirm',
+    'POST /api/auth/totp/enrol/remove','GET  /api/auth/totp/enrol/status',
+    'POST /api/auth/webauthn/register/begin','POST /api/auth/webauthn/register/complete',
+    'POST /api/auth/otp/send','POST /api/auth/otp/verify',
+    'GET  /api/security/certIn-report',
   ],
-  routes_count: 128,
+  routes_count: 135,
   f_round_fixes: [
     'F1: ABAC requireSession()/requireRole() on all /api/* route groups (PT-001 resolved)',
     'F2: safeHtml() HTML entity-encoding on all dynamic output (PT-002 resolved)',
@@ -1035,11 +1047,20 @@ app.get('/health', (c) => c.json({
     'G4: NDA acceptance modal gate on all mandate detail pages (/listings/:id)',
     'G5: Client-side phone/email validation + honeypot + submission rate-limit on contact forms',
   ],
-  security_score: { d_round: 42, e_round: 55, f_round: 68, g_round: 72, h_round: 78 },
-  open_findings_count: 1,
+  security_score: { d_round: 42, e_round: 55, f_round: 68, g_round: 72, h_round: 78, i_round: 91 },
+  open_findings_count: 4,
   deployment: 'Cloudflare Pages',
-  last_updated: '2026-02-28',
-  version_date: '2026-02-28',
+  last_updated: '2026-03-01',
+  version_date: '2026-03-01',
+  i_round_fixes: [
+    'I1: CSP per-request nonce on all inline scripts — PT-004 CLOSED',
+    'I2: D1 migration 0002 applied — ig_users TOTP cols, ig_otp_codes table',
+    'I3: Self-service TOTP enrolment (QR + confirm + remove + status) + WebAuthn/FIDO2 stub',
+    'I4: SendGrid email OTP via POST /api/auth/otp/send channel=email',
+    'I5: Twilio SMS-OTP via POST /api/auth/otp/send channel=sms (India +91 normalisation)',
+    'I6: CERT-In 37-item checklist (IT Act §70B) — score 91% via GET /api/security/certIn-report',
+    'I8: Playwright regression suite — 42 tests, 7 suites (auth, session guards, TOTP, WebAuthn, OTP, security headers)',
+  ],
 }))
 
 // ─────────────────────────────────────────────────────────────────────────────
