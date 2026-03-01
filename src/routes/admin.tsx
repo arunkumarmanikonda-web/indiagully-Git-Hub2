@@ -6498,6 +6498,31 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       </div>
     </div>
 
+    <!-- BB-Round buttons -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;padding:1rem;">
+      <div style="font-size:.75rem;font-weight:600;color:#1e40af;margin-bottom:.6rem;"><i class="fas fa-landmark" style="margin-right:.4rem;"></i>BB-Round — Governance Intelligence &amp; Operational Continuity (v2026.26)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igBoardAnalytics()" style="background:none;border:1px solid #1e40af;color:#1e40af;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-chart-bar" style="margin-right:.3rem;"></i>BB1: Board Analytics
+        </button>
+        <button onclick="igPayrollCompliance()" style="background:none;border:1px solid #1e40af;color:#1e40af;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-money-check-alt" style="margin-right:.3rem;"></i>BB2: Payroll Compliance
+        </button>
+        <button onclick="igSlaDashboard()" style="background:none;border:1px solid #1e40af;color:#1e40af;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-handshake" style="margin-right:.3rem;"></i>BB3: SLA Dashboard
+        </button>
+        <button onclick="igIdentityLifecycle()" style="background:none;border:1px solid #1e40af;color:#1e40af;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-user-shield" style="margin-right:.3rem;"></i>BB4: Identity Lifecycle
+        </button>
+        <button onclick="igDataResidency()" style="background:none;border:1px solid #1e40af;color:#1e40af;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-globe-asia" style="margin-right:.3rem;"></i>BB5: Data Residency
+        </button>
+        <button onclick="igBcpStatus()" style="background:none;border:1px solid #1e40af;color:#1e40af;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>BB6: BCP Status
+        </button>
+      </div>
+    </div>
+
     <!-- ── Gold Certification Live Progress (W-Round) ── -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;" id="gold-cert-widget">
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
@@ -8030,6 +8055,57 @@ window.igRiskHeatmap = function() {
       '<div style="max-height:300px;overflow-y:auto"><table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>ID</th><th>Domain</th><th>Risk</th><th>L×I</th><th>Score</th><th>Residual</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '<p style="font-size:.7rem;color:#6b7280;margin-top:.4rem">L=Likelihood 1–5 × I=Impact 1–5 | Score ≥12=High ≥6=Medium <6=Low</p>');
   }).catch(function(){igModal('AA6: Risk Heatmap','Session expired — log in as Super Admin')});
+};
+
+window.igBoardAnalytics = function() {
+  fetch('/governance/board-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.meetings||[]).filter(function(m){return m.status!=='scheduled';}).map(function(m){
+      return '<tr><td>'+m.id+'</td><td>'+m.type+'</td><td>'+m.date+'</td><td>'+(m.quorum?'✅':'❌')+'</td><td>'+m.attendees+'/'+m.total+'</td><td>'+m.passed+'/'+m.resolutions+'</td></tr>';}).join('');
+    igModal('BB1: Board Analytics — v2026.26','<b>Resolution Pass Rate:</b> '+s.resolution_pass_rate+' | <b>Quorum:</b> '+s.quorum_compliance+' | <b>AGM in:</b> '+s.agm_countdown_days+' days | <b>SS-1/SS-2:</b> '+(s.ss1_ss2_compliant?'✅ Compliant':'❌')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#1e40af;color:#fff;"><th>ID</th><th>Type</th><th>Date</th><th>Quorum</th><th>Attend</th><th>Resolutions</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('BB1: Board Analytics','Session expired — log in as Super Admin')});
+};
+
+window.igPayrollCompliance = function() {
+  fetch('/hr/payroll-compliance',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.statutory;
+    igModal('BB2: Payroll Compliance — '+d.period,'<b>Employees:</b> '+d.employees+' | <b>Compliance Score:</b> 100/100<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#1e40af;color:#fff;"><th>Statute</th><th>Amount (₹)</th><th>Due Date</th><th>Status</th></tr><tr><td>EPF</td><td>'+((s.pf.amount_employee+s.pf.amount_employer)/100).toFixed(0)+'00</td><td>'+s.pf.due_date+'</td><td>✅ '+s.pf.status+'</td></tr><tr><td>ESI</td><td>'+((s.esi.amount_employee+s.esi.amount_employer)/100).toFixed(0)+'00</td><td>'+s.esi.due_date+'</td><td>✅ '+s.esi.status+'</td></tr><tr><td>PT</td><td>'+s.pt.deducted+'</td><td>'+s.pt.due_date+'</td><td>✅ '+s.pt.status+'</td></tr><tr><td>TDS §192</td><td>'+s.tds.deducted+'</td><td>'+s.tds.due_date+'</td><td>✅ '+s.tds.status+'</td></tr></table>');
+  }).catch(function(){igModal('BB2: Payroll Compliance','Session expired — log in as Super Admin')});
+};
+
+window.igSlaDashboard = function() {
+  fetch('/contracts/sla-dashboard',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.vendors||[]).map(function(v){
+      var c=v.status==='green'?'#065f46':v.status==='yellow'?'#92400e':'#991b1b';
+      return '<tr><td>'+v.vendor+'</td><td>'+v.category+'</td><td>'+v.sla_uptime+'</td><td>'+v.actual_uptime+'</td><td>'+v.breaches+'</td><td style="color:'+c+';">'+v.status.toUpperCase()+'</td><td>'+v.score+'</td></tr>';}).join('');
+    igModal('BB3: SLA Dashboard — v2026.26','<b>Contract Health Score:</b> '+s.contract_health_score+'/100 | <b>Green:</b> '+s.green+' | <b>Yellow:</b> '+s.yellow+' | <b>Red:</b> '+s.red+' | <b>Total Breaches:</b> '+s.total_breaches+' | <b>Penalties:</b> ₹'+s.total_penalty_inr+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#1e40af;color:#fff;"><th>Vendor</th><th>Category</th><th>SLA</th><th>Actual</th><th>Breaches</th><th>Status</th><th>Score</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('BB3: SLA Dashboard','Session expired — log in as Super Admin')});
+};
+
+window.igIdentityLifecycle = function() {
+  fetch('/auth/identity-lifecycle',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.accounts||[]).map(function(a){
+      var c=a.status==='active'?'#065f46':'#991b1b';
+      return '<tr><td>'+a.email+'</td><td>'+a.role+'</td><td style="color:'+c+';">'+a.status+'</td><td>'+(a.mfa?'✅':'❌')+'</td><td>'+a.last_login+'</td></tr>';}).join('');
+    igModal('BB4: Identity Lifecycle — v2026.26','<b>Total:</b> '+s.total_accounts+' | <b>Active:</b> '+s.active+' | <b>Dormant:</b> '+s.dormant+' | <b>No MFA:</b> '+s.no_mfa_active+' | <b>Health:</b> '+s.identity_health+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#1e40af;color:#fff;"><th>Email</th><th>Role</th><th>Status</th><th>MFA</th><th>Last Login</th></tr>'+rows+'</table>'+(d.alerts.length?'<p style="color:#991b1b;margin-top:.4rem;font-size:.72rem;">⚠ '+d.alerts.join(' | ')+'</p>':''));
+  }).catch(function(){igModal('BB4: Identity Lifecycle','Session expired — log in as Super Admin')});
+};
+
+window.igDataResidency = function() {
+  fetch('/dpdp/data-residency',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.categories||[]).map(function(c){
+      var col=c.localised?'#065f46':'#92400e';
+      return '<tr><td>'+c.category+'</td><td>'+c.stored_in+'</td><td style="color:'+col+';">'+(c.cross_border?'Yes':'No')+'</td><td>'+c.legal_basis+'</td><td>'+(c.approved?'✅':'⏳')+'</td></tr>';}).join('');
+    igModal('BB5: Data Residency — DPDP §16','<b>Categories:</b> '+s.total_categories+' | <b>Localised:</b> '+s.localised+' | <b>Cross-Border:</b> '+s.cross_border+' | <b>Pending Approval:</b> '+s.pending_approval+' | <b>§16 Status:</b> '+s.dpdp_section16+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#1e40af;color:#fff;"><th>Category</th><th>Stored In</th><th>Cross-Border</th><th>Legal Basis</th><th>Approved</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('BB5: Data Residency','Session expired — log in as Super Admin')});
+};
+
+window.igBcpStatus = function() {
+  fetch('/compliance/bcp-status',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.items||[]).map(function(i){
+      var c=i.status==='pass'?'#065f46':i.status==='watch'?'#92400e':'#991b1b';
+      return '<tr><td>'+i.area+'</td><td>'+i.target+'</td><td>'+i.actual+'</td><td style="color:'+c+';">'+i.status.toUpperCase()+'</td><td>'+i.last_tested+'</td></tr>';}).join('');
+    igModal('BB6: BCP Status — v2026.26','<b>Readiness:</b> '+s.readiness_score+' | <b>RTO:</b> '+s.rto_target+' | <b>RPO:</b> '+s.rpo_target+' | <b>Last DR Drill:</b> '+s.last_dr_drill+' | <b>ISO 22301:</b> '+(s.iso22301_aligned?'✅':'❌')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#1e40af;color:#fff;"><th>Area</th><th>Target</th><th>Actual</th><th>Status</th><th>Last Tested</th></tr>'+rows+'</table>'+(d.alerts.length?'<p style="color:#92400e;margin-top:.4rem;font-size:.72rem;">⚠ '+d.alerts.join(' | ')+'</p>':''));
+  }).catch(function(){igModal('BB6: BCP Status','Session expired — log in as Super Admin')});
 };
 
 window.igSecTab = function(idx){

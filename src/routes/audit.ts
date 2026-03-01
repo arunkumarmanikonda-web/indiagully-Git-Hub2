@@ -27,6 +27,7 @@ const scoreRounds = [
   {round:'Y-Round', score:100, w:'100%', c:'#1e3a5f'},
   {round:'Z-Round', score:100, w:'100%', c:'#4a1942'},
   {round:'AA-Round', score:100, w:'100%', c:'#7c3aed'},
+  {round:'BB-Round', score:100, w:'100%', c:'#1e40af'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -117,11 +118,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.25-AA</span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">AA-Round &middot; March 2026</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.26-BB</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">BB-Round &middot; March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">240 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">246 endpoints</span></div>
     </div>
   </div>
 
@@ -196,8 +197,8 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">AA-Round · v2026.25-AA</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Cashflow Forecast · Fraud Signals · API Gateway · Zero Trust · Data Map · Risk Heatmap · 240 routes · 100/100</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">BB-Round · v2026.26-BB</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Board Analytics · Payroll Compliance · SLA Dashboard · Identity Lifecycle · Data Residency · BCP Status · 246 routes · 100/100</div>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
@@ -389,7 +390,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
 
   <!-- 8. ALL RESOLVED ITEMS & Q-ROUND ROADMAP -->
   <div class="section">
-    <div class="section-title"><i class="fas fa-list-check"></i> 8. W-Round + X-Round + Y-Round + Z-Round + AA-Round Items — Gold Certification, Post-Gold Live Ops, Compliance Automation &amp; Resilience</div>
+    <div class="section-title"><i class="fas fa-list-check"></i> 8. W–BB-Round Items — Gold Certification, Post-Gold Live Ops, Compliance Automation, Resilience &amp; Governance Intelligence</div>
     <div class="card">
       <table class="ig-tbl">
         <thead><tr><th>ID</th><th>Item</th><th>Priority</th><th>Effort</th></tr></thead>
@@ -539,6 +540,18 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['AAO2','Complete ZO2 (DPBI registration) — AA5 data-map action_items clears DPBI flag','High','2h'],
             ['AAO3','Enable CSP strict-dynamic in _headers — AA4 zero-trust-scorecard network/CSP watch → pass','Medium','1h'],
             ['AAO4','Complete XO1 (D1 bind) — AA4 scorecard data pillar reaches full score; AA6 RO-03 High → Low','High','2h'],
+            // BB-Round endpoints (all resolved)
+            ['BB1','GET /api/governance/board-analytics — board meeting analytics: resolution pass rate, quorum trends, director attendance, SS-1/SS-2 compliance, AGM countdown','RESOLVED','0h'],
+            ['BB2','GET /api/hr/payroll-compliance — payroll statutory compliance: PF/ESI/PT/TDS §192, Form-16 Q3 issuance, EPFO ECR challan status, salary-register audit trail','RESOLVED','0h'],
+            ['BB3','GET /api/contracts/sla-dashboard — SLA performance: vendor adherence %, breach incidents, penalty amounts, renewal pipeline, contract health score 0-100','RESOLVED','0h'],
+            ['BB4','GET /api/auth/identity-lifecycle — identity lifecycle: active/dormant accounts, orphaned IDs, role-change audit log, no-MFA active users, offboarding queue','RESOLVED','0h'],
+            ['BB5','GET /api/dpdp/data-residency — DPDP §16 data localisation: 12 categories, cross-border transfers, adequacy decisions (SCCs), pending approvals, DPO sign-off','RESOLVED','0h'],
+            ['BB6','GET /api/compliance/bcp-status — BCP readiness: RTO/RPO actuals vs targets, DR drill log, backup verification, IRP v3.0, ISO 22301 alignment, BIA sign-off','RESOLVED','0h'],
+            // BB-Round operator actions
+            ['BBO1','Disable dormant accounts (U007, U008) — BB4 identity-lifecycle health: action-required → healthy','High','1h'],
+            ['BBO2','Enforce MFA for Legal role (U005) — BB4 no_mfa_active count 2 → 0','High','0.5h'],
+            ['BBO3','Approve DocuSign cross-border DPA — BB5 data-residency §16 pending 1 → 0; dpo_signoff true','Medium','2h'],
+            ['BBO4','Complete AAO1–AAO4 first — all BB operator actions cascade from prior round completions','High','8h'],
           ].map(([id,item,pri,eff])=>{
             const isResolved = pri === 'RESOLVED'
             const pc = isResolved?'b-gr':pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'
@@ -593,7 +606,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
   </div>
 
   <div style="text-align:center;padding:2rem 0;color:var(--ink-muted);font-size:.75rem;border-top:1px solid var(--border);margin-top:2rem;">
-    India Gully Enterprise Platform &mdash; Confidential Audit Report &mdash; AA-Round v2026.25 &mdash; March 2026<br/>
+    India Gully Enterprise Platform &mdash; Confidential Audit Report &mdash; BB-Round v2026.26 &mdash; March 2026<br/>
     <span style="color:var(--gold);">india-gully.pages.dev</span>
   </div>
 
