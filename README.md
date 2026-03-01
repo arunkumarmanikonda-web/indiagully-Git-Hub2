@@ -92,6 +92,47 @@ All portals require credentials provisioned by the system administrator.
 
 
 
+## 🏆 Z-Round Complete — v2026.24-Z-Round (2026-03-01)
+
+| Metric | Value |
+|--------|-------|
+| Security Score | 100 / 100 |
+| Routes Count | **234** |
+| Open Findings | 0 |
+| Build Size | 1,909 KB |
+| Git Tag | `v2026.24-z-round` |
+| Diff | 5 files · +891 / −33 |
+
+**Delivered Endpoints (Z1–Z6) — all require Super Admin session:**
+- **Z1** `GET /api/admin/capacity-forecast` — platform capacity forecast: Workers CPU P95, KV read/write utilisation, D1 storage, subrequest budget, R2 storage — 30/90/180/365-day risk timeline with scale-up triggers
+- **Z2** `GET /api/payments/chargeback-report` — Razorpay chargeback & dispute register: open/won/lost counts, amounts, reason codes, win/loss rate, RBI chargeback ratio threshold compliance (<1%)
+- **Z3** `GET /api/integrations/webhook-health` — webhook delivery health: 24h event log, delivery success rate, retry queue depth, HMAC verification status for Razorpay + SendGrid + Twilio
+- **Z4** `GET /api/auth/privilege-audit` — privileged-access audit: Super Admin actions 7-day log, unusual-hour login flags, least-privilege gap analysis, PAM controls summary, quarterly review date
+- **Z5** `GET /api/dpdp/breach-simulation` — DPDP §12 breach-response tabletop: 72h notification timeline (H+0 → H+72), CERT-In report template, readiness grade A–C, gap list, legal references
+- **Z6** `GET /api/compliance/continuous-monitoring` — 20 controls across ISO 27001 / DPDP / PCI-DSS / SOC-2: pass/watch/fail, drift alerts, next assessment 2026-06-01, Gold cert status
+
+**Admin Dashboard:**
+- 6 Z-Round purple (`#4a1942`) buttons: Z1–Z6
+- JS modal handlers: `igCapacityForecast`, `igChargebackReport`, `igWebhookHealth`, `igPrivilegeAudit`, `igBreachSimulation`, `igContinuousMonitoring`
+
+**Tests & CI:**
+- `tests/z-round.spec.ts` — 28 Playwright assertions (health v2026.24, Z1–Z6 + Y1–Y6 + X1–X6 guard, public pages, audit content, CSP)
+- `playwright-z-round` CI job gated on v≥2026.24, routes≥234, `z_round` flag, `z_round_fixes`≥6, `open_findings`=0
+- All health gates updated: v≥2026.24, routes≥234
+
+**Production:**  https://india-gully.pages.dev (v2026.24, 234 routes, 0 findings)
+**Preview:**     https://1ca9e229.india-gully.pages.dev
+
+**Z-Round Operator Actions (ZO1–ZO4) — complete YO1–YO4 first:**
+| Priority | Item | Action | Effort |
+|---|---|---|---|
+| 🔴 High | ZO1: Approve IR Policy | Review and approve POL-012 Incident Response Policy → moves DPDP §12 from watch → pass in Z6 | 1h |
+| 🔴 High | ZO2: DPBI Registration | Register at dpb.gov.in for breach notification capability → Z5 readiness Grade A | 2h |
+| 🟡 Medium | ZO3: Breach Notice Template | Draft data principal breach notification template (email + SMS) | 2h |
+| 🔴 High | ZO4: Complete YO1–YO4 | All operator actions cascade from D1 bind + Razorpay live setup | 8h |
+
+---
+
 ## 🏆 Y-Round Complete — v2026.23-Y-Round (2026-03-01)
 
 | Metric | Value |
