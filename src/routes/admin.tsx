@@ -149,6 +149,10 @@ document.addEventListener('DOMContentLoaded', function(){
       });
     }
   });
+  // Auto-load Gold Cert progress widget on dashboard ready
+  if (document.getElementById('gold-cert-widget') && window.igRefreshGoldCert) {
+    setTimeout(function(){ window.igRefreshGoldCert(); }, 800);
+  }
 });
 </script>`
 }
@@ -6405,9 +6409,60 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
         </div>
       </div>
     </div>
+
+    <!-- ── Gold Certification Live Progress (W-Round) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;" id="gold-cert-widget">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-trophy" style="color:#B8960C;margin-right:.5rem;"></i>Gold Certification — Live Progress (W-Round v2026.21)</h3>
+        <button onclick="igRefreshGoldCert()" style="background:none;border:1px solid #B8960C;color:#B8960C;padding:.3rem .7rem;font-size:.7rem;cursor:pointer;border-radius:3px;"><i class="fas fa-sync-alt" style="margin-right:.25rem;"></i>Refresh</button>
+      </div>
+      <div style="padding:1.25rem;">
+        <!-- Progress Bar -->
+        <div style="margin-bottom:1rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem;">
+            <span style="font-size:.75rem;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.05em;">Overall Readiness</span>
+            <span id="gc-pct-label" style="font-size:.85rem;font-weight:700;color:#B8960C;">—</span>
+          </div>
+          <div style="height:8px;background:#f3f4f6;border-radius:4px;overflow:hidden;">
+            <div id="gc-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#8A6E08,#B8960C,#D4AE2A);border-radius:4px;transition:width .6s ease;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:.25rem;">
+            <span style="font-size:.65rem;color:var(--ink-muted);">0 — Pending</span>
+            <span style="font-size:.65rem;color:#d97706;">60 — Bronze</span>
+            <span style="font-size:.65rem;color:#6b7280;">80 — Silver</span>
+            <span style="font-size:.65rem;color:#B8960C;font-weight:700;">100 — 🏆 Gold</span>
+          </div>
+        </div>
+        <!-- 12 Criteria Grid -->
+        <div id="gc-criteria-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem;">
+          <div style="grid-column:1/-1;text-align:center;color:var(--ink-muted);font-size:.75rem;padding:1rem;"><i class="fas fa-spinner fa-spin" style="margin-right:.4rem;"></i>Loading Gold Cert criteria…</div>
+        </div>
+        <!-- Summary Row -->
+        <div style="display:flex;gap:1rem;padding:.75rem;background:#faf8f3;border:1px solid #e4dece;border-radius:3px;">
+          <div style="flex:1;text-align:center;">
+            <div id="gc-level" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;font-weight:700;color:#B8960C;">—</div>
+            <div style="font-size:.62rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.05em;">Cert Level</div>
+          </div>
+          <div style="flex:1;text-align:center;">
+            <div id="gc-score" style="font-size:1.1rem;font-weight:700;color:var(--ink);">—</div>
+            <div style="font-size:.62rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.05em;">Score (pts)</div>
+          </div>
+          <div style="flex:1;text-align:center;">
+            <div id="gc-passed" style="font-size:1.1rem;font-weight:700;color:#16a34a;">—</div>
+            <div style="font-size:.62rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.05em;">Criteria Passed</div>
+          </div>
+          <div style="flex:1;text-align:center;">
+            <div id="gc-blockers" style="font-size:1.1rem;font-weight:700;color:#dc2626;">—</div>
+            <div style="font-size:.62rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.05em;">Blockers</div>
+          </div>
+        </div>
+        <div style="margin-top:.6rem;font-size:.7rem;color:var(--ink-muted);text-align:right;">Assessor: <a href="mailto:dpo@indiagully.com" style="color:#B8960C;">dpo@indiagully.com</a> &mdash; Framework: India Gully Enterprise Gold Cert v2026.21</div>
+      </div>
+    </div>
+
     <!-- DPDP Compliance Checklist -->
     <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DPDP Act 2023 — Compliance Checklist (v8 — R-Round)</h3></div>
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DPDP Act 2023 — Compliance Checklist (v8 — W-Round)</h3></div>
       <div style="padding:1.25rem;">
         ${[
           {item:'Consent notice displayed before data collection',done:true},
@@ -7264,6 +7319,56 @@ window.igDpaStatus = function() {
         '<p style="margin-top:.5rem;color:#b45309;font-size:.72rem">' + (s.next_action||'') + '</p>');
     }).catch(function(e){igModal('U5: DPA Status','Session expired — please log in as Super Admin')});
 }
+window.igRefreshGoldCert = function() {
+  var grid = document.getElementById('gc-criteria-grid');
+  var bar  = document.getElementById('gc-progress-bar');
+  var pct  = document.getElementById('gc-pct-label');
+  var lvl  = document.getElementById('gc-level');
+  var sc   = document.getElementById('gc-score');
+  var ps   = document.getElementById('gc-passed');
+  var bl   = document.getElementById('gc-blockers');
+  if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--ink-muted);font-size:.75rem;padding:1rem;"><i class="fas fa-spinner fa-spin" style="margin-right:.4rem;"></i>Fetching live criteria…</div>';
+  fetch('/api/compliance/gold-cert-signoff', {credentials:'include'})
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      var gs = d.gold_cert_signoff || {};
+      var criteria = gs.criteria || [];
+      var readiness = gs.readiness_pct || 0;
+      var certLevel = gs.cert_level || 'Pending';
+      var earned    = gs.earned_weight || 0;
+      var total     = gs.total_weight || 100;
+      var passed    = gs.criteria_passed || 0;
+      var blockers  = criteria.filter(function(c){ return !c.pass; }).length;
+      // Update progress bar
+      if (bar) bar.style.width = readiness + '%';
+      if (pct) pct.textContent = readiness + '%';
+      var lcMap = {Gold:'#B8960C', Silver:'#6b7280', Bronze:'#d97706', Pending:'#9ca3af'};
+      if (lvl) { lvl.textContent = certLevel + (certLevel==='Gold'?' 🏆':''); lvl.style.color = lcMap[certLevel]||'#6b7280'; }
+      if (sc)  sc.textContent  = earned + ' / ' + total;
+      if (ps)  ps.textContent  = passed + ' / ' + criteria.length;
+      if (bl)  { bl.textContent = blockers; bl.style.color = blockers===0 ? '#16a34a' : '#dc2626'; }
+      // Build criteria grid
+      if (grid) {
+        grid.innerHTML = criteria.map(function(c) {
+          var passCol = c.pass ? '#16a34a' : '#dc2626';
+          var passIcon = c.pass ? '&#x2705;' : '&#x274C;';
+          var bgCol = c.pass ? '#f0fdf4' : '#fef2f2';
+          return '<div style="background:' + bgCol + ';border:1px solid ' + (c.pass?'#bbf7d0':'#fecaca') + ';border-radius:4px;padding:.5rem .65rem;">' +
+            '<div style="display:flex;align-items:flex-start;gap:.4rem;">' +
+            '<span style="font-size:.8rem;flex-shrink:0;">' + passIcon + '</span>' +
+            '<div style="flex:1;min-width:0;">' +
+            '<div style="font-size:.7rem;font-weight:700;color:var(--ink);line-height:1.3;">[' + c.id + '] ' + c.label + '</div>' +
+            '<div style="font-size:.65rem;color:' + passCol + ';margin-top:.1rem;">' + (c.note||'') + '</div>' +
+            '<div style="font-size:.6rem;color:var(--ink-muted);margin-top:.1rem;">' + c.category + ' &middot; ' + c.weight + ' pts</div>' +
+            '</div></div></div>';
+        }).join('');
+      }
+    })
+    .catch(function() {
+      if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#dc2626;font-size:.75rem;padding:1rem;">Log in as Super Admin to view live criteria</div>';
+    });
+};
+
 window.igGoldCertStatus = function() {
   fetch('/api/compliance/gold-cert-status', {credentials:'include'})
     .then(function(r){return r.json()}).then(function(d){

@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://9bbd97a3.india-gully.pages.dev |
+| **Latest Deploy** | https://8796ca86.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
@@ -92,6 +92,49 @@ All portals require credentials provisioned by the system administrator.
 
 
 
+## 🏆 W-Round Complete — v2026.21‑W‑Round (2026‑03‑01)
+
+| Metric | Value |
+|--------|-------|
+| Security Score | 100 / 100 |
+| Routes Count | **216** |
+| Open Findings | 0 |
+| Smoke Tests | 25 / 25 (W1–W6 all 401-guarded) |
+| Build Size | 1,794 KB |
+| Git Tag | `v2026.21-w-round` |
+| Diff | 5 files · +1,083 / −36 |
+
+**Delivered Endpoints (W1–W6) — all require Super Admin session:**
+- **W1** `GET /api/admin/d1-binding-health` — live D1 probe: per-table SELECT COUNT(*), binding detection, migration diff, step-by-step bind guide
+- **W2** `POST /api/payments/razorpay-live-test` — ₹1 dry-run order, PCI-DSS 12/12 checklist, HMAC webhook readiness, `setup_commands`
+- **W3** `GET /api/integrations/dns-deliverability-live` — real DNS-over-HTTPS (Cloudflare 1.1.1.1): SPF/DKIM×2/DMARC/MX + grade A+–F + copy-paste DNS records
+- **W4** `GET /api/auth/webauthn-credential-store` — KV credential store, RP config validator (6 checks), enrollment guide, authenticator list
+- **W5** `POST /api/dpdp/vendor-dpa-execute` — mark DPA as executed (KV-persisted), signed_date/expiry/reference, 6-vendor registry, DPDP §8(3)
+- **W6** `GET /api/compliance/gold-cert-signoff` — 12-criteria weighted matrix (100 pts), KV-live data, cert_level Gold/Silver/Bronze
+- **W6-aux** `POST /api/compliance/gold-cert-signoff-record` — assessor sign-off workflow: stores cert_id in KV, triggers Gold status
+
+**Admin Dashboard:**
+- 6 W-Round gold-bordered buttons (W1–W6) in DPDP/Security panel
+- **Inline Gold Cert Progress Widget** — live 12-criteria tracker with progress bar (0→Bronze 60→Silver 80→Gold 100), auto-loads on dashboard mount, Refresh button for manual polling
+- `igD1BindingHealth`, `igRazorpayLiveTest`, `igDnsDeliverabilityLive`, `igWebAuthnCredentialStore`, `igVendorDpaExecute`, `igGoldCertSignoff` JS handlers
+
+**Tests & CI:**
+- `tests/w-round.spec.ts` — 25 Playwright assertions (health, 401 guards for W1–W6 + V1–V6, public pages, audit content, JS error-free)
+- `playwright-w-round` CI job gated on v≥2026.21, routes≥216, w_round flag, w_round_fixes≥6
+- All existing health gates updated: `v >= '2026.20'` → `'2026.21'`, `routes >= 210` → `>= 216`
+
+**X-Round Roadmap — Operator Actions Required for Gold Certification:**
+| Priority | Item | Exact Action | Effort |
+|---|---|---|---|
+| 🔴 High | X1: D1 Bind | Cloudflare Pages → Settings → Functions → D1 Bindings → Add `DB` → `india-gully-production` | 2h |
+| 🔴 High | X2: Razorpay Live | `wrangler pages secret put RAZORPAY_KEY_ID` (value: `rzp_live_…`) + `RAZORPAY_KEY_SECRET` + `RAZORPAY_WEBHOOK_SECRET` | 30 min |
+| 🔴 High | X3: DNS Deliverability | Cloudflare DNS → Add SPF TXT `v=spf1 include:sendgrid.net ~all`, DKIM×2 CNAMEs from SendGrid dashboard, DMARC TXT `v=DMARC1;p=quarantine` | 1h |
+| 🟡 Medium | X4: WebAuthn Passkey | Login to `/admin` → Security → FIDO & MFA → enrol ≥1 passkey credential | 1h |
+| 🟡 Medium | X5: Execute 6 Vendor DPAs | POST `/api/dpdp/vendor-dpa-execute` for each of Cloudflare/Razorpay/SendGrid/Twilio/Google/GitHub with `vendor_id` + `reference_number` | 4h |
+| 🟢 Low | X6: Gold Cert Sign-off | All X1–X5 done → POST `/api/compliance/gold-cert-signoff-record` → assessor review at `dpo@indiagully.com` 🏆 | 8h |
+
+---
+
 ## 🏆 V-Round Complete — v2026.20‑V‑Round (2026‑03‑01)
 
 | Metric | Value |
@@ -122,15 +165,25 @@ All portals require credentials provisioned by the system administrator.
 
 **Tests & CI:** `tests/v-round.spec.ts` · `playwright-v-round` CI job gated on v≥2026.20, routes≥210, v_round flag, v_round_fixes≥6.
 
-**W-Round Roadmap (next steps to Gold Certification):**
+**W-Round Status — ✅ COMPLETE (v2026.21):**
+| Priority | Item | Status |
+|---|---|---|
+| ✅ Done | W1: D1 Binding Health endpoint | `GET /api/admin/d1-binding-health` deployed |
+| ✅ Done | W2: Razorpay Live Test endpoint | `POST /api/payments/razorpay-live-test` deployed |
+| ✅ Done | W3: DNS Deliverability Live endpoint | `GET /api/integrations/dns-deliverability-live` deployed |
+| ✅ Done | W4: WebAuthn Credential Store endpoint | `GET /api/auth/webauthn-credential-store` deployed |
+| ✅ Done | W5: Vendor DPA Execute endpoint | `POST /api/dpdp/vendor-dpa-execute` deployed |
+| ✅ Done | W6: Gold Cert Sign-off endpoint | `GET /api/compliance/gold-cert-signoff` deployed |
+
+**X-Round Roadmap (operator steps → Gold Certification):**
 | Priority | Item | Action | Effort |
 |---|---|---|---|
-| 🔴 High | W1: D1 Remote Bind | Add DB binding in Cloudflare dashboard, run migrations | 2h |
-| 🔴 High | W2: Razorpay Live Keys | Set `RAZORPAY_KEY_ID` (rzp_live_…) + SECRET + WEBHOOK_SECRET | 0.5h |
-| 🔴 High | W3: DNS Deliverability | Add SPF TXT, DKIM×2 CNAME, DMARC TXT in Cloudflare DNS | 1h |
-| 🟡 Medium | W4: WebAuthn Passkey | Enrol ≥1 passkey in /admin → Security → WebAuthn | 1h |
-| 🟡 Medium | W5: Execute 6 Vendor DPAs | Contact each vendor legal, sign DPA agreement | 4h |
-| 🟢 Low | W6: Gold Cert Sign-off | All W1–W5 done → assessor review at dpo@indiagully.com | 8h |
+| 🔴 High | X1: D1 Remote Bind | Add DB binding in Cloudflare Pages dashboard | 2h |
+| 🔴 High | X2: Razorpay Live Keys | `wrangler pages secret put RAZORPAY_KEY_ID` (rzp_live_…) | 0.5h |
+| 🔴 High | X3: DNS Deliverability | Add SPF TXT, DKIM×2 CNAME, DMARC TXT in Cloudflare DNS | 1h |
+| 🟡 Medium | X4: WebAuthn Passkey | Enrol ≥1 passkey in /admin → Security → WebAuthn | 1h |
+| 🟡 Medium | X5: Execute 6 Vendor DPAs | POST `/api/dpdp/vendor-dpa-execute` for each vendor | 4h |
+| 🟢 Low | X6: Gold Cert Sign-off | All X1–X5 done → assessor review at dpo@indiagully.com 🏆 | 8h |
 
 ---
 
