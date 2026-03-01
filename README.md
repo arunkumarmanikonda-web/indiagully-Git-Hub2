@@ -1252,3 +1252,30 @@ Governance: quorum tracker, digital minute book, SS-1/SS-2, statutory registers 
 | GG6 | GET /api/compliance/consumer-protection-tracker | CP Act 2019; 5 compliant; e-commerce price display under review |
 
 **Production**: https://india-gully.pages.dev (v2026.31, 276 routes) | **Preview**: https://b617d727.india-gully.pages.dev
+
+## 🏦 HH-Round Complete — v2026.32-HH-Round (2026-03-01)
+
+| Metric | Value |
+|--------|-------|
+| Version | 2026.32 |
+| Routes | 282 (+6 from GG-Round) |
+| Security Score | 100/100 |
+| Open Findings | 0 |
+| Build Size | 2,103.79 kB (314 modules) |
+| Git Tag | v2026.32-hh-round |
+| Commit | 3825106 |
+| Preview URL | https://92a7a99c.india-gully.pages.dev |
+
+### Delivered Endpoints (all 401 unauthenticated)
+- **HH1** GET /api/finance/erp-dashboard — 8 ERP modules (6 healthy, 2 warning), ₹4.2 Cr revenue, ₹1.1 Cr net profit, ₹82.5 L cash
+- **HH2** GET /api/finance/tds-tracker — 8 deductees, ₹5.22 L TDS, 5 filed/2 pending/1 overdue (Amplitude late interest u/s 201(1A))
+- **HH3** GET /api/finance/gst-reconciliation — 5 GSTINs, 98.5% match rate, ₹6.8K mismatch (TN — 2 unfiled supplier invoices)
+- **HH4** GET /api/finance/budget-variance — 7 departments, ₹3.93 Cr actual vs ₹3.80 Cr budget (+3.4%), Operations +14.7% over
+- **HH5** GET /api/dpdp/financial-data-audit — 10 categories, 9 compliant, Vendor KYC retention exceeds DPDP §8(7)
+- **HH6** GET /api/compliance/sebi-disclosure-tracker — 8 disclosures, 5 filed, 3 due soon (Q4 results, AGM, PIT Q4), 100% compliance rate
+
+### Operator Actions (no code changes needed)
+- **HHO1**: Resolve Amplitude TDS overdue (24d) — file TDS return + pay late interest u/s 201(1A) (High, 2h)
+- **HHO2**: Fix Tamil Nadu GST mismatch ₹6,800 — follow up with supplier for GSTR-1 correction (Medium, 1h)
+- **HHO3**: Reduce Vendor KYC retention from 5 years to 2 years post-contract per DPDP §8(7) (High, 2h)
+- **HHO4**: Prepare Q4 Financial Results and Insider Trading Disclosures for SEBI filing (High, 8h)
