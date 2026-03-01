@@ -29,15 +29,20 @@
   // ── D1 Database ──────────────────────────────────────────────────────────────
   // Local dev: --local flag uses .wrangler/state/v3/d1 SQLite automatically.
   // Production: create with `npx wrangler d1 create india-gully-production`
-  //   then replace PENDING_D1_ID with the returned database_id.
-  // Token requires D1:Edit — once granted, un-comment the block below for prod deploy.
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "india-gully-production",
-      "database_id": "PENDING_D1_ID"
-    }
-  ],
+  //   then replace PENDING_D1_ID with the returned database_id from wrangler output.
+  // Step 1: Upgrade API token to include D1:Edit permission at dash.cloudflare.com/profile/api-tokens
+  // Step 2: Run: npx wrangler d1 create india-gully-production
+  // Step 3: Replace PENDING_D1_ID below with the returned database_id
+  // Step 4: Run: npx wrangler d1 migrations apply india-gully-production
+  // Step 5: Re-deploy: npm run deploy
+  // PENDING D1:Edit permission — commenting out for production deploy (KV+USER_STORE fallback active)
+  // "d1_databases": [
+  //   {
+  //     "binding": "DB",
+  //     "database_name": "india-gully-production",
+  //     "database_id": "PENDING_D1_ID"
+  //   }
+  // ],
 
   // ── R2 Storage ───────────────────────────────────────────────────────────────
   // Document storage: board packs, contracts, employee files
