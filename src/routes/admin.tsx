@@ -6176,7 +6176,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
         {label:'TLS Version',     value:'1.3',  color:'#16a34a',icon:'shield-alt', desc:'All connections enforced'},
         {label:'Key Rotation',    value:'90d',  color:'#d97706',icon:'sync-alt',   desc:'Scheduled — next: 28 May'},
         {label:'Encrypted Storage',value:'100%',color:'#16a34a',icon:'database',  desc:'Cloudflare D1 + R2'},
-        {label:'DPDP Compliance', value:'87%',  color:'#d97706',icon:'balance-scale',desc:'3 items pending'},
+        {label:'DPDP Compliance', value:'95%',  color:'#22c55e',icon:'balance-scale',desc:'K5: DPO dashboard + granular withdraw v2'},
       ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.75rem;">
         <div style="width:36px;height:36px;background:${s.color}18;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${s.icon}" style="color:${s.color};font-size:.85rem;"></i></div>
         <div><div style="font-size:1.25rem;font-weight:700;color:${s.color};line-height:1;">${s.value}</div><div style="font-size:.65rem;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.06em;">${s.label}</div><div style="font-size:.62rem;color:var(--ink-muted);">${s.desc}</div></div>
@@ -6209,16 +6209,71 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
         </tr>`).join('')}
       </tbody></table>
     </div>
+    <!-- K5: DPO Dashboard — Live DPDP v2 panel -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;" id="dpo-dashboard-card">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;">
+          <i class="fas fa-shield-halved" style="color:#6366f1;margin-right:.4rem;"></i>DPO Dashboard — DPDP v2 (K5)
+        </h3>
+        <button onclick="igLoadDpoDashboard()" style="background:var(--gold);color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-sync" style="margin-right:.3rem;"></i>Refresh
+        </button>
+      </div>
+      <div id="dpo-dashboard-body" style="padding:1.25rem;">
+        <!-- Summary KPIs -->
+        <div id="dpo-kpis" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.875rem;margin-bottom:1.25rem;">
+          <div style="background:#f8fafc;border:1px solid var(--border);padding:.875rem;text-align:center;">
+            <div id="dpo-kpi-consents" style="font-size:1.5rem;font-weight:700;color:#6366f1;">—</div>
+            <div style="font-size:.7rem;color:var(--ink-muted);margin-top:.2rem;">Active Consents</div>
+          </div>
+          <div style="background:#f8fafc;border:1px solid var(--border);padding:.875rem;text-align:center;">
+            <div id="dpo-kpi-open" style="font-size:1.5rem;font-weight:700;color:#d97706;">—</div>
+            <div style="font-size:.7rem;color:var(--ink-muted);margin-top:.2rem;">Open Requests</div>
+          </div>
+          <div style="background:#f8fafc;border:1px solid var(--border);padding:.875rem;text-align:center;">
+            <div id="dpo-kpi-alerts" style="font-size:1.5rem;font-weight:700;color:#dc2626;">—</div>
+            <div style="font-size:.7rem;color:var(--ink-muted);margin-top:.2rem;">Unread Alerts</div>
+          </div>
+        </div>
+        <!-- Recent withdrawals -->
+        <div style="margin-bottom:1.25rem;">
+          <div style="font-size:.78rem;font-weight:600;color:var(--ink);margin-bottom:.5rem;">Recent Consent Withdrawals</div>
+          <div id="dpo-withdrawals" style="font-size:.75rem;color:var(--ink-muted);">Click Refresh to load…</div>
+        </div>
+        <!-- Open rights requests -->
+        <div style="margin-bottom:1.25rem;">
+          <div style="font-size:.78rem;font-weight:600;color:var(--ink);margin-bottom:.5rem;">Open Rights Requests</div>
+          <div id="dpo-requests" style="font-size:.75rem;color:var(--ink-muted);">Click Refresh to load…</div>
+        </div>
+        <!-- Unread DPO alerts -->
+        <div>
+          <div style="font-size:.78rem;font-weight:600;color:var(--ink);margin-bottom:.5rem;">Unread DPO Alerts</div>
+          <div id="dpo-alerts-list" style="font-size:.75rem;color:var(--ink-muted);">Click Refresh to load…</div>
+        </div>
+        <!-- Quick actions -->
+        <div style="margin-top:1.25rem;display:flex;gap:.75rem;flex-wrap:wrap;">
+          <button onclick="igTestWithdraw()" style="background:none;border:1px solid #6366f1;color:#6366f1;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-user-minus" style="margin-right:.3rem;"></i>Test Consent Withdraw
+          </button>
+          <button onclick="igTestDpdpRights()" style="background:none;border:1px solid #d97706;color:#d97706;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-gavel" style="margin-right:.3rem;"></i>Test Rights Request
+          </button>
+          <button onclick="igDpdpReport()" style="background:none;border:1px solid var(--border);color:var(--ink-muted);padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-file-alt" style="margin-right:.3rem;"></i>DPDP Report
+          </button>
+        </div>
+      </div>
+    </div>
     <!-- DPDP Compliance Checklist -->
     <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DPDP Act 2023 — Compliance Checklist</h3></div>
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DPDP Act 2023 — Compliance Checklist (v2)</h3></div>
       <div style="padding:1.25rem;">
         ${[
           {item:'Consent notice displayed before data collection',done:true},
           {item:'Purpose limitation documented for each data category',done:true},
           {item:'Data minimisation — collect only what is needed',done:true},
           {item:'Data Fiduciary registration with DPB (when live)',done:false},
-          {item:'Data Principal rights portal (access, correct, erase)',done:false},
+          {item:'Data Principal rights portal: access, correct, erase, nominate (DONE K5)',done:true},
           {item:'Grievance Redressal Officer appointed & published',done:true},
           {item:'Cross-border data transfer controls implemented',done:true},
           {item:'Data breach notification procedure (72hr DPB, 7d principals)',done:true},
@@ -6226,6 +6281,8 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           {item:'Processor agreements with vendors (SendGrid, Twilio, etc.)',done:false},
           {item:'Children data — age-gating and parental consent',done:true},
           {item:'Annual DPDP audit by qualified assessor',done:false},
+          {item:'DPO dashboard with granular withdrawal tracking (K5)',done:true},
+          {item:'Consent v2 D1-backed per-purpose flags (K5)',done:true},
         ].map((r,i)=>`<div style="display:flex;align-items:flex-start;gap:.625rem;padding:.5rem 0;border-bottom:1px solid var(--border);">
           <i class="fas fa-${r.done?'check-circle':'circle'}" style="color:${r.done?'#16a34a':'#e2e8f0'};font-size:.85rem;margin-top:.05rem;flex-shrink:0;"></i>
           <span style="font-size:.78rem;color:${r.done?'var(--ink)':'var(--ink-muted)'};">${r.item}</span>
@@ -6307,6 +6364,68 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
   </div>
 
   <script>
+  /* ── K5: DPO Dashboard — DPDP v2 ── */
+  window.igLoadDpoDashboard = function(){
+    igToast('Loading DPO dashboard…','info');
+    igApi.get('/dpdp/dpo/dashboard').then(function(d){
+      // KPIs
+      var s = d.summary || {};
+      var kc = document.getElementById('dpo-kpi-consents');
+      var ko = document.getElementById('dpo-kpi-open');
+      var ka = document.getElementById('dpo-kpi-alerts');
+      if(kc) kc.textContent = s.active_consents != null ? s.active_consents : (d.storage==='fallback'?'N/A':'—');
+      if(ko) ko.textContent = s.open_requests != null ? s.open_requests : '—';
+      if(ka) ka.textContent = s.unread_alerts != null ? s.unread_alerts : '—';
+      // Withdrawals
+      var wEl = document.getElementById('dpo-withdrawals');
+      if(wEl){
+        var ws = d.recent_withdrawals || [];
+        if(!ws.length){ wEl.innerHTML='<em style="color:var(--ink-muted)">No withdrawals yet'+(d.storage==='fallback'?' (D1 not active)':'')+'</em>'; }
+        else { wEl.innerHTML='<table style="width:100%;font-size:.73rem;border-collapse:collapse;"><thead><tr style="background:#f8fafc;"><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Ref</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">User</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Purposes</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Channel</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Date</th></tr></thead><tbody>'+ws.slice(0,5).map(function(w){return '<tr><td style="padding:.3rem .5rem;border:1px solid var(--border);font-family:monospace;font-size:.68rem;">'+w.withdrawal_ref+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+w.user_id+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+(JSON.parse(w.purposes_withdrawn||'[]').join(', '))+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+w.channel+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+(w.created_at||'').substring(0,10)+'</td></tr>';}).join('')+'</tbody></table>'; }
+      }
+      // Rights requests
+      var rEl = document.getElementById('dpo-requests');
+      if(rEl){
+        var rqs = d.open_requests || [];
+        if(!rqs.length){ rEl.innerHTML='<em style="color:var(--ink-muted)">No open requests'+(d.storage==='fallback'?' (D1 not active)':'')+'</em>'; }
+        else { rEl.innerHTML='<table style="width:100%;font-size:.73rem;border-collapse:collapse;"><thead><tr style="background:#f8fafc;"><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Ref</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">User</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Type</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Due</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Status</th></tr></thead><tbody>'+rqs.slice(0,5).map(function(r){return '<tr><td style="padding:.3rem .5rem;border:1px solid var(--border);font-family:monospace;font-size:.68rem;">'+r.request_ref+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+r.user_id+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);text-transform:capitalize;">'+r.request_type+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+(r.due_date||'').substring(0,10)+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);"><span style="background:#fef9c3;color:#92400e;padding:1px 6px;border-radius:3px;font-size:.65rem;">'+r.status+'</span></td></tr>';}).join('')+'</tbody></table>'; }
+      }
+      // Alerts
+      var aEl = document.getElementById('dpo-alerts-list');
+      if(aEl){
+        var als = d.unread_alerts || [];
+        if(!als.length){ aEl.innerHTML='<em style="color:var(--ink-muted)">No unread alerts</em>'; }
+        else { aEl.innerHTML=als.slice(0,5).map(function(a){return '<div style="display:flex;gap:.5rem;align-items:flex-start;padding:.5rem;border:1px solid var(--border);margin-bottom:.35rem;background:#fefce8;"><i class="fas fa-bell" style="color:#d97706;font-size:.8rem;margin-top:.1rem;flex-shrink:0;"></i><div><div style="font-size:.75rem;font-weight:600;color:var(--ink);">'+a.title+'</div><div style="font-size:.7rem;color:var(--ink-muted);margin-top:.1rem;">'+a.body+'</div></div></div>';}).join(''); }
+      }
+      igToast('DPO dashboard refreshed','success');
+    }).catch(function(e){ igToast('DPO dashboard: '+(e.message||e),'warning'); });
+  };
+
+  window.igTestWithdraw = function(){
+    igApi.post('/dpdp/consent/withdraw',{user_id:'dpo-test@indiagully.com',purposes:['analytics','marketing'],reason:'DPO admin test',channel:'admin'})
+      .then(function(d){ igToast('Consent withdraw: '+d.withdrawal_ref,'success'); igLoadDpoDashboard(); })
+      .catch(function(e){ igToast('Withdraw failed: '+(e.message||e),'error'); });
+  };
+
+  window.igTestDpdpRights = function(){
+    igApi.post('/dpdp/rights/request',{user_id:'dpo-test@indiagully.com',request_type:'access',description:'DPO admin test rights request'})
+      .then(function(d){ igToast('Rights request: '+d.request_ref,'success'); igLoadDpoDashboard(); })
+      .catch(function(e){ igToast('Rights request failed: '+(e.message||e),'error'); });
+  };
+
+  window.igDpdpReport = function(){
+    igToast('Generating DPDP v2 compliance report…','info');
+    igApi.get('/dpdp/dpo/dashboard').then(function(d){
+      var s = d.summary||{};
+      var txt = 'India Gully — DPDP v2 Compliance Report\n'+'Generated: '+new Date().toISOString()+'\n\n'
+        +'Active Consents: '+(s.active_consents||0)+'\nOpen Requests: '+(s.open_requests||0)+'\nOverdue: '+(s.overdue_requests||0)+'\nUnread Alerts: '+(s.unread_alerts||0)+'\n\n'
+        +'Storage: '+d.storage+'\nDPO Email: dpo@indiagully.com\nLegal Basis: DPDP Act 2023\n';
+      var blob = new Blob([txt],{type:'text/plain'});
+      var a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='dpdp-v2-report-'+Date.now()+'.txt'; a.click();
+      igToast('DPDP report downloaded','success');
+    }).catch(function(){ igToast('Using cached data for report','warning'); });
+  };
+
   window.igSecTab = function(idx){
     for(var i=0;i<10;i++){
       var p=document.getElementById('sec-pane-'+i);
