@@ -6661,6 +6661,31 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       </div>
     </div>
 
+    <!-- II-Round buttons -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;padding:1rem;">
+      <div style="font-size:.75rem;font-weight:600;color:#0f4c75;margin-bottom:.6rem;"><i class="fas fa-gavel" style="margin-right:.4rem;"></i>II-Round — Legal &amp; Contract Intelligence (v2026.33)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igContractRegistry()" style="background:none;border:1px solid #0f4c75;color:#0f4c75;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-file-contract" style="margin-right:.3rem;"></i>II1: Contracts
+        </button>
+        <button onclick="igLitigationTracker()" style="background:none;border:1px solid #0f4c75;color:#0f4c75;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-balance-scale-right" style="margin-right:.3rem;"></i>II2: Litigation
+        </button>
+        <button onclick="igNdaCompliance()" style="background:none;border:1px solid #0f4c75;color:#0f4c75;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-handshake" style="margin-right:.3rem;"></i>II3: NDA
+        </button>
+        <button onclick="igRegulatoryFilings()" style="background:none;border:1px solid #0f4c75;color:#0f4c75;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-folder-open" style="margin-right:.3rem;"></i>II4: Reg Filings
+        </button>
+        <button onclick="igDataProcessingAgreements()" style="background:none;border:1px solid #0f4c75;color:#0f4c75;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>II5: DPAs
+        </button>
+        <button onclick="igIpPortfolio()" style="background:none;border:1px solid #0f4c75;color:#0f4c75;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-lightbulb" style="margin-right:.3rem;"></i>II6: IP Portfolio
+        </button>
+      </div>
+    </div>
+
     <!-- ── Gold Certification Live Progress (W-Round) ── -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;" id="gold-cert-widget">
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
@@ -8561,6 +8586,60 @@ window.igSebiDisclosureTracker = function() {
       return '<tr><td style="font-size:.65rem;">'+dis.disclosure_type+'</td><td style="font-size:.65rem;">'+dis.due_date+'</td><td style="color:'+col+';">'+dis.status+'</td><td style="font-size:.65rem;">'+(dis.filed_date||'—')+'</td></tr>';}).join('');
     igModal('HH6: SEBI Disclosure Tracker — v2026.32','<b>Total:</b> '+s.total_disclosures+' | <b>Filed:</b> '+s.filed+' | <b>Due Soon:</b> '+s.due_soon+' | <b>Overdue:</b> '+s.overdue+(d.alerts.length?' <span style="color:#991b1b;">⚠ '+d.alerts.length+' alerts</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>Disclosure</th><th>Due Date</th><th>Status</th><th>Filed</th></tr>'+rows+'</table>');
   }).catch(function(){igModal('HH6: SEBI Disclosure','Session expired — log in as Super Admin')});
+};
+
+window.igContractRegistry = function() {
+  fetch('/api/legal/contract-registry',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.contracts||[]).map(function(c){
+      var col=c.status==='active'?'#065f46':c.status==='expired'?'#991b1b':'#92400e';
+      return '<tr><td style="font-size:.65rem;">'+c.id+'</td><td style="font-size:.65rem;">'+c.party+'</td><td style="font-size:.65rem;">'+c.type+'</td><td style="font-size:.65rem;">₹'+c.value_lakh+'L</td><td style="color:'+col+';">'+c.status+'</td><td style="font-size:.65rem;">'+c.days_to_expiry+'d</td></tr>';}).join('');
+    igModal('II1: Contract Registry — v2026.33','<b>Total:</b> '+s.total_contracts+' | <b>Active:</b> '+s.active+' | <b>Total Value:</b> ₹'+s.total_value_cr+' Cr | <b>Expiring 90d:</b> '+s.expiring_90_days+' | <b>Auto-Renewal:</b> '+s.auto_renewal_alerts+(d.alerts.length?' <span style="color:#991b1b;">⚠ '+d.alerts.length+' alerts</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f4c75;color:#fff;"><th>ID</th><th>Party</th><th>Type</th><th>Value</th><th>Status</th><th>Expiry</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('II1: Contract Registry','Session expired — log in as Super Admin')});
+};
+
+window.igLitigationTracker = function() {
+  fetch('/api/legal/litigation-tracker',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.cases||[]).map(function(cas){
+      var col=cas.status==='resolved'?'#065f46':cas.status==='in_hearing'?'#92400e':'#991b1b';
+      return '<tr><td style="font-size:.65rem;">'+cas.id+'</td><td style="font-size:.65rem;">'+cas.type+'</td><td style="font-size:.65rem;">'+cas.party+'</td><td style="font-size:.65rem;">₹'+cas.contingent_liability_lakh+'L</td><td style="color:'+col+';">'+cas.status+'</td></tr>';}).join('');
+    igModal('II2: Litigation Tracker — v2026.33','<b>Total Cases:</b> '+s.total_cases+' | <b>Active:</b> '+s.active+' | <b>Contingent Liability:</b> ₹'+s.total_contingent_liability_lakh+' L | <b>Next Hearing:</b> '+s.next_hearing+(d.alerts.length?' <span style="color:#991b1b;">⚠ '+d.alerts.length+' alerts</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f4c75;color:#fff;"><th>ID</th><th>Type</th><th>Party</th><th>Liability</th><th>Status</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('II2: Litigation Tracker','Session expired — log in as Super Admin')});
+};
+
+window.igNdaCompliance = function() {
+  fetch('/api/legal/nda-compliance',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.ndas||[]).map(function(n){
+      var col=n.breach_flag?'#991b1b':n.status==='active'?'#065f46':'#92400e';
+      return '<tr><td style="font-size:.65rem;">'+n.id+'</td><td style="font-size:.65rem;">'+n.party+'</td><td style="font-size:.65rem;">'+n.type+'</td><td style="font-size:.65rem;">'+n.expiry+'</td><td style="color:'+col+';">'+(n.breach_flag?'⚠ BREACH':n.status)+'</td></tr>';}).join('');
+    igModal('II3: NDA Compliance — v2026.33','<b>Total:</b> '+s.total_ndas+' | <b>Active:</b> '+s.active+' | <b>Breach Flags:</b> '+s.breach_flags+' | <b>Expiring 90d:</b> '+s.expiring_90_days+(s.breach_flags?' <span style="color:#991b1b;">⚠ BREACH DETECTED</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f4c75;color:#fff;"><th>ID</th><th>Party</th><th>Type</th><th>Expiry</th><th>Status</th></tr>'+rows+'</table>'+(d.breach_details.length?'<p style="color:#991b1b;font-size:.7rem;margin-top:.4rem;">⚠ Breach: '+d.breach_details[0].party+' — '+d.breach_details[0].incident+'</p>':''));
+  }).catch(function(){igModal('II3: NDA Compliance','Session expired — log in as Super Admin')});
+};
+
+window.igRegulatoryFilings = function() {
+  fetch('/api/compliance/regulatory-filings',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.filings||[]).map(function(f){
+      var col=f.status==='filed'?'#065f46':f.status==='overdue'?'#991b1b':'#92400e';
+      return '<tr><td style="font-size:.65rem;">'+f.regulator+'</td><td style="font-size:.65rem;">'+f.form.substring(0,30)+'</td><td style="font-size:.65rem;">'+f.due_date+'</td><td style="color:'+col+';">'+f.status+'</td></tr>';}).join('');
+    igModal('II4: Regulatory Filings — v2026.33','<b>Total:</b> '+s.total_filings+' | <b>Filed:</b> '+s.filed+' | <b>Due Soon:</b> '+s.due_soon+' | <b>Overdue:</b> '+s.overdue+' | <b>Rate:</b> '+s.compliance_rate_pct+'%'+(d.alerts.length?' <span style="color:#991b1b;">⚠ '+d.alerts.length+' alerts</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f4c75;color:#fff;"><th>Regulator</th><th>Form</th><th>Due</th><th>Status</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('II4: Regulatory Filings','Session expired — log in as Super Admin')});
+};
+
+window.igDataProcessingAgreements = function() {
+  fetch('/api/dpdp/data-processing-agreements',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.processors||[]).map(function(p){
+      var col=p.dpa_status==='signed'?'#065f46':'#991b1b';
+      return '<tr><td style="font-size:.65rem;">'+p.processor+'</td><td style="font-size:.65rem;">'+p.category+'</td><td style="color:'+col+';">'+p.dpa_status+'</td><td style="font-size:.65rem;">'+(p.dpdp_s28?'✓':'✗')+'</td></tr>';}).join('');
+    igModal('II5: Data Processing Agreements (DPDP §28) — v2026.33','<b>Total Processors:</b> '+s.total_processors+' | <b>DPA Signed:</b> '+s.dpa_signed+' | <b>Pending:</b> '+s.dpa_pending+' | <b>§28 Compliant:</b> '+s.dpdp_s28_compliant+' | <b>Rate:</b> '+s.compliance_rate_pct+'%'+(d.alerts.length?' <span style="color:#991b1b;">⚠ '+d.alerts.length+' violations</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f4c75;color:#fff;"><th>Processor</th><th>Category</th><th>DPA</th><th>§28</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('II5: Data Processing Agreements','Session expired — log in as Super Admin')});
+};
+
+window.igIpPortfolio = function() {
+  fetch('/api/legal/ip-portfolio',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.trademarks||[]).map(function(t){
+      var col=t.status==='registered'?'#065f46':t.status==='pending'?'#92400e':'#991b1b';
+      return '<tr><td style="font-size:.65rem;">'+t.mark+'</td><td style="font-size:.65rem;">'+t.jurisdiction+'</td><td style="color:'+col+';">'+t.status+'</td><td style="font-size:.65rem;">'+(t.renewal_due||'—')+'</td></tr>';}).join('');
+    igModal('II6: IP Portfolio — v2026.33','<b>Trademarks:</b> '+s.total_trademarks+' ('+s.registered+' reg) | <b>Patents:</b> '+s.total_patents+' | <b>Copyrights:</b> '+s.total_copyrights+' | <b>Renewals 90d:</b> '+s.renewal_due_90_days+(d.alerts.length?' <span style="color:#991b1b;">⚠ '+d.alerts.length+' alerts</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f4c75;color:#fff;"><th>Mark</th><th>Jurisdiction</th><th>Status</th><th>Renewal</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('II6: IP Portfolio','Session expired — log in as Super Admin')});
 };
 
 window.igSecTab = function(idx){
