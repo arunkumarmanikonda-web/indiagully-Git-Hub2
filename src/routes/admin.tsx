@@ -6523,6 +6523,31 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       </div>
     </div>
 
+    <!-- CC-Round buttons -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;padding:1rem;">
+      <div style="font-size:.75rem;font-weight:600;color:#0f766e;margin-bottom:.6rem;"><i class="fas fa-chart-area" style="margin-right:.4rem;"></i>CC-Round — Analytics Intelligence &amp; Operational Metrics (v2026.27)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igTaxAnalytics()" style="background:none;border:1px solid #0f766e;color:#0f766e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-receipt" style="margin-right:.3rem;"></i>CC1: Tax Analytics
+        </button>
+        <button onclick="igRevenueAnalytics()" style="background:none;border:1px solid #0f766e;color:#0f766e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-chart-line" style="margin-right:.3rem;"></i>CC2: Revenue Analytics
+        </button>
+        <button onclick="igObservabilityDashboard()" style="background:none;border:1px solid #0f766e;color:#0f766e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-binoculars" style="margin-right:.3rem;"></i>CC3: Observability
+        </button>
+        <button onclick="igAccessPatternReport()" style="background:none;border:1px solid #0f766e;color:#0f766e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-fingerprint" style="margin-right:.3rem;"></i>CC4: Access Patterns
+        </button>
+        <button onclick="igConsentAnalytics()" style="background:none;border:1px solid #0f766e;color:#0f766e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-toggle-on" style="margin-right:.3rem;"></i>CC5: Consent Analytics
+        </button>
+        <button onclick="igMaturityScorecard()" style="background:none;border:1px solid #0f766e;color:#0f766e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-star-half-alt" style="margin-right:.3rem;"></i>CC6: GRC Maturity
+        </button>
+      </div>
+    </div>
+
     <!-- ── Gold Certification Live Progress (W-Round) ── -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;" id="gold-cert-widget">
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
@@ -8106,6 +8131,58 @@ window.igBcpStatus = function() {
       return '<tr><td>'+i.area+'</td><td>'+i.target+'</td><td>'+i.actual+'</td><td style="color:'+c+';">'+i.status.toUpperCase()+'</td><td>'+i.last_tested+'</td></tr>';}).join('');
     igModal('BB6: BCP Status — v2026.26','<b>Readiness:</b> '+s.readiness_score+' | <b>RTO:</b> '+s.rto_target+' | <b>RPO:</b> '+s.rpo_target+' | <b>Last DR Drill:</b> '+s.last_dr_drill+' | <b>ISO 22301:</b> '+(s.iso22301_aligned?'✅':'❌')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#1e40af;color:#fff;"><th>Area</th><th>Target</th><th>Actual</th><th>Status</th><th>Last Tested</th></tr>'+rows+'</table>'+(d.alerts.length?'<p style="color:#92400e;margin-top:.4rem;font-size:.72rem;">⚠ '+d.alerts.join(' | ')+'</p>':''));
   }).catch(function(){igModal('BB6: BCP Status','Session expired — log in as Super Admin')});
+};
+
+window.igTaxAnalytics = function() {
+  fetch('/finance/tax-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var g=d.gst; var t=d.tds; var a=d.advance_tax; var s=d.summary;
+    igModal('CC1: Tax Analytics — '+d.fy,'<b>Total Tax Outflow:</b> ₹'+s.total_tax_outflow.toLocaleString()+' | <b>Effective Rate:</b> '+s.effective_tax_rate+' | <b>Tax/Revenue:</b> '+s.tax_to_revenue_ratio+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f766e;color:#fff;"><th>Item</th><th>Amount (₹)</th><th>Status</th></tr><tr><td>GST (CGST+SGST)</td><td>'+g.total_liability_inr.toLocaleString()+'</td><td>✅ '+g.gstr1_status+'</td></tr><tr><td>TDS §192 Salary</td><td>'+t.section_192_salary.toLocaleString()+'</td><td>✅ filed</td></tr><tr><td>TDS §194J Prof</td><td>'+t.section_194j_prof.toLocaleString()+'</td><td>✅ filed</td></tr><tr><td>TDS §194C Contract</td><td>'+t.section_194c_contract.toLocaleString()+'</td><td>✅ filed</td></tr><tr><td>Advance Tax</td><td>'+a.total_advance_tax.toLocaleString()+'</td><td>✅ all 4 qtrs paid</td></tr></table><p style="font-size:.7rem;color:#0f766e;margin-top:.4rem;">Form 26AS Reconciled: '+(t.form_26as_reconciled?'✅':'❌')+' | Compliance Score: '+s.compliance_score+'/100</p>');
+  }).catch(function(){igModal('CC1: Tax Analytics','Session expired — log in as Super Admin')});
+};
+
+window.igRevenueAnalytics = function() {
+  fetch('/payments/revenue-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.top_mandates||[]).slice(0,5).map(function(m){
+      var rc=m.risk==='low'?'#065f46':m.risk==='medium'?'#92400e':'#991b1b';
+      return '<tr><td>'+m.name+'</td><td>₹'+m.revenue_inr.toLocaleString()+'</td><td>'+m.growth_mom+'</td><td style="color:'+rc+';">'+m.risk+'</td></tr>';}).join('');
+    var mix=(d.payment_mix||[]).map(function(p){return p.method+' '+p.share_pct+'%';}).join(' | ');
+    igModal('CC2: Revenue Analytics — v2026.27','<b>Total Revenue:</b> ₹'+s.total_revenue_inr.toLocaleString()+' | <b>Avg MoM Growth:</b> '+s.avg_monthly_growth+' | <b>ARPU:</b> ₹'+s.arpu_inr+' | <b>Churn Risk High:</b> '+s.churn_risk_high+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f766e;color:#fff;"><th>Mandate</th><th>Revenue</th><th>MoM</th><th>Risk</th></tr>'+rows+'</table><p style="font-size:.7rem;color:#6b7280;margin-top:.4rem;">Payment Mix: '+mix+'</p>');
+  }).catch(function(){igModal('CC2: Revenue Analytics','Session expired — log in as Super Admin')});
+};
+
+window.igObservabilityDashboard = function() {
+  fetch('/integrations/observability-dashboard',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var sl=d.slo; var inf=d.infra; var rows=(d.routes||[]).map(function(r){
+      var c=r.error_pct>0.3?'#991b1b':'#065f46';
+      return '<tr><td style="font-family:monospace;font-size:.65rem;">'+r.route+'</td><td>'+r.p50_ms+'</td><td>'+r.p95_ms+'</td><td>'+r.p99_ms+'</td><td style="color:'+c+';">'+r.error_pct+'%</td></tr>';}).join('');
+    igModal('CC3: Observability Dashboard — v2026.27','<b>SLO:</b> '+sl.slo_compliance+' | <b>Availability:</b> '+sl.availability_actual+' | <b>P95 Latency:</b> '+sl.latency_actual_p95+' | <b>Error Budget:</b> '+sl.error_budget_remaining+' remaining<br/><b>Infra:</b> KV read '+inf.kv_read_latency_ms+'ms | D1 avg '+inf.d1_query_avg_ms+'ms | Requests/24h '+inf.requests_24h.toLocaleString()+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f766e;color:#fff;"><th>Route</th><th>P50</th><th>P95</th><th>P99</th><th>Errors</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('CC3: Observability','Session expired — log in as Super Admin')});
+};
+
+window.igAccessPatternReport = function() {
+  fetch('/auth/access-pattern-report',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var geoRows=(d.geo_distribution||[]).map(function(g){return '<tr><td>'+g.city+'</td><td>'+g.logins+'</td><td>'+g.pct+'</td></tr>';}).join('');
+    var flags=(d.suspicious_patterns||[]).map(function(p){return '<li style="color:#991b1b;font-size:.72rem;">'+p.email+': '+p.flag+' ('+p.severity+')</li>';}).join('');
+    igModal('CC4: Access Pattern Report — v2026.27','<b>Sessions:</b> '+s.total_sessions+' | <b>Peak Hour:</b> '+s.peak_hour+' | <b>MFA Rate:</b> '+s.mfa_challenge_rate+' | <b>Suspicious:</b> '+s.suspicious_flags+' flags<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f766e;color:#fff;"><th>City</th><th>Logins</th><th>Share</th></tr>'+geoRows+'</table>'+(flags?'<ul style="margin-top:.5rem;padding-left:1rem;">'+flags+'</ul>':''));
+  }).catch(function(){igModal('CC4: Access Patterns','Session expired — log in as Super Admin')});
+};
+
+window.igConsentAnalytics = function() {
+  fetch('/dpdp/consent-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.consent_categories||[]).map(function(c){
+      var col=parseFloat(c.rate)>=80?'#065f46':'#991b1b';
+      return '<tr><td>'+c.purpose+'</td><td style="color:'+col+';">'+c.rate+'</td><td>'+c.legal_basis+'</td></tr>';}).join('');
+    igModal('CC5: Consent Analytics — v2026.27','<b>Overall Opt-in:</b> '+s.overall_opt_in_rate+' | <b>Withdrawal Trend:</b> '+s.withdrawal_trend+'<br/><b>DSR SLA Breaches:</b> '+d.dsr.sla_breaches+' | <b>§7 Compliant:</b> '+(s.section7_compliant?'✅':'❌')+' | <b>Score:</b> '+s.compliance_score+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f766e;color:#fff;"><th>Purpose</th><th>Opt-in Rate</th><th>Legal Basis</th></tr>'+rows+'</table>'+(s.alerts.length?'<p style="color:#92400e;font-size:.7rem;margin-top:.4rem;">⚠ '+s.alerts.join(' | ')+'</p>':''));
+  }).catch(function(){igModal('CC5: Consent Analytics','Session expired — log in as Super Admin')});
+};
+
+window.igMaturityScorecard = function() {
+  fetch('/compliance/maturity-scorecard',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.domains||[]).map(function(dom){
+      var c=dom.score>=100?'#065f46':dom.score>=80?'#92400e':'#991b1b';
+      return '<tr><td>'+dom.domain+'</td><td style="color:'+c+';">L'+dom.level+'/5</td><td style="color:'+c+';">'+dom.score+'</td><td style="font-size:.65rem;">'+dom.gap+'</td></tr>';}).join('');
+    igModal('CC6: GRC Maturity Scorecard — v2026.27','<b>Overall Score:</b> '+s.overall_maturity_score+'/100 ('+s.maturity_label+') | <b>Level-5 Domains:</b> '+s.domains_at_level5+' | <b>Open Gaps:</b> '+s.open_gaps+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f766e;color:#fff;"><th>Domain</th><th>Level</th><th>Score</th><th>Gap</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('CC6: GRC Maturity','Session expired — log in as Super Admin')});
 };
 
 window.igSecTab = function(idx){
