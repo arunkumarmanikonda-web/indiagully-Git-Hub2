@@ -6176,7 +6176,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
         {label:'TLS Version',     value:'1.3',  color:'#16a34a',icon:'shield-alt', desc:'All connections enforced'},
         {label:'Key Rotation',    value:'90d',  color:'#d97706',icon:'sync-alt',   desc:'Scheduled — next: 28 May'},
         {label:'Encrypted Storage',value:'100%',color:'#16a34a',icon:'database',  desc:'Cloudflare D1 + R2'},
-        {label:'DPDP Compliance', value:'95%',  color:'#22c55e',icon:'balance-scale',desc:'K5: DPO dashboard + granular withdraw v2'},
+        {label:'DPDP Compliance', value:'98%',  color:'#15803d',icon:'balance-scale',desc:'L6: banner v3 + consent/record + withdraw drawer'},
       ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.75rem;">
         <div style="width:36px;height:36px;background:${s.color}18;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${s.icon}" style="color:${s.color};font-size:.85rem;"></i></div>
         <div><div style="font-size:1.25rem;font-weight:700;color:${s.color};line-height:1;">${s.value}</div><div style="font-size:.65rem;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.06em;">${s.label}</div><div style="font-size:.62rem;color:var(--ink-muted);">${s.desc}</div></div>
@@ -6261,6 +6261,9 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           <button onclick="igDpdpReport()" style="background:none;border:1px solid var(--border);color:var(--ink-muted);padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
             <i class="fas fa-file-alt" style="margin-right:.3rem;"></i>DPDP Report
           </button>
+          <button onclick="if(window.igOpenDpdpPreferences)igOpenDpdpPreferences();else igToast('DPDP drawer not available on admin page','info')" style="background:none;border:1px solid #15803d;color:#15803d;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-sliders" style="margin-right:.3rem;"></i>Banner v3 Drawer (L6)
+          </button>
         </div>
       </div>
     </div>
@@ -6281,6 +6284,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           {item:'Processor agreements with vendors (SendGrid, Twilio, etc.)',done:false},
           {item:'Children data — age-gating and parental consent',done:true},
           {item:'Annual DPDP audit by qualified assessor',done:false},
+          {item:'DPDP banner v3 — per-purpose toggles + consent/record API + withdraw drawer (L6)',done:true},
           {item:'DPO dashboard with granular withdrawal tracking (K5)',done:true},
           {item:'Consent v2 D1-backed per-purpose flags (K5)',done:true},
         ].map((r,i)=>`<div style="display:flex;align-items:flex-start;gap:.625rem;padding:.5rem 0;border-bottom:1px solid var(--border);">

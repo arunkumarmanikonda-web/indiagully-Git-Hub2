@@ -649,70 +649,233 @@ const SCRIPTS = (nonce?: string) => `
     docEl.style.position='relative'; docEl.appendChild(wm);
   };
 
-  /* ── DPDP CONSENT BANNER v3 (F5) — shown on ALL paths including /admin and /portal ── */
+  /* ── DPDP CONSENT BANNER v3 — L6 upgrade: per-purpose toggles + withdraw link ── */
+  /* Hooks to POST /api/dpdp/consent/record for granular D1-backed consent.          */
   (function(){
-    var key='ig_dpdp_consent_v3';
-    if(localStorage.getItem(key)) return;
-    // Skip login pages to avoid blocking auth forms (only show on dashboard/app routes)
+    var BANNER_KEY='ig_dpdp_consent_v3';
+    if(localStorage.getItem(BANNER_KEY)) return;
     var path=window.location.pathname;
-    var isLoginPage=(path==='/admin'||path==='/portal'||path==='/portal/client'||path==='/portal/employee'||path==='/portal/board'||path.endsWith('/login'));
+    // Skip login/auth pages — only show on dashboard/app routes
+    var isLoginPage=(path==='/admin'||path==='/portal'||path==='/portal/client'
+      ||path==='/portal/employee'||path==='/portal/board'||path.endsWith('/login'));
     if(isLoginPage) return;
+
     var banner=document.createElement('div');
     banner.id='dpdp-banner';
     banner.setAttribute('role','dialog');
+    banner.setAttribute('aria-modal','true');
     banner.setAttribute('aria-label','DPDP Data Consent Notice');
-    banner.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:9800;background:#0A0A0A;border-top:2px solid var(--gold,#B8960C);padding:1rem 1.5rem;display:flex;align-items:flex-start;gap:1.25rem;flex-wrap:wrap;box-shadow:0 -4px 30px rgba(0,0,0,.6);';
+    banner.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:9800;'
+      +'background:#0A0A0A;border-top:2px solid var(--gold,#B8960C);'
+      +'padding:1rem 1.5rem;display:flex;align-items:flex-start;'
+      +'gap:1.25rem;flex-wrap:wrap;box-shadow:0 -4px 30px rgba(0,0,0,.6);';
+
     banner.innerHTML=''
       +'<div style="flex:1;min-width:260px;">'
-        +'<div style="font-size:.75rem;font-weight:700;color:#fff;margin-bottom:.35rem;letter-spacing:.06em;">&#x1F512; DPDP Act 2023 &#8212; Data Consent</div>'
-        +'<div style="font-size:.72rem;color:rgba(255,255,255,.55);line-height:1.6;">'
-          +'India Gully processes personal data (name, email, organisation, usage logs) for platform operations and advisory purposes under the '
-          +'<strong style="color:rgba(255,255,255,.8);">Digital Personal Data Protection Act 2023</strong>. '
-          +'Essential processing is required to use this platform. Analytics and marketing are optional. '
-          +'<a href="/legal/privacy" style="color:var(--gold,#B8960C);text-decoration:underline;">Privacy Policy</a> &nbsp;|&nbsp; '
-          +'<a href="mailto:dpo@indiagully.com" style="color:var(--gold,#B8960C);text-decoration:underline;">DPO: dpo@indiagully.com</a>'
+        +'<div style="font-size:.75rem;font-weight:700;color:#fff;margin-bottom:.35rem;letter-spacing:.06em;">'
+          +'&#x1F512; DPDP Act 2023 &mdash; Data Consent &nbsp;'
+          +'<span style="font-size:.62rem;font-weight:400;color:rgba(255,255,255,.35);letter-spacing:0;">v3</span>'
         +'</div>'
-        +'<div style="margin-top:.5rem;display:flex;gap:.875rem;flex-wrap:wrap;">'
-          +'<label style="display:flex;align-items:center;gap:.35rem;font-size:.68rem;color:rgba(255,255,255,.45);cursor:not-allowed;" title="Required for platform operation"><input type="checkbox" checked disabled style="accent-color:var(--gold,#B8960C);"> Essential</label>'
-          +'<label style="display:flex;align-items:center;gap:.35rem;font-size:.68rem;color:rgba(255,255,255,.65);cursor:pointer;"><input type="checkbox" id="dpdp-chk-analytics" style="accent-color:var(--gold,#B8960C);"> Analytics</label>'
-          +'<label style="display:flex;align-items:center;gap:.35rem;font-size:.68rem;color:rgba(255,255,255,.65);cursor:pointer;"><input type="checkbox" id="dpdp-chk-marketing" style="accent-color:var(--gold,#B8960C);"> Marketing</label>'
-          +'<label style="display:flex;align-items:center;gap:.35rem;font-size:.68rem;color:rgba(255,255,255,.65);cursor:pointer;"><input type="checkbox" id="dpdp-chk-third" style="accent-color:var(--gold,#B8960C);"> Third-Party Integrations</label>'
+        +'<div style="font-size:.72rem;color:rgba(255,255,255,.55);line-height:1.6;">'
+          +'India Gully processes personal data under the '
+          +'<strong style="color:rgba(255,255,255,.8);">Digital Personal Data Protection Act 2023</strong>. '
+          +'Essential processing is mandatory. Choose optional purposes below. '
+          +'<a href="/legal/privacy" style="color:var(--gold,#B8960C);text-decoration:underline;">Privacy Policy</a>'
+          +'&nbsp;|&nbsp;<a href="mailto:dpo@indiagully.com" style="color:var(--gold,#B8960C);text-decoration:underline;">DPO</a>'
+        +'</div>'
+        // Per-purpose toggle row
+        +'<div style="margin-top:.55rem;display:flex;gap:.875rem;flex-wrap:wrap;align-items:center;">'
+          +'<label style="display:flex;align-items:center;gap:.35rem;font-size:.68rem;color:rgba(255,255,255,.35);cursor:not-allowed;" title="Required for platform operation">'
+            +'<input type="checkbox" checked disabled style="accent-color:var(--gold,#B8960C);width:13px;height:13px;"> Essential (required)'
+          +'</label>'
+          +'<label id="lbl-analytics" style="display:flex;align-items:center;gap:.35rem;font-size:.68rem;color:rgba(255,255,255,.7);cursor:pointer;" title="Usage analytics and platform improvement">'
+            +'<input type="checkbox" id="dpdp-chk-analytics" style="accent-color:var(--gold,#B8960C);width:13px;height:13px;"> Analytics'
+          +'</label>'
+          +'<label id="lbl-marketing" style="display:flex;align-items:center;gap:.35rem;font-size:.68rem;color:rgba(255,255,255,.7);cursor:pointer;" title="Market research and advisory communications">'
+            +'<input type="checkbox" id="dpdp-chk-marketing" style="accent-color:var(--gold,#B8960C);width:13px;height:13px;"> Marketing'
+          +'</label>'
+          +'<label id="lbl-third" style="display:flex;align-items:center;gap:.35rem;font-size:.68rem;color:rgba(255,255,255,.7);cursor:pointer;" title="SendGrid, Twilio, DocuSign, Razorpay integrations">'
+            +'<input type="checkbox" id="dpdp-chk-third" style="accent-color:var(--gold,#B8960C);width:13px;height:13px;"> Third-Party Integrations'
+          +'</label>'
+          // Withdraw link — shown after consent is stored
+          +'<span id="dpdp-withdraw-link" style="display:none;font-size:.62rem;color:rgba(255,255,255,.3);margin-left:auto;">'
+            +'<a id="dpdp-do-withdraw" href="#" style="color:rgba(184,150,12,.55);text-decoration:underline;">Withdraw consent</a>'
+          +'</span>'
         +'</div>'
       +'</div>'
-      +'<div style="display:flex;gap:.625rem;flex-shrink:0;align-self:center;">'
-        +'<button id="dpdp-accept-all" style="background:var(--gold,#B8960C);color:#000;border:none;padding:.5rem 1.25rem;font-size:.72rem;font-weight:700;cursor:pointer;letter-spacing:.06em;">Accept All</button>'
-        +'<button id="dpdp-save-pref" style="background:transparent;border:1px solid rgba(184,150,12,.5);color:rgba(255,255,255,.7);padding:.5rem 1.25rem;font-size:.72rem;cursor:pointer;">Save Preferences</button>'
-        +'<button id="dpdp-essential-only" style="background:transparent;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.4);padding:.5rem .875rem;font-size:.68rem;cursor:pointer;">Essential Only</button>'
+      // Action buttons
+      +'<div style="display:flex;gap:.625rem;flex-shrink:0;align-self:center;flex-wrap:wrap;">'
+        +'<button id="dpdp-accept-all" style="background:var(--gold,#B8960C);color:#000;border:none;'
+          +'padding:.5rem 1.25rem;font-size:.72rem;font-weight:700;cursor:pointer;letter-spacing:.06em;">'
+          +'Accept All'
+        +'</button>'
+        +'<button id="dpdp-save-pref" style="background:transparent;border:1px solid rgba(184,150,12,.5);'
+          +'color:rgba(255,255,255,.7);padding:.5rem 1.25rem;font-size:.72rem;cursor:pointer;">'
+          +'Save Preferences'
+        +'</button>'
+        +'<button id="dpdp-essential-only" style="background:transparent;border:1px solid rgba(255,255,255,.12);'
+          +'color:rgba(255,255,255,.4);padding:.5rem .875rem;font-size:.68rem;cursor:pointer;">'
+          +'Essential Only'
+        +'</button>'
       +'</div>';
+
     document.body.appendChild(banner);
-    function hideBanner(pref){
-      var record={v:3,pref:pref,ts:Date.now(),path:path};
-      localStorage.setItem(key,JSON.stringify(record));
-      // Send consent to API (non-blocking)
-      try{fetch('/api/dpdp/consent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:'anonymous',purposes:pref,consent_given:pref!=='essential'})}).catch(function(){});}catch(e){}
-      banner.style.transition='transform .35s ease-in,opacity .35s'; banner.style.transform='translateY(100%)'; banner.style.opacity='0';
+
+    /** Send granular consent to /api/dpdp/consent/record (L6 — replaces /api/dpdp/consent) */
+    function sendConsentRecord(analytics, marketing, thirdParty){
+      var uid = (typeof igSession !== 'undefined' && igSession && igSession.email)
+        ? igSession.email : 'anonymous';
+      try{
+        fetch('/api/dpdp/consent/record',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            user_id:uid,
+            analytics:analytics,
+            marketing:marketing,
+            third_party:thirdParty,
+            banner_version:'v3',
+            page:path,
+          })
+        }).catch(function(){});
+      }catch(e){}
+    }
+
+    function hideBanner(analytics, marketing, thirdParty){
+      var purposes=['essential'];
+      if(analytics) purposes.push('analytics');
+      if(marketing) purposes.push('marketing');
+      if(thirdParty) purposes.push('third_party');
+      var record={v:3,pref:purposes,analytics:analytics,marketing:marketing,
+        third_party:thirdParty,ts:Date.now(),path:path};
+      localStorage.setItem(BANNER_KEY,JSON.stringify(record));
+      sendConsentRecord(analytics,marketing,thirdParty);
+      banner.style.transition='transform .35s ease-in,opacity .35s';
+      banner.style.transform='translateY(100%)';
+      banner.style.opacity='0';
       setTimeout(function(){banner.remove();},360);
     }
+
     document.getElementById('dpdp-accept-all').onclick=function(){
       document.getElementById('dpdp-chk-analytics').checked=true;
       document.getElementById('dpdp-chk-marketing').checked=true;
       document.getElementById('dpdp-chk-third').checked=true;
-      hideBanner(['essential','analytics','marketing','third_party']);
-      if(window.igToast) igToast('All data purposes accepted. Thank you.','success');
+      hideBanner(true,true,true);
+      if(window.igToast) igToast('All data purposes accepted.','success');
     };
     document.getElementById('dpdp-save-pref').onclick=function(){
-      var prefs=['essential'];
-      if(document.getElementById('dpdp-chk-analytics').checked) prefs.push('analytics');
-      if(document.getElementById('dpdp-chk-marketing').checked) prefs.push('marketing');
-      if(document.getElementById('dpdp-chk-third').checked) prefs.push('third_party');
-      hideBanner(prefs);
+      var a=document.getElementById('dpdp-chk-analytics').checked;
+      var m=document.getElementById('dpdp-chk-marketing').checked;
+      var t=document.getElementById('dpdp-chk-third').checked;
+      hideBanner(a,m,t);
       if(window.igToast) igToast('Data preferences saved.','success');
     };
     document.getElementById('dpdp-essential-only').onclick=function(){
-      hideBanner('essential');
+      hideBanner(false,false,false);
       if(window.igToast) igToast('Only essential processing enabled.','info');
     };
+
+    // Withdraw link handler — calls /api/dpdp/consent/withdraw
+    document.getElementById('dpdp-do-withdraw').onclick=function(e){
+      e.preventDefault();
+      var uid = (typeof igSession !== 'undefined' && igSession && igSession.email)
+        ? igSession.email : 'anonymous';
+      fetch('/api/dpdp/consent/withdraw',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({user_id:uid,purposes:['analytics','marketing','third_party']})
+      }).then(function(r){return r.json();}).then(function(d){
+        if(d.withdrawal_ref){
+          localStorage.removeItem(BANNER_KEY);
+          if(window.igToast) igToast('Consent withdrawn (ref: '+d.withdrawal_ref+'). Page will reload.','info');
+          setTimeout(function(){location.reload();},1800);
+        }
+      }).catch(function(){});
+    };
   })();
+
+  /* ── DPDP PREFERENCES DRAWER — allows re-managing consent after banner dismissed ── */
+  window.igOpenDpdpPreferences=function(){
+    var existing=document.getElementById('dpdp-pref-drawer');
+    if(existing){existing.remove();return;}
+    var stored=localStorage.getItem('ig_dpdp_consent_v3');
+    var rec=stored?JSON.parse(stored):{analytics:false,marketing:false,third_party:false};
+    var drawer=document.createElement('div');
+    drawer.id='dpdp-pref-drawer';
+    drawer.setAttribute('role','dialog');
+    drawer.setAttribute('aria-label','Manage Data Preferences');
+    drawer.style.cssText='position:fixed;bottom:0;right:0;width:340px;z-index:9900;'
+      +'background:#111;border:1px solid rgba(184,150,12,.3);border-bottom:none;'
+      +'padding:1.25rem;box-shadow:-4px -4px 24px rgba(0,0,0,.7);';
+    drawer.innerHTML=''
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">'
+        +'<span style="font-size:.78rem;font-weight:700;color:#fff;letter-spacing:.06em;">&#x1F512; Data Preferences</span>'
+        +'<button onclick="document.getElementById(\'dpdp-pref-drawer\').remove()" '
+          +'style="background:none;border:none;color:rgba(255,255,255,.4);font-size:1.1rem;cursor:pointer;">&times;</button>'
+      +'</div>'
+      +'<div style="font-size:.7rem;color:rgba(255,255,255,.45);margin-bottom:.875rem;line-height:1.6;">'
+        +'Manage your data consent under DPDP Act 2023. Changes take effect immediately.'
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:1rem;">'
+        +'<label style="display:flex;align-items:center;justify-content:space-between;font-size:.73rem;color:rgba(255,255,255,.45);">'
+          +'<span>&#x2714;&#xFE0F; Essential (required)</span>'
+          +'<input type="checkbox" checked disabled style="accent-color:var(--gold,#B8960C);">'
+        +'</label>'
+        +'<label style="display:flex;align-items:center;justify-content:space-between;font-size:.73rem;color:rgba(255,255,255,.75);cursor:pointer;" title="Platform usage analytics">'
+          +'<span>&#x1F4CA; Analytics</span>'
+          +'<input type="checkbox" id="dpdp-d-analytics" '+(rec.analytics?'checked':'')+' style="accent-color:var(--gold,#B8960C);">'
+        +'</label>'
+        +'<label style="display:flex;align-items:center;justify-content:space-between;font-size:.73rem;color:rgba(255,255,255,.75);cursor:pointer;" title="Advisory communications and market research">'
+          +'<span>&#x1F4E3; Marketing</span>'
+          +'<input type="checkbox" id="dpdp-d-marketing" '+(rec.marketing?'checked':'')+' style="accent-color:var(--gold,#B8960C);">'
+        +'</label>'
+        +'<label style="display:flex;align-items:center;justify-content:space-between;font-size:.73rem;color:rgba(255,255,255,.75);cursor:pointer;" title="SendGrid, Twilio, DocuSign, Razorpay">'
+          +'<span>&#x1F517; Third-Party Integrations</span>'
+          +'<input type="checkbox" id="dpdp-d-third" '+(rec.third_party?'checked':'')+' style="accent-color:var(--gold,#B8960C);">'
+        +'</label>'
+      +'</div>'
+      +'<div style="display:flex;gap:.5rem;">'
+        +'<button id="dpdp-d-save" style="flex:1;background:var(--gold,#B8960C);color:#000;border:none;'
+          +'padding:.5rem;font-size:.72rem;font-weight:700;cursor:pointer;">Save Changes</button>'
+        +'<button id="dpdp-d-withdraw" style="background:transparent;border:1px solid rgba(255,255,255,.15);'
+          +'color:rgba(255,255,255,.4);padding:.5rem .75rem;font-size:.68rem;cursor:pointer;">Withdraw All</button>'
+      +'</div>'
+      +'<div style="margin-top:.6rem;font-size:.62rem;color:rgba(255,255,255,.25);">'
+        +'Last updated: '+(stored?new Date(rec.ts).toLocaleDateString('en-IN'):'not set')
+      +'</div>';
+    document.body.appendChild(drawer);
+
+    document.getElementById('dpdp-d-save').onclick=function(){
+      var a=document.getElementById('dpdp-d-analytics').checked;
+      var m=document.getElementById('dpdp-d-marketing').checked;
+      var t=document.getElementById('dpdp-d-third').checked;
+      var uid=(typeof igSession!=='undefined'&&igSession&&igSession.email)?igSession.email:'anonymous';
+      var purposes=['essential'];
+      if(a) purposes.push('analytics');
+      if(m) purposes.push('marketing');
+      if(t) purposes.push('third_party');
+      localStorage.setItem('ig_dpdp_consent_v3',JSON.stringify(
+        {v:3,pref:purposes,analytics:a,marketing:m,third_party:t,ts:Date.now()}));
+      fetch('/api/dpdp/consent/record',{method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({user_id:uid,analytics:a,marketing:m,third_party:t,banner_version:'v3-drawer'})
+      }).catch(function(){});
+      drawer.remove();
+      if(window.igToast) igToast('Data preferences updated.','success');
+    };
+    document.getElementById('dpdp-d-withdraw').onclick=function(){
+      var uid=(typeof igSession!=='undefined'&&igSession&&igSession.email)?igSession.email:'anonymous';
+      fetch('/api/dpdp/consent/withdraw',{method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({user_id:uid,purposes:['analytics','marketing','third_party']})
+      }).then(function(r){return r.json();}).then(function(d){
+        localStorage.removeItem('ig_dpdp_consent_v3');
+        drawer.remove();
+        if(window.igToast) igToast('Consent withdrawn ('+d.withdrawal_ref+').','info');
+        setTimeout(function(){location.reload();},1500);
+      }).catch(function(){drawer.remove();});
+    };
+  };
 
   /* ── DARK MODE ────────────────────────────────────────────────────────── */
   (function(){
