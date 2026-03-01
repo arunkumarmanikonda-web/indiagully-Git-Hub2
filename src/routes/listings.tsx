@@ -422,7 +422,7 @@ ${ndaModal}
 (function(){
   var f = document.querySelector('.ig-form');
   if(!f) return;
-  function phoneOk(v){ var c=v.replace(/[\s\-().]/g,''); return /^(\+91|0)?[6-9]\d{9}$/.test(c)||/^\+\d{7,15}$/.test(c); }
+  function phoneOk(v){ var c=v.replace(/[\\s\\-().]/g,''); return /^(\\+91|0)?[6-9]\\d{9}$/.test(c)||/^\\+\\d{7,15}$/.test(c); }
   function showE(inp,msg){ var id='fe-'+inp.name; var e=document.getElementById(id); if(e)e.remove(); var p=document.createElement('p'); p.id=id; p.style.cssText='font-size:.68rem;color:#fca5a5;margin-top:.25rem;'; p.textContent=msg; inp.parentNode.appendChild(p); inp.style.borderColor='#ef4444'; }
   function clearE(inp){ var e=document.getElementById('fe-'+inp.name); if(e)e.remove(); inp.style.borderColor='rgba(255,255,255,.1)'; }
   /* Honeypot */
@@ -431,7 +431,7 @@ ${ndaModal}
     if(hp.value){e.preventDefault();return;}
     var ok=true;
     var nameInp=f.querySelector('[name=name]'); if(nameInp){clearE(nameInp);if(nameInp.value.trim().length<2){showE(nameInp,'Enter at least 2 characters.');ok=false;}}
-    var emailInp=f.querySelector('[name=email]'); if(emailInp){clearE(emailInp);if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailInp.value.trim())){showE(emailInp,'Enter a valid email address.');ok=false;}}
+    var emailInp=f.querySelector('[name=email]'); if(emailInp){clearE(emailInp);if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(emailInp.value.trim())){showE(emailInp,'Enter a valid email address.');ok=false;}}
     var phInp=f.querySelector('[name=phone]'); if(phInp&&phInp.value.trim()){clearE(phInp);if(!phoneOk(phInp.value.trim())){showE(phInp,'Enter a valid Indian mobile (+91 XXXXX XXXXX) or international number.');ok=false;}}
     if(!ok){e.preventDefault();return;}
     var btn=f.querySelector('button[type=submit]'); if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin" style="margin-right:.5rem;"></i>Sending…';}

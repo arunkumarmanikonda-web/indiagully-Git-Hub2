@@ -7084,11 +7084,11 @@ window.igSecTab = function(idx){
       navigator.credentials.create({publicKey:opts}).then(function(cred){
         var resp = {
           id: cred.id,
-          rawId: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.rawId))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+          rawId: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.rawId))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
           type: cred.type,
           response: {
-            attestationObject: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.attestationObject))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
-            clientDataJSON:    btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.clientDataJSON))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+            attestationObject: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.attestationObject))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+            clientDataJSON:    btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.clientDataJSON))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
             transports:        cred.response.getTransports ? cred.response.getTransports() : [],
           },
         };
@@ -7110,13 +7110,13 @@ window.igSecTab = function(idx){
       navigator.credentials.get({publicKey:opts}).then(function(cred){
         var resp = {
           id: cred.id,
-          rawId: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.rawId))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+          rawId: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.rawId))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
           type: cred.type,
           response: {
-            authenticatorData: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.authenticatorData))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
-            clientDataJSON:    btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.clientDataJSON))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
-            signature:         btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.signature))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
-            userHandle:        cred.response.userHandle ? btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.userHandle))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'') : null,
+            authenticatorData: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.authenticatorData))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+            clientDataJSON:    btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.clientDataJSON))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+            signature:         btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.signature))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+            userHandle:        cred.response.userHandle ? btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.userHandle))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,'') : null,
           },
         };
         return igApi.post('/auth/webauthn/authenticate/complete', resp);

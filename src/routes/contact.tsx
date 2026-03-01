@@ -139,8 +139,8 @@ app.get('/', (c) => {
 
   /* Phone validation: Indian mobile (+91 or 0, 10 digits) or international */
   function validatePhone(val){
-    var cleaned = val.replace(/[\s\-().]/g,'');
-    return /^(\+91|0)?[6-9]\d{9}$/.test(cleaned) || /^\+\d{7,15}$/.test(cleaned);
+    var cleaned = val.replace(/[\\s\\-().]/g,'');
+    return /^(\\+91|0)?[6-9]\\d{9}$/.test(cleaned) || /^\\+\\d{7,15}$/.test(cleaned);
   }
 
   /* Honeypot field (spam protection) — hidden by CSS */
@@ -185,14 +185,14 @@ app.get('/', (c) => {
       clearErr(inp);
       var v = inp.value.trim();
       if(v.length < 2){ showErr(inp, 'Please enter at least 2 characters.'); valid = false; }
-      else if(/[<>&"'\\]/.test(v)){ showErr(inp, 'Special characters not allowed.'); valid = false; }
+      else if(/[<>&"'\\\\]/.test(v)){ showErr(inp, 'Special characters not allowed.'); valid = false; }
     });
 
     /* Email validation */
     var emailInp = form.querySelector('[name=email]');
     if(emailInp){
       clearErr(emailInp);
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailInp.value.trim())){
+      if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(emailInp.value.trim())){
         showErr(emailInp, 'Please enter a valid email address (e.g. you@example.com).'); valid = false;
       }
     }
@@ -260,7 +260,7 @@ app.get('/', (c) => {
             <div style="flex:1;min-width:0;">
               <div style="font-size:.85rem;font-weight:600;color:#fff;margin-bottom:.1rem;">${p.name}</div>
               <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-bottom:.35rem;">${p.title}</div>
-              <a href="tel:${p.ph.replace(/\s/g,'')}" style="font-size:.72rem;color:rgba(255,255,255,.35);display:block;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.35)'">${p.ph}</a>
+              <a href="tel:${p.ph.replace(/\\s/g,'')}" style="font-size:.72rem;color:rgba(255,255,255,.35);display:block;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.35)'">${p.ph}</a>
               <a href="mailto:${p.em}" style="font-size:.72rem;color:rgba(255,255,255,.35);display:block;word-break:break-all;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.35)'">${p.em}</a>
             </div>
           </div>

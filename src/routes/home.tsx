@@ -425,7 +425,7 @@ app.get('/', (c) => {
             <div style="font-size:.75rem;color:var(--ink-soft);margin-top:.35rem;line-height:1.5;">${p.bio}</div>
           </div>
           <div style="text-align:right;flex-shrink:0;">
-            <a href="tel:${p.ph.replace(/\s/g,'')}" style="display:block;font-size:.72rem;color:var(--ink-muted);margin-bottom:.2rem;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'"><i class="fas fa-phone" style="margin-right:.35rem;font-size:.6rem;"></i>${p.ph}</a>
+            <a href="tel:${p.ph.replace(/\\s/g,'')}" style="display:block;font-size:.72rem;color:var(--ink-muted);margin-bottom:.2rem;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'"><i class="fas fa-phone" style="margin-right:.35rem;font-size:.6rem;"></i>${p.ph}</a>
             <a href="mailto:${p.em}" style="display:block;font-size:.72rem;color:var(--ink-muted);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'"><i class="fas fa-envelope" style="margin-right:.35rem;font-size:.6rem;"></i>${p.em}</a>
           </div>
         </div>`).join('')}

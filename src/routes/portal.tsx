@@ -1724,7 +1724,7 @@ app.get('/employee/directory', (c) => {
         <div style="font-size:.72rem;color:var(--ink-faint);margin-bottom:.875rem;">${e.dept}</div>
         <div style="display:flex;flex-direction:column;gap:.35rem;">
           <a href="mailto:${e.email}" style="font-size:.75rem;color:var(--gold);"><i class="fas fa-envelope" style="margin-right:.35rem;font-size:.65rem;"></i>${e.email}</a>
-          <a href="tel:${e.phone.replace(/\s/g,'')}" style="font-size:.75rem;color:var(--ink-muted);"><i class="fas fa-phone" style="margin-right:.35rem;font-size:.65rem;"></i>${e.phone}</a>
+          <a href="tel:${e.phone.replace(/\\s/g,'')}" style="font-size:.75rem;color:var(--ink-muted);"><i class="fas fa-phone" style="margin-right:.35rem;font-size:.65rem;"></i>${e.phone}</a>
         </div>
       </div>`).join('')}
     </div>`

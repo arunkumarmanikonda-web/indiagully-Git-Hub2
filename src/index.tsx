@@ -32,9 +32,6 @@ function genNonce(): string {
 
 // ── SECURITY HEADERS MIDDLEWARE (defense-in-depth alongside _headers file) ────
 app.use('*', async (c, next) => {
-  // Generate nonce BEFORE calling next() so routes can read c.get('cspNonce')
-  const nonce = genNonce()
-  c.set('cspNonce', nonce)
   await next()
   c.header('X-Frame-Options', 'DENY')
   c.header('X-Content-Type-Options', 'nosniff')
@@ -42,13 +39,14 @@ app.use('*', async (c, next) => {
   c.header('X-XSS-Protection', '1; mode=block')
   c.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
   c.header('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()')
-  // I1 PT-004: per-request nonce replaces 'unsafe-inline' for script-src.
-  // CDN scripts (Tailwind, Chart.js, Axios, FontAwesome) are allow-listed by host.
+  // CSP: allow CDN scripts (Tailwind, Chart.js, Axios, FontAwesome) by host + unsafe-inline
+  // NOTE: 'strict-dynamic' was REMOVED — it disabled host allowlisting and blocked CDN scripts,
+  // causing the frontend to appear scrambled (Tailwind CSS + inline config not loading).
   c.header('Content-Security-Policy',
     `default-src 'self'; ` +
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ` +
+    `script-src 'self' 'unsafe-inline' ` +
       `https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; ` +
-    `style-src 'self' 'nonce-${nonce}' 'unsafe-inline' ` +
+    `style-src 'self' 'unsafe-inline' ` +
       `https://fonts.googleapis.com https://cdn.jsdelivr.net; ` +
     `font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; ` +
     `img-src 'self' data: https: https://api.qrserver.com; ` +
