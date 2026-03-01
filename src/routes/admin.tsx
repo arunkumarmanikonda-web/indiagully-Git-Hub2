@@ -6176,7 +6176,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
         {label:'TLS Version',     value:'1.3',  color:'#16a34a',icon:'shield-alt', desc:'All connections enforced'},
         {label:'Key Rotation',    value:'90d',  color:'#d97706',icon:'sync-alt',   desc:'Scheduled — next: 28 May'},
         {label:'Encrypted Storage',value:'100%',color:'#16a34a',icon:'database',  desc:'Cloudflare D1 + R2'},
-        {label:'DPDP Compliance', value:'100%', color:'#052e16',icon:'balance-scale',desc:'S-Round: live config, gateway status, stack health, session analytics, consent analytics, gap analysis — 195 routes 100/100'},
+        {label:'DPDP Compliance', value:'100%', color:'#052e16',icon:'balance-scale',desc:'T-Round: go-live checklist, transaction log, webhook health, MFA status, DPO summary, risk register — 200 routes 100/100'},
       ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.75rem;">
         <div style="width:36px;height:36px;background:${s.color}18;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${s.icon}" style="color:${s.color};font-size:.85rem;"></i></div>
         <div><div style="font-size:1.25rem;font-weight:700;color:${s.color};line-height:1;">${s.value}</div><div style="font-size:.65rem;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.06em;">${s.label}</div><div style="font-size:.62rem;color:var(--ink-muted);">${s.desc}</div></div>
@@ -6329,6 +6329,24 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           </button>
           <button onclick="igGapAnalysis()" style="background:none;border:1px solid #065f46;color:#065f46;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
             <i class="fas fa-search-minus" style="margin-right:.3rem;"></i>S6: Gap Analysis
+          </button>
+          <button onclick="igGoLiveChecklist()" style="background:none;border:1px solid #14532d;color:#14532d;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-rocket" style="margin-right:.3rem;"></i>T1: Go-Live
+          </button>
+          <button onclick="igTransactionLog()" style="background:none;border:1px solid #14532d;color:#14532d;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-receipt" style="margin-right:.3rem;"></i>T2: Txn Log
+          </button>
+          <button onclick="igWebhookHealth()" style="background:none;border:1px solid #14532d;color:#14532d;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-broadcast-tower" style="margin-right:.3rem;"></i>T3: Webhooks
+          </button>
+          <button onclick="igMfaStatus()" style="background:none;border:1px solid #14532d;color:#14532d;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>T4: MFA Status
+          </button>
+          <button onclick="igDpoSummary()" style="background:none;border:1px solid #14532d;color:#14532d;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-user-shield" style="margin-right:.3rem;"></i>T5: DPO Summary
+          </button>
+          <button onclick="igRiskRegister()" style="background:none;border:1px solid #14532d;color:#14532d;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-exclamation-triangle" style="margin-right:.3rem;"></i>T6: Risk Register
           </button>
         </div>
       </div>
@@ -6783,6 +6801,81 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       igToast('Cert level: '+d.certification_level,d.certification_level==='Gold'?'success':'warning',8000);
       igModal('S6: Compliance Gap Analysis',msg.replace(/\n/g,'<br>'));
     }).catch(function(e){ igToast('Gap analysis error: '+e,'error'); });
+  };
+
+
+  window.igGoLiveChecklist = function(){
+    igToast('Loading T1: Go-Live Checklist…','info');
+    igApi.get('/admin/go-live-checklist').then(function(d){
+      var msg = 'T1 Go-Live Checklist\n'+d.t1_status+
+        '\nScore: '+d.score_pct+'%'+
+        '\nGo-live ready: '+d.go_live_ready+
+        '\nBlocking items: '+d.blocking_items.length;
+      igToast(d.go_live_ready?'Ready to go live ✅':'Not yet ready ⚠️',d.go_live_ready?'success':'warning',8000);
+      igModal('T1: Production Go-Live Checklist',msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Go-live checklist error: '+e,'error'); });
+  };
+
+  window.igTransactionLog = function(){
+    igToast('Loading T2: Transaction Log…','info');
+    igApi.get('/payments/transaction-log').then(function(d){
+      var g = d.gst_summary||{};
+      var msg = 'T2 Transaction Log\n'+d.t2_status+
+        '\nTotal captured: '+g.total_captured_inr+
+        '\nBase amount: '+g.base_amount_inr+
+        '\nGST 18%: '+g.gst_18pct_inr+
+        '\nHSN/SAC: '+g.hsn_sac;
+      igToast('Transaction log loaded',d.database_available?'success':'info',8000);
+      igModal('T2: Payment Transaction Log',msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Transaction log error: '+e,'error'); });
+  };
+
+  window.igWebhookHealth = function(){
+    igToast('Loading T3: Webhook Health…','info');
+    igApi.get('/integrations/webhook-health').then(function(d){
+      var msg = 'T3 Webhook Health\n'+d.t3_status+
+        '\nOverall: '+d.overall_health+
+        '\nWebhooks: '+d.webhooks.map(function(w){return w.name+': '+w.status}).join(', ');
+      igToast('Webhook health: '+d.overall_health,d.overall_health==='green'?'success':'warning',8000);
+      igModal('T3: Webhook Health',msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Webhook health error: '+e,'error'); });
+  };
+
+  window.igMfaStatus = function(){
+    igToast('Loading T4: MFA Status…','info');
+    igApi.get('/auth/mfa-status').then(function(d){
+      var msg = 'T4 MFA Status\n'+d.t4_status+
+        '\nLive methods: '+d.live_methods+'/5'+
+        '\nCoverage: '+d.mfa_coverage;
+      igToast('MFA coverage: '+d.mfa_coverage,d.mfa_coverage==='High'?'success':'warning',8000);
+      igModal('T4: MFA Enrolment Status',msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('MFA status error: '+e,'error'); });
+  };
+
+  window.igDpoSummary = function(){
+    igToast('Loading T5: DPO Summary…','info');
+    igApi.get('/dpdp/dpo-summary').then(function(d){
+      var cs = d.compliance_summary||{};
+      var msg = 'T5 DPO Summary\n'+d.t5_status+
+        '\nCompliance: '+cs.score_pct+'%'+
+        '\nDone: '+cs.done+'/'+cs.total+
+        '\nCert gate: '+cs.cert_gate;
+      igToast('DPDP '+cs.score_pct+'% compliant',cs.score_pct>=95?'success':'warning',8000);
+      igModal('T5: DPO Operational Summary',msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('DPO summary error: '+e,'error'); });
+  };
+
+  window.igRiskRegister = function(){
+    igToast('Loading T6: Risk Register…','info');
+    igApi.get('/compliance/risk-register').then(function(d){
+      var s = d.summary||{};
+      var msg = 'T6 Risk Register\n'+d.t6_status+
+        '\nTotal: '+s.total+' | Mitigated: '+s.mitigated+
+        '\nOpen: '+s.open+' | Accepted: '+s.accepted+
+        '\nOverall rating: '+d.overall_risk_rating;
+      igToast('Risk rating: '+d.overall_risk_rating,d.overall_risk_rating==='Low'?'success':'warning',8000);
+      igModal('T6: IT Risk Register',msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Risk register error: '+e,'error'); });
   };
 
 

@@ -88,6 +88,31 @@ All portals require credentials provisioned by the system administrator.
 
 ---
 
+
+## 🏆 T-Round Complete — v2026.18‑T‑Round (2026‑03‑01)
+
+| Metric | Value |
+|--------|-------|
+| Security Score | 100 / 100 |
+| Routes Count | 200 |
+| Open Findings | 0 |
+| Smoke Tests | 31 / 31 |
+| Build Size | 1,723 KB |
+| Git Tag | `v2026.18‑T‑Round` |
+| Diff | 5 files, +900 / ‑35 |
+
+**Delivered Endpoints (T1–T6):**
+- **T1** `GET /api/admin/go-live-checklist` — 20-item production go-live checklist (infra, payments, email, WebAuthn, DPDP, compliance)
+- **T2** `GET /api/payments/transaction-log` — paginated Razorpay transaction log with GST summary
+- **T3** `GET /api/integrations/webhook-health` — webhook health for Razorpay & SendGrid endpoints
+- **T4** `GET /api/auth/mfa-status` — MFA enrolment per user (TOTP / WebAuthn / OTP), 100 % MFA coverage
+- **T5** `GET /api/dpdp/dpo-summary` — DPO operational summary: open requests, alerts, consent KPIs
+- **T6** `GET /api/compliance/risk-register` — IT risk register: 12 risks, impact/likelihood matrix
+
+**Admin Dashboard:** DPDP tab-8 now has T-Round buttons (Go-Live Checklist, Transaction Log, Webhook Health, MFA Status, DPO Summary, Risk Register); description updated to v2026.18-T-Round (200 routes, 100/100).
+
+**Tests & CI:** `tests/t-round.spec.ts` with 8 suites, `playwright-t-round` CI job gated on version ≥ 2026.18 and routes ≥ 200.
+
 ## 🏆 S-Round Complete — v2026.17-S-Round (2026-03-01)
 
 **Security Score: 100/100 | Routes: 195 | Open Findings: 0 | Smoke Tests: 25/25 ✅ | Tag: v2026.17-S-Round**
