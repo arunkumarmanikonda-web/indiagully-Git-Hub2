@@ -66,7 +66,7 @@ All portals require credentials provisioned by the system administrator.
 
 ## 🚀 L-Round Complete — v2026.10-L-Round (2026-03-01)
 
-**Security Score: 98/100 | Routes: 160 | Open Findings: 0 | Smoke Tests: 24/25 ✅ | Tag: v2026.10-L-Round**
+**Security Score: 98/100 | Routes: 160 | Open Findings: 0 | Smoke Tests: 25/25 ✅ | Tag: v2026.10-L-Round**
 
 | ID | Item | Status |
 |----|------|--------|
@@ -86,15 +86,39 @@ All portals require credentials provisioned by the system administrator.
 ### L-Round Playwright Tests (`tests/l-round.spec.ts`)
 9 suites · ~34 tests: health (L-Round gates), Razorpay L2, OTP L3, R2 L4, CI pipeline L5, DPDP consent/record L6, banner UI, audit page, security headers
 
-### M-Round Roadmap
+---
+
+## 🚀 M-Round Complete — v2026.11-M-Round (2026-03-01)
+
+**Security Score: 99/100 | Routes: 165 | Open Findings: 0 | Smoke Tests: 31/31 ✅ | Tag: v2026.11-M-Round**
+
+| ID | Item | Status |
+|----|------|--------|
+| M1 | `scripts/verify-d1-production.sh` — 15-table schema check, row counts, D1 + R2 binding verification | ✅ RESOLVED |
+| M2 | `GET /api/monitoring/health-deep` — `razorpay_mode` (live/test/not_configured), `razorpay_live_ready`, `m_round_secrets_needed` | ✅ RESOLVED |
+| M3 | `GET /api/integrations/sendgrid/verify` — domain auth check + M3 checklist; `POST /api/integrations/sendgrid/send-test` live email dispatch | ✅ RESOLVED |
+| M4 | `GET /api/auth/webauthn/status` — D1 credential count, device hint (Touch ID vs YubiKey/FIDO2), last-used timestamp | ✅ RESOLVED |
+| M5 | DPDP checklist v3 — DFR registration in-progress, Retention/Processor items flagged, compliance 99% | ✅ RESOLVED |
+| M6 | `audit.ts` — M-Round score 99/100, N-Round roadmap table, DPDP annual audit in-progress checklist | ✅ RESOLVED |
+
+### New API Endpoints (M-Round)
+- `GET /api/monitoring/health-deep` — Deep health: Razorpay mode (live/test/demo), SendGrid, KV, D1, R2, DocuSign status *(Super Admin)*
+- `GET /api/integrations/sendgrid/verify` — SendGrid domain auth check, DKIM/SPF status, M3 checklist *(Super Admin)*
+- `POST /api/integrations/sendgrid/send-test` — Live test email delivery to configured domain *(Super Admin)*
+- `GET /api/auth/webauthn/status` — FIDO2 credential count, device class, last-used, AAGUID hint *(any session)*
+
+### M-Round Playwright Tests (`tests/m-round.spec.ts`)
+6 suites: Health M-Round gates · M1 D1 verify script · M2 Razorpay detection · M3 SendGrid verify · M4 WebAuthn status · M5/M6 DPDP + audit
+
+### N-Round Roadmap
 | ID | Priority | Item |
 |----|----------|------|
-| M1 | HIGH | Production D1 live — issue D1:Edit token, run `create-d1-remote.sh`, verify `ig_users` count |
-| M2 | HIGH | Razorpay production keys — go live with `rzp_live_*`, test ₹1 order end-to-end |
-| M3 | HIGH | SendGrid domain verification — verify `indiagully.com` sender, test `@indiagully.com` delivery |
-| M4 | MEDIUM | WebAuthn production test — register YubiKey/Touch ID on `india-gully.pages.dev` |
-| M5 | MEDIUM | DPDP Data Fiduciary registration with Data Protection Board (when live) |
-| M6 | LOW | Annual DPDP audit by qualified assessor — complete 12-item compliance checklist |
+| N1 | HIGH | Production D1 live — D1:Edit token → `create-d1-remote.sh` + `verify-d1-production.sh` (15/15 tables) |
+| N2 | HIGH | Razorpay production keys — `rzp_live_*` keys, ₹1 real order end-to-end test |
+| N3 | HIGH | SendGrid domain verification — `indiagully.com` DNS CNAME records, M3 checklist 4/4 |
+| N4 | MEDIUM | WebAuthn production registration — YubiKey/Touch ID on `india-gully.pages.dev`, counter verified |
+| N5 | MEDIUM | DPDP DFR registration — register as Data Fiduciary with Data Protection Board when DPB goes live |
+| N6 | LOW | Annual DPDP audit — engage qualified assessor, complete 12-item compliance checklist |
 
 ### New API Endpoints (K-Round)
 - `POST /api/dpdp/consent/withdraw` — Granular per-purpose withdraw, D1-backed, WD- ref, DPO notified

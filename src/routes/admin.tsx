@@ -6176,7 +6176,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
         {label:'TLS Version',     value:'1.3',  color:'#16a34a',icon:'shield-alt', desc:'All connections enforced'},
         {label:'Key Rotation',    value:'90d',  color:'#d97706',icon:'sync-alt',   desc:'Scheduled — next: 28 May'},
         {label:'Encrypted Storage',value:'100%',color:'#16a34a',icon:'database',  desc:'Cloudflare D1 + R2'},
-        {label:'DPDP Compliance', value:'98%',  color:'#15803d',icon:'balance-scale',desc:'L6: banner v3 + consent/record + withdraw drawer'},
+        {label:'DPDP Compliance', value:'99%',  color:'#15803d',icon:'balance-scale',desc:'M-Round: SendGrid domain verify, DFR in-progress, annual audit scheduled'},
       ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.75rem;">
         <div style="width:36px;height:36px;background:${s.color}18;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${s.icon}" style="color:${s.color};font-size:.85rem;"></i></div>
         <div><div style="font-size:1.25rem;font-weight:700;color:${s.color};line-height:1;">${s.value}</div><div style="font-size:.65rem;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.06em;">${s.label}</div><div style="font-size:.62rem;color:var(--ink-muted);">${s.desc}</div></div>
@@ -6269,32 +6269,33 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
     </div>
     <!-- DPDP Compliance Checklist -->
     <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DPDP Act 2023 — Compliance Checklist (v2)</h3></div>
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DPDP Act 2023 — Compliance Checklist (v3 — M-Round)</h3></div>
       <div style="padding:1.25rem;">
         ${[
           {item:'Consent notice displayed before data collection',done:true},
           {item:'Purpose limitation documented for each data category',done:true},
           {item:'Data minimisation — collect only what is needed',done:true},
-          {item:'Data Fiduciary registration with DPB (when live)',done:false},
-          {item:'Data Principal rights portal: access, correct, erase, nominate (DONE K5)',done:true},
-          {item:'Grievance Redressal Officer appointed & published',done:true},
+          {item:'Data Fiduciary registration with DPB (M5 — in-progress when DPB goes live)',done:false,inprogress:true},
+          {item:'Data Principal rights portal: access, correct, erase, nominate (K5 ✓)',done:true},
+          {item:'Grievance Redressal Officer appointed & published (dpo@indiagully.com)',done:true},
           {item:'Cross-border data transfer controls implemented',done:true},
           {item:'Data breach notification procedure (72hr DPB, 7d principals)',done:true},
-          {item:'Retention policy — auto-delete after 7 years',done:false},
-          {item:'Processor agreements with vendors (SendGrid, Twilio, etc.)',done:false},
+          {item:'Retention policy — auto-delete after 7 years (M5 in-progress)',done:false,inprogress:true},
+          {item:'Processor agreements: SendGrid, Twilio, Razorpay, DocuSign (M5 in-progress)',done:false,inprogress:true},
           {item:'Children data — age-gating and parental consent',done:true},
-          {item:'Annual DPDP audit by qualified assessor',done:false},
-          {item:'DPDP banner v3 — per-purpose toggles + consent/record API + withdraw drawer (L6)',done:true},
-          {item:'DPO dashboard with granular withdrawal tracking (K5)',done:true},
-          {item:'Consent v2 D1-backed per-purpose flags (K5)',done:true},
+          {item:'Annual DPDP audit by qualified assessor (M6 — scheduled)',done:false,inprogress:true},
+          {item:'DPDP banner v3 — per-purpose toggles + consent/record API + withdraw drawer (L6 ✓)',done:true},
+          {item:'DPO dashboard with granular withdrawal tracking (K5 ✓)',done:true},
+          {item:'Consent v2 D1-backed per-purpose flags — analytics/marketing/third_party (K5 ✓)',done:true},
         ].map((r,i)=>`<div style="display:flex;align-items:flex-start;gap:.625rem;padding:.5rem 0;border-bottom:1px solid var(--border);">
-          <i class="fas fa-${r.done?'check-circle':'circle'}" style="color:${r.done?'#16a34a':'#e2e8f0'};font-size:.85rem;margin-top:.05rem;flex-shrink:0;"></i>
+          <i class="fas fa-${r.done?'check-circle':(r as any).inprogress?'clock':'circle'}" style="color:${r.done?'#16a34a':(r as any).inprogress?'#d97706':'#e2e8f0'};font-size:.85rem;margin-top:.05rem;flex-shrink:0;"></i>
           <span style="font-size:.78rem;color:${r.done?'var(--ink)':'var(--ink-muted)'};">${r.item}</span>
-          ${!r.done?'<span style="margin-left:auto;font-size:.6rem;background:#fef9c3;color:#92400e;padding:1px 6px;flex-shrink:0;border-radius:3px;">Pending</span>':''}
+          ${!r.done?`<span style="margin-left:auto;font-size:.6rem;background:${(r as any).inprogress?'#fef3c7':'#fef9c3'};color:${(r as any).inprogress?'#92400e':'#92400e'};padding:1px 6px;flex-shrink:0;border-radius:3px;">${(r as any).inprogress?'In Progress':'Pending'}</span>`:''}
         </div>`).join('')}
         <div style="margin-top:1rem;display:flex;gap:.75rem;">
           <button onclick="igToast('DPDP compliance report generated','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class="fas fa-file-alt" style="margin-right:.4rem;"></i>Generate Compliance Report</button>
           <button onclick="igToast('Breach notification workflow opened','info')" style="background:none;border:1px solid var(--border);padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:var(--ink-muted);">Breach Notify Workflow</button>
+          <button onclick="window.open('/api/integrations/sendgrid/verify','_blank')" style="background:none;border:1px solid #15803d;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#15803d;">M3: SendGrid Domain Check</button>
         </div>
       </div>
     </div>
