@@ -88,6 +88,41 @@ All portals require credentials provisioned by the system administrator.
 
 ---
 
+## 🏆 N-Round Complete — v2026.12-N-Round (2026-03-01)
+
+**Security Score: 100/100 | Routes: 170 | Open Findings: 0 | Smoke Tests: 30/30 ✅ | Tag: v2026.12-N-Round**
+
+| ID | Item | Status |
+|----|------|--------|
+| N1 | `GET /api/integrations/health` — `n_round_secrets_needed` list with per-key status (live/not_configured) | ✅ RESOLVED |
+| N2 | `POST /api/payments/live-test` — ₹1 Razorpay dry-run, key-mode report (live/test/not_configured), no charge | ✅ RESOLVED |
+| N3 | `GET /api/integrations/sendgrid/dns-guide` — `indiagully.com` CNAME/DKIM/SPF records guide + 4-step checklist | ✅ RESOLVED |
+| N4 | `GET /api/auth/webauthn/devices` — per-device AAGUID vendor lookup, passkey management guide | ✅ RESOLVED |
+| N5 | `GET /api/dpdp/dfr-readiness` — DFR readiness checklist 11/12, processor agreements tracker | ✅ RESOLVED |
+| N6 | `GET /api/compliance/annual-audit` — 12-item DPDP annual audit checklist with assessor engagement guide | ✅ RESOLVED |
+
+### New API Endpoints (N-Round)
+- `POST /api/payments/live-test` — ₹1 Razorpay dry-run with `key_mode` report + `n2_checklist` *(Super Admin)*
+- `GET /api/integrations/sendgrid/dns-guide` — CNAME/DKIM/SPF DNS records guide for `indiagully.com` *(Super Admin)*
+- `GET /api/auth/webauthn/devices` — Per-device AAGUID → vendor map, passkey guide *(any session)*
+- `GET /api/dpdp/dfr-readiness` — DFR readiness checklist 11/12, DPB registration guide *(Super Admin)*
+- `GET /api/compliance/annual-audit` — 12-item DPDP annual audit items + assessor guide *(Super Admin)*
+
+### N-Round Playwright Tests (`tests/n-round.spec.ts`)
+8 suites: Health N-Round gates · N1 secrets list · N2 Razorpay live-test · N3 DNS guide · N4 WebAuthn devices · N5 DFR readiness · N6 Annual audit · Regression (DPDP + auth guards)
+
+### O-Round Roadmap
+| ID | Priority | Item |
+|----|----------|------|
+| O1 | HIGH | D1 production live — D1:Edit token → `create-d1-remote.sh` + `verify-d1-production.sh` (15/15 tables) |
+| O2 | HIGH | Razorpay live keys — `rzp_live_*` in Cloudflare secrets, `POST /payments/live-test` step 2 passes |
+| O3 | HIGH | SendGrid domain auth — add DNS CNAME records, `sendgrid/verify` returns `production_ready: true` |
+| O4 | MEDIUM | WebAuthn production — register YubiKey/Touch ID on `india-gully.pages.dev`, `webauthn/devices` shows entry |
+| O5 | MEDIUM | DPDP DFR registration — complete `dfr-readiness` 12/12 when DPB portal opens |
+| O6 | LOW | Annual DPDP audit — engage CISA/CISSP assessor, complete AA-08 pentest + AA-12 sign-off |
+
+---
+
 ## 🚀 M-Round Complete — v2026.11-M-Round (2026-03-01)
 
 **Security Score: 99/100 | Routes: 165 | Open Findings: 0 | Smoke Tests: 31/31 ✅ | Tag: v2026.11-M-Round**
