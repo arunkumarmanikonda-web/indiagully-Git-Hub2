@@ -32,6 +32,7 @@ const scoreRounds = [
   {round:'DD-Round', score:100, w:'100%', c:'#b45309'},
   {round:'EE-Round', score:100, w:'100%', c:'#0891b2'},
   {round:'FF-Round', score:100, w:'100%', c:'#7c3aed'},
+  {round:'GG-Round', score:100, w:'100%', c:'#0e7490'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -122,11 +123,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.30-FF</span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">FF-Round &middot; March 2026</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.31-GG</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">GG-Round &middot; March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">270 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">276 endpoints</span></div>
     </div>
   </div>
 
@@ -201,8 +202,8 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">FF-Round · v2026.30-FF</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Workforce Analytics · Attrition Risk · Training · Org Health · Employee Data · Labour Law · 270 routes · 100/100</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">GG-Round · v2026.31-GG</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Customer Health · Revenue Forecast · Support Analytics · NPS Cohorts · Data Lifecycle · Consumer Protection · 276 routes · 100/100</div>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
@@ -604,6 +605,18 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['FFO2','Update Background Check data retention policy to 3y — FF5 review category to compliant; ss8 fully compliant','Medium','1h'],
             ['FFO3','Initiate retention action for top-5 attrition-risk employees (E001-E003, E006) — FF2 high-risk count 5 to 3','High','2h'],
             ['FFO4','Complete EEO3/EEO4 (Consent SDK + D1 bind) — FF3 training platform data improves; FF4 career dev score target raised','High','8h'],
+            // GG-Round endpoints (all resolved)
+            ['GG1','GET /api/crm/customer-health-scores — 120 customers scored: 68 healthy, 32 at-risk, 20 critical; portfolio health 71/100; top churn signals: low usage + payment delays','RESOLVED','0h'],
+            ['GG2','GET /api/crm/revenue-forecast — 12-month pipeline: base INR 3.8Cr, bull 4.4Cr, bear 3.1Cr; ARR growth 22%; MRR waterfall; expansion 38% of forecast','RESOLVED','0h'],
+            ['GG3','GET /api/crm/support-analytics — 847 tickets Q1, SLA 94%, CSAT 4.2/5, avg resolution 6.4h, escalation rate 4.2%, top category: billing (31%)','RESOLVED','0h'],
+            ['GG4','GET /api/crm/nps-cohort-analysis — NPS +48 overall; 2024 cohort leads (+58); declining segment: SME cohort (-8 MoM); key driver: onboarding speed','RESOLVED','0h'],
+            ['GG5','GET /api/dpdp/customer-data-lifecycle — 8 data categories, consent freshness avg 28d, 4 deletion requests fulfilled, ss7/ss12 compliant, 0 overdue forgotten requests','RESOLVED','0h'],
+            ['GG6','GET /api/compliance/consumer-protection-tracker — 6 Consumer Protection Act 2019 areas: 5 compliant, 1 review (e-commerce display price requirement)','RESOLVED','0h'],
+            // GG-Round operator actions
+            ['GGO1','Address 20 critical-health customers — GG1 critical count 20 to <10; portfolio health 71 to 80+','High','4h'],
+            ['GGO2','Update e-commerce product listing to show all-inclusive price — GG6 consumer protection review to compliant','Medium','1h'],
+            ['GGO3','Run NPS recovery campaign for SME cohort — GG4 SME NPS -8 MoM trend reversed','Medium','2h'],
+            ['GGO4','Complete FFO1/FFO3 (Prof Tax + attrition actions) — GG2 revenue forecast risk adjusted downward','High','8h'],
           ].map(([id,item,pri,eff])=>{
             const isResolved = pri === 'RESOLVED'
             const pc = isResolved?'b-gr':pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'

@@ -6623,6 +6623,19 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       </div>
     </div>
 
+    <!-- GG-Round buttons -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;padding:1rem;">
+      <div style="font-size:.75rem;font-weight:600;color:#0e7490;margin-bottom:.6rem;"><i class="fas fa-handshake" style="margin-right:.4rem;"></i>GG-Round — Customer Intelligence &amp; CRM Analytics (v2026.31)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igCustomerHealthScores()" style="background:none;border:1px solid #0e7490;color:#0e7490;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-heartbeat" style="margin-right:.3rem;"></i>GG1: Customer Health</button>
+        <button onclick="igRevenueForecast()" style="background:none;border:1px solid #0e7490;color:#0e7490;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-chart-bar" style="margin-right:.3rem;"></i>GG2: Revenue Forecast</button>
+        <button onclick="igSupportAnalytics()" style="background:none;border:1px solid #0e7490;color:#0e7490;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-headset" style="margin-right:.3rem;"></i>GG3: Support</button>
+        <button onclick="igNpsCohortAnalysis()" style="background:none;border:1px solid #0e7490;color:#0e7490;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-smile" style="margin-right:.3rem;"></i>GG4: NPS Cohorts</button>
+        <button onclick="igCustomerDataLifecycle()" style="background:none;border:1px solid #0e7490;color:#0e7490;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-database" style="margin-right:.3rem;"></i>GG5: Data Lifecycle</button>
+        <button onclick="igConsumerProtectionTracker()" style="background:none;border:1px solid #0e7490;color:#0e7490;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>GG6: Consumer Protection</button>
+      </div>
+    </div>
+
     <!-- ── Gold Certification Live Progress (W-Round) ── -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;" id="gold-cert-widget">
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
@@ -8415,6 +8428,60 @@ window.igLabourLawTracker = function() {
       return '<tr><td style="font-size:.65rem;">'+a.act+'</td><td>'+a.jurisdiction+'</td><td style="color:'+c+';">'+a.status+'</td><td style="color:'+(a.penalty_risk==='medium'?'#92400e':a.penalty_risk==='high'?'#991b1b':'#065f46')+';">'+a.penalty_risk+'</td></tr>';}).join('');
     igModal('FF6: Labour Law Tracker — v2026.30','<b>Acts:</b> '+s.total_acts_tracked+' | <b>Compliant:</b> '+s.compliant+' | <b>Review:</b> '+s.under_review+' | <b>Medium Risk:</b> '+s.medium_penalty_risk+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Act</th><th>Jurisdiction</th><th>Status</th><th>Risk</th></tr>'+rows+'</table>'+(d.alerts.length?'<p style="color:#92400e;font-size:.7rem;margin-top:.4rem;">⚠ '+d.alerts.map(function(a){return a.act+': '+a.issue;}).join(' | ')+'</p>':''));
   }).catch(function(){igModal('FF6: Labour Law','Session expired — log in as Super Admin')});
+};
+
+window.igCustomerHealthScores = function() {
+  fetch('/crm/customer-health-scores',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.top_risk_customers||[]).slice(0,5).map(function(c){
+      var col=c.risk==='critical'?'#991b1b':'#92400e';
+      return '<tr><td style="font-size:.65rem;">'+c.name+'</td><td>'+c.segment+'</td><td>'+c.health+'</td><td style="color:'+col+';">'+c.risk+'</td><td style="color:#991b1b;">'+c.churn_prob_pct+'%</td></tr>';}).join('');
+    igModal('GG1: Customer Health Scores — v2026.31','<b>Total:</b> '+s.total_customers+' | <b>Healthy:</b> '+s.healthy+' | <b>At-Risk:</b> '+s.at_risk+' | <b>Critical:</b> '+s.critical+' | <b>Portfolio Health:</b> '+s.portfolio_health_score+'/100<br/><b>Top Risk Customers:</b><br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.4rem;"><tr style="background:#0e7490;color:#fff;"><th>Customer</th><th>Segment</th><th>Health</th><th>Risk</th><th>Churn%</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('GG1: Customer Health','Session expired — log in as Super Admin')});
+};
+
+window.igRevenueForecast = function() {
+  fetch('/crm/revenue-forecast',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.mrr_waterfall||[]).map(function(w){
+      var c=w.amount_inr>0?'#065f46':'#991b1b';
+      return '<tr><td>'+w.type+'</td><td style="color:'+c+';">₹'+Math.abs(w.amount_inr).toLocaleString()+'</td></tr>';}).join('');
+    igModal('GG2: Revenue Forecast — v2026.31','<b>Annual Base:</b> ₹'+s.annual_base_inr.toLocaleString()+' | <b>Bull:</b> ₹'+s.annual_bull_inr.toLocaleString()+' | <b>Bear:</b> ₹'+s.annual_bear_inr.toLocaleString()+' | <b>ARR Growth:</b> '+s.arr_growth_pct+'% | <b>MRR:</b> ₹'+s.mrr_current_inr.toLocaleString()+'<br/><b>MRR Waterfall:</b><br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.4rem;"><tr style="background:#0e7490;color:#fff;"><th>Type</th><th>Amount</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('GG2: Revenue Forecast','Session expired — log in as Super Admin')});
+};
+
+window.igSupportAnalytics = function() {
+  fetch('/crm/support-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.by_category||[]).map(function(c){
+      var col=c.sla_pct>=95?'#065f46':c.sla_pct>=88?'#92400e':'#991b1b';
+      return '<tr><td style="font-size:.65rem;">'+c.cat+'</td><td>'+c.count+'</td><td style="color:'+col+';">'+c.sla_pct+'%</td><td>'+c.csat+'</td><td>'+c.avg_res_h+'h</td></tr>';}).join('');
+    igModal('GG3: Support Analytics — v2026.31','<b>Tickets Q1:</b> '+s.total_tickets_q1+' | <b>SLA:</b> '+s.sla_adherence_pct+'% | <b>CSAT:</b> '+s.csat_avg+'/5 | <b>Avg Res:</b> '+s.avg_resolution_h+'h | <b>Escalation:</b> '+s.escalation_rate_pct+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0e7490;color:#fff;"><th>Category</th><th>Count</th><th>SLA</th><th>CSAT</th><th>Res Time</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('GG3: Support','Session expired — log in as Super Admin')});
+};
+
+window.igNpsCohortAnalysis = function() {
+  fetch('/crm/nps-cohort-analysis',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.cohorts||[]).map(function(co){
+      var c=co.nps>=50?'#065f46':co.nps>=40?'#92400e':'#991b1b';
+      return '<tr><td>'+co.cohort+'</td><td>'+co.size+'</td><td style="color:'+c+';font-weight:700;">+'+co.nps+'</td><td>'+co.trend+'</td></tr>';}).join('');
+    igModal('GG4: NPS Cohort Analysis — v2026.31','<b>Overall NPS:</b> +'+s.overall_nps+' | <b>Promoters:</b> '+s.promoter_pct+'% | <b>Passives:</b> '+s.passive_pct+'% | <b>Detractors:</b> '+s.detractor_pct+'% | <b>Best:</b> '+s.best_cohort+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0e7490;color:#fff;"><th>Cohort</th><th>Size</th><th>NPS</th><th>Trend</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('GG4: NPS Cohorts','Session expired — log in as Super Admin')});
+};
+
+window.igCustomerDataLifecycle = function() {
+  fetch('/dpdp/customer-data-lifecycle',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.data_categories||[]).map(function(cat){
+      var col=cat.status==='compliant'?'#065f46':'#92400e';
+      return '<tr><td style="font-size:.65rem;">'+cat.cat+'</td><td>'+cat.consent_age_d+'d</td><td>'+cat.retention_y+'y</td><td style="color:'+col+';">'+cat.status+'</td></tr>';}).join('');
+    igModal('GG5: Customer Data Lifecycle (DPDP §7/§12) — v2026.31','<b>Categories:</b> '+s.total_categories+' | <b>Compliant:</b> '+s.compliant+' | <b>Review:</b> '+s.under_review+' | <b>Avg Consent Age:</b> '+s.avg_consent_age_days+'d | <b>Deletions Fulfilled:</b> '+s.deletion_fulfilled+'/'+s.deletion_requests_total+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0e7490;color:#fff;"><th>Category</th><th>Consent Age</th><th>Retention</th><th>Status</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('GG5: Data Lifecycle','Session expired — log in as Super Admin')});
+};
+
+window.igConsumerProtectionTracker = function() {
+  fetch('/compliance/consumer-protection-tracker',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.areas||[]).map(function(a){
+      var col=a.status==='compliant'?'#065f46':'#92400e';
+      return '<tr><td style="font-size:.65rem;">'+a.area+'</td><td style="color:'+col+';">'+a.status+'</td></tr>';}).join('');
+    igModal('GG6: Consumer Protection (CP Act 2019) — v2026.31','<b>Areas:</b> '+s.total_areas+' | <b>Compliant:</b> '+s.compliant+' | <b>Review:</b> '+s.under_review+' | <b>Grievances YTD:</b> '+s.grievances_ytd+' | <b>Resolution:</b> '+s.grievance_resolution_rate_pct+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0e7490;color:#fff;"><th>Area</th><th>Status</th></tr>'+rows+'</table>'+(d.alerts.length?'<p style="color:#92400e;font-size:.7rem;margin-top:.4rem;">⚠ '+d.alerts.map(function(a){return a.area+': '+a.issue;}).join(' | ')+'</p>':''));
+  }).catch(function(){igModal('GG6: Consumer Protection','Session expired — log in as Super Admin')});
 };
 
 window.igSecTab = function(idx){
