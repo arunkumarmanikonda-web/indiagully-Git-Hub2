@@ -163,7 +163,27 @@ app.get('/dashboard', (c) => {
         <div style="font-size:.62rem;color:var(--ink-muted);">${f.pct}%</div>
       </div>`).join('')}
     </div>
-  </div>`
+  </div>
+<script>
+/* ── Sales Dashboard: load live data from API ── */
+(function(){
+  if(typeof igApi==='undefined') return;
+  igApi.get('/sales/commission/summary').then(function(d){
+    if(!d) return;
+    var el=document.getElementById('sales-commission-total');
+    if(el) el.textContent='₹'+(d.total_payable/100000).toFixed(1)+'L';
+    var el2=document.getElementById('sales-commission-period');
+    if(el2) el2.textContent=d.period;
+  });
+  igApi.get('/mandates').then(function(d){
+    if(!d) return;
+    var el=document.getElementById('sales-pipeline-val');
+    if(el) el.textContent=d.pipeline_value;
+    var el2=document.getElementById('sales-active-mandates');
+    if(el2) el2.textContent=d.active+' active mandates';
+  });
+})();
+</script>`
   return c.html(layout('Sales Dashboard', salesShell('Sales Dashboard', 'dashboard', body), {noNav:true,noFooter:true}))
 })
 
@@ -1021,6 +1041,21 @@ app.get('/commission', (c) => {
     var comm = (deal * rate / 100);
     var el = document.getElementById('comm-calc');
     if(el) el.value = '₹' + comm.toLocaleString('en-IN');
+  };
+  /* ── Commission: load live data from API ── */
+  if(typeof igApi !== 'undefined'){
+    igApi.get('/sales/commission/summary').then(function(d){
+      if(!d) return;
+      var el=document.getElementById('sales-comm-total'); if(el) el.textContent='₹'+(d.total_payable/100000).toFixed(1)+'L';
+      var el2=document.getElementById('sales-comm-pending'); if(el2) el2.textContent='₹'+(d.pending_payout/100000).toFixed(1)+'L pending';
+      var el3=document.getElementById('sales-comm-period'); if(el3) el3.textContent=d.period;
+    });
+  }
+  window.igAssignLead = function(leadId, vertical){
+    igApi.post('/sales/lead/assign',{lead_id:leadId, vertical:vertical||'General'}).then(function(d){
+      if(d && d.assigned_to) igToast(leadId+' assigned to '+d.assigned_to,'success');
+      else igToast(leadId+' assignment queued','info');
+    });
   };
   </script>`
   return c.html(layout('Commission Engine', salesShell('Commission Engine', 'commission', body), {noNav:true,noFooter:true}))

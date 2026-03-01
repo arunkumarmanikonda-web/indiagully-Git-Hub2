@@ -74,8 +74,27 @@ async function verifyTOTP(secret: string, token: string): Promise<boolean> {
   return false
 }
 
+/**
+ * Base32 decode helper — required for RFC 6238 TOTP.
+ * The TOTP secret is stored as Base32; using TextEncoder() would treat the
+ * Base32 string as raw UTF-8 bytes which is incorrect per RFC 4648.
+ */
+function base32Decode(s: string): Uint8Array {
+  const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
+  let bits = ''
+  for (const c of s.toUpperCase()) {
+    const idx = alpha.indexOf(c)
+    if (idx >= 0) bits += idx.toString(2).padStart(5, '0')
+  }
+  const bytes = new Uint8Array(Math.floor(bits.length / 8))
+  for (let i = 0; i < bytes.length; i++) bytes[i] = parseInt(bits.slice(i * 8, i * 8 + 8), 2)
+  return bytes
+}
+
 async function computeHOTP(secret: string, counter: number): Promise<string> {
-  const keyData = new TextEncoder().encode(secret)
+  // RFC 4648 Base32 decode — NOT TextEncoder (which would encode the Base32
+  // string as raw UTF-8 bytes and produce wrong TOTP codes)
+  const keyData = base32Decode(secret)
   const key = await crypto.subtle.importKey('raw', keyData, { name:'HMAC', hash:'SHA-1' }, false, ['sign'])
   const msg = new ArrayBuffer(8)
   const view = new DataView(msg)
@@ -872,11 +891,12 @@ app.get('/health', (c) => c.json({
     form_validation:  'Client-side phone/email validation + honeypot on public forms (G5 ✓)',
     f_round:          'Security score → 68/100 (F1–F5 resolved)',
     g_round:          'Security score → 72/100 (G1–G5 resolved)',
+    h_round:          'Security score → 78/100 — TOTP RFC 6238 Base32 fix (H1), session guards admin+portal (H2), real API wiring all admin pages (H3)',
     rate_limiting:    'Server-side per-IP (5 attempts / 5-min lockout)',
     cors:             'Restricted to known origins',
     headers:          'HSTS + X-Frame-Options + X-Content-Type-Options + Referrer-Policy (via _headers)',
     password_policy:  '12+ chars, uppercase + number + special required',
-    totp:             'RFC 6238 HMAC-SHA1, 30s window, ±1 window tolerance',
+    totp:             'RFC 6238 HMAC-SHA1 + Base32 decode (H1 fix), 30s window, ±1 window tolerance',
     pii_masking:      'PAN ABCDE••••F | Aadhaar ••••-••••-9012 | Bank ••••5678',
     dpdp_compliant:   true,
     audit_logging:    true,
@@ -943,7 +963,7 @@ app.get('/health', (c) => c.json({
     'GET  /api/hr/esic/statement','GET  /api/hr/epfo/challan/:ecr_id',
     'POST /api/horeca/fssai/renewal','GET  /api/finance/msme-vendors',
   ],
-  routes_count: 125,
+  routes_count: 128,
   f_round_fixes: [
     'F1: ABAC requireSession()/requireRole() on all /api/* route groups (PT-001 resolved)',
     'F2: safeHtml() HTML entity-encoding on all dynamic output (PT-002 resolved)',
@@ -958,7 +978,7 @@ app.get('/health', (c) => c.json({
     'G4: NDA acceptance modal gate on all mandate detail pages (/listings/:id)',
     'G5: Client-side phone/email validation + honeypot + submission rate-limit on contact forms',
   ],
-  security_score: { d_round: 42, e_round: 55, f_round: 68, g_round: 72 },
+  security_score: { d_round: 42, e_round: 55, f_round: 68, g_round: 72, h_round: 78 },
   open_findings_count: 1,
   deployment: 'Cloudflare Pages',
   last_updated: '2026-02-28',

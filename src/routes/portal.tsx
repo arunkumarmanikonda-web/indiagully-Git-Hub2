@@ -3,6 +3,26 @@ import { layout } from '../lib/layout'
 
 const app = new Hono()
 
+// ── SESSION GUARD for authenticated portal sub-routes ─────────────────────────
+// Login pages (/client, /employee, /board), demo-access and reset are public.
+// Dashboard and all sub-pages require the ig_session cookie.
+app.use('/*', async (c, next) => {
+  const path = new URL(c.req.url).pathname.replace(/^\/portal/, '') || '/'
+  // Public paths — no auth required
+  const publicPaths = ['/', '/client', '/employee', '/board', '/demo-access', '/reset']
+  if (publicPaths.includes(path) || path.startsWith('/reset')) return next()
+  // Protected paths — must have session cookie
+  const cookie = c.req.header('Cookie') || ''
+  const hasSession = /ig_session=[^;]+/.test(cookie)
+  if (!hasSession) {
+    // Detect which portal from path prefix and redirect to its login
+    const portalMatch = path.match(/^\/(client|employee|board)/)
+    const portalLogin = portalMatch ? `/portal/${portalMatch[1]}` : '/portal'
+    return c.redirect(portalLogin + '?error=Session+expired.+Please+log+in.', 302)
+  }
+  return next()
+})
+
 // ── PORTAL SELECTION ──────────────────────────────────────────────────────────
 app.get('/', (c) => {
   const content = `

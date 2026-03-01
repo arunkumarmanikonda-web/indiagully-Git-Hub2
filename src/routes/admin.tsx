@@ -3,6 +3,24 @@ import { layout } from '../lib/layout'
 
 const app = new Hono()
 
+// ── SESSION GUARD ─────────────────────────────────────────────────────────────
+// All admin sub-routes (except GET /) require a valid ig_session cookie.
+// The /api/auth/session endpoint validates the cookie server-side; here we do
+// a lightweight client-side check: if the cookie is absent, redirect to login.
+// Full server-side ABAC enforcement is done in api.tsx requireSession/requireRole.
+app.use('/*', async (c, next) => {
+  // Allow the login page (GET /) to pass through always
+  const path = new URL(c.req.url).pathname.replace(/^\/admin/, '') || '/'
+  if (path === '/' || path === '') return next()
+  // Check for session cookie — Cloudflare Workers can read request cookies
+  const cookie = c.req.header('Cookie') || ''
+  const hasSession = /ig_session=[^;]+/.test(cookie)
+  if (!hasSession) {
+    return c.redirect('/admin?error=Session+expired.+Please+log+in.', 302)
+  }
+  return next()
+})
+
 // ── SHARED SHELL ──────────────────────────────────────────────────────────────
 function adminShell(pageTitle: string, active: string, body: string) {
   const S = [
@@ -100,6 +118,38 @@ function adminShell(pageTitle: string, active: string, body: string) {
 <script>
 function toggleAdmNotif(){var p=document.getElementById('adm-notif-panel');p.style.display=p.style.display==='none'?'block':'none';}
 document.addEventListener('click',function(e){var btn=document.getElementById('adm-notif-btn');var panel=document.getElementById('adm-notif-panel');if(panel&&!panel.contains(e.target)&&btn&&!btn.contains(e.target))panel.style.display='none';});
+
+/* ── ADMIN API CLIENT ── all fetch helpers for real backend wiring ── */
+window.igApi = {
+  get: function(path){
+    return fetch('/api'+path,{credentials:'include'}).then(function(r){
+      if(r.status===401){window.location.href='/admin?error=Session+expired';return null;}
+      return r.json();
+    });
+  },
+  post: function(path,data){
+    return fetch('/api'+path,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(function(r){
+      if(r.status===401){window.location.href='/admin?error=Session+expired';return null;}
+      return r.json();
+    });
+  }
+};
+
+/* ── SIGN OUT ── wire logout link to POST /api/auth/logout ── */
+document.addEventListener('DOMContentLoaded', function(){
+  var signOutLinks = document.querySelectorAll('a[href="/admin"]');
+  signOutLinks.forEach(function(link){
+    var text = link.textContent || link.innerText || '';
+    if(text.toLowerCase().includes('sign out')){
+      link.addEventListener('click',function(e){
+        e.preventDefault();
+        fetch('/api/auth/logout',{method:'POST',credentials:'include'}).finally(function(){
+          window.location.href='/admin';
+        });
+      });
+    }
+  });
+});
 </script>`
 }
 
@@ -147,8 +197,17 @@ app.get('/', (c) => {
      The secret here is the same one registered in the authenticator app.
   ── */
   var TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
+  /* Base32 decode — required for RFC 6238 TOTP; TextEncoder is WRONG here */
+  function b32decode(s){
+    var alpha='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+    var bits='';
+    for(var i=0;i<s.length;i++){var idx=alpha.indexOf(s[i].toUpperCase());if(idx>=0)bits+=idx.toString(2).padStart(5,'0');}
+    var bytes=new Uint8Array(Math.floor(bits.length/8));
+    for(var j=0;j<bytes.length;j++)bytes[j]=parseInt(bits.slice(j*8,j*8+8),2);
+    return bytes.buffer;
+  }
   async function computeHOTP(secret, counter){
-    var keyData = new TextEncoder().encode(secret);
+    var keyData = b32decode(secret);
     var key = await crypto.subtle.importKey('raw', keyData, {name:'HMAC',hash:'SHA-1'}, false, ['sign']);
     var msg = new ArrayBuffer(8);
     var view = new DataView(msg);
@@ -310,7 +369,37 @@ app.get('/dashboard', (c) => {
         <span style="font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${a.color};">${a.urgency}</span>
       </div>`).join('')}
     </div>
-  </div>`
+  </div>
+<script>
+/* ── Dashboard: load live KPIs from API ── */
+(function(){
+  function fmtRs(n){ return n>=10000000?'₹'+(n/10000000).toFixed(1)+'Cr':n>=100000?'₹'+(n/100000).toFixed(1)+'L':'₹'+n.toLocaleString('en-IN'); }
+  igApi.get('/finance/summary').then(function(d){
+    if(!d) return;
+    var r=d.revenue,e=d.expenses,p=d.profit,g=d.gst;
+    var kpis=[
+      {id:'kpi-rev', val:fmtRs(r.mtd), trend:'↑ +'+r.growth_pct+'% vs last month'},
+      {id:'kpi-rec', val:fmtRs(d.receivables), trend:'Receivables outstanding'},
+      {id:'kpi-gst', val:fmtRs(g.payable), trend:'GST payable · due '+g.due_date},
+      {id:'kpi-bank',val:fmtRs(d.bank_balance), trend:'Across 3 accounts'}
+    ];
+    kpis.forEach(function(k){
+      var el=document.getElementById(k.id);
+      if(el){el.querySelector('.kpi-val').textContent=k.val;el.querySelector('.kpi-trend').textContent=k.trend;}
+    });
+  });
+  igApi.get('/mandates').then(function(d){
+    if(!d) return;
+    var el=document.getElementById('kpi-mandates');
+    if(el){el.querySelector('.kpi-val').textContent=d.active;el.querySelector('.kpi-trend').textContent=d.pipeline_value+' pipeline';}
+  });
+  igApi.get('/contracts/expiring').then(function(d){
+    if(!d) return;
+    var el=document.getElementById('kpi-contracts');
+    if(el){el.querySelector('.kpi-val').textContent=d.within_30+d.within_60;el.querySelector('.kpi-trend').textContent=d.within_30+' expiring in 30 days';}
+  });
+})();
+</script>`
   return c.html(layout('Admin Dashboard', adminShell('Dashboard Overview', 'dashboard', body), {noNav:true,noFooter:true}))
 })
 
@@ -1513,7 +1602,7 @@ app.get('/workflows', (c) => {
 app.get('/finance', (c) => {
   const body = `
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
-    ${[{label:'Revenue MTD',value:'₹12.4L',trend:'↑ +8.3%',c:'#16a34a'},{label:'Expenses MTD',value:'₹7.8L',trend:'↓ -2.1%',c:'#dc2626'},{label:'Net Profit',value:'₹4.6L',trend:'37.1% margin',c:'#2563eb'},{label:'GST Liability',value:'₹2.1L',trend:'Due 20 Mar',c:'#d97706'}].map(s=>`<div class="am"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--ink);line-height:1;margin-bottom:.3rem;">${s.value}</div><div style="font-size:.7rem;color:${s.c};">${s.trend}</div></div>`).join('')}
+    ${[{label:'Revenue MTD',value:'₹12.4L',trend:'↑ +8.3%',c:'#16a34a'},{label:'Expenses MTD',value:'₹7.8L',trend:'↓ -2.1%',c:'#dc2626'},{label:'Net Profit',value:'₹4.6L',trend:'37.1% margin',c:'#2563eb'},{label:'GST Liability',value:'₹2.1L',trend:'Due 20 Mar',c:'#d97706'}].map((s,i)=>`<div class="am fin-kpi"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div class="kpi-v" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--ink);line-height:1;margin-bottom:.3rem;">${s.value}</div><div class="kpi-t" style="font-size:.7rem;color:${s.c};">${s.trend}</div></div>`).join('')}
   </div>
 
   <!-- Tab navigation (Phase 6: added Ledger, Bank Recon, e-Invoice) -->
@@ -1557,7 +1646,7 @@ app.get('/finance', (c) => {
       </div>
       <table class="ig-tbl" id="inv-register-table">
         <thead><tr><th>Invoice</th><th>Client</th><th>SAC</th><th>Amount</th><th>GST</th><th>Total</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead>
-        <tbody>
+        <tbody id="inv-tbody">
           ${[
             {inv:'INV-2025-001',client:'Demo Client',sac:'998313',base:212000,gst:38160,total:250160,due:'15 Feb',status:'Paid',   cls:'b-gr'},
             {inv:'INV-2025-002',client:'Demo Client',sac:'998313',base:152542,gst:27458,total:180000,due:'28 Feb',status:'Overdue',cls:'b-re'},
@@ -1729,7 +1818,7 @@ app.get('/finance', (c) => {
             <div><label class="ig-label">Total Invoice Value</label><input type="number" class="ig-input" placeholder="0" style="font-size:.82rem;"></div>
           </div>
           <div style="display:flex;gap:.5rem;">
-            <button onclick="igToast('e-Invoice IRN generated: 84d53f7e8a49c2b1e0d47f6c9a80b53e1234','success')" style="background:#d97706;color:#fff;border:none;padding:.5rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class="fas fa-qrcode" style="margin-right:.4rem;"></i>Generate IRN + QR</button>
+            <button onclick="igGenIRN()" style="background:#d97706;color:#fff;border:none;padding:.5rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class="fas fa-qrcode" style="margin-right:.4rem;"></i>Generate IRN + QR</button>
             <button onclick="igToast('e-Invoice cancelled. Cancellation reason logged.','warn')" style="background:none;border:1px solid var(--border);padding:.5rem 1rem;font-size:.75rem;cursor:pointer;color:#dc2626;">Cancel IRN</button>
           </div>
           <!-- Recent IRNs -->
@@ -2380,6 +2469,13 @@ app.get('/finance', (c) => {
     var client=document.getElementById('inv-client').value;
     var due=document.getElementById('inv-due').value;
     var dueFmt=due?new Date(due).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'—';
+    // Wire to real API: post voucher to ledger
+    igApi.post('/finance/voucher',{
+      type:'Sales Invoice', ref:num, debit:'Accounts Receivable', credit:'Revenue',
+      amount:total, description:desc, client:client, due_date:due
+    }).then(function(r){
+      if(r && r.voucher_id) igToast(num+' posted to ledger (VCH-'+r.voucher_id+')','success');
+    });
     var tbody=document.querySelector('#inv-register-table tbody');
     var tr=document.createElement('tr');
     tr.id='inv-row-'+num.replace(/-/g,'_');
@@ -2502,6 +2598,67 @@ app.get('/finance', (c) => {
 
   // Init
   document.getElementById('inv-num-preview').textContent = 'INV-2025-004';
+
+  /* ── Finance: load live summary + invoices from API ── */
+  igApi.get('/finance/summary').then(function(d){
+    if(!d) return;
+    var r=d.revenue,e=d.expenses,p=d.profit,g=d.gst;
+    function fmtRs(n){return n>=100000?'₹'+(n/100000).toFixed(1)+'L':'₹'+n.toLocaleString('en-IN');}
+    var kpiEls=document.querySelectorAll('.fin-kpi');
+    var vals=[fmtRs(r.mtd),fmtRs(e.mtd),fmtRs(p.mtd),'₹'+(g.payable/100000).toFixed(1)+'L'];
+    var trends=['↑ +'+r.growth_pct+'%','↓ -2.1%',p.margin_pct+'% margin','Due '+g.due_date];
+    kpiEls.forEach(function(el,i){
+      if(vals[i]){
+        var v=el.querySelector('.kpi-v'); var t=el.querySelector('.kpi-t');
+        if(v)v.textContent=vals[i]; if(t)t.textContent=trends[i];
+      }
+    });
+  });
+  igApi.get('/invoices').then(function(d){
+    if(!d) return;
+    var tbody=document.getElementById('inv-tbody');
+    if(!tbody) return;
+    tbody.innerHTML='';
+    d.invoices.forEach(function(inv){
+      var statusCol=inv.status==='Paid'?'#15803d':inv.status==='Overdue'?'#dc2626':'#d97706';
+      tbody.innerHTML+='<tr><td style="font-size:.78rem;font-weight:600;">'+inv.id+'</td>'
+        +'<td style="font-size:.78rem;">'+inv.client+'</td>'
+        +'<td style="font-size:.78rem;">'+inv.date+'</td>'
+        +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+inv.amount.toLocaleString('en-IN')+'</td>'
+        +'<td><span style="font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:'+statusCol+';border:1px solid '+statusCol+'20;padding:.15rem .5rem;">'+inv.status+'</span></td>'
+        +'<td><button onclick="igToast(\''+inv.id+' PDF opened\',\'success\')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button></td>'
+        +'</tr>';
+    });
+  });
+  igApi.get('/finance/gst/gstr3b').then(function(d){
+    if(!d) return;
+    var el=document.getElementById('gst-payable-val');
+    if(el) el.textContent='₹'+((d.net_payable.cgst+d.net_payable.sgst)/100000).toFixed(1)+'L ('+d.status+')';
+  });
+  /* ── e-Invoice IRN generation — wired to real API ── */
+  window.igGenIRN = function(){
+    igConfirm('Generate e-Invoice IRN for this invoice via IRP?',function(){
+      igToast('Submitting to IRP…','info');
+      igApi.post('/finance/einvoice/generate',{
+        supplier_gstin:'07AABCV1234F1Z5',
+        buyer_gstin:'27AABCD1234E1Z5',
+        invoice_no:'INV-2025-003',
+        invoice_date:new Date().toISOString().slice(0,10),
+        invoice_type:'INV',
+        supply_type:'B2B',
+        line_items:[{description:'Advisory Retainer',sac:'998313',qty:1,unit_price:271186,taxable_value:271186,cgst_rate:9,sgst_rate:9,cgst_amount:24407,sgst_amount:24407}],
+        total_taxable:271186, cgst:24407, sgst:24407, invoice_value:320000
+      }).then(function(d){
+        if(d && d.irn){
+          igToast('IRN generated: '+d.irn.substring(0,16)+'…','success');
+          var el=document.getElementById('irn-display');
+          if(el) el.textContent=d.irn;
+        } else {
+          igToast('IRN generation failed — check GSTIN','error');
+        }
+      });
+    });
+  };
   </script>`
   return c.html(layout('Finance ERP', adminShell('Finance ERP', 'finance', body), {noNav:true,noFooter:true}))
 })
@@ -2551,7 +2708,7 @@ app.get('/hr', (c) => {
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Employee Directory</h3></div>
       <table class="ig-tbl" id="emp-table">
         <thead><tr><th>ID</th><th>Employee</th><th>Designation</th><th>Dept</th><th>Email</th><th>Joined</th><th>CTC</th><th>Status</th><th>Actions</th></tr></thead>
-        <tbody>
+        <tbody id="emp-tbody">
           ${[
             {id:'IG-0001',name:'Arun Manikonda', des:'Managing Director',    dept:'Leadership',email:'akm@indiagully.com',    join:'01 Apr 2017',ctc:'₹18L',  cls:'b-gr'},
             {id:'IG-0002',name:'Pavan Manikonda',des:'Executive Director',   dept:'Operations',email:'pavan@indiagully.com',  join:'01 Apr 2017',ctc:'₹15L',  cls:'b-gr'},
@@ -3286,12 +3443,18 @@ app.get('/hr', (c) => {
     });
   };
   window.igProcessPayroll = function(){
-    igConfirm('Process payroll for '+document.getElementById('payroll-month').value+'? This will initiate bank transfers.',function(){
+    var month=document.getElementById('payroll-month').value;
+    igConfirm('Process payroll for '+month+'? This will initiate bank transfers.',function(){
+      // Wire to real API
+      igApi.post('/hr/payroll/run',{month:month,employees:'all'}).then(function(d){
+        var amt=d&&d.total_disbursed?'₹'+d.total_disbursed.toLocaleString('en-IN'):'';
+        if(amt) igToast('Payroll processed — '+amt+' disbursed via bank transfer','success');
+      });
       document.getElementById('payroll-processed-banner').style.display='block';
       document.getElementById('process-payroll-btn').textContent='Processed ✓';
       document.getElementById('process-payroll-btn').style.opacity='.6';
       document.getElementById('process-payroll-btn').style.pointerEvents='none';
-      igToast('Payroll processed — ₹3,51,000 disbursed','success');
+      igToast('Payroll initiated for '+month+' — processing bank transfers','success');
     });
   };
   window.igHrViewEmp = function(name,des,ctc){
@@ -3301,6 +3464,33 @@ app.get('/hr', (c) => {
     document.getElementById('emp-modal-ctc').querySelector('div:last-child').textContent=ctc+' p.a.';
     var m=document.getElementById('emp-profile-modal');m.style.display='flex';m.style.alignItems='center';m.style.justifyContent='center';
   };
+
+  /* ── HR: load live employee data + attendance from API ── */
+  igApi.get('/employees').then(function(d){
+    if(!d) return;
+    var kpis=document.querySelectorAll('.hr-kpi');
+    if(kpis[0]){ kpis[0].querySelector('.kpi-v').textContent=d.total; }
+    var tbody=document.getElementById('emp-tbody');
+    if(!tbody||!d.employees) return;
+    tbody.innerHTML='';
+    d.employees.forEach(function(e){
+      tbody.innerHTML+='<tr>'
+        +'<td><div style="display:flex;align-items:center;gap:.625rem;">'
+        +'<div style="width:32px;height:32px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;">'+e.name.charAt(0)+'</div>'
+        +'<div><div style="font-size:.82rem;font-weight:600;">'+e.name+'</div><div style="font-size:.68rem;color:var(--ink-muted);">'+e.designation+'</div></div></div></td>'
+        +'<td style="font-size:.75rem;">'+e.department+'</td>'
+        +'<td style="font-size:.75rem;">'+e.id+'</td>'
+        +'<td style="font-size:.75rem;">₹'+e.ctc.toLocaleString('en-IN')+'</td>'
+        +'<td><span class="badge b-gr" style="font-size:.6rem;">Active</span></td>'
+        +'<td><button onclick="igHrViewEmp(\''+e.name+'\',\''+e.designation+'\',\'₹'+e.ctc.toLocaleString('en-IN')+'\')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">View</button></td>'
+        +'</tr>';
+    });
+  });
+  igApi.get('/hr/appraisals').then(function(d){
+    if(!d) return;
+    var kpis=document.querySelectorAll('.hr-kpi');
+    if(kpis[2]) kpis[2].querySelector('.kpi-v').textContent=d.status;
+  });
   </script>`
   return c.html(layout('HR ERP', adminShell('HR ERP', 'hr', body), {noNav:true,noFooter:true}))
 })
@@ -3916,6 +4106,31 @@ app.get('/governance', (c) => {
     document.getElementById('agenda-items').appendChild(div);
     div.querySelector('input').focus();
   };
+
+  /* ── Governance: load live resolutions + registers from API ── */
+  igApi.get('/governance/resolutions').then(function(d){
+    if(!d) return;
+    var el=document.getElementById('res-count'); if(el) el.textContent=d.total;
+    var pendEl=document.getElementById('res-pending'); if(pendEl) pendEl.textContent=d.pending+' pending';
+    var tbody=document.getElementById('res-tbody');
+    if(!tbody||!d.resolutions) return;
+    tbody.innerHTML='';
+    d.resolutions.slice(0,5).forEach(function(r){
+      var statusCol=r.status==='Passed'?'#16a34a':'#d97706';
+      tbody.innerHTML+='<tr>'
+        +'<td style="font-size:.72rem;font-weight:600;">'+r.id+'</td>'
+        +'<td style="font-size:.78rem;">'+r.title+'</td>'
+        +'<td style="font-size:.72rem;">'+r.type+'</td>'
+        +'<td style="font-size:.72rem;">'+r.date+'</td>'
+        +'<td><span style="font-size:.62rem;font-weight:700;color:'+statusCol+';border:1px solid '+statusCol+'20;padding:.1rem .4rem;">'+r.status+'</span></td>'
+        +'<td><button onclick="igToast(\''+r.id+' PDF downloaded\',\'success\')" style="background:none;border:1px solid var(--border);padding:.2rem .4rem;font-size:.62rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button></td>'
+        +'</tr>';
+    });
+  });
+  igApi.get('/governance/minute-book').then(function(d){
+    if(!d) return;
+    var el=document.getElementById('minutes-count'); if(el) el.textContent=d.total_minutes+' minutes recorded';
+  });
   </script>`
   return c.html(layout('Governance', adminShell('Governance & Compliance', 'governance', body), {noNav:true,noFooter:true}))
 })
@@ -4566,7 +4781,7 @@ app.get('/contracts', (c) => {
           <select class="ig-input" style="font-size:.75rem;max-width:130px;"><option>All Contracts</option><option>Expiring 30 days</option><option>Expiring 60 days</option><option>Expired</option></select>
         </div>
       </div>
-      <table class="ig-tbl"><thead><tr><th>Contract</th><th>Party</th><th>Type</th><th>Expiry</th><th>Days Left</th><th>Auto-Renew</th><th>Status</th><th>Action</th></tr></thead><tbody>
+      <table class="ig-tbl"><thead><tr><th>Contract</th><th>Party</th><th>Type</th><th>Expiry</th><th>Days Left</th><th>Auto-Renew</th><th>Status</th><th>Action</th></tr></thead><tbody id="contracts-tbody">
         ${[
           {id:'CTR-001',name:'Advisory Retainer — Heritage Hotels',   party:'Heritage Hotels Ltd',         type:'Retainer',  exp:'31 Mar 2025', days:25,  auto:false, s:'Expiring Soon'},
           {id:'CTR-002',name:'NDA — Goa Hospitality Ventures',        party:'Goa Hospitality Ventures',    type:'NDA',       exp:'10 Mar 2025', days:4,   auto:false, s:'Critical'},
@@ -4823,6 +5038,29 @@ app.get('/contracts', (c) => {
       igToast('AI clause scan complete — 3 missing, 2 risky clauses detected','warn');
     }, 1800);
   };
+
+  /* ── Contracts: load expiring contracts from API ── */
+  igApi.get('/contracts/expiring').then(function(d){
+    if(!d) return;
+    var el=document.getElementById('contracts-expiring-30');
+    if(el) el.textContent=d.within_30+' expiring in 30 days';
+    var el2=document.getElementById('contracts-expiring-60');
+    if(el2) el2.textContent=d.within_60+' expiring in 60 days';
+    var tbody=document.getElementById('contracts-tbody');
+    if(!tbody||!d.contracts) return;
+    d.contracts.slice(0,5).forEach(function(c){
+      var daysLeft=parseInt(c.days_remaining)||0;
+      var col=daysLeft<=30?'#dc2626':daysLeft<=60?'#d97706':'#16a34a';
+      tbody.innerHTML+='<tr>'
+        +'<td style="font-size:.78rem;font-weight:600;">'+c.id+'</td>'
+        +'<td style="font-size:.78rem;">'+c.name+'</td>'
+        +'<td style="font-size:.75rem;">'+c.type+'</td>'
+        +'<td style="font-size:.75rem;">'+c.expiry+'</td>'
+        +'<td><span style="font-size:.68rem;font-weight:700;color:'+col+';">'+daysLeft+'d</span></td>'
+        +'<td><button onclick="igToast(\'Renewal initiated for '+c.id+'\',\'success\')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">Renew</button></td>'
+        +'</tr>';
+    });
+  });
   </script>`
   return c.html(layout('Contracts', adminShell('Contract Management', 'contracts', body), {noNav:true,noFooter:true}))
 })
@@ -4865,7 +5103,23 @@ app.get('/integrations', (c) => {
         </div>
       </div>
     </div>`).join('')}
-  </div>`
+  </div>
+<script>
+/* ── Integrations: test connections against live API endpoints ── */
+window.igTestIntegration = function(name, endpoint){
+  igToast('Testing '+name+' connection…','info');
+  igApi.get(endpoint||'/health').then(function(d){
+    if(d) igToast(name+' — Connection OK ✓','success');
+    else  igToast(name+' — Connection failed','error');
+  });
+};
+/* ── Architecture microservices status ── */
+igApi.get('/architecture/microservices').then(function(d){
+  if(!d) return;
+  var el=document.getElementById('ms-status');
+  if(el && d.services) el.textContent=d.services.filter(function(s){return s.status==='Active';}).length+'/'+d.services.length+' services online';
+});
+</script>`
   return c.html(layout('Integrations', adminShell('Integrations & API Keys', 'integrations', body), {noNav:true,noFooter:true}))
 })
 
@@ -5102,6 +5356,18 @@ app.get('/reports', (c) => {
     { label:'Lower Bound',       data:[950000,1040000,1160000,1090000,1210000,1290000,1170000,1310000], borderColor:'rgba(184,150,12,.3)', backgroundColor:'transparent', fill:false, tension:.4, borderDash:[4,4], pointRadius:0 },
     { label:'Upper Bound',       data:[1250000,1360000,1540000,1470000,1630000,1710000,1590000,1790000], borderColor:'rgba(184,150,12,.3)', backgroundColor:'rgba(184,150,12,.07)', fill:'-1', tension:.4, borderDash:[4,4], pointRadius:0 },
   ]}, options:{ responsive:true, plugins:{ legend:{ labels:{ font:{size:9} }}}, scales:{ y:{ ticks:{ callback:v=>'₹'+(v/100000).toFixed(1)+'L', font:{size:9}}}, x:{ ticks:{font:{size:9}}}}}}); }
+
+  /* ── BI Reports: load live KPIs from API ── */
+  igApi.get('/finance/summary').then(function(d){
+    if(!d) return;
+    function fmtRs(n){return n>=100000?'₹'+(n/100000).toFixed(1)+'L':'₹'+n.toLocaleString('en-IN');}
+    var el=document.getElementById('rpt-revenue'); if(el) el.textContent=fmtRs(d.revenue.mtd);
+    var el2=document.getElementById('rpt-profit'); if(el2) el2.textContent=d.profit.margin_pct+'%';
+  });
+  igApi.get('/kpi/summary').then(function(d){
+    if(!d) return;
+    var el=document.getElementById('rpt-health'); if(el) el.textContent=d.overall_health;
+  });
   </script>`
   return c.html(layout('BI & Reports', adminShell('BI & Reports', 'reports', body), {noNav:true,noFooter:true}))
 })
@@ -5875,6 +6141,20 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       r.style.display=show?'':'none';
     });
   };
+
+  /* ── Security: load live pentest checklist + ABAC matrix ── */
+  igApi.get('/security/pentest-checklist').then(function(d){
+    if(!d) return;
+    var el=document.getElementById('pentest-score');
+    if(el && d.overall_score) el.textContent=d.overall_score+'/100';
+    var el2=document.getElementById('pentest-open');
+    if(el2 && d.open_findings!==undefined) el2.textContent=d.open_findings+' open';
+  });
+  igApi.get('/abac/matrix').then(function(d){
+    if(!d) return;
+    var el=document.getElementById('abac-roles');
+    if(el) el.textContent=d.roles.join(', ');
+  });
   </script>`
   return c.html(layout('Security & Audit', adminShell('Security & Audit', 'security', body), {noNav:true,noFooter:true}))
 })
@@ -6261,7 +6541,20 @@ app.get('/kpi', (c) => {
       <div><label class="ig-label">Owner</label><select class="ig-input" style="font-size:.82rem;"><option>Arun Manikonda</option><option>Pavan Manikonda</option><option>Amit Jhingan</option></select></div>
     </div>
     <button onclick="igToast('OKR added to tracking dashboard','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;margin-top:.875rem;"><i class="fas fa-plus" style="margin-right:.35rem;"></i>Add Key Result</button>
-  </div>`
+  </div>
+<script>
+/* ── KPI: load live KPI summary from API ── */
+igApi.get('/kpi/summary').then(function(d){
+  if(!d) return;
+  var el=document.getElementById('kpi-health');
+  if(el) el.textContent='Overall: '+d.overall_health+' · '+d.quarter;
+});
+igApi.get('/finance/summary').then(function(d){
+  if(!d) return;
+  var el=document.getElementById('kpi-rev-live');
+  if(el) el.textContent='₹'+(d.revenue.mtd/100000).toFixed(1)+'L MTD';
+});
+</script>`
   return c.html(layout('KPI & OKR Tracker', adminShell('KPI & OKR Tracker', 'kpi', body), {noNav:true,noFooter:true}))
 })
 
@@ -6349,7 +6642,16 @@ app.get('/risk', (c) => {
       </div>
     </div>`).join('')}
     <div class="ig-warn" style="margin-top:1rem;"><i class="fas fa-exclamation-triangle"></i><div>Entertainment sector represents 65% of portfolio. Recommended max concentration: 40%. Consider diversification into Healthcare Real Estate or Infrastructure Advisory.</div></div>
-  </div>`
+  </div>
+<script>
+/* ── Risk: load live mandate risk data from API ── */
+igApi.get('/risk/mandates').then(function(d){
+  if(!d) return;
+  var el=document.getElementById('risk-portfolio'); if(el) el.textContent=d.total_portfolio;
+  var el2=document.getElementById('risk-high'); if(el2) el2.textContent=d.risk_distribution.high+' high risk';
+  var el3=document.getElementById('risk-low');  if(el3) el3.textContent=d.risk_distribution.low+' low risk';
+});
+</script>`
   return c.html(layout('Mandate Risk Dashboard', adminShell('Risk Dashboard', 'risk', body), {noNav:true,noFooter:true}))
 })
 
