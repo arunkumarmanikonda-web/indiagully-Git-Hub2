@@ -6429,6 +6429,28 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
             <i class="fas fa-timeline" style="margin-right:.3rem;"></i>X6: Cert History
           </button>
         </div>
+
+        <!-- Y-Round buttons -->
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem;">
+          <button onclick="igPlatformHealthDashboard()" style="background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-heartbeat" style="margin-right:.3rem;"></i>Y1: Platform Health
+          </button>
+          <button onclick="igReconciliationReport()" style="background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-balance-scale" style="margin-right:.3rem;"></i>Y2: Reconciliation
+          </button>
+          <button onclick="igIntegrationStatusBoard()" style="background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-plug" style="margin-right:.3rem;"></i>Y3: Integration Status
+          </button>
+          <button onclick="igSessionSecurityReport()" style="background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-lock" style="margin-right:.3rem;"></i>Y4: Session Security
+          </button>
+          <button onclick="igDpdpAuditTrailExport()" style="background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-file-export" style="margin-right:.3rem;"></i>Y5: DPDP Audit Trail
+          </button>
+          <button onclick="igPolicyRegistry()" style="background:none;border:1px solid #1e3a5f;color:#1e3a5f;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-book-open" style="margin-right:.3rem;"></i>Y6: Policy Registry
+          </button>
+        </div>
       </div>
     </div>
 
@@ -7550,6 +7572,133 @@ window.igCertificationHistory = function() {
       '</div>' +
       '<p style="margin-top:.5rem;color:#6b7280;font-size:.7rem">Gold achieved: ' + (ch.gold_achieved ? '&#10003; Yes' : '&#10007; Pending sign-off') + '</p>');
   }).catch(function(){igModal('X6: Cert History','Session expired — log in as Super Admin')});
+};
+
+// ─── Y-ROUND handlers (v2026.23) ───────────────────────────────────────────
+
+window.igPlatformHealthDashboard = function() {
+  igToast('Loading platform health…','info');
+  igApi.get('/admin/platform-health-dashboard').then(function(d){
+    var ph = d.platform_health_dashboard || {};
+    var sm = ph.summary || {};
+    var oc = ph.overall_status === 'operational' ? '#166534' : ph.overall_status === 'degraded' ? '#b45309' : '#dc2626';
+    var rows = (ph.components||[]).map(function(c){
+      var sc = c.status==='operational'||c.status==='live' ? '#166534' : c.status==='partial' ? '#b45309' : '#dc2626';
+      var lat = c.latency_ms >= 0 ? c.latency_ms + 'ms' : '—';
+      return '<tr>' +
+        '<td style="font-size:.75rem;font-weight:600">' + c.name + '</td>' +
+        '<td><span style="color:' + sc + ';font-size:.72rem;font-weight:700">' + c.status + '</span></td>' +
+        '<td style="font-size:.7rem;color:#6b7280">' + lat + '</td>' +
+        '<td style="font-size:.7rem;color:#6b7280">' + c.note + '</td>' +
+        '</tr>';
+    }).join('');
+    igModal('Y1: Platform Health Dashboard',
+      '<p style="font-size:.85rem"><b>Status:</b> <span style="color:' + oc + ';font-weight:700">' + (ph.overall_status||'—').toUpperCase() + '</span> &nbsp;|&nbsp; <b>Operational:</b> ' + (sm.operational||0) + '/' + (sm.total||6) + ' &nbsp;|&nbsp; <b>Probe:</b> ' + (ph.probe_duration_ms||0) + 'ms</p>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Component</th><th>Status</th><th>Latency</th><th>Note</th></tr></thead><tbody>' + rows + '</tbody></table>');
+  }).catch(function(){igModal('Y1: Platform Health','Session expired — log in as Super Admin')});
+};
+
+window.igReconciliationReport = function() {
+  igToast('Loading reconciliation report…','info');
+  igApi.get('/payments/reconciliation-report').then(function(d){
+    var rr = d.reconciliation_report || {};
+    var rz = rr.razorpay || {};
+    var gs = rr.gst || {};
+    var g1 = rr.gstr1 || {};
+    var sc = g1.status === 'reconciled' ? '#166534' : '#dc2626';
+    igModal('Y2: GST Reconciliation Report',
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Period:</b> ' + (rr.period||'—') + ' &nbsp;|&nbsp; <b>Transactions:</b> ' + (rz.total_transactions||0) + ' (Captured: ' + (rz.captured||0) + ', Failed: ' + (rz.failed||0) + ')</p>' +
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Gross Revenue:</b> ₹' + (rz.gross_inr||0).toFixed(2) + ' &nbsp;|&nbsp; <b>Base:</b> ₹' + (gs.base_inr||0).toFixed(2) + ' &nbsp;|&nbsp; <b>GST 18%:</b> ₹' + (gs.gst_18pct||0).toFixed(2) + '</p>' +
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>CGST 9%:</b> ₹' + (gs.cgst_9pct||0).toFixed(2) + ' &nbsp;|&nbsp; <b>SGST 9%:</b> ₹' + (gs.sgst_9pct||0).toFixed(2) + ' &nbsp;|&nbsp; <b>HSN:</b> ' + (gs.hsn_code||'—') + '</p>' +
+      '<p style="font-size:.8rem;margin-top:.5rem"><b>GSTR-1 Status:</b> <span style="color:' + sc + ';font-weight:700">' + (g1.status||'—') + '</span> &nbsp;|&nbsp; <b>Declared:</b> ₹' + (g1.declared_inr||0).toFixed(2) + ' &nbsp;|&nbsp; <b>Variance:</b> ₹' + (g1.variance_inr||0).toFixed(2) + ' (' + (g1.variance_pct||'0%') + ')</p>' +
+      '<p style="margin-top:.5rem;color:#065F46;font-size:.73rem">' + (rr.recommendation||'') + '</p>');
+  }).catch(function(){igModal('Y2: Reconciliation','Session expired — log in as Super Admin')});
+};
+
+window.igIntegrationStatusBoard = function() {
+  igToast('Loading integration status…','info');
+  igApi.get('/integrations/integration-status-board').then(function(d){
+    var ib = d.integration_status_board || {};
+    var sm = ib.summary || {};
+    var rows = (ib.integrations||[]).map(function(i){
+      var sc = i.status==='active'||i.status==='live' ? '#166534' : i.status==='partial' ? '#b45309' : i.status==='inactive' ? '#dc2626' : '#6b7280';
+      return '<tr>' +
+        '<td style="font-size:.75rem;font-weight:600">' + i.name + '</td>' +
+        '<td style="font-size:.7rem;color:#6b7280">' + i.category + '</td>' +
+        '<td><span style="color:' + sc + ';font-size:.72rem;font-weight:700">' + i.status + '</span></td>' +
+        '<td style="font-size:.7rem;color:#6b7280">' + i.note + '</td>' +
+        '</tr>';
+    }).join('');
+    igModal('Y3: Integration Status Board',
+      '<p style="font-size:.85rem"><b>Health:</b> ' + (sm.health_pct||0) + '% &nbsp;|&nbsp; <b>Active:</b> ' + (sm.active||0) + ' &nbsp;|&nbsp; <b>Partial:</b> ' + (sm.partial||0) + ' &nbsp;|&nbsp; <b>Inactive:</b> ' + (sm.inactive||0) + '</p>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Integration</th><th>Category</th><th>Status</th><th>Note</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<p style="margin-top:.5rem;color:#1e3a5f;font-size:.73rem">' + (ib.recommendation||'') + '</p>');
+  }).catch(function(){igModal('Y3: Integration Status','Session expired — log in as Super Admin')});
+};
+
+window.igSessionSecurityReport = function() {
+  igToast('Loading session security report…','info');
+  igApi.get('/auth/session-security-report').then(function(d){
+    var sr = d.session_security_report || {};
+    var u  = sr.users || {};
+    var rc = sr.risk_level === 'Low' ? '#166534' : sr.risk_level === 'Medium' ? '#b45309' : '#dc2626';
+    var anomalyRows = (sr.anomalies||[]).map(function(a){
+      var ac = a.severity==='High' ? '#dc2626' : a.severity==='Medium' ? '#b45309' : '#6b7280';
+      return '<tr><td style="color:' + ac + ';font-size:.72rem;font-weight:700">' + a.severity + '</td><td style="font-size:.7rem">' + a.type + '</td><td style="font-size:.7rem;color:#6b7280">' + a.detail + '</td></tr>';
+    }).join('');
+    igModal('Y4: Session Security Report',
+      '<p style="font-size:.85rem"><b>Risk Level:</b> <span style="color:' + rc + ';font-weight:700">' + (sr.risk_level||'Low') + '</span> &nbsp;|&nbsp; <b>Lockouts 24h:</b> ' + (sr.lockout_events_24h||0) + ' &nbsp;|&nbsp; <b>Anomalies:</b> ' + (sr.anomaly_count||0) + '</p>' +
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Users:</b> ' + (u.total||0) + ' &nbsp;|&nbsp; <b>TOTP:</b> ' + (u.totp_enrolled||0) + ' &nbsp;|&nbsp; <b>WebAuthn:</b> ' + (u.webauthn_enrolled||0) + ' &nbsp;|&nbsp; <b>MFA Coverage:</b> ' + (u.mfa_coverage_pct||0) + '%</p>' +
+      (anomalyRows ? '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Severity</th><th>Type</th><th>Detail</th></tr></thead><tbody>' + anomalyRows + '</tbody></table>' : '<p style="color:#166534;font-size:.75rem;margin-top:.5rem">&#10003; No security anomalies detected</p>'));
+  }).catch(function(){igModal('Y4: Session Security','Session expired — log in as Super Admin')});
+};
+
+window.igDpdpAuditTrailExport = function() {
+  igToast('Loading DPDP audit trail…','info');
+  igApi.get('/dpdp/audit-trail-export').then(function(d){
+    var at = d.dpdp_audit_trail_export || {};
+    var sm = at.summary || {};
+    var rows = (at.trail||[]).map(function(t){
+      var sc = t.status==='complete'||t.status==='logged' ? '#166534' : t.status==='action_required' ? '#dc2626' : '#b45309';
+      return '<tr>' +
+        '<td style="font-size:.72rem;font-weight:600;color:#1e3a5f">' + t.category + '</td>' +
+        '<td style="font-size:.73rem">' + t.event + '</td>' +
+        '<td style="font-size:.75rem;font-weight:700">' + t.count + '</td>' +
+        '<td><span style="color:' + sc + ';font-size:.7rem;font-weight:700">' + t.status + '</span></td>' +
+        '</tr>';
+    }).join('');
+    igModal('Y5: DPDP Audit Trail Export',
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Action Required:</b> ' + (sm.action_required||0) + ' &nbsp;|&nbsp; <b>Gold Cert Signed:</b> ' + (sm.gold_cert_signed ? '&#10003; Yes' : '&#10007; Pending') + (sm.cert_id ? ' (ID: ' + sm.cert_id + ')' : '') + '</p>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Category</th><th>Event</th><th>Count</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<p style="margin-top:.5rem;color:#1e3a5f;font-size:.73rem">' + (at.recommended_action||'') + '</p>' +
+      '<p style="color:#6b7280;font-size:.7rem;margin-top:.25rem">Legal basis: ' + (at.legal_basis||'') + '</p>');
+  }).catch(function(){igModal('Y5: DPDP Audit Trail','Session expired — log in as Super Admin')});
+};
+
+window.igPolicyRegistry = function() {
+  igToast('Loading policy registry…','info');
+  igApi.get('/compliance/policy-registry').then(function(d){
+    var pr = d.policy_registry || {};
+    var sm = pr.summary || {};
+    var rows = (pr.policies||[]).map(function(p){
+      var sc = p.status==='approved' ? '#166534' : '#b45309';
+      var od = new Date(p.review_date) < new Date() ? '#dc2626' : '#6b7280';
+      return '<tr>' +
+        '<td style="font-size:.7rem;font-weight:700;color:#1e3a5f">' + p.id + '</td>' +
+        '<td style="font-size:.73rem">' + p.name + '</td>' +
+        '<td style="font-size:.7rem">' + p.version + '</td>' +
+        '<td style="font-size:.7rem">' + p.owner + '</td>' +
+        '<td><span style="color:' + sc + ';font-size:.7rem;font-weight:700">' + p.status + '</span></td>' +
+        '<td style="color:' + od + ';font-size:.7rem">' + p.review_date + '</td>' +
+        '</tr>';
+    }).join('');
+    igModal('Y6: Policy Registry (12 Policies)',
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Total:</b> ' + (pr.total||0) + ' &nbsp;|&nbsp; <b>Approved:</b> ' + (pr.approved||0) + ' &nbsp;|&nbsp; <b>Under Review:</b> ' + (pr.under_review||0) + ' &nbsp;|&nbsp; <b>Overdue:</b> ' + (pr.overdue||0) + ' &nbsp;|&nbsp; <b>Maturity:</b> ' + (sm.maturity_score||0) + '%</p>' +
+      '<div style="max-height:320px;overflow-y:auto;">' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>ID</th><th>Policy</th><th>Ver</th><th>Owner</th><th>Status</th><th>Review Date</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '</div>' +
+      (sm.overdue_alert ? '<p style="color:#dc2626;font-size:.73rem;margin-top:.5rem">&#9888; ' + sm.overdue_alert + '</p>' : ''));
+  }).catch(function(){igModal('Y6: Policy Registry','Session expired — log in as Super Admin')});
 };
 
 window.igSecTab = function(idx){
