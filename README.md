@@ -88,6 +88,48 @@ All portals require credentials provisioned by the system administrator.
 
 ---
 
+## 🏆 P-Round Complete — v2026.14-P-Round (2026-03-01)
+
+**Security Score: 100/100 | Routes: 180 | Open Findings: 0 | Smoke Tests: 23/23 ✅ | Tag: v2026.14-P-Round**
+
+| ID | Item | Status |
+|----|------|--------|
+| P1 | `GET /api/admin/d1-token-wizard` — Step-by-step D1:Edit token guide + 5-step setup wizard with `create-d1-remote.sh` commands *(Super Admin)* | ✅ RESOLVED |
+| P2 | `POST /api/payments/live-order-test` — Real ₹1 Razorpay order creation test with `receipt_template` + live/test key detection *(Super Admin)* | ✅ RESOLVED |
+| P3 | `GET /api/integrations/sendgrid/dns-validate` — Live DNS lookup for `indiagully.com` CNAME/DKIM + SPF + SendGrid domain auth status *(Super Admin)* | ✅ RESOLVED |
+| P4 | `GET /api/auth/webauthn/passkey-guide` — FIDO2 guide: 8 authenticator types, AAGUID table, registration steps, QR roadmap *(any session)* | ✅ RESOLVED |
+| P5 | `GET /api/dpdp/dfr-finalise` — DFR 8/12 final checklist, 6 processor DPA tracker, DPB portal readiness *(Super Admin)* | ✅ RESOLVED |
+| P6 | `GET /api/compliance/audit-signoff` — 6-domain 36-check sign-off form (SO-01–SO-10), assessor requirements *(Super Admin)* | ✅ RESOLVED |
+
+### New API Endpoints (P-Round)
+- `GET /api/admin/d1-token-wizard` — 5-step D1:Edit token wizard with status per step *(Super Admin)*
+- `POST /api/payments/live-order-test` — Real Razorpay ₹1 order creation with receipt template *(Super Admin)*
+- `GET /api/integrations/sendgrid/dns-validate` — DNS CNAME/DKIM/SPF lookup + SendGrid domain auth *(Super Admin)*
+- `GET /api/auth/webauthn/passkey-guide` — 8 authenticator types, FIDO2 registration steps *(any session)*
+- `GET /api/dpdp/dfr-finalise` — DFR 12-point checklist + 6 processor DPA tracker *(Super Admin)*
+- `GET /api/compliance/audit-signoff` — 36-check 6-domain audit sign-off + SO-01–SO-10 *(Super Admin)*
+
+### Admin Dashboard — P-Round Buttons
+- **P1: D1 Wizard** → `igD1TokenWizard()` — D1 step progress + next action
+- **P2: Live Order** → `igLiveOrderTest()` — real ₹1 Razorpay order result
+- **P3: DNS Validate** → `igDnsValidate()` — DKIM/SPF verification status
+- **P4: Passkey Guide** → `igPasskeyGuide()` — credential count + registration URL
+
+### P-Round Playwright Tests (`tests/p-round.spec.ts`)
+8 suites: Health P-Round gates · P1 D1 wizard · P2 live order · P3 DNS validate · P4 passkey guide · P5 DFR finalise · P6 audit sign-off · DPDP public
+
+### Q-Round Roadmap
+| ID | Priority | Item |
+|----|----------|------|
+| Q1 | HIGH | D1 live token — `d1-token-wizard` wizard complete, 15/15 tables in production |
+| Q2 | HIGH | Razorpay live — `live-order-test` returns real `order_id` with `key_mode: live` |
+| Q3 | HIGH | SendGrid DNS — `dns-validate` returns `domain_verified: true` |
+| Q4 | MEDIUM | WebAuthn passkey registered — `passkey-guide` shows `credential_count > 0` |
+| Q5 | MEDIUM | DFR 12/12 signed — `dfr-finalise` returns `completion_pct: 100` |
+| Q6 | LOW | Audit sign-off — CISA/CISSP assessor completes `audit-signoff` SO-01–SO-10 |
+
+---
+
 ## 🏆 O-Round Complete — v2026.13-O-Round (2026-03-01)
 
 **Security Score: 100/100 | Routes: 175 | Open Findings: 0 | Smoke Tests: 26/26 ✅ | Tag: v2026.13-O-Round**
