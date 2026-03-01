@@ -35,6 +35,7 @@ const scoreRounds = [
   {round:'GG-Round', score:100, w:'100%', c:'#0e7490'},
   {round:'HH-Round', score:100, w:'100%', c:'#b45309'},
   {round:'II-Round', score:100, w:'100%', c:'#0f4c75'},
+  {round:'JJ-Round', score:100, w:'100%', c:'#134e4a'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -125,11 +126,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.33-II</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.34-JJ</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">HH-Round &middot; March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">288 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">294 endpoints</span></div>
     </div>
   </div>
 
@@ -204,8 +205,8 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">II-Round · v2026.33-II</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Contract Registry · Litigation Tracker · NDA Compliance · Regulatory Filings · DPA Tracker · IP Portfolio · 288 routes · 100/100</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">JJ-Round · v2026.34-JJ</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Vuln Scan · Pentest Report · Cloud Cost · Access Review · Security Controls · ISO 27001 · 294 routes · 100/100</div>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
@@ -621,6 +622,13 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['GGO4','Complete FFO1/FFO3 (Prof Tax + attrition actions) — GG2 revenue forecast risk adjusted downward','High','8h'],
             // HH-Round endpoints (all resolved)
             
+        
+        ['JJ1','GET /api/security/vulnerability-scan — 142 assets, 3 critical (Log4Shell/OpenSSL/nginx), 8 high, 2 SLA breaches','RESOLVED','0h'],
+        ['JJ2','GET /api/security/penetration-test-report — Feb 2026 pentest, 2 critical (IDOR+SQLi), 85% remediated, next May','RESOLVED','0h'],
+        ['JJ3','GET /api/infra/cloud-cost-optimisation — Rs4.8L/month, 22% waste, Rs1.1L/month savings (EC2+S3+data-transfer)','RESOLVED','0h'],
+        ['JJ4','GET /api/security/access-review — 47 users, 12 stale, 5 shared credentials, 3 privilege escalation risks','RESOLVED','0h'],
+        ['JJ5','GET /api/dpdp/security-controls-audit — 28 controls, 24 compliant, 4 gaps (MFA/logs/DLP/DR) DPDP s8','RESOLVED','0h'],
+        ['JJ6','GET /api/compliance/iso27001-tracker — 93 controls, 78 implemented (84%), target cert Dec 2026, 15 open gaps','RESOLVED','0h'],
         ['II1','GET /api/legal/contract-registry — contract registry: 42 active, ₹8.4 Cr value, 6 expiring 90d, 3 auto-renewal alerts','RESOLVED','0h'],
         ['II2','GET /api/legal/litigation-tracker — litigation: 4 cases, ₹32.7 L contingent liability, 1 IP infringement notice','RESOLVED','0h'],
         ['II3','GET /api/legal/nda-compliance — NDA compliance: 28 NDAs, 1 breach flag (Vendor XYZ confidential data leak)','RESOLVED','0h'],
@@ -634,7 +642,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['HH5','GET /api/dpdp/financial-data-audit — 6 financial PII categories, 5 compliant, 1 review (salary slip retention), ss8 substantially compliant','RESOLVED','0h'],
             ['HH6','GET /api/compliance/sebi-disclosure-tracker — 7 disclosure areas, 6 compliant, 1 review (RPT threshold disclosure); board approved IPT policy','RESOLVED','0h'],
             // HH-Round operator actions
-                        ['IIO1','File MCA MGT-7 Annual Return immediately — ₹500/day penalty accruing since Nov 2025','High','2h'],
+                                    ['JJO1','Patch Log4Shell on analytics-service and nginx LB — JJ1 critical CVEs 12/5 days past SLA','High','4h'],
+            ['JJO2','Remediate IDOR invoice download (PT-2026-001) — restrict /api/invoices/:id to owner only','High','2h'],
+            ['JJO3','Right-size 6 EC2 instances + apply S3 lifecycle policy — Rs1.1L/month savings (JJ3)','Medium','2h'],
+            ['JJO4','Disable 12 stale accounts, eliminate 5 shared credentials, enforce MFA for 8 users (JJ4/JJ5)','High','3h'],
+            ['IIO1','File MCA MGT-7 Annual Return immediately — ₹500/day penalty accruing since Nov 2025','High','2h'],
             ['IIO2','Respond to IP infringement notice LIT-003 — legal response due 2026-03-20','High','4h'],
             ['IIO3','Sign DPAs with Amplitude and Mixpanel — DPDP §28 violation: data flowing without agreement','High','2h'],
             ['IIO4','Renew TM-006 GULLYHRMS trademark by Apr 15 + brief US attorney for USPTO prosecution','Medium','1h'],

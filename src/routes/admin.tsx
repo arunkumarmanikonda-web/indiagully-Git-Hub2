@@ -6686,6 +6686,31 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       </div>
     </div>
 
+    <!-- JJ-Round buttons -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;padding:1rem;">
+      <div style="font-size:.75rem;font-weight:600;color:#134e4a;margin-bottom:.6rem;"><i class="fas fa-shield-virus" style="margin-right:.4rem;"></i>JJ-Round — IT Security &amp; Infrastructure Intelligence (v2026.34)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igVulnerabilityScan()" style="background:none;border:1px solid #134e4a;color:#134e4a;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-bug" style="margin-right:.3rem;"></i>JJ1: Vuln Scan
+        </button>
+        <button onclick="igPentestReport()" style="background:none;border:1px solid #134e4a;color:#134e4a;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-crosshairs" style="margin-right:.3rem;"></i>JJ2: Pentest
+        </button>
+        <button onclick="igCloudCostOptimisation()" style="background:none;border:1px solid #134e4a;color:#134e4a;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-cloud" style="margin-right:.3rem;"></i>JJ3: Cloud Cost
+        </button>
+        <button onclick="igAccessReview()" style="background:none;border:1px solid #134e4a;color:#134e4a;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-user-lock" style="margin-right:.3rem;"></i>JJ4: Access Review
+        </button>
+        <button onclick="igSecurityControlsAudit()" style="background:none;border:1px solid #134e4a;color:#134e4a;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-tasks" style="margin-right:.3rem;"></i>JJ5: Sec Controls
+        </button>
+        <button onclick="igIso27001Tracker()" style="background:none;border:1px solid #134e4a;color:#134e4a;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-certificate" style="margin-right:.3rem;"></i>JJ6: ISO 27001
+        </button>
+      </div>
+    </div>
+
     <!-- ── Gold Certification Live Progress (W-Round) ── -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;" id="gold-cert-widget">
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
@@ -8640,6 +8665,60 @@ window.igIpPortfolio = function() {
       return '<tr><td style="font-size:.65rem;">'+t.mark+'</td><td style="font-size:.65rem;">'+t.jurisdiction+'</td><td style="color:'+col+';">'+t.status+'</td><td style="font-size:.65rem;">'+(t.renewal_due||'—')+'</td></tr>';}).join('');
     igModal('II6: IP Portfolio — v2026.33','<b>Trademarks:</b> '+s.total_trademarks+' ('+s.registered+' reg) | <b>Patents:</b> '+s.total_patents+' | <b>Copyrights:</b> '+s.total_copyrights+' | <b>Renewals 90d:</b> '+s.renewal_due_90_days+(d.alerts.length?' <span style="color:#991b1b;">⚠ '+d.alerts.length+' alerts</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f4c75;color:#fff;"><th>Mark</th><th>Jurisdiction</th><th>Status</th><th>Renewal</th></tr>'+rows+'</table>');
   }).catch(function(){igModal('II6: IP Portfolio','Session expired — log in as Super Admin')});
+};
+
+window.igVulnerabilityScan = function() {
+  fetch('/api/security/vulnerability-scan',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.vulnerabilities||[]).map(function(v){
+      var col=v.severity==='critical'?'#991b1b':v.severity==='high'?'#92400e':'#065f46';
+      return '<tr><td style="font-size:.65rem;">'+v.id+'</td><td style="font-size:.65rem;">'+v.name+'</td><td style="color:'+col+';">'+v.severity+'</td><td style="font-size:.65rem;">'+v.cvss+'</td><td style="font-size:.65rem;">'+v.asset+'</td><td style="font-size:.65rem;color:'+(v.status==='unpatched'?'#991b1b':'#065f46')+';">'+v.status+'</td></tr>';}).join('');
+    igModal('JJ1: Vulnerability Scan — v2026.34','<b>Assets:</b> '+s.total_assets+' | <b>Critical:</b> '+s.critical+' | <b>High:</b> '+s.high+' | <b>Medium:</b> '+s.medium+' | <b>SLA Breached:</b> '+s.patch_sla_breached+(d.alerts.length?' <span style="color:#991b1b;">⚠ '+d.alerts.length+' critical alerts</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#134e4a;color:#fff;"><th>CVE</th><th>Name</th><th>Severity</th><th>CVSS</th><th>Asset</th><th>Status</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('JJ1: Vulnerability Scan','Session expired — log in as Super Admin')});
+};
+
+window.igPentestReport = function() {
+  fetch('/api/security/penetration-test-report',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.findings||[]).map(function(f){
+      var col=f.severity==='critical'?'#991b1b':f.severity==='high'?'#92400e':'#065f46';
+      return '<tr><td style="font-size:.65rem;">'+f.id+'</td><td style="font-size:.65rem;">'+f.title+'</td><td style="color:'+col+';">'+f.severity+'</td><td style="font-size:.65rem;color:'+(f.status==='fixed'?'#065f46':'#92400e')+';">'+f.status+'</td></tr>';}).join('');
+    igModal('JJ2: Penetration Test Report — v2026.34','<b>Total:</b> '+s.total_findings+' | <b>Critical:</b> '+s.critical+' | <b>High:</b> '+s.high+' | <b>Fixed:</b> '+s.fixed+'/'+s.total_findings+' | <b>Remediation:</b> '+s.remediation_pct+'% | <b>Next:</b> '+s.next_pentest+(d.alerts.length?' <span style="color:#991b1b;">⚠ '+d.alerts.length+' open critical</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#134e4a;color:#fff;"><th>ID</th><th>Finding</th><th>Severity</th><th>Status</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('JJ2: Pentest Report','Session expired — log in as Super Admin')});
+};
+
+window.igCloudCostOptimisation = function() {
+  fetch('/api/infra/cloud-cost-optimisation',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.cost_breakdown||[]).map(function(svc){
+      var col=svc.waste_pct>30?'#991b1b':svc.waste_pct>15?'#92400e':'#065f46';
+      return '<tr><td style="font-size:.65rem;">'+svc.service+'</td><td style="font-size:.65rem;">Rs'+svc.monthly_cost_lakh+'L</td><td style="color:'+col+';">'+svc.waste_pct+'%</td><td style="font-size:.65rem;">Rs'+svc.savings_potential_lakh+'L</td></tr>';}).join('');
+    igModal('JJ3: Cloud Cost Optimisation — v2026.34','<b>Total Cost:</b> Rs'+s.total_monthly_cost_lakh+'L/mo | <b>Waste:</b> '+s.total_waste_pct+'% | <b>Savings:</b> Rs'+s.total_savings_potential_lakh+'L/mo | <b>Annualised:</b> Rs'+s.annualised_savings_lakh+'L'+(d.alerts.length?' <span style="color:#92400e;">⚠ '+d.alerts.length+' actions</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#134e4a;color:#fff;"><th>Service</th><th>Cost/mo</th><th>Waste%</th><th>Savings</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('JJ3: Cloud Cost','Session expired — log in as Super Admin')});
+};
+
+window.igAccessReview = function() {
+  fetch('/api/security/access-review',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.users||[]).map(function(u){
+      var col=u.risk==='critical'?'#991b1b':u.risk==='high'?'#92400e':'#065f46';
+      return '<tr><td style="font-size:.65rem;">'+u.name+'</td><td style="font-size:.65rem;">'+u.role+'</td><td style="color:'+col+';">'+u.risk+'</td><td style="font-size:.65rem;">'+(u.mfa_enabled?'✓ MFA':'✗ No MFA')+'</td><td style="font-size:.65rem;">'+u.last_login+'</td></tr>';}).join('');
+    igModal('JJ4: Access Review — v2026.34','<b>Total Users:</b> '+s.total_users+' | <b>Stale (90d):</b> '+s.stale_90d+' | <b>Shared Creds:</b> '+s.shared_credentials+' | <b>No MFA:</b> '+s.no_mfa+' | <b>Priv Escalation Risks:</b> '+s.privilege_escalation_risks+(d.alerts.length?' <span style="color:#991b1b;">⚠ '+d.alerts.length+' alerts</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#134e4a;color:#fff;"><th>User</th><th>Role</th><th>Risk</th><th>MFA</th><th>Last Login</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('JJ4: Access Review','Session expired — log in as Super Admin')});
+};
+
+window.igSecurityControlsAudit = function() {
+  fetch('/api/dpdp/security-controls-audit',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.controls||[]).map(function(ctrl){
+      var col=ctrl.status==='compliant'?'#065f46':ctrl.status==='gap'?'#991b1b':'#92400e';
+      return '<tr><td style="font-size:.65rem;">'+ctrl.id+'</td><td style="font-size:.65rem;">'+ctrl.control+'</td><td style="color:'+col+';">'+ctrl.status+'</td><td style="font-size:.65rem;">'+(ctrl.dpdp_relevant?'DPDP':'—')+'</td></tr>';}).join('');
+    igModal('JJ5: Security Controls Audit (DPDP) — v2026.34','<b>Total:</b> '+s.total_controls+' | <b>Compliant:</b> '+s.compliant+' | <b>Gaps:</b> '+s.gap+' | <b>DPDP Gaps:</b> '+s.dpdp_relevant_gaps+' | <b>Rate:</b> '+s.compliance_pct+'%'+(d.alerts.length?' <span style="color:#991b1b;">⚠ '+d.alerts.length+' DPDP gaps</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#134e4a;color:#fff;"><th>ID</th><th>Control</th><th>Status</th><th>DPDP</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('JJ5: Security Controls','Session expired — log in as Super Admin')});
+};
+
+window.igIso27001Tracker = function() {
+  fetch('/api/compliance/iso27001-tracker',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.domains||[]).map(function(dom){
+      var col=dom.completion_pct>=90?'#065f46':dom.completion_pct>=75?'#92400e':'#991b1b';
+      return '<tr><td style="font-size:.65rem;">'+dom.domain+'</td><td style="font-size:.65rem;">'+dom.total+'</td><td style="font-size:.65rem;">'+dom.implemented+'</td><td style="color:'+col+';">'+dom.completion_pct+'%</td></tr>';}).join('');
+    igModal('JJ6: ISO 27001:2022 Tracker — v2026.34','<b>Total Controls:</b> '+s.total_controls+' | <b>Implemented:</b> '+s.implemented+' | <b>In Progress:</b> '+s.in_progress+' | <b>Completion:</b> '+s.completion_pct+'% | <b>Target Cert:</b> '+d.certification_meta.target_certification+' | <b>Days Left:</b> '+s.days_to_target_cert+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#134e4a;color:#fff;"><th>Domain</th><th>Total</th><th>Done</th><th>%</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('JJ6: ISO 27001 Tracker','Session expired — log in as Super Admin')});
 };
 
 window.igSecTab = function(idx){
