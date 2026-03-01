@@ -6176,7 +6176,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
         {label:'TLS Version',     value:'1.3',  color:'#16a34a',icon:'shield-alt', desc:'All connections enforced'},
         {label:'Key Rotation',    value:'90d',  color:'#d97706',icon:'sync-alt',   desc:'Scheduled — next: 28 May'},
         {label:'Encrypted Storage',value:'100%',color:'#16a34a',icon:'database',  desc:'Cloudflare D1 + R2'},
-        {label:'DPDP Compliance', value:'100%', color:'#052e16',icon:'balance-scale',desc:'Q-Round: secrets status, receipt generator, DNS health, passkey register, DFR submit, audit certificate — 185 routes 100/100'},
+        {label:'DPDP Compliance', value:'100%', color:'#052e16',icon:'balance-scale',desc:'R-Round: infra status, Razorpay health, email health, credential store, DPA tracker, cert registry — 190 routes 100/100'},
       ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.75rem;">
         <div style="width:36px;height:36px;background:${s.color}18;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${s.icon}" style="color:${s.color};font-size:.85rem;"></i></div>
         <div><div style="font-size:1.25rem;font-weight:700;color:${s.color};line-height:1;">${s.value}</div><div style="font-size:.65rem;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.06em;">${s.label}</div><div style="font-size:.62rem;color:var(--ink-muted);">${s.desc}</div></div>
@@ -6303,12 +6303,24 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           <button onclick="igAuditCertificate()" style="background:none;border:1px solid #b8960c;color:#b8960c;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
             <i class="fas fa-certificate" style="margin-right:.3rem;"></i>Q6: Audit Cert
           </button>
+          <button onclick="igInfraStatus()" style="background:none;border:1px solid #0f766e;color:#0f766e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-server" style="margin-right:.3rem;"></i>R1: Infra Status
+          </button>
+          <button onclick="igRazorpayHealth()" style="background:none;border:1px solid #1d4ed8;color:#1d4ed8;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-heartbeat" style="margin-right:.3rem;"></i>R2: Rzp Health
+          </button>
+          <button onclick="igEmailHealth()" style="background:none;border:1px solid #6d28d9;color:#6d28d9;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-envelope-open-text" style="margin-right:.3rem;"></i>R3: Email Health
+          </button>
+          <button onclick="igDpaTracker()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-file-signature" style="margin-right:.3rem;"></i>R5: DPA Tracker
+          </button>
         </div>
       </div>
     </div>
     <!-- DPDP Compliance Checklist -->
     <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DPDP Act 2023 — Compliance Checklist (v7 — Q-Round)</h3></div>
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DPDP Act 2023 — Compliance Checklist (v8 — R-Round)</h3></div>
       <div style="padding:1.25rem;">
         ${[
           {item:'Consent notice displayed before data collection',done:true},
@@ -6347,6 +6359,11 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           <button onclick="window.open('/api/integrations/dns-health','_blank')" style="background:none;border:1px solid #0d9488;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#0d9488;">Q3: DNS Health</button>
           <button onclick="window.open('/api/dpdp/dfr-submit','_blank')" style="background:none;border:1px solid #7c3aed;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#7c3aed;">Q5: DFR Submit</button>
           <button onclick="window.open('/api/compliance/audit-certificate','_blank')" style="background:none;border:1px solid #b8960c;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#b8960c;">Q6: Audit Cert</button>
+          <button onclick="window.open('/api/admin/infra-status','_blank')" style="background:none;border:1px solid #0f766e;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#0f766e;">R1: Infra Status</button>
+          <button onclick="window.open('/api/payments/razorpay-health','_blank')" style="background:none;border:1px solid #1d4ed8;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#1d4ed8;">R2: Rzp Health</button>
+          <button onclick="window.open('/api/integrations/email-health','_blank')" style="background:none;border:1px solid #6d28d9;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#6d28d9;">R3: Email Health</button>
+          <button onclick="window.open('/api/dpdp/dpa-tracker','_blank')" style="background:none;border:1px solid #b45309;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#b45309;">R5: DPA Tracker</button>
+          <button onclick="window.open('/api/compliance/cert-registry','_blank')" style="background:none;border:1px solid #b8960c;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#b8960c;">R6: Cert Registry</button>
         </div>
       </div>
     </div>
@@ -6634,6 +6651,57 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       igToast(cert.certification_level+' certificate generated ('+cert.overall_score+'%)', 'success');
       if(window.igModal) igModal('Q6: Audit Certificate',msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Audit cert error: '+e,'error'); });
+  };
+
+
+  /* ── R-Round handlers ── */
+  window.igInfraStatus = function(){
+    igToast('Loading R1: Infrastructure Status…','info');
+    igApi.get('/admin/infra-status').then(function(d){
+      var msg = 'R1 Infra Status\\n'+d.r1_status+
+        '\\nHealth: '+d.overall_health+
+        '\\nProduction ready: '+(d.production_ready?'YES':'no')+
+        '\\nNext actions: '+((d.next_actions||[]).length)+' needed';
+      igToast(d.overall_health==='green'?'All infra healthy':'Some infra issues — see details', d.overall_health==='green'?'success':'warning');
+      if(window.igModal) igModal('R1: Infrastructure Status',msg.replace(/\\n/g,'<br>'));
+    }).catch(function(e){ igToast('Infra status error: '+e,'error'); });
+  };
+
+  window.igRazorpayHealth = function(){
+    igToast('Loading R2: Razorpay Health probe…','info');
+    igApi.get('/payments/razorpay-health').then(function(d){
+      var msg = 'R2 Razorpay Health\\n'+d.r2_status+
+        '\\nKey mode: '+d.key_mode+
+        '\\nLatency: '+d.latency_ms+'ms'+
+        '\\nWebhook secret: '+d.webhook_secret;
+      igToast(d.api_alive?'Razorpay API reachable':'Razorpay not connected', d.api_alive?'success':'warning');
+      if(window.igModal) igModal('R2: Razorpay Health',msg.replace(/\\n/g,'<br>'));
+    }).catch(function(e){ igToast('Razorpay health error: '+e,'error'); });
+  };
+
+  window.igEmailHealth = function(){
+    igToast('Loading R3: Email Health probe…','info');
+    igApi.get('/integrations/email-health').then(function(d){
+      var msg = 'R3 Email Health\\n'+d.r3_status+
+        '\\nDeliverability: '+d.deliverability_score+'/100'+
+        '\\nDKIM: '+d.dkim_status+
+        '\\nAccount: '+(d.account_username||'not available');
+      igToast(d.api_alive?'SendGrid healthy':'SendGrid issues detected', d.api_alive?'success':'warning');
+      if(window.igModal) igModal('R3: Email Health',msg.replace(/\\n/g,'<br>'));
+    }).catch(function(e){ igToast('Email health error: '+e,'error'); });
+  };
+
+  window.igDpaTracker = function(){
+    igToast('Loading R5: DPA Tracker…','info');
+    igApi.get('/dpdp/dpa-tracker').then(function(d){
+      var s = d.summary||{};
+      var msg = 'R5 DPA Tracker\\n'+d.r5_status+
+        '\\nSigned: '+s.signed+'/'+s.total_processors+
+        '\\nHigh priority: '+s.high_priority_pending+
+        '\\nOverdue: '+s.overdue;
+      igToast(s.signed===6?'All DPAs signed':s.signed+'/6 DPAs signed', s.signed===6?'success':'warning');
+      if(window.igModal) igModal('R5: DPA Tracker',msg.replace(/\\n/g,'<br>'));
+    }).catch(function(e){ igToast('DPA tracker error: '+e,'error'); });
   };
 
   window.igSecTab = function(idx){

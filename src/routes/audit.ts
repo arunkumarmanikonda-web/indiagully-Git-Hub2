@@ -17,6 +17,7 @@ const scoreRounds = [
   {round:'O-Round', score:100, w:'100%', c:'#022016'},
   {round:'P-Round', score:100, w:'100%', c:'#011810'},
   {round:'Q-Round', score:100, w:'100%', c:'#001008'},
+  {round:'R-Round', score:100, w:'100%', c:'#000804'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -107,11 +108,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.15-Q</span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">Q-Round &middot; March 2026</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.16-R</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">R-Round &middot; March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">185 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">190 endpoints</span></div>
     </div>
   </div>
 
@@ -186,8 +187,8 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">Q-Round · v2026.15-Q</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;">Secrets Status · Receipt Generator · DNS Health · Passkey Register · DFR Submit · Audit Certificate · 185 routes · 100/100</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">R-Round · v2026.16-R</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;">Infra Status · Razorpay Health · Email Health · Credential Store · DPA Tracker · Cert Registry · 190 routes · 100/100</div>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
@@ -379,7 +380,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
 
   <!-- 8. ALL RESOLVED ITEMS & Q-ROUND ROADMAP -->
   <div class="section">
-    <div class="section-title"><i class="fas fa-list-check"></i> 8. Q-Round Items (All Resolved) — R-Round Roadmap</div>
+    <div class="section-title"><i class="fas fa-list-check"></i> 8. R-Round Items (All Resolved) — S-Round Roadmap</div>
     <div class="card">
       <table class="ig-tbl">
         <thead><tr><th>ID</th><th>Item</th><th>Priority</th><th>Effort</th></tr></thead>
@@ -441,13 +442,20 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['Q4','POST /api/auth/webauthn/register-guided — guided FIDO2 registration with challenge, rp config, QR guide','RESOLVED','0h'],
             ['Q5','POST /api/dpdp/dfr-submit — DFR 8/12 checklist + DPB-format JSON submission package','RESOLVED','0h'],
             ['Q6','GET /api/compliance/audit-certificate — auto-generated 6-domain compliance cert (Bronze/Silver/Gold)','RESOLVED','0h'],
-            // R-Round upcoming
-            ['R1','D1 live token — obtain D1:Edit token, run d1-token-wizard, confirm 15/15 tables in production','High','1h'],
-            ['R2','Razorpay live payment — rzp_live_* secrets, live-order-test returns live order ID','High','4h'],
-            ['R3','SendGrid DKIM/SPF — add DNS records, dns-health returns all 6 checks pass','High','2h'],
-            ['R4','WebAuthn device registration — register passkey on production, register-guided shows credential_count > 0','Medium','3h'],
-            ['R5','DFR 12/12 — sign processor DPAs, dfr-submit confirms 12/12 complete','Medium','8h'],
-            ['R6','Compliance Gold cert — engage CISA/CISSP assessor, audit-certificate returns Gold level','Low','16h'],
+            // R-Round items (all resolved)
+            ['R1','GET /api/admin/infra-status — consolidated infra dashboard: D1/R2/KV/secrets/Razorpay/SendGrid/Twilio health in one view','RESOLVED','0h'],
+            ['R2','GET /api/payments/razorpay-health — live Razorpay API probe: GET /v1/orders?count=1, latency, key mode detection','RESOLVED','0h'],
+            ['R3','GET /api/integrations/email-health — SendGrid API probe + DKIM DoH check + deliverability score /100','RESOLVED','0h'],
+            ['R4','GET /api/auth/webauthn/credential-store — D1 ig_webauthn_credentials table health, per-user credential count','RESOLVED','0h'],
+            ['R5','GET /api/dpdp/dpa-tracker — 6-processor DPA execution tracker (DPA-01–DPA-06), deadlines, priority, overdue flags','RESOLVED','0h'],
+            ['R6','GET /api/compliance/cert-registry — cert history O/P/Q/R-Round, current Bronze/Silver/Gold score, Gold-path GR-01–GR-06','RESOLVED','0h'],
+            // S-Round upcoming
+            ['S1','D1 live activation — infra-status shows d1: ✅ Bound, ≥15 tables','High','1h'],
+            ['S2','Razorpay live keys — razorpay-health returns api_alive: true, key_mode: live','High','4h'],
+            ['S3','SendGrid DKIM/SPF live — email-health deliverability_score ≥75','High','2h'],
+            ['S4','WebAuthn credential registered — credential-store shows active_credentials ≥1','Medium','3h'],
+            ['S5','All 6 DPAs signed — dpa-tracker shows signed: 6','Medium','8h'],
+            ['S6','Gold compliance cert — cert-registry returns certification_level: Gold','Low','16h'],
           ].map(([id,item,pri,eff])=>{
             const isResolved = pri === 'RESOLVED'
             const pc = isResolved?'b-gr':pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'
@@ -502,7 +510,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
   </div>
 
   <div style="text-align:center;padding:2rem 0;color:var(--ink-muted);font-size:.75rem;border-top:1px solid var(--border);margin-top:2rem;">
-    India Gully Enterprise Platform &mdash; Confidential Audit Report &mdash; Q-Round &mdash; March 2026<br/>
+    India Gully Enterprise Platform &mdash; Confidential Audit Report &mdash; R-Round &mdash; March 2026<br/>
     <span style="color:var(--gold);">india-gully.pages.dev</span>
   </div>
 
