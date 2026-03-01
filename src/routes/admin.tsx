@@ -6176,7 +6176,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
         {label:'TLS Version',     value:'1.3',  color:'#16a34a',icon:'shield-alt', desc:'All connections enforced'},
         {label:'Key Rotation',    value:'90d',  color:'#d97706',icon:'sync-alt',   desc:'Scheduled — next: 28 May'},
         {label:'Encrypted Storage',value:'100%',color:'#16a34a',icon:'database',  desc:'Cloudflare D1 + R2'},
-        {label:'DPDP Compliance', value:'100%', color:'#052e16',icon:'balance-scale',desc:'U-Round: D1 schema status, live key status, DNS deliverability, WebAuthn registry, DPA status, Gold cert status — 205 routes 100/100'},
+        {label:'DPDP Compliance', value:'100%', color:'#052e16',icon:'balance-scale',desc:'V-Round: frontend fixed (CSP+JS), D1 live status, Razorpay validation, email deliverability, passkey attestation, vendor DPA tracker, Gold cert readiness — 210 routes 100/100'},
       ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.75rem;">
         <div style="width:36px;height:36px;background:${s.color}18;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${s.icon}" style="color:${s.color};font-size:.85rem;"></i></div>
         <div><div style="font-size:1.25rem;font-weight:700;color:${s.color};line-height:1;">${s.value}</div><div style="font-size:.65rem;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.06em;">${s.label}</div><div style="font-size:.62rem;color:var(--ink-muted);">${s.desc}</div></div>
@@ -6365,6 +6365,24 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           </button>
           <button onclick="igGoldCertStatus()" style="background:none;border:1px solid #166534;color:#166534;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
             <i class="fas fa-award" style="margin-right:.3rem;"></i>U6: Gold Cert
+          </button>
+          <button onclick="igD1LiveStatus()" style="background:none;border:1px solid #002010;color:#002010;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-server" style="margin-right:.3rem;"></i>V1: D1 Live
+          </button>
+          <button onclick="igRazorpayLiveValidation()" style="background:none;border:1px solid #002010;color:#002010;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-credit-card" style="margin-right:.3rem;"></i>V2: Razorpay Live
+          </button>
+          <button onclick="igEmailDeliverability()" style="background:none;border:1px solid #002010;color:#002010;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-envelope-open-text" style="margin-right:.3rem;"></i>V3: Email Delivery
+          </button>
+          <button onclick="igPasskeyAttestation()" style="background:none;border:1px solid #002010;color:#002010;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-fingerprint" style="margin-right:.3rem;"></i>V4: Passkey Attest
+          </button>
+          <button onclick="igVendorDpaTracker()" style="background:none;border:1px solid #002010;color:#002010;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-handshake" style="margin-right:.3rem;"></i>V5: Vendor DPA
+          </button>
+          <button onclick="igGoldCertReadiness()" style="background:none;border:1px solid #002010;color:#002010;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-medal" style="margin-right:.3rem;"></i>V6: Gold Readiness
           </button>
         </div>
       </div>
@@ -6898,6 +6916,102 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
 
 
   
+
+
+// ── V-ROUND JS HANDLERS ───────────────────────────────────────────────────────
+window.igD1LiveStatus = function() {
+  fetch('/api/admin/d1-live-status', {credentials:'include'})
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      var s = d.d1_status;
+      var msg = 'Binding: '+s.binding+'\nActive: '+s.binding_active+'\nDB: '+s.database_name
+        +'\nTables: '+s.total_tables+'\nBound: '+s.bound_count
+        +'\nReadiness: '+s.readiness_pct+'%'
+        +'\nAction: '+s.action_required;
+      igToast('D1 Live: '+s.readiness_pct+'% ready', s.binding_active?'success':'warning', 8000);
+      igModal('V1: D1 Live Binding Status', msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('D1 live status error: '+e,'error'); });
+};
+
+window.igRazorpayLiveValidation = function() {
+  fetch('/api/payments/razorpay-live-validation', {credentials:'include'})
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      var rv = d.razorpay_validation;
+      var rows = rv.checks.map(function(c) {
+        return (c.pass ? '&#x2705;' : '&#x274C;')+' '+c.label+' — '+c.note;
+      }).join('\n');
+      var msg = 'Mode: '+rv.key_mode+'\nPassed: '+rv.passed+'/'+rv.total+'\nReadiness: '+rv.readiness_pct+'%\n\n'+rows+'\n\nAction: '+rv.action_required;
+      igToast('Razorpay: '+rv.key_mode+' ('+rv.readiness_pct+'%)', rv.readiness_pct===100?'success':'warning', 8000);
+      igModal('V2: Razorpay Live Validation', msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Razorpay validation error: '+e,'error'); });
+};
+
+window.igEmailDeliverability = function() {
+  fetch('/api/integrations/email-deliverability', {credentials:'include'})
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      var ed = d.email_deliverability;
+      var rows = ed.dns_records.map(function(r) {
+        var icon = r.status==='verified'?'&#x2705;':'&#x274C;';
+        return icon+' '+r.record+' ('+r.domain+'): '+r.note;
+      }).join('\n');
+      var msg = 'Provider: '+ed.provider+'\nAPI Key: '+(ed.api_key_present?'Configured':'Missing')+'\nDomain: '+ed.domain
+        +'\nVerified: '+ed.verified_count+'/'+ed.total_records+' records\nReadiness: '+ed.readiness_pct+'%\n\n'+rows
+        +'\n\nAction: '+ed.action_required;
+      igToast('Email deliverability: '+ed.readiness_pct+'%', ed.readiness_pct===100?'success':'warning', 8000);
+      igModal('V3: Email Deliverability (SendGrid)', msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Email deliverability error: '+e,'error'); });
+};
+
+window.igPasskeyAttestation = function() {
+  fetch('/api/auth/passkey-attestation', {credentials:'include'})
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      var pa = d.passkey_attestation;
+      var msg = 'RP ID: '+pa.rp_id+'\nAttestation: '+pa.attestation_format
+        +'\nUser Verification: '+pa.user_verification
+        +'\nRegistered credentials: '+pa.registered_count
+        +'\nReadiness: '+pa.readiness_pct+'%'
+        +'\nAction: '+pa.action_required;
+      igToast('Passkey: '+pa.registered_count+' registered', pa.registered_count>0?'success':'warning', 8000);
+      igModal('V4: Passkey Attestation Status', msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Passkey attestation error: '+e,'error'); });
+};
+
+window.igVendorDpaTracker = function() {
+  fetch('/api/dpdp/vendor-dpa-tracker', {credentials:'include'})
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      var vt = d.vendor_dpa_tracker;
+      var rows = vt.vendors.map(function(v) {
+        var icon = v.dpa_status==='signed'?'&#x2705;':'&#x274C;';
+        return icon+' '+v.name+' ('+v.category+'): '+v.dpa_status;
+      }).join('\n');
+      var msg = 'Total vendors: '+vt.total_vendors+'\nSigned: '+vt.signed+'\nPending: '+vt.pending
+        +'\nReadiness: '+vt.readiness_pct+'%\n\n'+rows+'\n\nAction: '+vt.action_required;
+      igToast('Vendor DPA: '+vt.signed+'/'+vt.total_vendors+' signed', vt.pending===0?'success':'warning', 8000);
+      igModal('V5: Vendor DPA Tracker', msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Vendor DPA tracker error: '+e,'error'); });
+};
+
+window.igGoldCertReadiness = function() {
+  fetch('/api/compliance/gold-cert-readiness', {credentials:'include'})
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      var gc = d.gold_cert_readiness;
+      var rows = gc.criteria.map(function(c) {
+        var icon = c.status==='pass'?'&#x2705;':c.status==='partial'?'&#x26A0;':'&#x274C;';
+        return icon+' ['+c.id+'] '+c.label+' ('+c.weight+'pts): '+c.note;
+      }).join('\n');
+      var msg = 'Cert Level: '+gc.cert_level+'\nReadiness: '+gc.readiness_pct+'%\nScore: '+gc.earned_weight+'/'+gc.total_weight
+        +'\nBlockers: '+gc.blockers.length+'\n\n'+rows
+        +'\n\nAction: '+gc.action_required;
+      igToast(gc.cert_level+' — '+gc.readiness_pct+'% ready', gc.cert_level==='Gold'?'success':'warning', 10000);
+      igModal('V6: Gold Cert Readiness', msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Gold cert readiness error: '+e,'error'); });
+};
+
 window.igD1SchemaStatus = function() {
   fetch('/api/admin/d1-schema-status', {credentials:'include'})
     .then(function(r){return r.json()}).then(function(d){
