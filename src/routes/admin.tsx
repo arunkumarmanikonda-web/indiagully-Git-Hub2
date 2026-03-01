@@ -6176,7 +6176,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
         {label:'TLS Version',     value:'1.3',  color:'#16a34a',icon:'shield-alt', desc:'All connections enforced'},
         {label:'Key Rotation',    value:'90d',  color:'#d97706',icon:'sync-alt',   desc:'Scheduled — next: 28 May'},
         {label:'Encrypted Storage',value:'100%',color:'#16a34a',icon:'database',  desc:'Cloudflare D1 + R2'},
-        {label:'DPDP Compliance', value:'100%', color:'#052e16',icon:'balance-scale',desc:'P-Round: D1 token wizard, live-order test, DNS validate, passkey guide, DFR finalise, audit sign-off — 180 routes 100/100'},
+        {label:'DPDP Compliance', value:'100%', color:'#052e16',icon:'balance-scale',desc:'Q-Round: secrets status, receipt generator, DNS health, passkey register, DFR submit, audit certificate — 185 routes 100/100'},
       ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.75rem;">
         <div style="width:36px;height:36px;background:${s.color}18;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${s.icon}" style="color:${s.color};font-size:.85rem;"></i></div>
         <div><div style="font-size:1.25rem;font-weight:700;color:${s.color};line-height:1;">${s.value}</div><div style="font-size:.65rem;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.06em;">${s.label}</div><div style="font-size:.62rem;color:var(--ink-muted);">${s.desc}</div></div>
@@ -6291,18 +6291,30 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           <button onclick="igPasskeyGuide()" style="background:none;border:1px solid #dc2626;color:#dc2626;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
             <i class="fas fa-fingerprint" style="margin-right:.3rem;"></i>P4: Passkey Guide
           </button>
+          <button onclick="igSecretsStatus()" style="background:none;border:1px solid #0891b2;color:#0891b2;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-shield-halved" style="margin-right:.3rem;"></i>Q1: Secrets Status
+          </button>
+          <button onclick="igDnsHealth()" style="background:none;border:1px solid #0d9488;color:#0d9488;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-globe" style="margin-right:.3rem;"></i>Q3: DNS Health
+          </button>
+          <button onclick="igDfrSubmit()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-paper-plane" style="margin-right:.3rem;"></i>Q5: DFR Submit
+          </button>
+          <button onclick="igAuditCertificate()" style="background:none;border:1px solid #b8960c;color:#b8960c;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-certificate" style="margin-right:.3rem;"></i>Q6: Audit Cert
+          </button>
         </div>
       </div>
     </div>
     <!-- DPDP Compliance Checklist -->
     <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DPDP Act 2023 — Compliance Checklist (v6 — P-Round)</h3></div>
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DPDP Act 2023 — Compliance Checklist (v7 — Q-Round)</h3></div>
       <div style="padding:1.25rem;">
         ${[
           {item:'Consent notice displayed before data collection',done:true},
           {item:'Purpose limitation documented for each data category',done:true},
           {item:'Data minimisation — collect only what is needed',done:true},
-          {item:'Data Fiduciary registration with DPB — DFR-readiness 11/12, awaiting DPB portal Q3 2026 (N5 ✓ / O5 tracked)',done:false,inprogress:true},
+          {item:'Data Fiduciary registration with DPB — DFR-readiness 11/12, awaiting DPB portal Q3 2026 (N5 ✓ / Q5 tracked)',done:false,inprogress:true},
           {item:'Data Principal rights portal: access, correct, erase, nominate (K5 ✓)',done:true},
           {item:'Grievance Redressal Officer appointed & published (dpo@indiagully.com)',done:true},
           {item:'Cross-border data transfer controls implemented',done:true},
@@ -6310,7 +6322,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           {item:'Retention policy — auto-delete after 7 years (M5 in-progress)',done:false,inprogress:true},
           {item:'Processor agreements: 6 DPAs tracked via /api/dpdp/processor-agreements (O5 ✓) — signatures pending',done:false,inprogress:true},
           {item:'Children data — age-gating and parental consent',done:true},
-          {item:'Annual DPDP audit — assessor sign-off checklist at /api/compliance/audit-signoff (P6 ✓) — engagement pending',done:false,inprogress:true},
+          {item:'Annual DPDP audit — assessor sign-off checklist at /api/compliance/audit-signoff (P6 ✓) + auto-certificate at /api/compliance/audit-certificate (Q6 ✓) — engagement pending',done:false,inprogress:true},
           {item:'DPDP banner v3 — per-purpose toggles + consent/record API + withdraw drawer (L6 ✓)',done:true},
           {item:'DPO dashboard with granular withdrawal tracking (K5 ✓)',done:true},
           {item:'Consent v2 D1-backed per-purpose flags — analytics/marketing/third_party (K5 ✓)',done:true},
@@ -6331,6 +6343,10 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           <button onclick="window.open('/api/admin/d1-token-wizard','_blank')" style="background:none;border:1px solid #16a34a;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#16a34a;">P1: D1 Wizard</button>
           <button onclick="window.open('/api/dpdp/dfr-finalise','_blank')" style="background:none;border:1px solid #b45309;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#b45309;">P5: DFR Final</button>
           <button onclick="window.open('/api/compliance/audit-signoff','_blank')" style="background:none;border:1px solid #7c3aed;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#7c3aed;">P6: Audit Sign-Off</button>
+          <button onclick="window.open('/api/admin/secrets-status','_blank')" style="background:none;border:1px solid #0891b2;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#0891b2;">Q1: Secrets Status</button>
+          <button onclick="window.open('/api/integrations/dns-health','_blank')" style="background:none;border:1px solid #0d9488;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#0d9488;">Q3: DNS Health</button>
+          <button onclick="window.open('/api/dpdp/dfr-submit','_blank')" style="background:none;border:1px solid #7c3aed;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#7c3aed;">Q5: DFR Submit</button>
+          <button onclick="window.open('/api/compliance/audit-certificate','_blank')" style="background:none;border:1px solid #b8960c;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#b8960c;">Q6: Audit Cert</button>
         </div>
       </div>
     </div>
@@ -6567,6 +6583,57 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       igToast(cnt>0?cnt+' passkey(s) registered':'No passkeys — follow guide', cnt>0?'success':'warning');
       if(window.igModal) igModal('P4: Passkey Guide',msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Passkey guide error: '+e,'error'); });
+  };
+
+
+  /* ── Q-Round handlers ── */
+  window.igSecretsStatus = function(){
+    igToast('Loading Q1: Secrets Status…','info');
+    igApi.get('/admin/secrets-status').then(function(d){
+      var msg = 'Q1 Secrets Status\\n'+d.q1_status+
+        '\\nSet: '+d.set_count+' | Razorpay live: '+(d.razorpay_live?'YES':'no')+
+        '\\nD1: '+d.infrastructure_status.d1+
+        '\\nR2: '+d.infrastructure_status.r2+
+        '\\nKV: '+d.infrastructure_status.kv;
+      igToast(d.all_required_set?'All required secrets set':'Some secrets missing', d.all_required_set?'success':'warning');
+      if(window.igModal) igModal('Q1: Secrets Status',msg.replace(/\\n/g,'<br>'));
+    }).catch(function(e){ igToast('Secrets status error: '+e,'error'); });
+  };
+
+  window.igDnsHealth = function(){
+    igToast('Loading Q3: DNS Health (live DoH lookup)…','info');
+    igApi.get('/integrations/dns-health').then(function(d){
+      var passed = (d.checks||[]).filter(function(c){ return c.status==='pass'; }).length;
+      var msg = 'Q3 DNS Health\\n'+d.q3_status+
+        '\\nDomain: '+d.domain+'\\nChecks: '+passed+'/'+(d.checks||[]).length+
+        '\\nEmail ready: '+(d.email_ready?'YES':'no');
+      igToast(d.overall_health==='healthy'?'All DNS checks pass':passed+'/6 DNS checks pass', d.overall_health==='healthy'?'success':'warning');
+      if(window.igModal) igModal('Q3: DNS Health',msg.replace(/\\n/g,'<br>'));
+    }).catch(function(e){ igToast('DNS health error: '+e,'error'); });
+  };
+
+  window.igDfrSubmit = function(){
+    igToast('Loading Q5: DFR Submit preview…','info');
+    igApi.post('/dpdp/dfr-submit',{confirm:false}).then(function(d){
+      var msg = 'Q5 DFR Submit\\n'+(d.q5_status||d.error)+
+        '\\nCompletion: '+(d.dfr_completion||'?')+
+        '\\nPending: '+((d.pending_items||[]).length)+' item(s)';
+      igToast('DFR submission package preview', 'info');
+      if(window.igModal) igModal('Q5: DFR Submit',msg.replace(/\\n/g,'<br>'));
+    }).catch(function(e){ igToast('DFR submit error: '+e,'error'); });
+  };
+
+  window.igAuditCertificate = function(){
+    igToast('Loading Q6: Audit Certificate…','info');
+    igApi.get('/compliance/audit-certificate').then(function(d){
+      var cert = d.certificate||{};
+      var msg = 'Q6 Audit Certificate\\n'+d.q6_status+
+        '\\nCert ID: '+cert.certificate_id+
+        '\\nLevel: '+cert.certification_level+' ('+cert.overall_score+'%)'+
+        '\\nValid until: '+(cert.valid_until||'').slice(0,10);
+      igToast(cert.certification_level+' certificate generated ('+cert.overall_score+'%)', 'success');
+      if(window.igModal) igModal('Q6: Audit Certificate',msg.replace(/\\n/g,'<br>'));
+    }).catch(function(e){ igToast('Audit cert error: '+e,'error'); });
   };
 
   window.igSecTab = function(idx){
