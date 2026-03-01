@@ -69,12 +69,27 @@
   // ── Secrets (set via: wrangler pages secret put SECRET_NAME) ─────────────────
   // These are NEVER in wrangler.jsonc — use Cloudflare dashboard or CLI:
   //
-  //   wrangler pages secret put RAZORPAY_KEY_ID      --project-name india-gully
-  //   wrangler pages secret put RAZORPAY_KEY_SECRET  --project-name india-gully
-  //   wrangler pages secret put SENDGRID_API_KEY     --project-name india-gully
-  //   wrangler pages secret put DOCUSIGN_API_KEY     --project-name india-gully
-  //   wrangler pages secret put DOCUSIGN_ACCOUNT_ID  --project-name india-gully
-  //   wrangler pages secret put GST_GSP_API_KEY      --project-name india-gully
-  //   wrangler pages secret put JWT_SECRET           --project-name india-gully
-  //   wrangler pages secret put TOTP_ENCRYPT_KEY     --project-name india-gully
+  // Payment (Razorpay):
+  //   wrangler pages secret put RAZORPAY_KEY_ID            --project-name india-gully
+  //   wrangler pages secret put RAZORPAY_KEY_SECRET        --project-name india-gully
+  //   wrangler pages secret put RAZORPAY_WEBHOOK_SECRET    --project-name india-gully  ← J2 NEW
+  //
+  // Email (SendGrid):
+  //   wrangler pages secret put SENDGRID_API_KEY           --project-name india-gully
+  //
+  // SMS (Twilio):
+  //   wrangler pages secret put TWILIO_ACCOUNT_SID         --project-name india-gully  ← J2 NEW
+  //   wrangler pages secret put TWILIO_AUTH_TOKEN          --project-name india-gully  ← J2 NEW
+  //   wrangler pages secret put TWILIO_FROM_NUMBER         --project-name india-gully  ← J2 NEW
+  //
+  // Documents (DocuSign):
+  //   wrangler pages secret put DOCUSIGN_API_KEY           --project-name india-gully
+  //   wrangler pages secret put DOCUSIGN_ACCOUNT_ID        --project-name india-gully
+  //
+  // GST:
+  //   wrangler pages secret put GST_GSP_API_KEY            --project-name india-gully
+  //
+  // Platform:
+  //   wrangler pages secret put JWT_SECRET                 --project-name india-gully
+  //   wrangler pages secret put TOTP_ENCRYPT_KEY           --project-name india-gully
 }

@@ -3,7 +3,64 @@ import { layout } from '../lib/layout'
 
 const app = new Hono()
 
+// J5: Updated ARTICLES array with new 2025–2026 case studies
 const ARTICLES = [
+  // ── J5 NEW: 2025–2026 case studies ────────────────────────────────────────
+  {
+    id: 'india-realty-2026-outlook',
+    category: 'Real Estate',
+    date: 'February 2026',
+    title: 'India Real Estate 2026: Commercial & Hospitality Convergence',
+    excerpt: 'As hybrid work reshapes demand for Grade-A office space, India\'s commercial real estate is converging with hospitality-grade amenities. We examine the structural drivers, market dynamics across 8 key cities, and the investment thesis for developers navigating this new paradigm.',
+    tags: ['Real Estate', 'Commercial', 'Hospitality', '2026'],
+    readTime: '10 min read',
+  },
+  {
+    id: 'entertainment-zone-regulatory-india',
+    category: 'Entertainment',
+    date: 'January 2026',
+    title: 'Navigating the Entertainment Zone Regulatory Landscape in India',
+    excerpt: 'India\'s entertainment real estate sector sits at the intersection of multiple regulatory frameworks — town planning, fire safety, excise and consumer protection laws. We map the regulatory landscape across key states and outline a compliance-first development strategy.',
+    tags: ['Entertainment', 'Regulatory', 'Real Estate', 'Compliance'],
+    readTime: '8 min read',
+  },
+  {
+    id: 'horeca-tier2-supply-chain',
+    category: 'HORECA',
+    date: 'December 2025',
+    title: 'Building Resilient HORECA Supply Chains in Tier 2 India',
+    excerpt: 'The rapid expansion of branded hospitality into Tier 2 and Tier 3 cities is exposing critical gaps in HORECA supply chains. We analyse the challenges, from vendor fragmentation to cold-chain infrastructure, and present a framework for building resilient, scalable procurement operations.',
+    tags: ['HORECA', 'Supply Chain', 'Tier 2', 'Operations'],
+    readTime: '7 min read',
+  },
+  {
+    id: 'ibc-distressed-hospitality-2025',
+    category: 'Debt & Special Situations',
+    date: 'November 2025',
+    title: 'IBC 2025 Update: Hospitality Asset Resolution Trends',
+    excerpt: 'The 2025 IBC amendment and NCLT capacity expansion have accelerated resolution timelines for distressed hospitality assets. We track 18 months of case data, identify emerging buyer profiles, and map the post-resolution value-creation playbook for strategic acquirers.',
+    tags: ['IBC', 'NCLT', 'Distressed Assets', 'Hospitality', 'Debt'],
+    readTime: '12 min read',
+  },
+  {
+    id: 'mall-mixed-use-integration',
+    category: 'Retail',
+    date: 'October 2025',
+    title: 'The Mall-Hotel-Office Trinity: Mixed-Use Integration in Indian Retail Real Estate',
+    excerpt: 'India\'s leading mall developers are pivoting from pure retail to mixed-use destinations. We study five live projects across NCR, Mumbai and Bengaluru — examining lease structure innovations, anchor tenant strategies, and financial models that make mixed-use work.',
+    tags: ['Retail', 'Mixed-Use', 'Real Estate', 'Mall', 'Office'],
+    readTime: '9 min read',
+  },
+  {
+    id: 'greenfield-midscale-hotels',
+    category: 'Hospitality',
+    date: 'September 2025',
+    title: 'The Greenfield Mid-Scale Hotel Opportunity: Project Economics for 2025–27',
+    excerpt: 'Mid-scale branded hotel development in India offers compelling risk-adjusted returns. We model the economics for 80-key and 120-key projects across 12 Tier 2 cities, covering land costs, construction timelines, brand fee structures and stabilised RevPAR projections.',
+    tags: ['Hospitality', 'Greenfield', 'Hotel', 'Investment', 'Tier 2'],
+    readTime: '11 min read',
+  },
+  // ── Original 2024 articles ─────────────────────────────────────────────────
   {
     id: 'india-hospitality-2024',
     category: 'Hospitality',

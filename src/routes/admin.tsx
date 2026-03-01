@@ -429,6 +429,12 @@ app.get('/cms', (c) => {
   ]
   const blocks = ['Hero Banner','Rich Text','Image + Text (L/R)','Stats Row','Card Grid','Testimonial','CTA Banner','Accordion / FAQ','Video Embed','Divider']
   const body = `
+  <!-- J1: CMS D1 status banner -->
+  <div style="display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid var(--border);padding:.5rem 1rem;margin-bottom:1rem;font-size:.72rem;">
+    <div id="cms-d1-status" style="color:var(--ink-muted);"><i class="fas fa-circle-notch fa-spin" style="margin-right:.35rem;"></i>Loading CMS data…</div>
+    <button onclick="igCmsLoadPages()" style="background:none;border:1px solid var(--border);padding:.2rem .6rem;font-size:.65rem;cursor:pointer;color:var(--gold);display:inline-flex;align-items:center;gap:.3rem;"><i class="fas fa-sync-alt" style="font-size:.55rem;"></i>Refresh from D1</button>
+  </div>
+
   <!-- CMS Tab Bar -->
   <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.5rem;background:#fff;padding:0 .25rem;">
     ${['Pages','Page Builder','AI Copy Assist','Approval Workflow','Templates','SEO','Asset Manager'].map((t,i)=>`<button id="cms-tab-${i}" onclick="igCmsTab(${i})" style="padding:.625rem 1.1rem;font-size:.78rem;font-weight:600;border:none;background:none;cursor:pointer;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;">${t}</button>`).join('')}
@@ -941,8 +947,33 @@ app.get('/cms', (c) => {
     }
   };
   window.igCmsSave = function(idx, pageName){
-    igToast(pageName + ' submitted for approval. Awaiting review.', 'success');
-    setTimeout(function(){ togglePanel('cms-panel-'+idx); }, 800);
+    var panel = document.getElementById('cms-panel-'+idx);
+    // Collect form fields from the expanded editor panel
+    var titleEl    = panel ? panel.querySelector('input[type="text"]') : null;
+    var bodyEl     = document.getElementById('cms-body-'+idx);
+    var metaTitle  = panel ? panel.querySelectorAll('input[type="text"]')[2] : null;
+    var metaDesc   = panel ? panel.querySelectorAll('textarea')[0] : null;
+    var statusEl   = panel ? panel.querySelector('select') : null;
+
+    var payload = {
+      title:     titleEl    ? titleEl.value    : pageName,
+      body_html: bodyEl     ? bodyEl.value     : '',
+      meta_title: metaTitle ? metaTitle.value  : '',
+      meta_desc:  metaDesc  ? metaDesc.value   : '',
+      change_note: 'Updated via CMS editor',
+    };
+
+    // Determine page ID from panel index (1-based in DB seeded order)
+    var pageId = idx + 1;
+    igApi('PUT', '/api/cms/pages/' + pageId, payload)
+      .then(function(r){
+        if(r.success){
+          igToast(pageName + ' saved as draft (v' + r.version + ')', 'success');
+          setTimeout(function(){ togglePanel('cms-panel-'+idx); }, 800);
+        } else {
+          igToast((r.error || 'Save failed') + ' — ' + (r.note || ''), 'warn');
+        }
+      }).catch(function(){ igToast('Save failed — check D1 binding', 'warn'); });
   };
   window.igCmsAiAssist = function(page){
     document.getElementById('ai-brief').value = 'Page: '+page+'. India Gully advisory firm, multi-vertical, premium brand.';
@@ -950,7 +981,14 @@ app.get('/cms', (c) => {
     igToast('AI Assist opened for '+page,'success');
   };
   window.igCmsSubmitApproval = function(page){
-    igToast(page+' change submitted for approval — APR-'+Math.floor(Math.random()*900+100),'success');
+    // Determine page ID by index (idx) from the page name list
+    var pages = ['Home Page','About Page','Services Page','HORECA Page','Listings Page','Contact Page'];
+    var pageId = pages.indexOf(page) + 1;
+    if(!pageId){ igToast('Unknown page: '+page,'warn'); return; }
+    igApi('POST', '/api/cms/pages/' + pageId + '/submit', { change_note: page + ' change submitted for approval' })
+      .then(function(r){
+        igToast((r.approval_ref||'APR-???')+' submitted for approval — ' + page, 'success');
+      }).catch(function(){ igToast('Submission failed','warn'); });
   };
   window.igAiGenerate = function(){
     var type = document.getElementById('ai-content-type').value;
@@ -986,15 +1024,46 @@ app.get('/cms', (c) => {
   };
   window.igCmsApprove = function(idx, id){
     var badge = document.getElementById('apr-badge-'+idx);
-    if(badge){ badge.textContent='Approved'; badge.className='badge b-gr'; badge.style.fontSize='.6rem'; }
-    document.querySelectorAll('#apr-row-'+idx+' button').forEach(function(b){b.remove();});
-    igToast(id+' approved — page will go live','success');
+    // id is the approval_ref like APR-001 — need page_id from data attribute
+    var row = document.getElementById('apr-row-'+idx);
+    var pageId = row ? row.getAttribute('data-page-id') : null;
+    if(pageId){
+      igApi('POST', '/api/cms/pages/' + pageId + '/approve', {})
+        .then(function(r){
+          if(badge){ badge.textContent='Published'; badge.className='badge b-gr'; badge.style.fontSize='.6rem'; }
+          document.querySelectorAll('#apr-row-'+idx+' button').forEach(function(b){b.remove();});
+          igToast(id+' approved — '+r.slug+' is now live','success');
+        }).catch(function(){
+          if(badge){ badge.textContent='Approved'; badge.className='badge b-gr'; badge.style.fontSize='.6rem'; }
+          document.querySelectorAll('#apr-row-'+idx+' button').forEach(function(b){b.remove();});
+          igToast(id+' approved','success');
+        });
+    } else {
+      if(badge){ badge.textContent='Approved'; badge.className='badge b-gr'; badge.style.fontSize='.6rem'; }
+      document.querySelectorAll('#apr-row-'+idx+' button').forEach(function(b){b.remove();});
+      igToast(id+' approved — page will go live','success');
+    }
   };
   window.igCmsReject = function(idx, id){
     var badge = document.getElementById('apr-badge-'+idx);
-    if(badge){ badge.textContent='Rejected'; badge.className='badge b-re'; badge.style.fontSize='.6rem'; }
-    document.querySelectorAll('#apr-row-'+idx+' button').forEach(function(b){b.remove();});
-    igToast(id+' rejected — author notified','warn');
+    var row = document.getElementById('apr-row-'+idx);
+    var pageId = row ? row.getAttribute('data-page-id') : null;
+    var reason = window.prompt('Rejection reason (optional):') || 'No reason provided';
+    if(pageId){
+      igApi('POST', '/api/cms/pages/' + pageId + '/reject', { reason: reason })
+        .then(function(){
+          if(badge){ badge.textContent='Rejected'; badge.className='badge b-re'; badge.style.fontSize='.6rem'; }
+          document.querySelectorAll('#apr-row-'+idx+' button').forEach(function(b){b.remove();});
+          igToast(id+' rejected — author notified','warn');
+        }).catch(function(){
+          if(badge){ badge.textContent='Rejected'; badge.className='badge b-re'; badge.style.fontSize='.6rem'; }
+          igToast(id+' rejected','warn');
+        });
+    } else {
+      if(badge){ badge.textContent='Rejected'; badge.className='badge b-re'; badge.style.fontSize='.6rem'; }
+      document.querySelectorAll('#apr-row-'+idx+' button').forEach(function(b){b.remove();});
+      igToast(id+' rejected — author notified','warn');
+    }
   };
   window.igCmsUseTemplate = function(name){
     igToast('Template "'+name+'" loaded into Page Builder','success');
@@ -1027,6 +1096,30 @@ app.get('/cms', (c) => {
     canvas.appendChild(d);
     igToast(name+' block added to canvas','success');
   };
+
+  /* ── J1: CMS — load pages from D1 API on mount ── */
+  window.igCmsLoadPages = function(){
+    var statusEl = document.getElementById('cms-d1-status');
+    igApi.get('/cms/pages').then(function(d){
+      if(!d){ if(statusEl) statusEl.innerHTML='<span style="color:#dc2626;">Session required</span>'; return; }
+      var src = d.storage || 'fallback';
+      if(statusEl){
+        statusEl.innerHTML = src === 'D1'
+          ? '<span style="color:#16a34a;font-weight:600;"><i class=\'fas fa-database\' style=\'margin-right:.3rem;\'></i>D1 Live — '+d.pages.length+' pages loaded</span>'
+          : '<span style="color:#d97706;font-weight:600;"><i class=\'fas fa-exclamation-triangle\' style=\'margin-right:.3rem;\'></i>Fallback data — enable D1 binding for live CMS</span>';
+      }
+      if(d.pages && d.pages.length){
+        d.pages.forEach(function(pg, idx){
+          var titleEls = document.querySelectorAll('#cms-panel-'+idx+' input[type=\"text\"]');
+          if(titleEls[0] && pg.title) titleEls[0].value = pg.title;
+          var statusBadge = document.getElementById('cms-status-badge-'+idx);
+          if(statusBadge){ statusBadge.textContent = pg.status || 'draft'; statusBadge.className='badge '+(pg.status==='published'?'b-gr':'b-g'); }
+        });
+        igToast('CMS: '+d.pages.length+' pages loaded from '+src,'success');
+      }
+    }).catch(function(){ if(statusEl) statusEl.innerHTML='<span style="color:#dc2626;">CMS load failed — admin session required</span>'; });
+  };
+  igCmsLoadPages();
   </script>`
   return c.html(layout('CMS', adminShell('Content Management System', 'cms', body), {noNav:true,noFooter:true}))
 })
@@ -5079,6 +5172,34 @@ app.get('/integrations', (c) => {
     {name:'Tally Prime',        desc:'Accounting sync via XML',          status:'Pending Setup',   icon:'calculator',      color:'#d97706', fields:[{l:'Tally Server IP',v:'192.168.1.100',t:'text'},{l:'Port',v:'9000',t:'number'},{l:'Company Name',v:'India Gully',t:'text'}]},
   ]
   const body = `
+  <!-- J2: Live Integration Health Panel -->
+  <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;margin-bottom:1.25rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;">
+      <div>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">J2 — Live Integration Health</h3>
+        <p style="font-size:.72rem;color:var(--ink-muted);margin-top:.1rem;">Real-time status of all Cloudflare secrets and external service bindings</p>
+      </div>
+      <button onclick="igLoadIntegrationHealth()" style="background:none;border:1px solid var(--border);padding:.35rem .75rem;font-size:.72rem;cursor:pointer;color:var(--gold);display:inline-flex;align-items:center;gap:.35rem;"><i class="fas fa-sync-alt" style="font-size:.6rem;"></i>Refresh</button>
+    </div>
+    <div id="j2-health-panel" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.25rem .75rem;"></div>
+    <div style="margin-top:.875rem;padding:.625rem;background:#f8fafc;border:1px solid var(--border);font-size:.7rem;color:var(--ink-muted);">
+      <strong>To set secrets:</strong> <code>npx wrangler pages secret put RAZORPAY_WEBHOOK_SECRET --project-name india-gully</code>
+      <span style="margin-left:.5rem;color:var(--gold);">Razorpay · SendGrid · Twilio · DocuSign · JWT_SECRET · TOTP_ENCRYPT_KEY</span>
+    </div>
+  </div>
+
+  <!-- J2: Razorpay Webhook Log -->
+  <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;margin-bottom:1.25rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;">
+      <div>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Razorpay Webhook Events</h3>
+        <p style="font-size:.72rem;color:var(--ink-muted);margin-top:.1rem;">HMAC-SHA256 verified — stored in D1 ig_razorpay_webhooks</p>
+      </div>
+      <button onclick="igLoadWebhooks()" style="background:none;border:1px solid var(--border);padding:.35rem .75rem;font-size:.72rem;cursor:pointer;color:var(--gold);display:inline-flex;align-items:center;gap:.35rem;"><i class="fas fa-sync-alt" style="font-size:.6rem;"></i>Load Events</button>
+    </div>
+    <div id="j2-webhook-log" style="font-size:.78rem;color:var(--ink-muted);">Click Load Events to fetch recent webhook log from D1.</div>
+  </div>
+
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
     ${integrations.map((itg,i)=>`
     <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
@@ -5105,6 +5226,36 @@ app.get('/integrations', (c) => {
     </div>`).join('')}
   </div>
 <script>
+/* ── J2: Live integration health panel ── */
+window.igLoadIntegrationHealth = function(){
+  var el = document.getElementById('j2-health-panel');
+  if(!el) return;
+  el.innerHTML = '<div style="font-size:.78rem;color:var(--ink-muted);padding:.5rem 0;"><i class="fas fa-circle-notch fa-spin" style="margin-right:.4rem;"></i>Checking live status…</div>';
+  igApi.get('/integrations/health').then(function(d){
+    if(!d){ el.innerHTML='<span style="font-size:.78rem;color:#dc2626;">Could not load — admin session required</span>'; return; }
+    var checks = d.checks || {};
+    var html = '';
+    var keyMap = {sendgrid:'SendGrid Email', razorpay:'Razorpay Payments', twilio:'Twilio SMS', docusign:'DocuSign e-Sign', d1_database:'D1 Database', kv_session:'KV Session', kv_ratelimit:'KV Rate Limit', kv_audit:'KV Audit Log'};
+    Object.keys(checks).forEach(function(k){
+      var v = checks[k];
+      var ok = v.configured;
+      html += '<div style="display:flex;align-items:center;gap:.625rem;padding:.4rem 0;border-bottom:1px solid var(--border);">';
+      html += '<div style="width:8px;height:8px;border-radius:50%;background:'+(ok?'#16a34a':'#dc2626')+';flex-shrink:0;"></div>';
+      html += '<div style="font-size:.78rem;font-weight:600;color:var(--ink);flex:1;">'+(keyMap[k]||k)+'</div>';
+      html += '<span class="badge '+(ok?'b-gr':'b-re')+'" style="font-size:.6rem;">'+(ok?'Configured':'Needs Setup')+'</span>';
+      html += '</div>';
+    });
+    if(d.j_round_secrets_needed && d.j_round_secrets_needed.length){
+      html += '<div style="margin-top:.75rem;padding:.625rem;background:#fff3cd;border:1px solid #f0ad4e;font-size:.72rem;color:#856404;">';
+      html += '<strong>Secrets needed:</strong> '+d.j_round_secrets_needed.join(', ')+'<br>';
+      html += '<code style="font-size:.65rem;">npx wrangler pages secret put &lt;NAME&gt; --project-name india-gully</code>';
+      html += '</div>';
+    } else {
+      html += '<div style="margin-top:.625rem;padding:.5rem;background:#dcfce7;border:1px solid #86efac;font-size:.72rem;color:#166534;font-weight:600;"><i class="fas fa-check-circle" style="margin-right:.35rem;"></i>All J2 integration secrets configured</div>';
+    }
+    el.innerHTML = html;
+  }).catch(function(){ el.innerHTML='<span style="font-size:.78rem;color:#dc2626;">Admin session required to view integration health</span>'; });
+};
 /* ── Integrations: test connections against live API endpoints ── */
 window.igTestIntegration = function(name, endpoint){
   igToast('Testing '+name+' connection…','info');
@@ -5119,6 +5270,37 @@ igApi.get('/architecture/microservices').then(function(d){
   var el=document.getElementById('ms-status');
   if(el && d.services) el.textContent=d.services.filter(function(s){return s.status==='Active';}).length+'/'+d.services.length+' services online';
 });
+/* Load health on page mount */
+igLoadIntegrationHealth();
+
+/* ── J2: Load Razorpay webhook log ── */
+window.igLoadWebhooks = function(){
+  var el = document.getElementById('j2-webhook-log');
+  if(!el) return;
+  el.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="margin-right:.4rem;"></i>Loading…';
+  igApi.get('/payments/webhooks').then(function(d){
+    if(!d){ el.innerHTML='<span style="color:#dc2626;">Admin session required</span>'; return; }
+    if(!d.webhooks || !d.webhooks.length){
+      el.innerHTML='<div style="color:var(--ink-muted);padding:.75rem 0;">No webhook events recorded yet. '+(d.note||'')+'</div>'; return;
+    }
+    var html='<table style="width:100%;border-collapse:collapse;font-size:.75rem;">';
+    html+='<thead><tr style="border-bottom:2px solid var(--border);">';
+    ['Event','Order ID','Payment ID','Sig OK','Processed','Time'].forEach(function(h){html+='<th style="text-align:left;padding:.35rem .5rem;font-size:.68rem;font-weight:700;color:var(--ink-muted);">'+h+'</th>';});
+    html+='</tr></thead><tbody>';
+    d.webhooks.forEach(function(w){
+      html+='<tr style="border-bottom:1px solid var(--border);">';
+      html+='<td style="padding:.35rem .5rem;font-weight:600;color:var(--ink);">'+w.event+'</td>';
+      html+='<td style="padding:.35rem .5rem;color:var(--ink-muted);">'+(w.order_id||'—')+'</td>';
+      html+='<td style="padding:.35rem .5rem;color:var(--ink-muted);">'+(w.payment_id||'—')+'</td>';
+      html+='<td style="padding:.35rem .5rem;"><span class="badge '+(w.signature_valid?'b-gr':'b-re')+'" style="font-size:.6rem;">'+(w.signature_valid?'✓':'✗')+'</span></td>';
+      html+='<td style="padding:.35rem .5rem;"><span class="badge '+(w.processed?'b-gr':'b-g')+'" style="font-size:.6rem;">'+(w.processed?'Yes':'Pending')+'</span></td>';
+      html+='<td style="padding:.35rem .5rem;color:var(--ink-muted);">'+(w.created_at||'')+'</td>';
+      html+='</tr>';
+    });
+    html+='</tbody></table>';
+    el.innerHTML=html;
+  }).catch(function(){ el.innerHTML='<span style="color:#dc2626;">Failed to load — session required</span>'; });
+};
 </script>`
   return c.html(layout('Integrations', adminShell('Integrations & API Keys', 'integrations', body), {noNav:true,noFooter:true}))
 })
@@ -5910,7 +6092,9 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
               <button onclick="igToast('${k.status==='Active'?'Revoke':'Register'} key for ${k.user}','${k.status==='Active'?'warn':'success'}')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">${k.status==='Active'?'Revoke':'Register Key'}</button>
             </div>
           </div>`).join('')}
-          <button onclick="igToast('Add FIDO2 key flow initiated — connect hardware token','info')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.75rem;font-weight:600;cursor:pointer;margin-top:1rem;width:100%;"><i class="fas fa-plus" style="margin-right:.4rem;"></i>Register New Hardware Key</button>
+          <div id="fido2-live-status" style="margin-bottom:.75rem;font-size:.72rem;color:var(--ink-muted);text-align:center;">Loading registered keys…</div>
+          <button onclick="igWebAuthnRegister()" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.75rem;font-weight:600;cursor:pointer;margin-top:.25rem;width:100%;"><i class="fas fa-plus" style="margin-right:.4rem;"></i>Register New Security Key (J4 ✓)</button>
+          <button onclick="igWebAuthnAuthenticate()" style="background:var(--ink);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.75rem;font-weight:600;cursor:pointer;margin-top:.5rem;width:100%;"><i class="fas fa-fingerprint" style="margin-right:.4rem;"></i>Test Authentication</button>
         </div>
       </div>
       <!-- TOTP / MFA Policy -->
@@ -6155,6 +6339,77 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
     var el=document.getElementById('abac-roles');
     if(el) el.textContent=d.roles.join(', ');
   });
+
+  /* ── J4: WebAuthn register/authenticate via @simplewebauthn/server ── */
+  // Load existing credentials for current user
+  (function loadFido2Status(){
+    var el=document.getElementById('fido2-live-status');
+    if(!el) return;
+    igApi.get('/auth/totp/enrol/status').then(function(d){
+      if(d && d.webauthn_credentials !== undefined){
+        el.textContent = d.webauthn_credentials > 0
+          ? d.webauthn_credentials + ' security key(s) registered for your account'
+          : 'No hardware keys registered for your account';
+      } else {
+        el.textContent = 'Security key status: connect a YubiKey or platform authenticator to begin';
+      }
+    }).catch(function(){ el.textContent = 'Could not load key status — session required'; });
+  })();
+
+  window.igWebAuthnRegister = function(){
+    igToast('Starting FIDO2 registration flow…','info');
+    igApi.post('/auth/webauthn/register/begin', {}).then(function(opts){
+      if(!opts || opts.error){ igToast(opts&&opts.error||'Could not start registration','warn'); return; }
+      // Browser WebAuthn API
+      if(!window.PublicKeyCredential){ igToast('WebAuthn not supported in this browser','warn'); return; }
+      opts.challenge = Uint8Array.from(atob(opts.challenge.replace(/-/g,'+').replace(/_/g,'/')),function(c){return c.charCodeAt(0);});
+      opts.user.id = Uint8Array.from(atob(opts.user.id.replace(/-/g,'+').replace(/_/g,'/')),function(c){return c.charCodeAt(0);});
+      (opts.excludeCredentials||[]).forEach(function(c){ c.id = Uint8Array.from(atob(c.id.replace(/-/g,'+').replace(/_/g,'/')),function(x){return x.charCodeAt(0);}); });
+      navigator.credentials.create({publicKey:opts}).then(function(cred){
+        var resp = {
+          id: cred.id,
+          rawId: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.rawId))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+          type: cred.type,
+          response: {
+            attestationObject: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.attestationObject))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+            clientDataJSON:    btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.clientDataJSON))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+            transports:        cred.response.getTransports ? cred.response.getTransports() : [],
+          },
+        };
+        return igApi.post('/auth/webauthn/register/complete', resp);
+      }).then(function(r){
+        if(r && r.success){ igToast('Security key registered! credential_id: '+r.credential_id.slice(0,12)+'…','success'); }
+        else { igToast((r&&r.error)||'Registration failed','warn'); }
+      }).catch(function(e){ igToast('WebAuthn error: '+(e&&e.message||e),'warn'); });
+    }).catch(function(){ igToast('Registration begin failed — ensure you are logged in','warn'); });
+  };
+
+  window.igWebAuthnAuthenticate = function(){
+    igToast('Starting FIDO2 authentication challenge…','info');
+    igApi.post('/auth/webauthn/authenticate/begin', {}).then(function(opts){
+      if(!opts || opts.error){ igToast(opts&&opts.error||'No registered keys','warn'); return; }
+      if(!window.PublicKeyCredential){ igToast('WebAuthn not supported in this browser','warn'); return; }
+      opts.challenge = Uint8Array.from(atob(opts.challenge.replace(/-/g,'+').replace(/_/g,'/')),function(c){return c.charCodeAt(0);});
+      (opts.allowCredentials||[]).forEach(function(c){ c.id = Uint8Array.from(atob(c.id.replace(/-/g,'+').replace(/_/g,'/')),function(x){return x.charCodeAt(0);}); });
+      navigator.credentials.get({publicKey:opts}).then(function(cred){
+        var resp = {
+          id: cred.id,
+          rawId: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.rawId))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+          type: cred.type,
+          response: {
+            authenticatorData: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.authenticatorData))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+            clientDataJSON:    btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.clientDataJSON))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+            signature:         btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.signature))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+            userHandle:        cred.response.userHandle ? btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.userHandle))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'') : null,
+          },
+        };
+        return igApi.post('/auth/webauthn/authenticate/complete', resp);
+      }).then(function(r){
+        if(r && r.verified){ igToast('FIDO2 authentication verified! counter='+r.new_counter,'success'); }
+        else { igToast((r&&r.error)||'Authentication failed','warn'); }
+      }).catch(function(e){ igToast('WebAuthn error: '+(e&&e.message||e),'warn'); });
+    }).catch(function(){ igToast('Authenticate begin failed — register a key first','warn'); });
+  };
   </script>`
   return c.html(layout('Security & Audit', adminShell('Security & Audit', 'security', body), {noNav:true,noFooter:true}))
 })

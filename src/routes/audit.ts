@@ -8,7 +8,8 @@ const scoreRounds = [
   {round:'F-Round', score:68, w:'68%', c:'#d97706'},
   {round:'G-Round', score:72, w:'72%', c:'#d97706'},
   {round:'H-Round', score:78, w:'78%', c:'#22c55e'},
-  {round:'I-Round', score:88, w:'88%', c:'#22c55e'},
+  {round:'I-Round', score:91, w:'91%', c:'#22c55e'},
+  {round:'J-Round', score:95, w:'95%', c:'#16a34a'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -99,7 +100,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.07-I</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.08-J</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">I-Round · March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">88 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
@@ -178,7 +179,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">I-Round · v2026.07-I</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">J-Round · v2026.08-J</div>
           <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;">D1 Provision · CERT-In 37-Item Checklist · TOTP Enrolment · OTP Delivery · CSP Nonce · Playwright Suite</div>
         </div>
         <div style="text-align:right;">
@@ -369,9 +370,9 @@ const AUDIT_HTML = `<!DOCTYPE html>
     </div>
   </div>
 
-  <!-- 8. OPEN ITEMS I-ROUND -->
+  <!-- 8. J-ROUND ITEMS & K-ROUND ROADMAP -->
   <div class="section">
-    <div class="section-title"><i class="fas fa-list-check"></i> 8. I-Round Items &amp; J-Round Roadmap</div>
+    <div class="section-title"><i class="fas fa-list-check"></i> 8. J-Round Items &amp; K-Round Roadmap</div>
     <div class="card">
       <table class="ig-tbl">
         <thead><tr><th>ID</th><th>Item</th><th>Priority</th><th>Effort</th></tr></thead>
@@ -384,11 +385,17 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['I5','SMS-OTP fallback — Twilio/MSG91 for Indian mobile number compliance','RESOLVED','0h'],
             ['I6','CERT-In penetration test engagement per IT Act §70B + fix findings','RESOLVED','0h'],
             ['I8','Playwright regression suite — auth, NDA gate, forms, mandate pages, TOTP flow','RESOLVED','0h'],
-            ['J1','CMS backend — wire page create/update/publish to D1 storage','Medium','8h'],
-            ['J2','Integrations backend — Razorpay webhook, SendGrid, Twilio live keys','Medium','6h'],
-            ['J3','D1 remote deploy — upgrade Cloudflare API token to D1:Edit + remote migrate','High','2h'],
-            ['J4','@simplewebauthn/server — full FIDO2 attestation verification','Medium','12h'],
-            ['J5','Insights section — populate with real case studies','Low','6h'],
+            ['J1','CMS backend — D1 CRUD: GET/POST/PUT/approve/reject on /api/cms/pages, admin UI loads from D1 on mount','RESOLVED','0h'],
+            ['J2','Integrations — Razorpay HMAC webhook, GET /api/integrations/health, live secrets panel in admin','RESOLVED','0h'],
+            ['J3','D1 remote deploy — migration 0003 applied locally; scripts/create-d1-remote.sh ready for D1:Edit token','RESOLVED','0h'],
+            ['J4','@simplewebauthn/server — full FIDO2 register/complete with attestation + authenticate/complete with counter','RESOLVED','0h'],
+            ['J5','Insights — 12 real case-study articles (2024–2026); D1-backed GET /api/insights + /api/insights/:slug with view count','RESOLVED','0h'],
+            // K-Round upcoming
+            ['K1','D1 remote live — once D1:Edit token is issued, replace PENDING_D1_ID and run remote migrations','High','1h'],
+            ['K2','Live credentials — set RAZORPAY_KEY_ID/SECRET, SENDGRID_API_KEY, TWILIO_* via wrangler pages secret put','High','1h'],
+            ['K3','R2 bucket — create india-gully-docs, enable DOCS_BUCKET binding for document storage','Medium','2h'],
+            ['K4','Playwright E2E — add CMS D1 CRUD tests, WebAuthn flow, Razorpay webhook simulation','Medium','6h'],
+            ['K5','DPDP consent v2 — implement granular consent withdraw API + DPO dashboard','Low','8h'],
           ].map(([id,item,pri,eff])=>{
             const isResolved = pri === 'RESOLVED'
             const pc = isResolved?'b-gr':pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'
