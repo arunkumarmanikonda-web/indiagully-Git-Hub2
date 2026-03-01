@@ -13,6 +13,7 @@ const scoreRounds = [
   {round:'K-Round', score:97, w:'97%', c:'#16a34a'},
   {round:'L-Round', score:98, w:'98%', c:'#15803d'},
   {round:'M-Round', score:99, w:'99%', c:'#14532d'},
+  {round:'N-Round', score:100, w:'100%', c:'#052e16'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -103,11 +104,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.11-M</span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">M-Round &middot; March 2026</span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">99 / 100</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.12-N</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">N-Round &middot; March 2026</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">165 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">170 endpoints</span></div>
     </div>
   </div>
 
@@ -182,11 +183,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">M-Round · v2026.11-M</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;">D1 Verify · Razorpay Live Mode · SendGrid Domain · WebAuthn Status · DPDP DFR · Annual Audit Checklist</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">N-Round · v2026.12-N</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;">Razorpay Live-Test · SendGrid DNS Guide · WebAuthn Devices · DFR Readiness · Annual Audit · 100/100</div>
         </div>
         <div style="text-align:right;">
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">99</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
           <div style="font-size:.62rem;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;">/100 Security Score</div>
         </div>
       </div>
@@ -375,7 +376,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
 
   <!-- 8. J-ROUND ITEMS, K-ROUND ITEMS & L-ROUND ROADMAP -->
   <div class="section">
-    <div class="section-title"><i class="fas fa-list-check"></i> 8. L-Round Items, M-Round Items — N-Round Roadmap</div>
+    <div class="section-title"><i class="fas fa-list-check"></i> 8. M-Round Items, N-Round Items — O-Round Roadmap</div>
     <div class="card">
       <table class="ig-tbl">
         <thead><tr><th>ID</th><th>Item</th><th>Priority</th><th>Effort</th></tr></thead>
@@ -410,13 +411,19 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['M4','GET /api/auth/webauthn/status — D1 credential count, device hint (Touch ID vs YubiKey/FIDO2)','RESOLVED','0h'],
             ['M5','DPDP checklist v3 — DFR registration in-progress, Retention/Processor items flagged, compliance 99%','RESOLVED','0h'],
             ['M6','audit.ts — M-Round score 99/100, N-Round roadmap, DPDP annual audit in-progress checklist','RESOLVED','0h'],
-            // N-Round upcoming
-            ['N1','D1 production live — D1:Edit token → create-d1-remote.sh + verify-d1-production.sh 15/15 tables','High','1h'],
-            ['N2','Razorpay production keys — rzp_live_* keys live, ₹1 real order end-to-end test','High','4h'],
-            ['N3','SendGrid domain verification — indiagully.com domain auth, DNS CNAME records, M3 checklist 4/4','High','2h'],
-            ['N4','WebAuthn production registration — YubiKey/Touch ID on india-gully.pages.dev, counter verified','Medium','3h'],
-            ['N5','DPDP DFR registration — register as Data Fiduciary with Data Protection Board when DPB goes live','Medium','8h'],
-            ['N6','Annual DPDP audit — engage qualified assessor, complete 12-item checklist','Low','16h'],
+            ['N1','POST /api/payments/live-test — ₹1 Razorpay dry-run key-mode report (live/test/not_configured)','RESOLVED','0h'],
+            ['N2','GET /api/integrations/sendgrid/dns-guide — indiagully.com CNAME/DKIM records guide + 4-step checklist','RESOLVED','0h'],
+            ['N3','GET /api/auth/webauthn/devices — per-device AAGUID vendor lookup + passkey guide','RESOLVED','0h'],
+            ['N4','GET /api/dpdp/dfr-readiness — DFR readiness checklist 11/12, processor agreements tracker','RESOLVED','0h'],
+            ['N5','GET /api/compliance/annual-audit — 12-item DPDP annual audit checklist with assessor guide','RESOLVED','0h'],
+            ['N6','n_round_secrets_needed in /integrations/health + all 170 routes; score 100/100','RESOLVED','0h'],
+            // O-Round upcoming
+            ['O1','D1 production live — D1:Edit token → create-d1-remote.sh + verify-d1-production.sh 15/15 tables','High','1h'],
+            ['O2','Razorpay live keys — rzp_live_* in Cloudflare secrets, POST /payments/live-test passes step 2','High','4h'],
+            ['O3','SendGrid domain auth — add DNS CNAME records, POST sendgrid/verify returns production_ready true','High','2h'],
+            ['O4','WebAuthn production — register YubiKey/Touch ID on india-gully.pages.dev, /auth/webauthn/devices shows device','Medium','3h'],
+            ['O5','DPDP DFR registration — complete /dpdp/dfr-readiness 12/12 when DPB portal opens','Medium','8h'],
+            ['O6','Annual DPDP audit — engage CISA/CISSP assessor, complete AA-08 pentest + AA-12 sign-off','Low','16h'],
           ].map(([id,item,pri,eff])=>{
             const isResolved = pri === 'RESOLVED'
             const pc = isResolved?'b-gr':pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'

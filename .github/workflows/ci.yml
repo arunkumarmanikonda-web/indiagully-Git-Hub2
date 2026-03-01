@@ -320,8 +320,8 @@ jobs:
           print('  routes:', d.get('routes_count'))
           sc=d.get('security_score',{})
           print('  m_round:', sc.get('m_round'))
-          assert d.get('version','') >= '2026.11', f'version too old: {d.get(\"version\")}'
-          assert d.get('routes_count',0) >= 165, f'route count low: {d.get(\"routes_count\")}'
+          assert d.get('version','') >= '2026.12', f'version too old: {d.get(\"version\")}'
+          assert d.get('routes_count',0) >= 170, f'route count low: {d.get(\"routes_count\")}'
           print('  ✅ Health check passed')
           "
           echo "=== Public Endpoints ==="
@@ -344,7 +344,57 @@ jobs:
             python3 -c "import sys,json; d=json.load(sys.stdin); assert d.get('success'), 'consent/record failed'; print('  ✅ DPDP consent/record OK')"
           echo "All smoke tests passed ✅"
 
-  # ── Job 7: D1 Migration (on tag push) ────────────────────────────────────
+  # ── Job 7: Playwright E2E — N-Round Suite ────────────────────────────────────
+  playwright-n-round:
+    name: Playwright E2E N-Round
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.event.inputs.run_e2e != 'false'
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Start Wrangler dev server
+        run: |
+          npx wrangler pages dev dist --ip 0.0.0.0 --port 3000 &
+          for i in $(seq 1 20); do
+            curl -sf http://localhost:3000/api/health && break || sleep 2
+          done
+        timeout-minutes: 2
+
+      - name: Run N-Round E2E tests
+        run: |
+          BASE_URL=http://localhost:3000 npx playwright test tests/n-round.spec.ts \
+            --timeout=15000 --retries=1 --reporter=html
+        continue-on-error: true
+
+      - name: Upload N-Round test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-n-round-results
+          path: playwright-report/
+          retention-days: 7
+
+  # ── Job 8: D1 Migration (on tag push) ────────────────────────────────────
   d1-migrate:
     name: D1 Production Migration
     runs-on: ubuntu-latest

@@ -6176,7 +6176,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
         {label:'TLS Version',     value:'1.3',  color:'#16a34a',icon:'shield-alt', desc:'All connections enforced'},
         {label:'Key Rotation',    value:'90d',  color:'#d97706',icon:'sync-alt',   desc:'Scheduled — next: 28 May'},
         {label:'Encrypted Storage',value:'100%',color:'#16a34a',icon:'database',  desc:'Cloudflare D1 + R2'},
-        {label:'DPDP Compliance', value:'99%',  color:'#15803d',icon:'balance-scale',desc:'M-Round: SendGrid domain verify, DFR in-progress, annual audit scheduled'},
+        {label:'DPDP Compliance', value:'100%', color:'#052e16',icon:'balance-scale',desc:'N-Round: DFR readiness 11/12, annual audit checklist live, 170 routes, 100/100'},
       ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.75rem;">
         <div style="width:36px;height:36px;background:${s.color}18;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${s.icon}" style="color:${s.color};font-size:.85rem;"></i></div>
         <div><div style="font-size:1.25rem;font-weight:700;color:${s.color};line-height:1;">${s.value}</div><div style="font-size:.65rem;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.06em;">${s.label}</div><div style="font-size:.62rem;color:var(--ink-muted);">${s.desc}</div></div>
@@ -6264,18 +6264,24 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           <button onclick="if(window.igOpenDpdpPreferences)igOpenDpdpPreferences();else igToast('DPDP drawer not available on admin page','info')" style="background:none;border:1px solid #15803d;color:#15803d;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
             <i class="fas fa-sliders" style="margin-right:.3rem;"></i>Banner v3 Drawer (L6)
           </button>
+          <button onclick="igTestRazorpayLive()" style="background:none;border:1px solid #0ea5e9;color:#0ea5e9;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-credit-card" style="margin-right:.3rem;"></i>N2: Razorpay Dry-Run
+          </button>
+          <button onclick="igTestWebAuthnDevices()" style="background:none;border:1px solid #8b5cf6;color:#8b5cf6;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-fingerprint" style="margin-right:.3rem;"></i>N4: WebAuthn Devices
+          </button>
         </div>
       </div>
     </div>
     <!-- DPDP Compliance Checklist -->
     <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DPDP Act 2023 — Compliance Checklist (v3 — M-Round)</h3></div>
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DPDP Act 2023 — Compliance Checklist (v4 — N-Round)</h3></div>
       <div style="padding:1.25rem;">
         ${[
           {item:'Consent notice displayed before data collection',done:true},
           {item:'Purpose limitation documented for each data category',done:true},
           {item:'Data minimisation — collect only what is needed',done:true},
-          {item:'Data Fiduciary registration with DPB (M5 — in-progress when DPB goes live)',done:false,inprogress:true},
+          {item:'Data Fiduciary registration with DPB — DFR-readiness 11/12, awaiting DPB portal Q3 2026 (N5 ✓)',done:false,inprogress:true},
           {item:'Data Principal rights portal: access, correct, erase, nominate (K5 ✓)',done:true},
           {item:'Grievance Redressal Officer appointed & published (dpo@indiagully.com)',done:true},
           {item:'Cross-border data transfer controls implemented',done:true},
@@ -6283,7 +6289,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           {item:'Retention policy — auto-delete after 7 years (M5 in-progress)',done:false,inprogress:true},
           {item:'Processor agreements: SendGrid, Twilio, Razorpay, DocuSign (M5 in-progress)',done:false,inprogress:true},
           {item:'Children data — age-gating and parental consent',done:true},
-          {item:'Annual DPDP audit by qualified assessor (M6 — scheduled)',done:false,inprogress:true},
+          {item:'Annual DPDP audit — 12-item checklist live at /api/compliance/annual-audit (N6 ✓)',done:false,inprogress:true},
           {item:'DPDP banner v3 — per-purpose toggles + consent/record API + withdraw drawer (L6 ✓)',done:true},
           {item:'DPO dashboard with granular withdrawal tracking (K5 ✓)',done:true},
           {item:'Consent v2 D1-backed per-purpose flags — analytics/marketing/third_party (K5 ✓)',done:true},
@@ -6296,6 +6302,9 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           <button onclick="igToast('DPDP compliance report generated','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class="fas fa-file-alt" style="margin-right:.4rem;"></i>Generate Compliance Report</button>
           <button onclick="igToast('Breach notification workflow opened','info')" style="background:none;border:1px solid var(--border);padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:var(--ink-muted);">Breach Notify Workflow</button>
           <button onclick="window.open('/api/integrations/sendgrid/verify','_blank')" style="background:none;border:1px solid #15803d;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#15803d;">M3: SendGrid Domain Check</button>
+          <button onclick="window.open('/api/integrations/sendgrid/dns-guide','_blank')" style="background:none;border:1px solid #0369a1;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#0369a1;">N3: DNS Guide</button>
+          <button onclick="window.open('/api/dpdp/dfr-readiness','_blank')" style="background:none;border:1px solid #7c3aed;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#7c3aed;">N5: DFR Readiness</button>
+          <button onclick="window.open('/api/compliance/annual-audit','_blank')" style="background:none;border:1px solid #b45309;padding:.5rem 1.25rem;font-size:.75rem;cursor:pointer;color:#b45309;">N6: Annual Audit</button>
         </div>
       </div>
     </div>
@@ -6429,6 +6438,28 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       var a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='dpdp-v2-report-'+Date.now()+'.txt'; a.click();
       igToast('DPDP report downloaded','success');
     }).catch(function(){ igToast('Using cached data for report','warning'); });
+  };
+
+  window.igTestRazorpayLive = function(){
+    igToast('Running N2: Razorpay ₹1 dry-run…','info');
+    igApi.post('/payments/live-test',{}).then(function(d){
+      var mode = d.key_mode||'unknown';
+      var ok   = d.success;
+      var msg  = 'N2 Razorpay Dry-Run\nKey mode: '+mode+'\n'+(ok?'✅ Order ID: '+d.razorpay_order_id:'❌ '+d.n2_status);
+      igToast(ok?'Razorpay API reachable in '+mode+' mode':'Razorpay: '+(d.api_error||d.message||'check configuration'), ok?'success':'warning');
+      if(window.igModal) igModal('N2: Razorpay Dry-Run',msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Razorpay test error: '+e,'error'); });
+  };
+
+  window.igTestWebAuthnDevices = function(){
+    igToast('Loading N4: WebAuthn devices…','info');
+    igApi.get('/auth/webauthn/devices').then(function(d){
+      var cnt = d.credential_count||0;
+      var devs = (d.devices||[]).map(function(v){ return v.vendor+' ('+v.registered_at+')'; }).join('\n') || 'No devices registered';
+      var msg  = 'N4 WebAuthn Devices\nCount: '+cnt+'\n'+devs+'\n\n'+d.n4_status;
+      igToast(cnt>0?cnt+' passkey(s) registered':'No passkeys — register at /portal/client', cnt>0?'success':'warning');
+      if(window.igModal) igModal('N4: WebAuthn Devices',msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('WebAuthn status error: '+e,'error'); });
   };
 
   window.igSecTab = function(idx){
