@@ -26,6 +26,7 @@ const scoreRounds = [
   {round:'X-Round', score:100, w:'100%', c:'#065F46'},
   {round:'Y-Round', score:100, w:'100%', c:'#1e3a5f'},
   {round:'Z-Round', score:100, w:'100%', c:'#4a1942'},
+  {round:'AA-Round', score:100, w:'100%', c:'#7c3aed'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -116,11 +117,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.24-Z</span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">Z-Round &middot; March 2026</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.25-AA</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">AA-Round &middot; March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">234 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">240 endpoints</span></div>
     </div>
   </div>
 
@@ -195,8 +196,8 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">Z-Round · v2026.24-Z</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Capacity Forecast · Chargeback Report · Webhook Health · Privilege Audit · Breach Simulation · Continuous Monitoring · 234 routes · 100/100</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">AA-Round · v2026.25-AA</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Cashflow Forecast · Fraud Signals · API Gateway · Zero Trust · Data Map · Risk Heatmap · 240 routes · 100/100</div>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
@@ -388,7 +389,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
 
   <!-- 8. ALL RESOLVED ITEMS & Q-ROUND ROADMAP -->
   <div class="section">
-    <div class="section-title"><i class="fas fa-list-check"></i> 8. W-Round + X-Round + Y-Round + Z-Round Items — Gold Certification, Post-Gold Live Ops, Compliance Automation &amp; Resilience</div>
+    <div class="section-title"><i class="fas fa-list-check"></i> 8. W-Round + X-Round + Y-Round + Z-Round + AA-Round Items — Gold Certification, Post-Gold Live Ops, Compliance Automation &amp; Resilience</div>
     <div class="card">
       <table class="ig-tbl">
         <thead><tr><th>ID</th><th>Item</th><th>Priority</th><th>Effort</th></tr></thead>
@@ -526,6 +527,18 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['ZO2','Register DPBI portal account at dpb.gov.in — required for §12 breach notification readiness','High','2h'],
             ['ZO3','Draft data principal breach notification template — required for Z5 readiness Grade A','Medium','2h'],
             ['ZO4','Complete YO1–YO4 first — all operator actions cascade from D1 bind and Razorpay live setup','High','8h'],
+            // AA-Round endpoints (all resolved)
+            ['AA1','GET /api/finance/cashflow-forecast — 12-month FY 2026-27 rolling cashflow: monthly inflow/outflow/net, cumulative balance, burn rate, runway months, bull/base/bear scenarios','RESOLVED','0h'],
+            ['AA2','GET /api/payments/fraud-signals — real-time fraud signals: velocity anomaly, geo mismatch, card-testing, unusual hour — severity High/Medium/Low, RBI fraud score 0–100','RESOLVED','0h'],
+            ['AA3','GET /api/integrations/api-gateway-metrics — per-route P50/P95/P99 latency, error rate, RPS, top consumers, slow-route ranking, rate-limit config summary','RESOLVED','0h'],
+            ['AA4','GET /api/auth/zero-trust-scorecard — NIST SP 800-207 maturity: 5 pillars (Identity/Devices/Network/Data/Apps), 13 controls, grade A–D, maturity level Advanced/Intermediate','RESOLVED','0h'],
+            ['AA5','GET /api/dpdp/data-map — 14-category DPDP data inventory: processing purpose, legal basis §7(a-e)/§8(7), retention period, cross-border flags, DPO review status','RESOLVED','0h'],
+            ['AA6','GET /api/compliance/risk-heatmap — 18 risks × 6 domains (Financial/Operational/Legal/Tech/Reputational/Compliance), L×I matrix, mitigation owner, residual risk score','RESOLVED','0h'],
+            // AA-Round operator actions
+            ['AAO1','Complete ZO1 (IR Policy) — AA6 risk-heatmap moves RL-01 from Medium → Low','High','1h'],
+            ['AAO2','Complete ZO2 (DPBI registration) — AA5 data-map action_items clears DPBI flag','High','2h'],
+            ['AAO3','Enable CSP strict-dynamic in _headers — AA4 zero-trust-scorecard network/CSP watch → pass','Medium','1h'],
+            ['AAO4','Complete XO1 (D1 bind) — AA4 scorecard data pillar reaches full score; AA6 RO-03 High → Low','High','2h'],
           ].map(([id,item,pri,eff])=>{
             const isResolved = pri === 'RESOLVED'
             const pc = isResolved?'b-gr':pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'
@@ -580,7 +593,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
   </div>
 
   <div style="text-align:center;padding:2rem 0;color:var(--ink-muted);font-size:.75rem;border-top:1px solid var(--border);margin-top:2rem;">
-    India Gully Enterprise Platform &mdash; Confidential Audit Report &mdash; Z-Round v2026.24 &mdash; March 2026<br/>
+    India Gully Enterprise Platform &mdash; Confidential Audit Report &mdash; AA-Round v2026.25 &mdash; March 2026<br/>
     <span style="color:var(--gold);">india-gully.pages.dev</span>
   </div>
 

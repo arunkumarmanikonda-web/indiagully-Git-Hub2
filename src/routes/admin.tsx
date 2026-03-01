@@ -6473,6 +6473,28 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
             <i class="fas fa-eye" style="margin-right:.3rem;"></i>Z6: Continuous Monitoring
           </button>
         </div>
+
+        <!-- AA-Round buttons -->
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem;">
+          <button onclick="igCashflowForecast()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-water" style="margin-right:.3rem;"></i>AA1: Cashflow Forecast
+          </button>
+          <button onclick="igFraudSignals()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-exclamation-triangle" style="margin-right:.3rem;"></i>AA2: Fraud Signals
+          </button>
+          <button onclick="igApiGatewayMetrics()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-tachometer-alt" style="margin-right:.3rem;"></i>AA3: API Gateway Metrics
+          </button>
+          <button onclick="igZeroTrustScorecard()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>AA4: Zero Trust Scorecard
+          </button>
+          <button onclick="igDataMap()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-map" style="margin-right:.3rem;"></i>AA5: Data Map
+          </button>
+          <button onclick="igRiskHeatmap()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-fire" style="margin-right:.3rem;"></i>AA6: Risk Heatmap
+          </button>
+        </div>
       </div>
     </div>
 
@@ -7862,6 +7884,152 @@ window.igContinuousMonitoring = function() {
       '<p style="font-size:.73rem;color:#6b7280;margin:.2rem 0">Next assessment: ' + (sm.next_assessment||'—') + ' &nbsp;|&nbsp; ' + (sm.cert_status||'') + '</p>' +
       '<div style="max-height:320px;overflow-y:auto"><table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>ID</th><th>Framework</th><th>Control</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table></div>');
   }).catch(function(){igModal('Z6: Continuous Monitoring','Session expired — log in as Super Admin')});
+};
+
+// ─── AA-ROUND handlers (v2026.25) ──────────────────────────────────────────
+
+window.igCashflowForecast = function() {
+  igToast('Loading cashflow forecast…','info');
+  igApi.get('/finance/cashflow-forecast').then(function(d){
+    var cf = d.cashflow_forecast || {};
+    var sm = cf.summary || {};
+    var sc = cf.scenarios || {};
+    var rows = (cf.forecast||[]).slice(0,6).map(function(m){
+      var nc = m.net_inr >= 0 ? '#166534' : '#dc2626';
+      return '<tr>' +
+        '<td style="font-size:.72rem;font-weight:600">' + m.month + '</td>' +
+        '<td style="font-size:.7rem">₹' + (m.inflow_inr/100000).toFixed(1) + 'L</td>' +
+        '<td style="font-size:.7rem">₹' + (m.outflow_inr/100000).toFixed(1) + 'L</td>' +
+        '<td style="color:' + nc + ';font-size:.7rem;font-weight:700">₹' + (m.net_inr/100000).toFixed(1) + 'L</td>' +
+        '<td style="font-size:.68rem;color:#1e3a5f">₹' + (m.cumulative/100000).toFixed(1) + 'L</td>' +
+        '</tr>';
+    }).join('');
+    igModal('AA1: Cashflow Forecast — FY 2026-27',
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Annual Net:</b> ₹' + ((sm.annual_net_inr||0)/100000).toFixed(1) + 'L &nbsp;|&nbsp; <b>Burn Rate:</b> ₹' + ((sm.burn_rate_monthly||0)/100000).toFixed(1) + 'L/mo &nbsp;|&nbsp; <b>Runway:</b> ' + (sm.runway_months||0) + ' months</p>' +
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Bull:</b> ₹' + ((sc.bull||{}).annual_net/100000||0).toFixed(1) + 'L &nbsp;|&nbsp; <b>Base:</b> ₹' + ((sc.base||{}).annual_net/100000||0).toFixed(1) + 'L &nbsp;|&nbsp; <b>Bear:</b> ₹' + ((sc.bear||{}).annual_net/100000||0).toFixed(1) + 'L</p>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Month</th><th>Inflow</th><th>Outflow</th><th>Net</th><th>Cumulative</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<p style="font-size:.72rem;color:#1e3a5f;margin-top:.5rem">' + (cf.recommendation||'') + '</p>');
+  }).catch(function(){igModal('AA1: Cashflow Forecast','Session expired — log in as Super Admin')});
+};
+
+window.igFraudSignals = function() {
+  igToast('Loading fraud signals…','info');
+  igApi.get('/payments/fraud-signals').then(function(d){
+    var fs = d.fraud_signals || {};
+    var sm = fs.summary || {};
+    var rc = fs.risk_level === 'Low' ? '#166534' : fs.risk_level === 'Medium' ? '#b45309' : '#dc2626';
+    var rows = (fs.signals||[]).map(function(s){
+      var sc = s.severity==='High' ? '#dc2626' : s.severity==='Medium' ? '#b45309' : '#6b7280';
+      var stc= s.status==='blocked' ? '#dc2626' : s.status==='reviewed' ? '#166534' : '#b45309';
+      return '<tr>' +
+        '<td style="font-size:.7rem;font-weight:700;color:#7c3aed">' + s.id + '</td>' +
+        '<td style="font-size:.7rem">' + s.type + '</td>' +
+        '<td><span style="color:' + sc + ';font-size:.7rem;font-weight:700">' + s.severity + '</span></td>' +
+        '<td><span style="color:' + stc + ';font-size:.7rem">' + s.status + '</span></td>' +
+        '<td style="font-size:.67rem;color:#6b7280">' + s.action + '</td>' +
+        '</tr>';
+    }).join('');
+    igModal('AA2: Fraud Signal Dashboard',
+      '<p style="font-size:.85rem"><b>Risk:</b> <span style="color:' + rc + ';font-weight:700">' + (fs.risk_level||'Low') + '</span> &nbsp;|&nbsp; <b>Score:</b> ' + (fs.risk_score||0) + '/100 &nbsp;|&nbsp; <b>High:</b> ' + (sm.high_severity||0) + ' &nbsp;|&nbsp; <b>Blocked:</b> ' + (sm.blocked||0) + ' &nbsp;|&nbsp; <b>Mode:</b> ' + (fs.razorpay_mode||'test') + '</p>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>ID</th><th>Type</th><th>Severity</th><th>Status</th><th>Action</th></tr></thead><tbody>' + rows + '</tbody></table>');
+  }).catch(function(){igModal('AA2: Fraud Signals','Session expired — log in as Super Admin')});
+};
+
+window.igApiGatewayMetrics = function() {
+  igToast('Loading API gateway metrics…','info');
+  igApi.get('/integrations/api-gateway-metrics').then(function(d){
+    var gm = d.api_gateway_metrics || {};
+    var sm = gm.summary || {};
+    var rows = (gm.routes||[]).map(function(r){
+      var lc = r.p95 > 500 ? '#dc2626' : r.p95 > 200 ? '#b45309' : '#166534';
+      var ec = r.error_rate > 1 ? '#dc2626' : r.error_rate > 0.5 ? '#b45309' : '#166534';
+      return '<tr>' +
+        '<td style="font-size:.67rem;font-family:monospace">' + r.path + '</td>' +
+        '<td style="font-size:.7rem">' + r.p50 + 'ms</td>' +
+        '<td style="color:' + lc + ';font-size:.7rem;font-weight:700">' + r.p95 + 'ms</td>' +
+        '<td style="color:' + ec + ';font-size:.7rem">' + r.error_rate + '%</td>' +
+        '<td style="font-size:.68rem">' + r.rps + ' rps</td>' +
+        '</tr>';
+    }).join('');
+    igModal('AA3: API Gateway Metrics',
+      '<p style="font-size:.85rem"><b>Avg P95:</b> ' + (sm.avg_p95_ms||0) + 'ms &nbsp;|&nbsp; <b>Total RPS:</b> ' + (sm.total_rps||0) + ' &nbsp;|&nbsp; <b>Slow Routes:</b> ' + (sm.slow_routes||0) + ' &nbsp;|&nbsp; <b>Error Routes:</b> ' + (sm.error_routes||0) + '</p>' +
+      '<div style="max-height:300px;overflow-y:auto"><table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Route</th><th>P50</th><th>P95</th><th>Err%</th><th>RPS</th></tr></thead><tbody>' + rows + '</tbody></table></div>');
+  }).catch(function(){igModal('AA3: API Gateway Metrics','Session expired — log in as Super Admin')});
+};
+
+window.igZeroTrustScorecard = function() {
+  igToast('Loading Zero Trust scorecard…','info');
+  igApi.get('/auth/zero-trust-scorecard').then(function(d){
+    var zt = d.zero_trust_scorecard || {};
+    var sm = zt.summary || {};
+    var gc = zt.grade === 'A' ? '#166534' : zt.grade === 'B' ? '#b45309' : '#dc2626';
+    var rows = (zt.pillars||[]).flatMap(function(p){
+      return (p.controls||[]).map(function(ctrl){
+        var sc = ctrl.status==='pass' ? '#166534' : ctrl.status==='watch' ? '#b45309' : '#dc2626';
+        return '<tr>' +
+          '<td style="font-size:.72rem;font-weight:700;color:#7c3aed">' + p.pillar + '</td>' +
+          '<td style="font-size:.7rem">' + ctrl.name + '</td>' +
+          '<td style="font-size:.7rem">' + ctrl.score + '</td>' +
+          '<td><span style="color:' + sc + ';font-size:.7rem;font-weight:700">' + ctrl.status + '</span></td>' +
+          '</tr>';
+      });
+    }).join('');
+    igModal('AA4: Zero Trust Scorecard',
+      '<p style="font-size:.85rem"><b>Grade:</b> <span style="color:' + gc + ';font-weight:700">' + (zt.grade||'?') + ' (' + (zt.overall_score_pct||0) + '%)</span> &nbsp;|&nbsp; <b>Maturity:</b> ' + (zt.maturity_level||'—') + ' &nbsp;|&nbsp; <b>Pass:</b> ' + (sm.pass||0) + '/' + (sm.total_controls||13) + ' &nbsp;|&nbsp; <b>Watch:</b> ' + (sm.watch||0) + '</p>' +
+      '<div style="max-height:300px;overflow-y:auto"><table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Pillar</th><th>Control</th><th>Score</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<p style="font-size:.7rem;color:#6b7280;margin-top:.4rem">NIST SP 800-207 aligned</p>');
+  }).catch(function(){igModal('AA4: Zero Trust Scorecard','Session expired — log in as Super Admin')});
+};
+
+window.igDataMap = function() {
+  igToast('Loading DPDP data map…','info');
+  igApi.get('/dpdp/data-map').then(function(d){
+    var dm = d.data_map || {};
+    var sm = dm.summary || {};
+    var dc = dm.dpdp_compliance || {};
+    var rows = (dm.categories||[]).map(function(cat){
+      var rc = cat.dpo_reviewed ? '#166534' : '#b45309';
+      var sc = cat.sensitive ? '#dc2626' : '#6b7280';
+      var cb = cat.cross_border ? '⚠ yes' : '—';
+      return '<tr>' +
+        '<td style="font-size:.68rem;font-weight:700;color:#7c3aed">' + cat.id + '</td>' +
+        '<td style="font-size:.7rem;font-weight:600">' + cat.category + '</td>' +
+        '<td style="font-size:.67rem;color:#6b7280">' + cat.retention + '</td>' +
+        '<td style="font-size:.67rem">' + cat.legal_basis.substring(0,20) + '…</td>' +
+        '<td><span style="color:' + sc + ';font-size:.68rem">' + (cat.sensitive ? '🔴 yes' : 'no') + '</span></td>' +
+        '<td><span style="color:' + rc + ';font-size:.68rem">' + (cat.dpo_reviewed ? '✓' : '⏳') + '</span></td>' +
+        '</tr>';
+    }).join('');
+    igModal('AA5: DPDP Data Map (14 Categories)',
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Total:</b> ' + (dm.total_categories||0) + ' &nbsp;|&nbsp; <b>DPO Reviewed:</b> ' + (sm.dpo_reviewed||0) + ' &nbsp;|&nbsp; <b>Pending:</b> ' + (sm.pending_review||0) + ' &nbsp;|&nbsp; <b>Sensitive:</b> ' + (sm.sensitive_categories||0) + ' &nbsp;|&nbsp; <b>Cross-Border:</b> ' + (sm.cross_border_transfers||0) + '</p>' +
+      '<p style="font-size:.73rem;color:#1e3a5f;margin:.2rem 0"><b>DPO:</b> ' + (dc.dpo_appointed||'—') + ' &nbsp;|&nbsp; <b>Vendor DPAs:</b> ' + (dc.vendor_dpas_executed||'—') + '</p>' +
+      '<div style="max-height:300px;overflow-y:auto"><table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>ID</th><th>Category</th><th>Retention</th><th>Legal Basis</th><th>Sensitive</th><th>DPO</th></tr></thead><tbody>' + rows + '</tbody></table></div>');
+  }).catch(function(){igModal('AA5: Data Map','Session expired — log in as Super Admin')});
+};
+
+window.igRiskHeatmap = function() {
+  igToast('Loading risk heatmap…','info');
+  igApi.get('/compliance/risk-heatmap').then(function(d){
+    var rh = d.risk_heatmap || {};
+    var sm = rh.summary || {};
+    var rc = rh.risk_level === 'Acceptable' ? '#166534' : rh.risk_level === 'Elevated' ? '#b45309' : '#dc2626';
+    var rows = (rh.risks||[]).sort(function(a,b){return b.score-a.score}).slice(0,10).map(function(r){
+      var sc = r.score >= 12 ? '#dc2626' : r.score >= 6 ? '#b45309' : '#166534';
+      var fc = {'Financial':'#7c3aed','Operational':'#1e3a5f','Legal':'#065F46','Technology':'#4a1942','Reputational':'#7c2d12','Compliance':'#0369a1'}[r.domain]||'#374151';
+      return '<tr>' +
+        '<td style="font-size:.68rem;font-weight:700;color:' + fc + '">' + r.id + '</td>' +
+        '<td style="font-size:.68rem;color:' + fc + '">' + r.domain + '</td>' +
+        '<td style="font-size:.68rem">' + r.risk.substring(0,50) + '…</td>' +
+        '<td style="font-size:.7rem">' + r.likelihood + '×' + r.impact + '</td>' +
+        '<td><span style="color:' + sc + ';font-size:.75rem;font-weight:700">' + r.score + '</span></td>' +
+        '<td style="font-size:.68rem;color:#6b7280">' + r.residual + '</td>' +
+        '</tr>';
+    }).join('');
+    igModal('AA6: Enterprise Risk Heatmap (Top 10)',
+      '<p style="font-size:.85rem"><b>Risk Level:</b> <span style="color:' + rc + ';font-weight:700">' + (rh.risk_level||'—') + '</span> &nbsp;|&nbsp; <b>Score:</b> ' + (rh.risk_score||0) + '/100 &nbsp;|&nbsp; <b>High:</b> ' + (sm.high_risks||0) + ' &nbsp;|&nbsp; <b>Medium:</b> ' + (sm.medium_risks||0) + ' &nbsp;|&nbsp; <b>Low:</b> ' + (sm.low_risks||0) + '</p>' +
+      '<div style="max-height:300px;overflow-y:auto"><table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>ID</th><th>Domain</th><th>Risk</th><th>L×I</th><th>Score</th><th>Residual</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<p style="font-size:.7rem;color:#6b7280;margin-top:.4rem">L=Likelihood 1–5 × I=Impact 1–5 | Score ≥12=High ≥6=Medium <6=Low</p>');
+  }).catch(function(){igModal('AA6: Risk Heatmap','Session expired — log in as Super Admin')});
 };
 
 window.igSecTab = function(idx){
