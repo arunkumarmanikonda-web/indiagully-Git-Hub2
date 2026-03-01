@@ -88,6 +88,48 @@ All portals require credentials provisioned by the system administrator.
 
 ---
 
+## 🏆 R-Round Complete — v2026.16-R-Round (2026-03-01)
+
+**Security Score: 100/100 | Routes: 190 | Open Findings: 0 | Smoke Tests: 25/25 ✅ | Tag: v2026.16-R-Round**
+
+| ID | Item | Status |
+|----|------|--------|
+| R1 | `GET /api/admin/infra-status` — Consolidated 7-component infra dashboard: D1/R2/KV/Secrets/Razorpay/SendGrid/Twilio with next-action list *(Super Admin)* | ✅ RESOLVED |
+| R2 | `GET /api/payments/razorpay-health` — Live Razorpay API probe: `GET /v1/orders?count=1`, latency ms, key mode, webhook secret check *(Super Admin)* | ✅ RESOLVED |
+| R3 | `GET /api/integrations/email-health` — SendGrid API probe + DKIM DoH lookup + deliverability score /100 with 4-check breakdown *(Super Admin)* | ✅ RESOLVED |
+| R4 | `GET /api/auth/webauthn/credential-store` — D1 `ig_webauthn_credentials` table health: total/active creds, per-user breakdown, last registration *(Super Admin)* | ✅ RESOLVED |
+| R5 | `GET /api/dpdp/dpa-tracker` — 6-processor DPA execution tracker (DPA-01–DPA-06): signed/pending, deadlines, overdue alerts, priority *(Super Admin)* | ✅ RESOLVED |
+| R6 | `GET /api/compliance/cert-registry` — Cert registry: O/P/Q/R history, current Bronze/Silver/Gold score, Gold-path GR-01–GR-06 requirements *(Super Admin)* | ✅ RESOLVED |
+
+### New API Endpoints (R-Round)
+- `GET /api/admin/infra-status` — 7-component infra health dashboard *(Super Admin)*
+- `GET /api/payments/razorpay-health` — live Razorpay API connectivity probe *(Super Admin)*
+- `GET /api/integrations/email-health` — SendGrid health + DKIM DoH + deliverability *(Super Admin)*
+- `GET /api/auth/webauthn/credential-store` — D1 WebAuthn table + credential counts *(Super Admin)*
+- `GET /api/dpdp/dpa-tracker` — 6-processor DPA tracker with deadlines and actions *(Super Admin)*
+- `GET /api/compliance/cert-registry` — cert history, current level, Gold path requirements *(Super Admin)*
+
+### Admin Dashboard — R-Round Buttons
+- **R1: Infra Status** → `igInfraStatus()` — 7-component health + next actions
+- **R2: Rzp Health** → `igRazorpayHealth()` — API probe + latency + key mode
+- **R3: Email Health** → `igEmailHealth()` — SendGrid probe + DKIM + deliverability score
+- **R5: DPA Tracker** → `igDpaTracker()` — signed count + overdue + priority
+
+### R-Round Playwright Tests (`tests/r-round.spec.ts`)
+12 suites: Health R-Round gates · R1–R6 auth guards · Q-Round compat · P-Round compat · O-Round compat · Audit page · DPDP public
+
+### S-Round Roadmap
+| ID | Priority | Item |
+|----|----------|------|
+| S1 | 🔴 HIGH | D1 live activation — `infra-status` shows `d1: ✅ Bound`, ≥15 tables |
+| S2 | 🔴 HIGH | Razorpay live keys — `razorpay-health` returns `api_alive: true`, `key_mode: live` |
+| S3 | 🔴 HIGH | SendGrid DKIM/SPF — `email-health` returns `deliverability_score >= 75` |
+| S4 | 🟡 MEDIUM | WebAuthn credential — `credential-store` shows `active_credentials >= 1` |
+| S5 | 🟡 MEDIUM | DPAs signed — `dpa-tracker` shows `signed: 6` |
+| S6 | 🟢 LOW | Gold cert — `cert-registry` returns `certification_level: Gold` |
+
+---
+
 ## 🏆 Q-Round Complete — v2026.15-Q-Round (2026-03-01)
 
 **Security Score: 100/100 | Routes: 185 | Open Findings: 0 | Smoke Tests: 26/26 ✅ | Tag: v2026.15-Q-Round**
