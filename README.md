@@ -88,6 +88,50 @@ All portals require credentials provisioned by the system administrator.
 
 ---
 
+## 🏆 O-Round Complete — v2026.13-O-Round (2026-03-01)
+
+**Security Score: 100/100 | Routes: 175 | Open Findings: 0 | Smoke Tests: 26/26 ✅ | Tag: v2026.13-O-Round**
+
+| ID | Item | Status |
+|----|------|--------|
+| O1 | `GET /api/admin/production-readiness` — Unified go-live wizard: D1, R2, Razorpay, SendGrid, WebAuthn, DPDP status in one endpoint *(Super Admin)* | ✅ RESOLVED |
+| O2 | `POST /api/payments/validate-keys` — Validate RAZORPAY_KEY_ID format (live/test prefix, account reachability) *(Super Admin)* | ✅ RESOLVED |
+| O3 | `GET /api/integrations/sendgrid/test-deliverability` — End-to-end deliverability probe with bounce/spam check guide *(Super Admin)* | ✅ RESOLVED |
+| O4 | `GET /api/auth/webauthn/challenge-log` — Recent challenge events, replay-protection notes, D1 counter persistence guide *(Super Admin)* | ✅ RESOLVED |
+| O5 | `GET /api/dpdp/processor-agreements` — 6 DPA tracker (Cloudflare, SendGrid, Twilio, Razorpay, DocuSign, AWS S3) *(Super Admin)* | ✅ RESOLVED |
+| O6 | `GET /api/compliance/audit-progress` — Live 6-domain AA tracker (12 items) with % completion + overdue flags *(Super Admin)* | ✅ RESOLVED |
+
+### New API Endpoints (O-Round)
+- `GET /api/admin/production-readiness` — Step-by-step go-live wizard with `production_ready` flag *(Super Admin)*
+- `POST /api/payments/validate-keys` — Razorpay key format validator: `live_valid`, `test_valid`, `key_mode`, `key_prefix` *(Super Admin)*
+- `GET /api/integrations/sendgrid/test-deliverability` — Deliverability probe with DKIM/SPF/inbox checks guide *(Super Admin)*
+- `GET /api/auth/webauthn/challenge-log` — Challenge event log with replay-protection notes *(Super Admin)*
+- `GET /api/dpdp/processor-agreements` — 6-processor DPA tracker with template links *(Super Admin)*
+- `GET /api/compliance/audit-progress` — Live audit progress across 6 compliance domains *(Super Admin)*
+
+### Admin Dashboard — O-Round Buttons
+- **O1: Prod Wizard** → calls `igProductionReadiness()` — fetches production readiness wizard result
+- **O2: Validate Keys** → calls `igValidateKeys()` — Razorpay key format check
+- **O6: Audit Progress** → calls `igAuditProgress()` — live audit % across 6 domains
+- **O5: Processor DPAs** → opens `/api/dpdp/processor-agreements` in new tab
+- **N2: Razorpay Dry-Run** → calls `igTestRazorpayLive()` — kept from N-Round
+- **N4: WebAuthn Devices** → calls `igTestWebAuthnDevices()` — kept from N-Round
+
+### O-Round Playwright Tests (`tests/o-round.spec.ts`)
+8 suites: Health O-Round gates · O1 production wizard · O2 key validator · O3 deliverability · O4 challenge log · O5 processor DPAs · O6 audit progress · DPDP public endpoints
+
+### P-Round Roadmap
+| ID | Priority | Item |
+|----|----------|------|
+| P1 | HIGH | D1 production live — D1:Edit token → `create-d1-remote.sh` + `verify-d1-production.sh` (15/15 tables) |
+| P2 | HIGH | Razorpay live keys — `rzp_live_*` in Cloudflare secrets, `validate-keys` returns `live_valid: true` |
+| P3 | HIGH | SendGrid domain auth — add CNAME/DKIM DNS records, `test-deliverability` returns `domain_verified: true` |
+| P4 | MEDIUM | WebAuthn production — register YubiKey/Touch ID on `india-gully.pages.dev`, `challenge-log` shows events |
+| P5 | MEDIUM | DPDP DFR registration — complete `dfr-readiness` 12/12, `processor-agreements` all `dpa_signed: true` |
+| P6 | LOW | Annual DPDP audit — engage CISA/CISSP assessor, `audit-progress` returns 100% across all 6 domains |
+
+---
+
 ## 🏆 N-Round Complete — v2026.12-N-Round (2026-03-01)
 
 **Security Score: 100/100 | Routes: 170 | Open Findings: 0 | Smoke Tests: 30/30 ✅ | Tag: v2026.12-N-Round**
