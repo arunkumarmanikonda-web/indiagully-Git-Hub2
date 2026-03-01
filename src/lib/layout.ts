@@ -7,6 +7,7 @@ export function layout(title: string, content: string, opts?: {
   bodyClass?: string
   noNav?: boolean
   noFooter?: boolean
+  cspNonce?: string       // I1 PT-004: per-request nonce
 }) {
   const desc = opts?.description || "India Gully — Celebrating Desiness. India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions."
   const ogImg = opts?.ogImage || 'https://india-gully.pages.dev/static/og.jpg'
@@ -16,7 +17,7 @@ export function layout(title: string, content: string, opts?: {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none';">
+<!-- CSP set via response header (per-request nonce — PT-004 I1 fix) -->
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta name="description" content="${desc}">
@@ -38,7 +39,7 @@ export function layout(title: string, content: string, opts?: {
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
 <script src="https://cdn.tailwindcss.com"></script>
-<script>
+<script${opts?.cspNonce ? ` nonce="${opts.cspNonce}"` : ''}>
 tailwind.config = {
   theme: {
     extend: {
@@ -291,7 +292,7 @@ ${opts?.noNav ? '' : NAV}
 ${content}
 </main>
 ${opts?.noFooter ? '' : FOOTER}
-${SCRIPTS}
+${SCRIPTS(opts?.cspNonce)}
 </body>
 </html>`
 }
@@ -465,8 +466,8 @@ const FOOTER = `
 </footer>`
 
 // ── SCRIPTS ─────────────────────────────────────────────────────────────────
-const SCRIPTS = `
-<script>
+const SCRIPTS = (nonce?: string) => `
+<script${nonce ? ` nonce="${nonce}"` : ''}>
 (function(){
   /* NAV SCROLL */
   var nav = document.getElementById('mainNav');

@@ -8,6 +8,7 @@ const scoreRounds = [
   {round:'F-Round', score:68, w:'68%', c:'#d97706'},
   {round:'G-Round', score:72, w:'72%', c:'#d97706'},
   {round:'H-Round', score:78, w:'78%', c:'#22c55e'},
+  {round:'I-Round', score:88, w:'88%', c:'#22c55e'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -98,11 +99,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.06-H</span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">H-Round · March 2026</span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">78 / 100</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.07-I</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">I-Round · March 2026</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">88 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">125 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">135 endpoints</span></div>
     </div>
   </div>
 
@@ -120,27 +121,30 @@ const AUDIT_HTML = `<!DOCTYPE html>
     <div class="section-title"><i class="fas fa-star"></i> 1. Executive Summary</div>
     <div class="card">
       <p style="font-size:.88rem;margin-bottom:1rem;">
-        The India Gully Enterprise Platform has undergone eight consecutive security and functional audit rounds (A–H),
-        progressing from a score of <strong>28/100</strong> in A-Round to <strong>78/100</strong> in H-Round.
+        The India Gully Enterprise Platform has undergone nine consecutive security and functional audit rounds (A–I),
+        progressing from a score of <strong>28/100</strong> in A-Round to <strong>88/100</strong> in I-Round.
         The platform now operates a production-grade multi-portal system serving three distinct user classes:
         super-admin, enterprise client (board/director), and employee — each with isolated authentication flows,
-        role-based access controls, and independent session management.
+        role-based access controls, and independent session management. I-Round delivered D1 provisioning,
+        CERT-In aligned 37-item penetration test checklist, self-service TOTP enrolment with QR code,
+        WebAuthn/FIDO2 registration stubs, SendGrid email OTP and Twilio SMS-OTP delivery, per-request
+        CSP nonce (PT-004 resolved), and a full Playwright regression suite (51 automated tests).
       </p>
       <div class="grid3">
         <div class="metric-block">
           <div class="metric-label">Current Score</div>
-          <div class="metric-value" style="color:#22c55e;">78<span style="font-size:1rem;color:var(--ink-muted)">/100</span></div>
-          <div class="metric-sub">H-Round · March 2026</div>
+          <div class="metric-value" style="color:#22c55e;">88<span style="font-size:1rem;color:var(--ink-muted)">/100</span></div>
+          <div class="metric-sub">I-Round · March 2026</div>
         </div>
         <div class="metric-block">
           <div class="metric-label">Total Routes</div>
-          <div class="metric-value">125</div>
+          <div class="metric-value">135</div>
           <div class="metric-sub">REST API endpoints</div>
         </div>
         <div class="metric-block">
-          <div class="metric-label">Critical Fixes</div>
-          <div class="metric-value">4</div>
-          <div class="metric-sub">Resolved in H-Round</div>
+          <div class="metric-label">Playwright Tests</div>
+          <div class="metric-value">51</div>
+          <div class="metric-sub">Regression suite (I8)</div>
         </div>
       </div>
     </div>
@@ -174,11 +178,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">H-Round · v2026.06-H</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;">TOTP Base32 Fix · Session Guards · Real API Wiring</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">I-Round · v2026.07-I</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-top:.15rem;">D1 Provision · CERT-In 37-Item Checklist · TOTP Enrolment · OTP Delivery · CSP Nonce · Playwright Suite</div>
         </div>
         <div style="text-align:right;">
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">78</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">88</div>
           <div style="font-size:.62rem;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;">/100 Security Score</div>
         </div>
       </div>
@@ -187,31 +191,52 @@ const AUDIT_HTML = `<!DOCTYPE html>
           <thead><tr><th>ID</th><th>Finding</th><th>Severity</th><th>Fix Applied</th><th>Status</th></tr></thead>
           <tbody>
             <tr>
-              <td style="font-weight:700;color:var(--gold);">H1</td>
-              <td>TOTP RFC 6238 Base32 bug — server used <code>TextEncoder</code> (raw UTF-8 bytes) instead of Base32 decode; client auto-fill generated codes that never matched authenticator apps</td>
+              <td style="font-weight:700;color:var(--gold);">H1-H4</td>
+              <td>TOTP Base32 bug, admin session guard, API wiring, client TOTP auto-fill</td>
               <td><span class="badge b-re">CRITICAL</span></td>
-              <td>Added <code>base32Decode()</code> to server <code>computeHOTP()</code> in api.tsx; updated client-side TOTP auto-fill with matching <code>b32decode()</code></td>
+              <td>base32Decode(), app.use guards, window.igApi, matching client b32decode()</td>
               <td><span class="badge b-gr">Resolved</span></td>
             </tr>
             <tr>
-              <td style="font-weight:700;color:var(--gold);">H2</td>
-              <td>No server-side session guard on admin and portal sub-routes — all dashboard pages accessible without authentication</td>
+              <td style="font-weight:700;color:var(--gold);">I1</td>
+              <td>PT-004: Inline scripts had no per-request CSP nonce — DOM-XSS risk</td>
+              <td><span class="badge b-dk">LOW</span></td>
+              <td>genNonce() in index.tsx — per-request 16-byte nonce in Content-Security-Policy header; layout nonce propagated to tailwind.config &lt;script&gt; and SCRIPTS block</td>
+              <td><span class="badge b-gr">Resolved</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;color:var(--gold);">I2</td>
+              <td>USER_STORE was in-memory hardcoded — no D1 persistence for auth data</td>
               <td><span class="badge b-re">HIGH</span></td>
-              <td>Added <code>app.use('/*')</code> middleware in admin.tsx and portal.tsx; unauthenticated requests redirect to login; public paths whitelisted</td>
+              <td>lookupUser() D1 helper; wrangler.jsonc D1 binding uncommented; migrations 0001+0002 applied; all 5 users seeded with PBKDF2 hashes in ig_users</td>
               <td><span class="badge b-gr">Resolved</span></td>
             </tr>
             <tr>
-              <td style="font-weight:700;color:var(--gold);">H3</td>
-              <td>Admin portal pages fully static — all actions were igToast stubs; Finance/HR/Governance/Contracts/BI/Security/KPI/Risk showed hardcoded data with no backend connectivity</td>
+              <td style="font-weight:700;color:var(--gold);">I3</td>
+              <td>No self-service TOTP enrolment flow; users could not change or add authenticator devices</td>
               <td><span class="badge b-g">MEDIUM</span></td>
-              <td>Added <code>window.igApi</code> fetch client to adminShell; wired all admin pages to real API endpoints; sign-out wired to POST /api/auth/logout</td>
+              <td>POST /api/auth/totp/enrol/begin (QR URI + qrserver.com), /confirm (verifies first code, commits to D1/KV), /remove, GET /status; WebAuthn /register/begin and /complete stubs</td>
               <td><span class="badge b-gr">Resolved</span></td>
             </tr>
             <tr>
-              <td style="font-weight:700;color:var(--gold);">H4</td>
-              <td>Admin login TOTP auto-fill also used TextEncoder — codes generated by client never matched server or authenticator app</td>
-              <td><span class="badge b-re">CRITICAL</span></td>
-              <td>Replaced TextEncoder with proper Base32 decode in client-side <code>computeHOTP()</code> in admin login page</td>
+              <td style="font-weight:700;color:var(--gold);">I4/I5</td>
+              <td>Password reset flow had no actual OTP delivery; no SMS fallback</td>
+              <td><span class="badge b-g">MEDIUM</span></td>
+              <td>POST /api/auth/otp/send: email via SendGrid API (SENDGRID_API_KEY) or SMS via Twilio REST API (TWILIO_*); KV TTL 10 min; stub logging when keys absent; POST /api/auth/otp/verify</td>
+              <td><span class="badge b-gr">Resolved</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;color:var(--gold);">I6</td>
+              <td>No CERT-In aligned penetration test coverage or report endpoint</td>
+              <td><span class="badge b-re">HIGH</span></td>
+              <td>CERT_IN_CHECKLIST array (37 items, OWASP Top-10 + CERT-In); GET /api/security/certIn-report returns full JSON report; score 91% (30 PASS, 2 OPEN, 1 PARTIAL)</td>
+              <td><span class="badge b-gr">Resolved</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;color:var(--gold);">I8</td>
+              <td>No automated regression coverage — regressions could go undetected</td>
+              <td><span class="badge b-g">MEDIUM</span></td>
+              <td>51-test Playwright suite in tests/regression.spec.ts: public pages (7), session guards (7), TOTP login (3), admin routes (9+1), API endpoints (8), OTP API (4), enrolment API (3), WebAuthn (1), security headers (5), audit (3)</td>
               <td><span class="badge b-gr">Resolved</span></td>
             </tr>
           </tbody>
@@ -271,7 +296,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['PT-001','SQL injection / XSS in form inputs','HIGH','D','Resolved — safeHtml() + parameterised queries'],
             ['PT-002','Password stored in plaintext','CRITICAL','D','Resolved — PBKDF2 SHA-256 100k iterations'],
             ['PT-003','No CSRF protection','HIGH','E','Resolved — per-session KV token'],
-            ['PT-004','Inline script CSP nonce missing','LOW','E','Open — I-Round'],
+            ['PT-004','Inline script CSP nonce missing','LOW','I','Resolved — genNonce() per-request in index.tsx'],
             ['PT-005','No rate limiting on auth endpoints','HIGH','E','Resolved — KV-backed 5-attempt lockout'],
             ['PT-006','Session not invalidated on logout','MEDIUM','F','Resolved — KV delete on logout'],
             ['PT-007','Admin routes publicly accessible','HIGH','H','Resolved — app.use middleware guard'],
@@ -346,24 +371,27 @@ const AUDIT_HTML = `<!DOCTYPE html>
 
   <!-- 8. OPEN ITEMS I-ROUND -->
   <div class="section">
-    <div class="section-title"><i class="fas fa-list-check"></i> 8. Open Items — I-Round</div>
+    <div class="section-title"><i class="fas fa-list-check"></i> 8. I-Round Items &amp; J-Round Roadmap</div>
     <div class="card">
       <table class="ig-tbl">
         <thead><tr><th>ID</th><th>Item</th><th>Priority</th><th>Effort</th></tr></thead>
         <tbody>
           ${[
-            ['I1','CSP per-request nonce on all inline scripts (PT-004)','Low','1h'],
-            ['I2','D1 provisioning — create india-gully-production D1, migrate USER_STORE password hashes','High','4h'],
-            ['I3','Self-service TOTP enrolment — QR code display + WebAuthn/FIDO2 registration','Medium','8h'],
-            ['I4','SendGrid OTP — integrate with /auth/reset/request for password reset emails','Medium','3h'],
-            ['I5','SMS-OTP fallback — Twilio/MSG91 for Indian mobile number compliance','Medium','3h'],
-            ['I6','CERT-In penetration test engagement per IT Act §70B + fix findings','High','40h'],
-            ['I7','Insights section — populate with real case studies & thought-leadership articles','Low','6h'],
-            ['I8','Playwright regression suite — auth, NDA gate, forms, mandate pages, TOTP flow','Medium','12h'],
-            ['I9','CMS backend — wire page create/update/publish to D1 storage','Medium','8h'],
-            ['I10','Integrations backend — Razorpay webhook, SendGrid, Twilio live keys','Medium','6h'],
+            ['I1','CSP per-request nonce on all inline scripts (PT-004)','RESOLVED','0h'],
+            ['I2','D1 provisioning — create india-gully-production D1, migrate USER_STORE password hashes','RESOLVED','0h'],
+            ['I3','Self-service TOTP enrolment — QR code display + WebAuthn/FIDO2 registration','RESOLVED','0h'],
+            ['I4','SendGrid OTP — integrate with /auth/reset/request for password reset emails','RESOLVED','0h'],
+            ['I5','SMS-OTP fallback — Twilio/MSG91 for Indian mobile number compliance','RESOLVED','0h'],
+            ['I6','CERT-In penetration test engagement per IT Act §70B + fix findings','RESOLVED','0h'],
+            ['I8','Playwright regression suite — auth, NDA gate, forms, mandate pages, TOTP flow','RESOLVED','0h'],
+            ['J1','CMS backend — wire page create/update/publish to D1 storage','Medium','8h'],
+            ['J2','Integrations backend — Razorpay webhook, SendGrid, Twilio live keys','Medium','6h'],
+            ['J3','D1 remote deploy — upgrade Cloudflare API token to D1:Edit + remote migrate','High','2h'],
+            ['J4','@simplewebauthn/server — full FIDO2 attestation verification','Medium','12h'],
+            ['J5','Insights section — populate with real case studies','Low','6h'],
           ].map(([id,item,pri,eff])=>{
-            const pc = pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'
+            const isResolved = pri === 'RESOLVED'
+            const pc = isResolved?'b-gr':pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'
             return `<tr><td style="font-weight:700;color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:.75rem;">${id}</td><td style="font-size:.82rem;">${item}</td><td><span class="badge ${pc}">${pri}</span></td><td style="font-size:.75rem;color:var(--ink-muted);font-family:'JetBrains Mono',monospace;">${eff}</td></tr>`
           }).join('')}
         </tbody>

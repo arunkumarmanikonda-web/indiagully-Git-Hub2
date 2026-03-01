@@ -18,8 +18,23 @@ import { layout } from './lib/layout'
 
 const app = new Hono()
 
+// ── I1 PT-004: PER-REQUEST CSP NONCE ─────────────────────────────────────────
+// Generates a cryptographically random nonce for every request and sets a
+// strict Content-Security-Policy that replaces 'unsafe-inline' with the nonce.
+// The nonce is stored in c.var so HTML-rendering routes can inject it into
+// every <script nonce="…"> and <style nonce="…"> tag.
+// ─────────────────────────────────────────────────────────────────────────────
+function genNonce(): string {
+  const raw = crypto.getRandomValues(new Uint8Array(16))
+  return btoa(String.fromCharCode(...Array.from(raw)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+}
+
 // ── SECURITY HEADERS MIDDLEWARE (defense-in-depth alongside _headers file) ────
 app.use('*', async (c, next) => {
+  // Generate nonce BEFORE calling next() so routes can read c.get('cspNonce')
+  const nonce = genNonce()
+  c.set('cspNonce', nonce)
   await next()
   c.header('X-Frame-Options', 'DENY')
   c.header('X-Content-Type-Options', 'nosniff')
@@ -27,7 +42,19 @@ app.use('*', async (c, next) => {
   c.header('X-XSS-Protection', '1; mode=block')
   c.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
   c.header('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()')
-  // Do NOT set CSP here — it is managed in _headers to allow Cloudflare Pages cache headers to work correctly
+  // I1 PT-004: per-request nonce replaces 'unsafe-inline' for script-src.
+  // CDN scripts (Tailwind, Chart.js, Axios, FontAwesome) are allow-listed by host.
+  c.header('Content-Security-Policy',
+    `default-src 'self'; ` +
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ` +
+      `https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; ` +
+    `style-src 'self' 'nonce-${nonce}' 'unsafe-inline' ` +
+      `https://fonts.googleapis.com https://cdn.jsdelivr.net; ` +
+    `font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; ` +
+    `img-src 'self' data: https: https://api.qrserver.com; ` +
+    `connect-src 'self' https://india-gully.pages.dev; ` +
+    `frame-ancestors 'none'; base-uri 'self'; form-action 'self';`
+  )
 })
 
 app.use('/api/*', cors({
