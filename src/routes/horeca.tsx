@@ -48,7 +48,7 @@ app.get('/', (c) => {
         ].map(s => `
         <div style="padding:2rem 1.5rem;background:rgba(255,255,255,.03);text-align:center;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.25rem;color:var(--gold);line-height:1;margin-bottom:.4rem;">${s.n}</div>
-          <div style="font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);">${s.l}</div>
+          <div style="font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);">${s.l}</div>
         </div>
         `).join('')}
       </div>

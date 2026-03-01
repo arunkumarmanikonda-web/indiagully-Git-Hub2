@@ -69,7 +69,7 @@ app.get('/', (c) => {
       `).join('')}
     </div>
     <div style="text-align:center;margin-top:2.5rem;">
-      <a href="/" style="font-size:.78rem;color:rgba(255,255,255,.3);">
+      <a href="/" style="font-size:.78rem;color:rgba(255,255,255,.6);">
         <i class="fas fa-arrow-left" style="font-size:.6rem;"></i> Return to India Gully Website
       </a>
     </div>
@@ -187,8 +187,8 @@ function loginPage(opts: {
 </script>
     </div>
     <div style="text-align:center;margin-top:1.5rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;">
-      <a href="/portal" style="font-size:.78rem;color:rgba(255,255,255,.3);"><i class="fas fa-arrow-left" style="font-size:.6rem;"></i> Back to Portal Selection</a>
-      <a href="/portal/demo-access" style="font-size:.78rem;color:rgba(255,255,255,.3);"><i class="fas fa-question-circle" style="font-size:.6rem;"></i> Demo Access</a>
+      <a href="/portal" style="font-size:.78rem;color:rgba(255,255,255,.6);"><i class="fas fa-arrow-left" style="font-size:.6rem;"></i> Back to Portal Selection</a>
+      <a href="/portal/demo-access" style="font-size:.78rem;color:rgba(255,255,255,.6);"><i class="fas fa-question-circle" style="font-size:.6rem;"></i> Demo Access</a>
     </div>
   </div>
 </div>`

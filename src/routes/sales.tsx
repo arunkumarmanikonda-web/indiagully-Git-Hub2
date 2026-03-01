@@ -29,12 +29,12 @@ function salesShell(pageTitle: string, active: string, body: string) {
       <div style="font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:#38bdf8;margin-top:4px;">Sales Force Engine</div>
     </a>
     <nav style="flex:1;padding:.5rem;">
-      <div style="font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:.5rem .75rem .25rem;">Sales</div>
+      <div style="font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.6);padding:.5rem .75rem .25rem;">Sales</div>
       ${nav.map(i=>`<a href="/admin/sales/${i.id==='dashboard'?'dashboard':i.id}" style="display:flex;align-items:center;gap:.625rem;padding:.55rem .75rem;font-size:.78rem;color:${active===i.id?'#38bdf8':'rgba(255,255,255,.6)'};background:${active===i.id?'rgba(56,189,248,.1)':'none'};border-left:${active===i.id?'2px solid #38bdf8':'2px solid transparent'};text-decoration:none;margin-bottom:.1rem;">
         <i class="fas fa-${i.icon}" style="width:14px;font-size:.68rem;text-align:center;"></i>${i.label}
         ${i.badge?`<span style="margin-left:auto;background:#dc2626;color:#fff;font-size:.55rem;font-weight:700;padding:1px 5px;border-radius:8px;">${i.badge}</span>`:''}
       </a>`).join('')}
-      <div style="font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:.75rem .75rem .25rem;">Back</div>
+      <div style="font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.6);padding:.75rem .75rem .25rem;">Back</div>
       <a href="/admin/dashboard" style="display:flex;align-items:center;gap:.625rem;padding:.55rem .75rem;font-size:.78rem;color:rgba(255,255,255,.4);text-decoration:none;">
         <i class="fas fa-arrow-left" style="width:14px;font-size:.68rem;text-align:center;"></i>Admin Console
       </a>

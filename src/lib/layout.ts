@@ -81,11 +81,11 @@ a{color:inherit;text-decoration:none}
 .h3{font-family:"DM Serif Display",Georgia,serif;font-size:clamp(1.25rem,2vw,1.75rem);line-height:1.2;color:var(--ink)}
 .h3-lt{font-family:"DM Serif Display",Georgia,serif;font-size:clamp(1.25rem,2vw,1.75rem);line-height:1.2;color:#fff}
 .lead{font-size:1.0625rem;line-height:1.8;color:var(--ink-soft)}
-.lead-lt{font-size:1.0625rem;line-height:1.8;color:rgba(255,255,255,.55)}
+.lead-lt{font-size:1.0625rem;line-height:1.8;color:rgba(255,255,255,.75)}
 .body{font-size:.9375rem;line-height:1.75;color:var(--ink-soft)}
-.body-lt{font-size:.9375rem;line-height:1.75;color:rgba(255,255,255,.5)}
+.body-lt{font-size:.9375rem;line-height:1.75;color:rgba(255,255,255,.72)}
 .caption{font-size:.75rem;letter-spacing:.06em;color:var(--ink-muted)}
-.caption-lt{font-size:.75rem;letter-spacing:.06em;color:rgba(255,255,255,.35)}
+.caption-lt{font-size:.75rem;letter-spacing:.06em;color:rgba(255,255,255,.6)}
 .stat-n{font-family:"DM Serif Display",serif;font-size:2.75rem;line-height:1;color:var(--gold)}
 
 /* ── GOLD RULE ──────────────────────────────── */
@@ -128,7 +128,7 @@ a{color:inherit;text-decoration:none}
 .n-lk:hover,.n-lk.on{color:#fff}
 .n-drop{position:absolute;top:calc(100% + 10px);left:0;min-width:14rem;background:rgba(10,10,10,.98);border:1px solid rgba(255,255,255,.07);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);opacity:0;visibility:hidden;transform:translateY(-6px);transition:all .22s;z-index:300}
 .n-par:hover .n-drop{opacity:1;visibility:visible;transform:translateY(0)}
-.n-di{display:flex;align-items:center;gap:.75rem;padding:.65rem 1.1rem;font-size:.775rem;color:rgba(255,255,255,.55);transition:color .15s,background .15s}
+.n-di{display:flex;align-items:center;gap:.75rem;padding:.65rem 1.1rem;font-size:.775rem;color:rgba(255,255,255,.72);transition:color .15s,background .15s}
 .n-di:hover{color:#fff;background:rgba(255,255,255,.04)}
 
 /* ── HERO CAROUSEL ──────────────────────────── */
@@ -211,7 +211,7 @@ textarea.ig-input{resize:vertical;min-height:130px}
 .sb-lk{display:flex;align-items:center;gap:.75rem;padding:.6rem .875rem;font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);border-radius:3px;transition:all .18s;cursor:pointer}
 .sb-lk:hover{color:#fff;background:rgba(255,255,255,.05)}
 .sb-lk.on{color:var(--gold);background:rgba(184,150,12,.11)}
-.sb-sec{font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.18);padding:.5rem .875rem;margin-top:.75rem}
+.sb-sec{font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.45);padding:.5rem .875rem;margin-top:.75rem}
 
 /* ── TABLES ─────────────────────────────────── */
 .ig-tbl{width:100%;border-collapse:collapse}
@@ -406,40 +406,40 @@ const FOOTER = `
              draggable="false"
              decoding="async">
       </div>
-      <p style="font-size:.8rem;color:rgba(255,255,255,.3);line-height:1.8;max-width:300px;margin-bottom:1.25rem;">India's premier multi-vertical advisory firm. Strategy, transactions and enablement across Real Estate, Retail, Hospitality, Entertainment and HORECA.</p>
-      <p style="font-size:.68rem;color:rgba(255,255,255,.15);line-height:1.7;">Vivacious Entertainment and Hospitality Pvt. Ltd.<br>New Delhi · CIN: U74900DL2017PTC000000</p>
+      <p style="font-size:.8rem;color:rgba(255,255,255,.65);line-height:1.8;max-width:300px;margin-bottom:1.25rem;">India's premier multi-vertical advisory firm. Strategy, transactions and enablement across Real Estate, Retail, Hospitality, Entertainment and HORECA.</p>
+      <p style="font-size:.68rem;color:rgba(255,255,255,.45);line-height:1.7;">Vivacious Entertainment and Hospitality Pvt. Ltd.<br>New Delhi · CIN: U74900DL2017PTC000000</p>
     </div>
 
     <!-- Advisory -->
     <div>
-      <p class="eyebrow" style="color:rgba(255,255,255,.2);margin-bottom:1.1rem;">Advisory</p>
+      <p class="eyebrow" style="color:rgba(184,150,12,.85);margin-bottom:1.1rem;">Advisory</p>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:.6rem;">
-        ${['Real Estate','Retail &amp; Leasing','Hospitality','Entertainment','Debt &amp; Special Situations','HORECA Solutions'].map(s=>`<li><a href="/services" style="font-size:.8rem;color:rgba(255,255,255,.38);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.38)'">${s}</a></li>`).join('')}
+        ${['Real Estate','Retail &amp; Leasing','Hospitality','Entertainment','Debt &amp; Special Situations','HORECA Solutions'].map(s=>`<li><a href="/services" style="font-size:.8rem;color:rgba(255,255,255,.65);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.65)'">${s}</a></li>`).join('')}
       </ul>
     </div>
 
     <!-- Platform -->
     <div>
-      <p class="eyebrow" style="color:rgba(255,255,255,.2);margin-bottom:1.1rem;">Platform</p>
+      <p class="eyebrow" style="color:rgba(184,150,12,.85);margin-bottom:1.1rem;">Platform</p>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:.6rem;">
-        ${[['Active Mandates','/listings'],['Insights','/insights'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.38);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.38)'">${l}</a></li>`).join('')}
+        ${[['Active Mandates','/listings'],['Insights','/insights'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.65);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.65)'">${l}</a></li>`).join('')}
       </ul>
     </div>
 
     <!-- Contact -->
     <div>
-      <p class="eyebrow" style="color:rgba(255,255,255,.2);margin-bottom:1.1rem;">Contact</p>
+      <p class="eyebrow" style="color:rgba(184,150,12,.85);margin-bottom:1.1rem;">Contact</p>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:.7rem;">
-        <li style="display:flex;gap:.6rem;align-items:flex-start;font-size:.8rem;color:rgba(255,255,255,.38);"><i class="fas fa-map-marker-alt" style="color:var(--gold);font-size:.65rem;margin-top:.2rem;flex-shrink:0;"></i>New Delhi, India</li>
-        <li><a href="tel:+918988988988" style="display:flex;gap:.6rem;align-items:center;font-size:.8rem;color:rgba(255,255,255,.38);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.38)'"><i class="fas fa-phone" style="color:var(--gold);font-size:.65rem;flex-shrink:0;"></i>+91 8988 988 988</a></li>
-        <li><a href="mailto:info@indiagully.com" style="display:flex;gap:.6rem;align-items:center;font-size:.8rem;color:rgba(255,255,255,.38);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.38)'"><i class="fas fa-envelope" style="color:var(--gold);font-size:.65rem;flex-shrink:0;"></i>info@indiagully.com</a></li>
+        <li style="display:flex;gap:.6rem;align-items:flex-start;font-size:.8rem;color:rgba(255,255,255,.65);"><i class="fas fa-map-marker-alt" style="color:var(--gold);font-size:.65rem;margin-top:.2rem;flex-shrink:0;"></i>New Delhi, India</li>
+        <li><a href="tel:+918988988988" style="display:flex;gap:.6rem;align-items:center;font-size:.8rem;color:rgba(255,255,255,.65);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.65)'"><i class="fas fa-phone" style="color:var(--gold);font-size:.65rem;flex-shrink:0;"></i>+91 8988 988 988</a></li>
+        <li><a href="mailto:info@indiagully.com" style="display:flex;gap:.6rem;align-items:center;font-size:.8rem;color:rgba(255,255,255,.65);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.65)'"><i class="fas fa-envelope" style="color:var(--gold);font-size:.65rem;flex-shrink:0;"></i>info@indiagully.com</a></li>
       </ul>
       <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,.06);">
-        <p style="font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.18);margin-bottom:.5rem;">Leadership Direct</p>
+        <p style="font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(184,150,12,.75);margin-bottom:.5rem;">Leadership Direct</p>
         <ul style="list-style:none;display:flex;flex-direction:column;gap:.35rem;">
-          <li><a href="mailto:akm@indiagully.com"          style="font-size:.75rem;color:rgba(255,255,255,.3);" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.3)'">akm@indiagully.com</a></li>
-          <li><a href="mailto:pavan@indiagully.com"        style="font-size:.75rem;color:rgba(255,255,255,.3);" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.3)'">pavan@indiagully.com</a></li>
-          <li><a href="mailto:amit.jhingan@indiagully.com" style="font-size:.75rem;color:rgba(255,255,255,.3);" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.3)'">amit.jhingan@indiagully.com</a></li>
+          <li><a href="mailto:akm@indiagully.com"          style="font-size:.75rem;color:rgba(255,255,255,.6);" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.6)'">akm@indiagully.com</a></li>
+          <li><a href="mailto:pavan@indiagully.com"        style="font-size:.75rem;color:rgba(255,255,255,.6);" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.6)'">pavan@indiagully.com</a></li>
+          <li><a href="mailto:amit.jhingan@indiagully.com" style="font-size:.75rem;color:rgba(255,255,255,.6);" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.6)'">amit.jhingan@indiagully.com</a></li>
         </ul>
       </div>
     </div>
@@ -448,15 +448,15 @@ const FOOTER = `
   <div style="border-top:1px solid rgba(255,255,255,.05);">
     <div class="wrap" style="padding-top:.9rem;padding-bottom:.9rem;display:flex;flex-direction:column;gap:.5rem;align-items:center;justify-content:space-between;">
       <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;width:100%;gap:.75rem;">
-        <p style="font-size:.68rem;color:rgba(255,255,255,.18);">© 2024 Vivacious Entertainment and Hospitality Pvt. Ltd. All rights reserved. India Gully™ is a registered brand.</p>
-        <div style="display:flex;gap:1.25rem;font-size:.68rem;color:rgba(255,255,255,.18);align-items:center;">
-          <a href="/legal/privacy"    onmouseover="this.style.color='rgba(255,255,255,.45)'" onmouseout="this.style.color='rgba(255,255,255,.18)'" style="transition:color .2s;">Privacy Policy</a>
-          <a href="/legal/terms"      onmouseover="this.style.color='rgba(255,255,255,.45)'" onmouseout="this.style.color='rgba(255,255,255,.18)'" style="transition:color .2s;">Terms of Use</a>
-          <a href="/legal/disclaimer" onmouseover="this.style.color='rgba(255,255,255,.45)'" onmouseout="this.style.color='rgba(255,255,255,.18)'" style="transition:color .2s;">Disclaimer</a>
-          <span style="color:rgba(255,255,255,.1);">GSTIN: 07XXXXXX000XXX</span>
+        <p style="font-size:.68rem;color:rgba(255,255,255,.5);">© 2024 Vivacious Entertainment and Hospitality Pvt. Ltd. All rights reserved. India Gully™ is a registered brand.</p>
+        <div style="display:flex;gap:1.25rem;font-size:.68rem;color:rgba(255,255,255,.5);align-items:center;">
+          <a href="/legal/privacy"    onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'" style="transition:color .2s;">Privacy Policy</a>
+          <a href="/legal/terms"      onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'" style="transition:color .2s;">Terms of Use</a>
+          <a href="/legal/disclaimer" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'" style="transition:color .2s;">Disclaimer</a>
+          <span style="color:rgba(255,255,255,.4);">GSTIN: 07XXXXXX000XXX</span>
           <button onclick="igStartTour && igStartTour()" aria-label="Start guided tour"
-                  style="background:none;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.3);padding:.2rem .6rem;font-size:.62rem;cursor:pointer;transition:color .2s;"
-                  onmouseover="this.style.color='rgba(255,255,255,.6)'" onmouseout="this.style.color='rgba(255,255,255,.3)'">
+                  style="background:none;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.55);padding:.2rem .6rem;font-size:.62rem;cursor:pointer;transition:color .2s;"
+                  onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.55)'">
             <i class="fas fa-compass" style="margin-right:.3rem;"></i>Tour
           </button>
         </div>
@@ -675,7 +675,7 @@ const SCRIPTS = (_nonce?: string) => `
       +'<div style="flex:1;min-width:260px;">'
         +'<div style="font-size:.75rem;font-weight:700;color:#fff;margin-bottom:.35rem;letter-spacing:.06em;">'
           +'&#x1F512; DPDP Act 2023 &mdash; Data Consent &nbsp;'
-          +'<span style="font-size:.62rem;font-weight:400;color:rgba(255,255,255,.35);letter-spacing:0;">v3</span>'
+          +'<span style="font-size:.62rem;font-weight:400;color:rgba(255,255,255,.6);letter-spacing:0;">v3</span>'
         +'</div>'
         +'<div style="font-size:.72rem;color:rgba(255,255,255,.55);line-height:1.6;">'
           +'India Gully processes personal data under the '
@@ -686,7 +686,7 @@ const SCRIPTS = (_nonce?: string) => `
         +'</div>'
         // Per-purpose toggle row
         +'<div style="margin-top:.55rem;display:flex;gap:.875rem;flex-wrap:wrap;align-items:center;">'
-          +'<label style="display:flex;align-items:center;gap:.35rem;font-size:.68rem;color:rgba(255,255,255,.35);cursor:not-allowed;" title="Required for platform operation">'
+          +'<label style="display:flex;align-items:center;gap:.35rem;font-size:.68rem;color:rgba(255,255,255,.55);cursor:not-allowed;" title="Required for platform operation">'
             +'<input type="checkbox" checked disabled style="accent-color:var(--gold,#B8960C);width:13px;height:13px;"> Essential (required)'
           +'</label>'
           +'<label id="lbl-analytics" style="display:flex;align-items:center;gap:.35rem;font-size:.68rem;color:rgba(255,255,255,.7);cursor:pointer;" title="Usage analytics and platform improvement">'
@@ -699,7 +699,7 @@ const SCRIPTS = (_nonce?: string) => `
             +'<input type="checkbox" id="dpdp-chk-third" style="accent-color:var(--gold,#B8960C);width:13px;height:13px;"> Third-Party Integrations'
           +'</label>'
           // Withdraw link — shown after consent is stored
-          +'<span id="dpdp-withdraw-link" style="display:none;font-size:.62rem;color:rgba(255,255,255,.3);margin-left:auto;">'
+          +'<span id="dpdp-withdraw-link" style="display:none;font-size:.62rem;color:rgba(255,255,255,.6);margin-left:auto;">'
             +'<a id="dpdp-do-withdraw" href="#" style="color:rgba(184,150,12,.55);text-decoration:underline;">Withdraw consent</a>'
           +'</span>'
         +'</div>'
@@ -714,8 +714,8 @@ const SCRIPTS = (_nonce?: string) => `
           +'color:rgba(255,255,255,.7);padding:.5rem 1.25rem;font-size:.72rem;cursor:pointer;">'
           +'Save Preferences'
         +'</button>'
-        +'<button id="dpdp-essential-only" style="background:transparent;border:1px solid rgba(255,255,255,.12);'
-          +'color:rgba(255,255,255,.4);padding:.5rem .875rem;font-size:.68rem;cursor:pointer;">'
+        +'<button id="dpdp-essential-only" style="background:transparent;border:1px solid rgba(255,255,255,.25);'
+          +'color:rgba(255,255,255,.65);padding:.5rem .875rem;font-size:.68rem;cursor:pointer;">'
           +'Essential Only'
         +'</button>'
       +'</div>';
@@ -814,11 +814,11 @@ const SCRIPTS = (_nonce?: string) => `
         +'<button onclick="document.getElementById(&quot;dpdp-pref-drawer&quot;).remove()" '
           +'style="background:none;border:none;color:rgba(255,255,255,.4);font-size:1.1rem;cursor:pointer;">&times;</button>'
       +'</div>'
-      +'<div style="font-size:.7rem;color:rgba(255,255,255,.45);margin-bottom:.875rem;line-height:1.6;">'
+      +'<div style="font-size:.7rem;color:rgba(255,255,255,.7);margin-bottom:.875rem;line-height:1.6;">'
         +'Manage your data consent under DPDP Act 2023. Changes take effect immediately.'
       +'</div>'
       +'<div style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:1rem;">'
-        +'<label style="display:flex;align-items:center;justify-content:space-between;font-size:.73rem;color:rgba(255,255,255,.45);">'
+        +'<label style="display:flex;align-items:center;justify-content:space-between;font-size:.73rem;color:rgba(255,255,255,.6);">'
           +'<span>&#x2714;&#xFE0F; Essential (required)</span>'
           +'<input type="checkbox" checked disabled style="accent-color:var(--gold,#B8960C);">'
         +'</label>'
@@ -838,10 +838,10 @@ const SCRIPTS = (_nonce?: string) => `
       +'<div style="display:flex;gap:.5rem;">'
         +'<button id="dpdp-d-save" style="flex:1;background:var(--gold,#B8960C);color:#000;border:none;'
           +'padding:.5rem;font-size:.72rem;font-weight:700;cursor:pointer;">Save Changes</button>'
-        +'<button id="dpdp-d-withdraw" style="background:transparent;border:1px solid rgba(255,255,255,.15);'
-          +'color:rgba(255,255,255,.4);padding:.5rem .75rem;font-size:.68rem;cursor:pointer;">Withdraw All</button>'
+        +'<button id="dpdp-d-withdraw" style="background:transparent;border:1px solid rgba(255,255,255,.25);'
+          +'color:rgba(255,255,255,.65);padding:.5rem .75rem;font-size:.68rem;cursor:pointer;">Withdraw All</button>'
       +'</div>'
-      +'<div style="margin-top:.6rem;font-size:.62rem;color:rgba(255,255,255,.25);">'
+      +'<div style="margin-top:.6rem;font-size:.62rem;color:rgba(255,255,255,.5);">'
         +'Last updated: '+(stored?new Date(rec.ts).toLocaleDateString('en-IN'):'not set')
       +'</div>';
     document.body.appendChild(drawer);

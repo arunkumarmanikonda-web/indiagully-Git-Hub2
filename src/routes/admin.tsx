@@ -164,7 +164,7 @@ app.get('/', (c) => {
       <div style="background:linear-gradient(135deg,#180808,#2D0808);padding:2.25rem;text-align:center;">
         <div style="width:56px;height:56px;background:rgba(184,150,12,.15);border:1.5px solid rgba(184,150,12,.3);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;"><i class="fas fa-shield-alt" style="color:var(--gold);font-size:1.35rem;"></i></div>
         <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;margin-bottom:.25rem;">Super Admin Console</h1>
-        <p style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);">India Gully Enterprise Platform</p>
+        <p style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.6);">India Gully Enterprise Platform</p>
         <div style="margin-top:.875rem;display:inline-flex;align-items:center;gap:.4rem;background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.3);padding:.3rem .75rem;"><i class="fas fa-exclamation-triangle" style="color:#ef4444;font-size:.6rem;"></i><span style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#ef4444;">Restricted Access</span></div>
       </div>
       <div style="background:#f0f9ff;border-bottom:1px solid #bae6fd;padding:.875rem 1.5rem;display:flex;gap:.6rem;">
@@ -247,7 +247,7 @@ app.get('/', (c) => {
 })();
 </script>
     </div>
-    <div style="text-align:center;margin-top:1.5rem;"><a href="/portal" style="font-size:.78rem;color:rgba(255,255,255,.3);"><i class="fas fa-arrow-left" style="font-size:.6rem;"></i> Back to Portal Selection</a></div>
+    <div style="text-align:center;margin-top:1.5rem;"><a href="/portal" style="font-size:.78rem;color:rgba(255,255,255,.55);"><i class="fas fa-arrow-left" style="font-size:.6rem;"></i> Back to Portal Selection</a></div>
   </div>
 </div>`
   return c.html(layout('Super Admin', content, { noNav:true, noFooter:true }))

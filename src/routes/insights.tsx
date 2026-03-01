@@ -197,15 +197,15 @@ app.get('/', (c) => {
       <div>
         <form class="ig-form" method="POST" action="/api/subscribe" style="display:flex;flex-direction:column;gap:1rem;">
           <div>
-            <label class="ig-lbl" style="color:rgba(255,255,255,.3);">Your Name</label>
+            <label class="ig-lbl" style="color:rgba(255,255,255,.7);">Your Name</label>
             <input type="text" name="name" class="ig-input" required placeholder="Full name">
           </div>
           <div>
-            <label class="ig-lbl" style="color:rgba(255,255,255,.3);">Email Address *</label>
+            <label class="ig-lbl" style="color:rgba(255,255,255,.7);">Email Address *</label>
             <input type="email" name="email" class="ig-input" required placeholder="your@email.com">
           </div>
           <div>
-            <label class="ig-lbl" style="color:rgba(255,255,255,.3);">Professional Role</label>
+            <label class="ig-lbl" style="color:rgba(255,255,255,.7);">Professional Role</label>
             <select name="role" class="ig-input">
               <option value="">Select your role</option>
               <option>Developer / Promoter</option>
@@ -220,7 +220,7 @@ app.get('/', (c) => {
           <button type="submit" class="btn btn-g" style="width:100%;justify-content:center;">
             <i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Subscribe to Insights
           </button>
-          <p style="font-size:.68rem;color:rgba(255,255,255,.2);line-height:1.6;">By subscribing you agree to receive occasional research updates and mandate alerts from India Gully. We respect your privacy and you can unsubscribe at any time.</p>
+          <p style="font-size:.68rem;color:rgba(255,255,255,.55);line-height:1.6;">By subscribing you agree to receive occasional research updates and mandate alerts from India Gully. We respect your privacy and you can unsubscribe at any time.</p>
         </form>
       </div>
     </div>

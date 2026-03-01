@@ -259,9 +259,9 @@ app.get('/', (c) => {
             </div>
             <div style="flex:1;min-width:0;">
               <div style="font-size:.85rem;font-weight:600;color:#fff;margin-bottom:.1rem;">${p.name}</div>
-              <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-bottom:.35rem;">${p.title}</div>
-              <a href="tel:${p.ph.replace(/\\s/g,'')}" style="font-size:.72rem;color:rgba(255,255,255,.35);display:block;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.35)'">${p.ph}</a>
-              <a href="mailto:${p.em}" style="font-size:.72rem;color:rgba(255,255,255,.35);display:block;word-break:break-all;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.35)'">${p.em}</a>
+              <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-bottom:.35rem;">${p.title}</div>
+              <a href="tel:${p.ph.replace(/\\s/g,'')}" style="font-size:.72rem;color:rgba(255,255,255,.65);display:block;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.65)'">${p.ph}</a>
+              <a href="mailto:${p.em}" style="font-size:.72rem;color:rgba(255,255,255,.65);display:block;word-break:break-all;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.65)'">${p.em}</a>
             </div>
           </div>
           `).join('')}

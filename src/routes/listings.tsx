@@ -56,7 +56,7 @@ app.get('/', (c) => {
       ].map(s => `
       <div style="padding:2rem 1.75rem;border-right:1px solid rgba(255,255,255,.06);text-align:center;">
         <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.25rem;color:var(--gold);line-height:1;margin-bottom:.4rem;">${s.n}</div>
-        <div style="font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.28);">${s.l}</div>
+        <div style="font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);">${s.l}</div>
       </div>`).join('')}
     </div>
   </div>
@@ -310,8 +310,8 @@ ${ndaModal}
       </div>
       <div style="text-align:right;flex-shrink:0;">
         <div style="font-family:'DM Serif Display',Georgia,serif;font-size:3rem;color:var(--gold);line-height:1;">${l.value}</div>
-        <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-top:.2rem;">${l.valueUSD || ''}</div>
-        <div style="font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-top:.35rem;">${l.mandateType}</div>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.2rem;">${l.valueUSD || ''}</div>
+        <div style="font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-top:.35rem;">${l.mandateType}</div>
       </div>
     </div>
   </div>
@@ -380,38 +380,38 @@ ${ndaModal}
               <input type="hidden" name="mandate" value="${l.id}">
               <input type="hidden" name="mandateTitle" value="${l.title}">
               <div>
-                <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.3rem;">Full Name *</label>
+                <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:.3rem;">Full Name *</label>
                 <input type="text" name="name" required placeholder="Your name"
                        style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.72rem .9rem;font-size:.85rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;"
                        onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
               </div>
               <div>
-                <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.3rem;">Email Address *</label>
+                <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:.3rem;">Email Address *</label>
                 <input type="email" name="email" required placeholder="your@email.com"
                        style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.72rem .9rem;font-size:.85rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;"
                        onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
               </div>
               <div>
-                <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.3rem;">Organisation</label>
+                <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:.3rem;">Organisation</label>
                 <input type="text" name="org" placeholder="Fund / Family Office / Developer"
                        style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.72rem .9rem;font-size:.85rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;"
                        onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
               </div>
               <div>
-                <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.3rem;">Phone</label>
+                <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:.3rem;">Phone</label>
                 <input type="tel" name="phone" placeholder="+91 XXXXX XXXXX"
                        style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.72rem .9rem;font-size:.85rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;"
                        onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
               </div>
               <div>
-                <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.3rem;">Brief Note</label>
+                <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:.3rem;">Brief Note</label>
                 <textarea name="message" rows="3" placeholder="Investor profile, ticket size, timeline…"
                           style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.72rem .9rem;font-size:.85rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;resize:vertical;min-height:80px;transition:border-color .2s;"
                           onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'"></textarea>
               </div>
               <label style="display:flex;align-items:flex-start;gap:.5rem;cursor:pointer;">
                 <input type="checkbox" name="nda" required style="accent-color:var(--gold);margin-top:.15rem;flex-shrink:0;">
-                <span style="font-size:.72rem;color:rgba(255,255,255,.35);line-height:1.6;">I agree to execute a mutual NDA before accessing the Information Memorandum *</span>
+                <span style="font-size:.72rem;color:rgba(255,255,255,.65);line-height:1.6;">I agree to execute a mutual NDA before accessing the Information Memorandum *</span>
               </label>
               <button type="submit" class="btn btn-g" style="width:100%;justify-content:center;padding:.875rem;">
                 <i class="fas fa-paper-plane" style="margin-right:.5rem;font-size:.7rem;"></i>Request IM & NDA
