@@ -6636,6 +6636,31 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       </div>
     </div>
 
+    <!-- HH-Round buttons -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;padding:1rem;">
+      <div style="font-size:.75rem;font-weight:600;color:#b45309;margin-bottom:.6rem;"><i class="fas fa-calculator" style="margin-right:.4rem;"></i>HH-Round — Finance ERP &amp; Tax Intelligence (v2026.32)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igErpDashboard()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-tachometer-alt" style="margin-right:.3rem;"></i>HH1: ERP Dashboard
+        </button>
+        <button onclick="igTdsTracker()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-percent" style="margin-right:.3rem;"></i>HH2: TDS Tracker
+        </button>
+        <button onclick="igGstReconciliation()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-file-invoice" style="margin-right:.3rem;"></i>HH3: GST Recon
+        </button>
+        <button onclick="igBudgetVariance()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-chart-pie" style="margin-right:.3rem;"></i>HH4: Budget Variance
+        </button>
+        <button onclick="igFinancialDataAudit()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-search-dollar" style="margin-right:.3rem;"></i>HH5: Financial Audit
+        </button>
+        <button onclick="igSebiDisclosureTracker()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-landmark" style="margin-right:.3rem;"></i>HH6: SEBI Disclosure
+        </button>
+      </div>
+    </div>
+
     <!-- ── Gold Certification Live Progress (W-Round) ── -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;" id="gold-cert-widget">
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
@@ -8482,6 +8507,60 @@ window.igConsumerProtectionTracker = function() {
       return '<tr><td style="font-size:.65rem;">'+a.area+'</td><td style="color:'+col+';">'+a.status+'</td></tr>';}).join('');
     igModal('GG6: Consumer Protection (CP Act 2019) — v2026.31','<b>Areas:</b> '+s.total_areas+' | <b>Compliant:</b> '+s.compliant+' | <b>Review:</b> '+s.under_review+' | <b>Grievances YTD:</b> '+s.grievances_ytd+' | <b>Resolution:</b> '+s.grievance_resolution_rate_pct+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0e7490;color:#fff;"><th>Area</th><th>Status</th></tr>'+rows+'</table>'+(d.alerts.length?'<p style="color:#92400e;font-size:.7rem;margin-top:.4rem;">⚠ '+d.alerts.map(function(a){return a.area+': '+a.issue;}).join(' | ')+'</p>':''));
   }).catch(function(){igModal('GG6: Consumer Protection','Session expired — log in as Super Admin')});
+};
+
+window.igErpDashboard = function() {
+  fetch('/api/finance/erp-dashboard',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.modules||[]).map(function(m){
+      var col=m.status==='healthy'?'#065f46':m.status==='warning'?'#92400e':'#991b1b';
+      return '<tr><td style="font-size:.65rem;">'+m.module+'</td><td style="color:'+col+';">'+m.status+'</td><td style="font-size:.65rem;">'+m.last_sync+'</td><td style="font-size:.65rem;">'+m.records_processed+'</td></tr>';}).join('');
+    igModal('HH1: ERP Dashboard — v2026.32','<b>Total Modules:</b> '+s.total_modules+' | <b>Healthy:</b> '+s.healthy+' | <b>Warning:</b> '+s.warning+' | <b>Sync Lag:</b> '+s.avg_sync_lag_min+' min | <b>Revenue:</b> ₹'+s.total_revenue_cr+' Cr<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>Module</th><th>Status</th><th>Last Sync</th><th>Records</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('HH1: ERP Dashboard','Session expired — log in as Super Admin')});
+};
+
+window.igTdsTracker = function() {
+  fetch('/api/finance/tds-tracker',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.deductees||[]).map(function(x){
+      var col=x.filing_status==='filed'?'#065f46':'#92400e';
+      return '<tr><td style="font-size:.65rem;">'+x.name+'</td><td style="font-size:.65rem;">'+x.section+'</td><td style="font-size:.65rem;">₹'+x.tds_deducted+'</td><td style="color:'+col+';">'+x.filing_status+'</td></tr>';}).join('');
+    igModal('HH2: TDS Tracker — v2026.32','<b>Total Deductees:</b> '+s.total_deductees+' | <b>Total TDS:</b> ₹'+s.total_tds_deducted_lakh+' L | <b>Filed:</b> '+s.filed+' | <b>Pending:</b> '+s.pending+' | <b>Overdue:</b> '+s.overdue+(d.alerts.length?' <span style="color:#991b1b;">⚠ '+d.alerts.length+' alerts</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>Deductee</th><th>Section</th><th>TDS</th><th>Status</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('HH2: TDS Tracker','Session expired — log in as Super Admin')});
+};
+
+window.igGstReconciliation = function() {
+  fetch('/api/finance/gst-reconciliation',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.gstin_accounts||[]).map(function(g){
+      var col=g.recon_status==='matched'?'#065f46':g.recon_status==='partial'?'#92400e':'#991b1b';
+      return '<tr><td style="font-size:.65rem;">'+g.gstin+'</td><td style="font-size:.65rem;">₹'+g.books_itc+'</td><td style="font-size:.65rem;">₹'+g.portal_itc+'</td><td style="color:'+col+';">'+g.recon_status+'</td></tr>';}).join('');
+    igModal('HH3: GST Reconciliation — v2026.32','<b>Total ITC (Books):</b> ₹'+s.total_itc_books_lakh+' L | <b>ITC (Portal):</b> ₹'+s.total_itc_portal_lakh+' L | <b>Mismatch:</b> ₹'+s.itc_mismatch_lakh+' L | <b>Match Rate:</b> '+s.reconciliation_rate_pct+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>GSTIN</th><th>Books ITC</th><th>Portal ITC</th><th>Status</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('HH3: GST Reconciliation','Session expired — log in as Super Admin')});
+};
+
+window.igBudgetVariance = function() {
+  fetch('/api/finance/budget-variance',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.departments||[]).map(function(dep){
+      var col=dep.variance_pct>10?'#991b1b':dep.variance_pct>5?'#92400e':'#065f46';
+      return '<tr><td style="font-size:.65rem;">'+dep.department+'</td><td style="font-size:.65rem;">₹'+dep.budget+'</td><td style="font-size:.65rem;">₹'+dep.actual+'</td><td style="color:'+col+';">'+dep.variance_pct+'%</td></tr>';}).join('');
+    igModal('HH4: Budget Variance — v2026.32','<b>Total Budget:</b> ₹'+s.total_budget_cr+' Cr | <b>Actual Spend:</b> ₹'+s.total_actual_cr+' Cr | <b>Overall Variance:</b> '+s.overall_variance_pct+'% | <b>Departments Over:</b> '+s.depts_over_budget+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>Department</th><th>Budget</th><th>Actual</th><th>Variance</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('HH4: Budget Variance','Session expired — log in as Super Admin')});
+};
+
+window.igFinancialDataAudit = function() {
+  fetch('/api/dpdp/financial-data-audit',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.categories||[]).map(function(cat){
+      var col=cat.dpdp_compliant?'#065f46':'#991b1b';
+      return '<tr><td style="font-size:.65rem;">'+cat.category+'</td><td style="font-size:.65rem;">'+cat.data_elements+'</td><td style="font-size:.65rem;">'+cat.retention_policy+'</td><td style="color:'+col+';">'+(cat.dpdp_compliant?'✓':'✗')+'</td></tr>';}).join('');
+    igModal('HH5: Financial Data Audit (DPDP) — v2026.32','<b>Categories:</b> '+s.total_categories+' | <b>Compliant:</b> '+s.compliant+' | <b>Non-compliant:</b> '+s.non_compliant+' | <b>Retention Issues:</b> '+s.retention_issues+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>Category</th><th>Elements</th><th>Retention</th><th>DPDP</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('HH5: Financial Data Audit','Session expired — log in as Super Admin')});
+};
+
+window.igSebiDisclosureTracker = function() {
+  fetch('/api/compliance/sebi-disclosure-tracker',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.disclosures||[]).map(function(dis){
+      var col=dis.status==='filed'?'#065f46':dis.status==='due_soon'?'#92400e':'#991b1b';
+      return '<tr><td style="font-size:.65rem;">'+dis.disclosure_type+'</td><td style="font-size:.65rem;">'+dis.due_date+'</td><td style="color:'+col+';">'+dis.status+'</td><td style="font-size:.65rem;">'+(dis.filed_date||'—')+'</td></tr>';}).join('');
+    igModal('HH6: SEBI Disclosure Tracker — v2026.32','<b>Total:</b> '+s.total_disclosures+' | <b>Filed:</b> '+s.filed+' | <b>Due Soon:</b> '+s.due_soon+' | <b>Overdue:</b> '+s.overdue+(d.alerts.length?' <span style="color:#991b1b;">⚠ '+d.alerts.length+' alerts</span>':'')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>Disclosure</th><th>Due Date</th><th>Status</th><th>Filed</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('HH6: SEBI Disclosure','Session expired — log in as Super Admin')});
 };
 
 window.igSecTab = function(idx){

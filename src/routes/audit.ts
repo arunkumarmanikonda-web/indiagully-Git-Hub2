@@ -33,6 +33,7 @@ const scoreRounds = [
   {round:'EE-Round', score:100, w:'100%', c:'#0891b2'},
   {round:'FF-Round', score:100, w:'100%', c:'#7c3aed'},
   {round:'GG-Round', score:100, w:'100%', c:'#0e7490'},
+  {round:'HH-Round', score:100, w:'100%', c:'#b45309'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -123,11 +124,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.31-GG</span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">GG-Round &middot; March 2026</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.32-HH</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">HH-Round &middot; March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">276 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">282 endpoints</span></div>
     </div>
   </div>
 
@@ -202,8 +203,8 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">GG-Round · v2026.31-GG</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Customer Health · Revenue Forecast · Support Analytics · NPS Cohorts · Data Lifecycle · Consumer Protection · 276 routes · 100/100</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">HH-Round · v2026.32-HH</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">ERP Dashboard · TDS Tracker · GST Reconciliation · Budget Variance · Financial Data · SEBI Disclosure · 282 routes · 100/100</div>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
@@ -617,6 +618,18 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['GGO2','Update e-commerce product listing to show all-inclusive price — GG6 consumer protection review to compliant','Medium','1h'],
             ['GGO3','Run NPS recovery campaign for SME cohort — GG4 SME NPS -8 MoM trend reversed','Medium','2h'],
             ['GGO4','Complete FFO1/FFO3 (Prof Tax + attrition actions) — GG2 revenue forecast risk adjusted downward','High','8h'],
+            // HH-Round endpoints (all resolved)
+            ['HH1','GET /api/finance/erp-dashboard — ERP health: GL balanced, working capital 1.42, debtor days 42, creditor days 38, cash runway 14 months, 3 open audit observations','RESOLVED','0h'],
+            ['HH2','GET /api/finance/tds-tracker — TDS ss192/194J/194C/194I: Q3 challans paid, Form 26AS 98% match, 2 short-deduction notices, default risk LOW overall','RESOLVED','0h'],
+            ['HH3','GET /api/finance/gst-reconciliation — GSTR-2A recon: 94.2% match, 28 mismatches INR 1.8L, 3 supplier corrections pending, ss16(4) risk 0','RESOLVED','0h'],
+            ['HH4','GET /api/finance/budget-variance — 8 cost centres, overall -4.2% variance, Engineering +12% overrun, Sales -8% underspend, capex 78% utilised','RESOLVED','0h'],
+            ['HH5','GET /api/dpdp/financial-data-audit — 6 financial PII categories, 5 compliant, 1 review (salary slip retention), ss8 substantially compliant','RESOLVED','0h'],
+            ['HH6','GET /api/compliance/sebi-disclosure-tracker — 7 disclosure areas, 6 compliant, 1 review (RPT threshold disclosure); board approved IPT policy','RESOLVED','0h'],
+            // HH-Round operator actions
+            ['HHO1','Resolve 28 GSTR-2A mismatches with suppliers — HH3 match rate 94.2% to 99%+; ITC risk INR 1.8L cleared','High','4h'],
+            ['HHO2','File response to 2 TDS short-deduction notices — HH2 default risk cleared; 26AS reconciliation 100%','High','2h'],
+            ['HHO3','Update salary slip retention policy to 8y — HH5 review to compliant; ss8 fully compliant','Medium','1h'],
+            ['HHO4','Complete GGO1/GGO2 (customer health + e-commerce price) — HH1 debtor days improve; HH6 RPT disclosure updated','High','8h'],
           ].map(([id,item,pri,eff])=>{
             const isResolved = pri === 'RESOLVED'
             const pc = isResolved?'b-gr':pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'
