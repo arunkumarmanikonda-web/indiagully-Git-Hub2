@@ -6407,6 +6407,28 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
             <i class="fas fa-trophy" style="margin-right:.3rem;"></i>W6: Gold Sign-off
           </button>
         </div>
+
+        <!-- X-Round buttons -->
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem;">
+          <button onclick="igOperatorChecklist()" style="background:none;border:1px solid #065F46;color:#065F46;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-list-check" style="margin-right:.3rem;"></i>X1: Operator Checklist
+          </button>
+          <button onclick="igLiveTransactionSummary()" style="background:none;border:1px solid #065F46;color:#065F46;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-receipt" style="margin-right:.3rem;"></i>X2: Txn Summary
+          </button>
+          <button onclick="igDeliverabilityScore()" style="background:none;border:1px solid #065F46;color:#065F46;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-signal" style="margin-right:.3rem;"></i>X3: Deliverability Score
+          </button>
+          <button onclick="igMfaCoverage()" style="background:none;border:1px solid #065F46;color:#065F46;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-shield-halved" style="margin-right:.3rem;"></i>X4: MFA Coverage
+          </button>
+          <button onclick="igDpdpComplianceScore()" style="background:none;border:1px solid #065F46;color:#065F46;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-gavel" style="margin-right:.3rem;"></i>X5: DPDP Score
+          </button>
+          <button onclick="igCertificationHistory()" style="background:none;border:1px solid #065F46;color:#065F46;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-timeline" style="margin-right:.3rem;"></i>X6: Cert History
+          </button>
+        </div>
       </div>
     </div>
 
@@ -7391,6 +7413,144 @@ window.igGoldCertStatus = function() {
         '<p style="color:#6b7280;font-size:.72rem">' + (s.note||'') + '</p>');
     }).catch(function(e){igModal('U6: Gold Cert Status','Session expired — please log in as Super Admin')});
 }
+
+// ─── X-ROUND handlers (v2026.22) ───────────────────────────────────────────
+
+window.igOperatorChecklist = function() {
+  igToast('Loading operator checklist…','info');
+  igApi.get('/admin/operator-checklist').then(function(d){
+    var oc = d.operator_checklist || {};
+    var sm = oc.summary || {};
+    var rows = (oc.steps||[]).map(function(s){
+      var sc = s.status==='complete' ? '#166534' : s.status==='partial' ? '#b45309' : '#dc2626';
+      var si = s.status==='complete' ? '&#10003;' : s.status==='partial' ? '&#9898;' : '&#10007;';
+      return '<tr>' +
+        '<td style="font-size:.72rem;font-weight:700;color:#065F46">' + s.id + '</td>' +
+        '<td style="font-size:.75rem">' + s.title + '</td>' +
+        '<td><span style="color:' + sc + ';font-weight:700">' + si + ' ' + s.status + '</span></td>' +
+        '<td style="font-size:.7rem"><a href="' + s.action_url + '" target="_blank" style="color:#1d4ed8">' + s.action_label + '</a></td>' +
+        '</tr>';
+    }).join('');
+    var bar = Math.max(0,Math.min(100,sm.readiness_pct||0));
+    igModal('X1: Operator Onboarding Checklist',
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Readiness:</b> ' + bar + '% &nbsp;|&nbsp; <b>Completed:</b> ' + (sm.completed||0) + '/' + (sm.total||6) + ' &nbsp;|&nbsp; <b>Required pending:</b> ' + (sm.required_pending||0) + '</p>' +
+      '<div style="height:6px;background:#f3f4f6;border-radius:3px;margin:.4rem 0"><div style="height:100%;width:' + bar + '%;background:#065F46;border-radius:3px;"></div></div>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem">' +
+      '<thead><tr style="background:#f3f4f6"><th style="padding:.3rem">ID</th><th>Step</th><th>Status</th><th>Action</th></tr></thead>' +
+      '<tbody>' + rows + '</tbody></table>' +
+      '<p style="margin-top:.5rem;color:#065F46;font-size:.73rem;font-weight:600">' + (oc.next_action||'') + '</p>');
+  }).catch(function(){igModal('X1: Operator Checklist','Session expired — log in as Super Admin')});
+};
+
+window.igLiveTransactionSummary = function() {
+  igToast('Loading transaction summary…','info');
+  igApi.get('/payments/live-transaction-summary').then(function(d){
+    var lt = d.live_transaction_summary || {};
+    var rev = lt.revenue || {};
+    var rows = (lt.recent_transactions||[]).map(function(t){
+      var sc = t.status==='captured'||t.status==='paid' ? '#166534' : '#dc2626';
+      return '<tr>' +
+        '<td style="font-size:.7rem">' + (t.order_id||'—') + '</td>' +
+        '<td style="font-size:.7rem">' + (t.payment_id||'—') + '</td>' +
+        '<td style="font-size:.75rem;font-weight:600">₹' + (t.amount_inr||0).toFixed(2) + '</td>' +
+        '<td><span style="color:' + sc + ';font-size:.7rem">' + (t.status||'—') + '</span></td>' +
+        '</tr>';
+    }).join('');
+    igModal('X2: Live Transaction Summary',
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Total Orders:</b> ' + (lt.total_orders||0) + ' &nbsp;|&nbsp; <b>Paid:</b> ' + (lt.paid_count||0) + ' &nbsp;|&nbsp; <b>Failed:</b> ' + (lt.failed_count||0) + '</p>' +
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Gross Revenue:</b> ₹' + (rev.gross_inr||0).toFixed(2) + ' &nbsp;|&nbsp; <b>GST 18%:</b> ₹' + (rev.gst_total||0).toFixed(2) + ' (CGST ₹' + (rev.cgst_9pct||0).toFixed(2) + ' + SGST ₹' + (rev.sgst_9pct||0).toFixed(2) + ')</p>' +
+      (rows ? '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Order ID</th><th>Payment ID</th><th>Amount</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table>' : '<p style="color:#6b7280;font-size:.75rem;margin-top:.5rem">' + (lt.note||'No transaction data') + '</p>'));
+  }).catch(function(){igModal('X2: Transaction Summary','Session expired — log in as Super Admin')});
+};
+
+window.igDeliverabilityScore = function() {
+  igToast('Probing DNS deliverability…','info');
+  igApi.get('/integrations/deliverability-score').then(function(d){
+    var ds = d.deliverability_score || {};
+    var gc = ds.grade==='A' ? '#166534' : ds.grade==='B' ? '#b45309' : '#dc2626';
+    var rows = (ds.checks||[]).map(function(c){
+      var cc = c.pass ? '#166534' : '#dc2626';
+      return '<tr>' +
+        '<td style="font-size:.73rem;font-weight:600">' + c.name + '</td>' +
+        '<td><span style="color:' + cc + ';font-size:.73rem">' + (c.pass?'&#10003; Pass':'&#10007; Fail') + '</span></td>' +
+        '<td style="font-size:.7rem;color:#6b7280">' + c.detail + '</td>' +
+        '<td style="font-size:.7rem;font-weight:700;color:' + cc + '">' + c.weight + '</td>' +
+        '</tr>';
+    }).join('');
+    igModal('X3: Email/DNS Deliverability Score',
+      '<p style="font-size:.85rem"><b>Score:</b> ' + (ds.score||0) + '/100 &nbsp;|&nbsp; <b>Grade:</b> <span style="color:' + gc + ';font-weight:700">' + (ds.grade||'F') + '</span> &nbsp;|&nbsp; <b>Domain:</b> ' + (ds.domain||'indiagully.com') + '</p>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Check</th><th>Result</th><th>Detail</th><th>Wt</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<p style="margin-top:.5rem;color:#065F46;font-size:.73rem">' + (ds.recommendation||'') + '</p>');
+  }).catch(function(){igModal('X3: Deliverability Score','Session expired — log in as Super Admin')});
+};
+
+window.igMfaCoverage = function() {
+  igToast('Loading MFA coverage…','info');
+  igApi.get('/auth/mfa-coverage').then(function(d){
+    var mc = d.mfa_coverage || {};
+    var gc = mc.grade==='A' ? '#166534' : mc.grade==='B' ? '#b45309' : '#dc2626';
+    var rows = (mc.roles||[]).map(function(r){
+      var cc = r.coverage_pct>=80 ? '#166534' : r.coverage_pct>=50 ? '#b45309' : '#dc2626';
+      return '<tr>' +
+        '<td style="font-size:.75rem;font-weight:600">' + r.role + '</td>' +
+        '<td style="font-size:.73rem">' + r.total + '</td>' +
+        '<td style="font-size:.73rem">' + r.totp + '</td>' +
+        '<td style="font-size:.73rem">' + r.webauthn + '</td>' +
+        '<td style="font-size:.75rem;font-weight:700;color:' + cc + '">' + r.coverage_pct + '%</td>' +
+        '</tr>';
+    }).join('');
+    igModal('X4: MFA Coverage Matrix',
+      '<p style="font-size:.85rem"><b>Overall Coverage:</b> <span style="color:' + gc + ';font-weight:700">' + (mc.overall_coverage_pct||0) + '%</span> &nbsp;|&nbsp; <b>Grade:</b> ' + (mc.grade||'—') + ' &nbsp;|&nbsp; <b>Users:</b> ' + (mc.total_users||0) + '</p>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Role</th><th>Total</th><th>TOTP</th><th>WebAuthn</th><th>Coverage</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<p style="margin-top:.5rem;color:#065F46;font-size:.73rem">' + (mc.recommendation||'') + '</p>');
+  }).catch(function(){igModal('X4: MFA Coverage','Session expired — log in as Super Admin')});
+};
+
+window.igDpdpComplianceScore = function() {
+  igToast('Loading DPDP compliance score…','info');
+  igApi.get('/dpdp/compliance-score').then(function(d){
+    var dc = d.dpdp_compliance_score || {};
+    var gc = dc.grade==='A' ? '#166534' : dc.grade==='B' ? '#b45309' : '#dc2626';
+    var rows = (dc.sections||[]).map(function(s){
+      var sc = s.status==='pass' ? '#166534' : s.status==='partial' ? '#b45309' : '#dc2626';
+      return '<tr>' +
+        '<td style="font-size:.72rem;font-weight:700;color:#065F46">' + s.section + '</td>' +
+        '<td style="font-size:.73rem">' + s.title + '</td>' +
+        '<td><span style="color:' + sc + ';font-size:.73rem;font-weight:700">' + s.status + '</span></td>' +
+        '<td style="font-size:.73rem">' + s.score + '/' + s.max + '</td>' +
+        '<td style="font-size:.7rem;color:#6b7280">' + s.note + '</td>' +
+        '</tr>';
+    }).join('');
+    igModal('X5: DPDP Act 2023 Compliance Score',
+      '<p style="font-size:.85rem"><b>Score:</b> ' + (dc.overall_score||0) + '/' + (dc.max_score||100) + ' (' + (dc.score_pct||0) + '%) &nbsp;|&nbsp; <b>Grade:</b> <span style="color:' + gc + ';font-weight:700">' + (dc.grade||'—') + '</span></p>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>§</th><th>Section</th><th>Status</th><th>Score</th><th>Note</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<p style="margin-top:.5rem;color:#065F46;font-size:.73rem">' + (dc.recommendation||'') + '</p>');
+  }).catch(function(){igModal('X5: DPDP Score','Session expired — log in as Super Admin')});
+};
+
+window.igCertificationHistory = function() {
+  igToast('Loading certification history…','info');
+  igApi.get('/compliance/certification-history').then(function(d){
+    var ch = d.certification_history || {};
+    var rows = (ch.rounds||[]).map(function(r){
+      var lc = r.level==='Gold' ? '#d97706' : r.level==='Silver' ? '#4b5563' : '#92400e';
+      return '<tr>' +
+        '<td style="font-size:.72rem;font-weight:700;color:#065F46">' + r.round + '</td>' +
+        '<td style="font-size:.7rem">' + r.version + '</td>' +
+        '<td><span style="color:' + lc + ';font-size:.72rem;font-weight:700">' + r.level + '</span></td>' +
+        '<td style="font-size:.73rem">' + r.score + '/100</td>' +
+        '<td style="font-size:.7rem;color:#6b7280">' + r.endpoints + '</td>' +
+        '</tr>';
+    }).join('');
+    var totalEp = ch.total_endpoints_added||0;
+    igModal('X6: Certification History (F→X)',
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Rounds:</b> ' + (ch.total_rounds||0) + ' &nbsp;|&nbsp; <b>Total Endpoints:</b> ' + totalEp + ' &nbsp;|&nbsp; <b>Current:</b> ' + ((ch.current||{}).round||'—') + ' ' + ((ch.current||{}).level||'') + '</p>' +
+      '<div style="max-height:320px;overflow-y:auto;">' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Round</th><th>Version</th><th>Level</th><th>Score</th><th>Endpoints</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '</div>' +
+      '<p style="margin-top:.5rem;color:#6b7280;font-size:.7rem">Gold achieved: ' + (ch.gold_achieved ? '&#10003; Yes' : '&#10007; Pending sign-off') + '</p>');
+  }).catch(function(){igModal('X6: Cert History','Session expired — log in as Super Admin')});
+};
 
 window.igSecTab = function(idx){
     for(var i=0;i<10;i++){

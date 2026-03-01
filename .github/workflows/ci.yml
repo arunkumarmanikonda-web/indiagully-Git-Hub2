@@ -320,8 +320,8 @@ jobs:
           print('  routes:', d.get('routes_count'))
           sc=d.get('security_score',{})
           print('  m_round:', sc.get('m_round'))
-          assert d.get('version','') >= '2026.21', f'version too old: {d.get(\"version\")}'
-          assert d.get('routes_count',0) >= 216, f'route count low: {d.get(\"routes_count\")}'
+          assert d.get('version','') >= '2026.22', f'version too old: {d.get(\"version\")}'
+          assert d.get('routes_count',0) >= 222, f'route count low: {d.get(\"routes_count\")}'
           print('  ✅ Health check passed')
           "
           echo "=== Public Endpoints ==="
@@ -442,8 +442,8 @@ jobs:
           import urllib.request, json
           with urllib.request.urlopen('http://localhost:3000/api/health') as r:
             d = json.load(r)
-          assert d.get('version','') >= '2026.21', f'version too old: {d.get("version")}'
-          assert d.get('routes_count',0) >= 216, f'routes low: {d.get("routes_count")}'
+          assert d.get('version','') >= '2026.22', f'version too old: {d.get("version")}'
+          assert d.get('routes_count',0) >= 222, f'routes low: {d.get("routes_count")}'
           sec = d.get('security', {})
           assert 'o_round' in sec, 'o_round missing from security block'
           fixes = d.get('o_round_fixes', [])
@@ -501,8 +501,8 @@ jobs:
           import urllib.request, json
           with urllib.request.urlopen('http://localhost:3000/api/health') as r:
             d = json.load(r)
-          assert d.get('version','') >= '2026.21', f'version too old: {d.get("version")}'
-          assert d.get('routes_count',0) >= 216, f'routes low: {d.get("routes_count")}'
+          assert d.get('version','') >= '2026.22', f'version too old: {d.get("version")}'
+          assert d.get('routes_count',0) >= 222, f'routes low: {d.get("routes_count")}'
           sec = d.get('security', {})
           assert 'p_round' in sec, 'p_round missing from security block'
           fixes = d.get('p_round_fixes', [])
@@ -559,8 +559,8 @@ jobs:
           import urllib.request, json
           with urllib.request.urlopen('http://localhost:3000/api/health') as r:
             d = json.load(r)
-          assert d.get('version','') >= '2026.21', f'version too old: {d.get("version")}'
-          assert d.get('routes_count',0) >= 216, f'routes low: {d.get("routes_count")}'
+          assert d.get('version','') >= '2026.22', f'version too old: {d.get("version")}'
+          assert d.get('routes_count',0) >= 222, f'routes low: {d.get("routes_count")}'
           sec = d.get('security', {})
           assert 'q_round' in sec, 'q_round missing from security block'
           fixes = d.get('q_round_fixes', [])
@@ -617,8 +617,8 @@ jobs:
           import urllib.request, json
           with urllib.request.urlopen('http://localhost:3000/api/health') as r:
             d = json.load(r)
-          assert d.get('version','') >= '2026.21', f'version too old: {d.get("version")}'
-          assert d.get('routes_count',0) >= 216, f'routes low: {d.get("routes_count")}'
+          assert d.get('version','') >= '2026.22', f'version too old: {d.get("version")}'
+          assert d.get('routes_count',0) >= 222, f'routes low: {d.get("routes_count")}'
           sec = d.get('security', {})
           assert 'r_round' in sec, 'r_round missing from security block'
           fixes = d.get('r_round_fixes', [])
@@ -675,8 +675,8 @@ jobs:
           import urllib.request, json
           with urllib.request.urlopen('http://localhost:3000/api/health') as r:
             d = json.load(r)
-          assert d.get('version','') >= '2026.21', f'version too old: {d.get("version")}'
-          assert d.get('routes_count',0) >= 216, f'routes low: {d.get("routes_count")}'
+          assert d.get('version','') >= '2026.22', f'version too old: {d.get("version")}'
+          assert d.get('routes_count',0) >= 222, f'routes low: {d.get("routes_count")}'
           sec = d.get('security', {})
           assert 's_round' in sec, 's_round missing from security block'
           fixes = d.get('s_round_fixes', [])
@@ -723,8 +723,8 @@ jobs:
           python3 -c "
           import urllib.request, json
           d = json.loads(urllib.request.urlopen('http://localhost:3000/api/health').read())
-          assert d.get('version','') >= '2026.21', f'version too old: {d.get("version")}'
-          assert d.get('routes_count',0) >= 216, f'routes too few: {d.get("routes_count")}'
+          assert d.get('version','') >= '2026.22', f'version too old: {d.get("version")}'
+          assert d.get('routes_count',0) >= 222, f'routes too few: {d.get("routes_count")}'
           assert 't_round' in str(d.get('security',{})), 't_round block missing'
           assert len(d.get('security',{}).get('t_round_fixes',[])) >= 6, 't_round_fixes < 6'
           print('T-Round health gate: PASSED')
@@ -767,8 +767,8 @@ jobs:
           python3 -c "
           import urllib.request, json
           d = json.loads(urllib.request.urlopen('http://localhost:3000/api/health').read())
-          assert d.get('version','') >= '2026.21', f'version too old: {d.get("version")}'
-          assert d.get('routes_count',0) >= 216, f'routes too few: {d.get("routes_count")}'
+          assert d.get('version','') >= '2026.22', f'version too old: {d.get("version")}'
+          assert d.get('routes_count',0) >= 222, f'routes too few: {d.get("routes_count")}'
           assert 'u_round' in str(d.get('security',{})), 'u_round block missing'
           assert len(d.get('security',{}).get('u_round_fixes',[])) >= 6, 'u_round_fixes < 6'
           print('U-Round health gate: PASSED')
@@ -810,8 +810,8 @@ jobs:
           python3 -c "
           import urllib.request, json
           d = json.loads(urllib.request.urlopen('http://localhost:3000/api/health').read())
-          assert d.get('version','') >= '2026.21', f'version too old: {d.get(\"version\")}'
-          assert d.get('routes_count',0) >= 216, f'routes too few: {d.get(\"routes_count\")}'
+          assert d.get('version','') >= '2026.22', f'version too old: {d.get(\"version\")}'
+          assert d.get('routes_count',0) >= 222, f'routes too few: {d.get(\"routes_count\")}'
           assert 'v_round' in str(d.get('security',{})), 'v_round block missing'
           assert len(d.get('v_round_fixes',[])) >= 6, 'v_round_fixes < 6'
           assert d.get('open_findings_count',1) == 0, 'open findings > 0'
@@ -855,8 +855,8 @@ jobs:
           python3 -c "
           import urllib.request, json
           d = json.loads(urllib.request.urlopen('http://localhost:3000/api/health').read())
-          assert d.get('version','') >= '2026.21', f'version too old: {d.get(\"version\")}'
-          assert d.get('routes_count',0) >= 216, f'routes too few: {d.get(\"routes_count\")}'
+          assert d.get('version','') >= '2026.22', f'version too old: {d.get(\"version\")}'
+          assert d.get('routes_count',0) >= 222, f'routes too few: {d.get(\"routes_count\")}'
           assert 'w_round' in str(d.get('security',{})), 'w_round block missing'
           assert len(d.get('w_round_fixes',[])) >= 6, 'w_round_fixes < 6'
           print(f'✅ W-Round health gate PASSED — v{d[\"version\"]} {d[\"routes_count\"]} routes')
@@ -866,6 +866,51 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: w-round-test-results
+          path: playwright-report/
+
+  # ── Job: Playwright E2E — X-Round Suite ──────────────────────────────────────
+  playwright-x-round:
+    name: Playwright E2E X-Round
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ github.event.inputs.run_e2e != 'false' }}
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Start Wrangler dev server
+        run: |
+          npx wrangler pages dev dist --ip 0.0.0.0 --port 3000 &
+          for i in {1..30}; do curl -sf http://localhost:3000/api/health && break || sleep 2; done
+      - name: Run X-Round Playwright tests
+        run: npx playwright test tests/x-round.spec.ts --timeout=15000 --retries=1 --reporter=html
+      - name: X-Round health gate
+        run: |
+          python3 -c "
+          import urllib.request, json
+          d = json.loads(urllib.request.urlopen('http://localhost:3000/api/health').read())
+          assert d.get('version','') >= '2026.22', f'version too old: {d.get(\"version\")}'
+          assert d.get('routes_count',0) >= 222, f'routes too few: {d.get(\"routes_count\")}'
+          assert 'x_round' in str(d.get('security',{})), 'x_round block missing'
+          assert len(d.get('x_round_fixes',[])) >= 6, 'x_round_fixes < 6'
+          assert d.get('open_findings_count',0) == 0, 'open findings detected'
+          print(f'✅ X-Round health gate PASSED — v{d[\"version\"]} {d[\"routes_count\"]} routes')
+          "
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: x-round-test-results
           path: playwright-report/
 
   d1-migrate:

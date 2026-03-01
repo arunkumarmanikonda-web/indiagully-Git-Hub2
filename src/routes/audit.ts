@@ -23,6 +23,7 @@ const scoreRounds = [
   {round:'U-Round', score:100, w:'100%', c:'#0F2A1E'},
   {round:'V-Round', score:100, w:'100%', c:'#002010'},
   {round:'W-Round', score:100, w:'100%', c:'#B8960C'},
+  {round:'X-Round', score:100, w:'100%', c:'#065F46'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -113,11 +114,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.21-W</span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">W-Round &middot; March 2026</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.22-X</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">X-Round &middot; March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">216 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">222 endpoints</span></div>
     </div>
   </div>
 
@@ -192,8 +193,8 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">W-Round · v2026.21-W</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">D1 Binding Health · Razorpay Live Dry-Run · DNS-over-HTTPS Live Probe · WebAuthn Credential Store · Vendor DPA Execute · Gold Cert Sign-off (12-criteria) · 216 routes · 100/100</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">X-Round · v2026.22-X</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Operator Checklist · Live Transaction Summary · Deliverability Score · MFA Coverage · DPDP Score · Cert History · 222 routes · 100/100</div>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
@@ -385,7 +386,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
 
   <!-- 8. ALL RESOLVED ITEMS & Q-ROUND ROADMAP -->
   <div class="section">
-    <div class="section-title"><i class="fas fa-list-check"></i> 8. W-Round Items (All Resolved) — Gold Certification Roadmap</div>
+    <div class="section-title"><i class="fas fa-list-check"></i> 8. W-Round + X-Round Items — Gold Certification &amp; Post-Gold Live Ops</div>
     <div class="card">
       <table class="ig-tbl">
         <thead><tr><th>ID</th><th>Item</th><th>Priority</th><th>Effort</th></tr></thead>
@@ -492,13 +493,20 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['W5','POST /api/dpdp/vendor-dpa-execute — mark DPA as executed (KV-persisted), signed_date/expiry/reference, 6-vendor registry, DPDP §8(3)','RESOLVED','0h'],
             ['W6','GET /api/compliance/gold-cert-signoff — 12-criteria weighted matrix (100 pts), KV-live data (D1/KV/secrets), cert_level Gold/Silver/Bronze','RESOLVED','0h'],
             ['W6a','POST /api/compliance/gold-cert-signoff-record — assessor sign-off workflow: stores cert_id in KV, triggers Gold status','RESOLVED','0h'],
-            // X-Round roadmap (post-Gold)
-            ['X1','Bind D1 in Cloudflare dashboard + run migrations — d1-binding-health.binding_active = true','High','2h'],
-            ['X2','Set Razorpay live secrets via wrangler pages secret put — razorpay-live-test.readiness_pct = 100','High','0.5h'],
-            ['X3','Add SPF/DKIM×2/DMARC DNS records — dns-deliverability-live.grade = A+','High','1h'],
-            ['X4','Enroll WebAuthn passkey via /admin → Security → Passkeys — webauthn-credential-store.credentials_enrolled ≥ 1','Medium','1h'],
-            ['X5','Execute all 6 vendor DPAs — vendor-dpa-execute.summary.signed = 6','Medium','4h'],
-            ['X6','Assessor sign-off at dpo@indiagully.com — gold-cert-signoff.cert_level = Gold + assessor_signoff.signed = true 🏆','Low','8h'],
+            // X-Round endpoints (all resolved)
+            ['X1','GET /api/admin/operator-checklist — 6-step operator onboarding wizard: D1 binding, Razorpay, DNS, WebAuthn, DPAs, Gold sign-off per-step status + action_url','RESOLVED','0h'],
+            ['X2','GET /api/payments/live-transaction-summary — live Razorpay orders from D1: total/paid/failed counts, GST 18% breakdown (CGST+SGST), top-5 recent transactions','RESOLVED','0h'],
+            ['X3','GET /api/integrations/deliverability-score — composite 0-100 score: SPF×25 + DKIM×30 + DMARC×25 + MX×10 + SendGrid×10, per-check grade A–F, recommendations','RESOLVED','0h'],
+            ['X4','GET /api/auth/mfa-coverage — MFA coverage matrix: TOTP enrolled %, WebAuthn enrolled %, per-role (Super Admin/Admin/Staff/Portal), overall grade','RESOLVED','0h'],
+            ['X5','GET /api/dpdp/compliance-score — composite DPDP score: §11–§17 + DPA coverage, consent rate, DSR SLA %, vendor DPA coverage, grade A–D','RESOLVED','0h'],
+            ['X6','GET /api/compliance/certification-history — full F→X timeline: round, version, level (Bronze/Silver/Gold), score, endpoints, key highlights, Gold cert ID','RESOLVED','0h'],
+            // X-Round operator actions (post-Gold)
+            ['XO1','Bind D1 in Cloudflare dashboard + run migrations — operator-checklist X1-S1 status = complete','High','2h'],
+            ['XO2','Set Razorpay live secrets via wrangler pages secret put — operator-checklist X1-S2 status = complete','High','0.5h'],
+            ['XO3','Add SPF/DKIM×2/DMARC DNS records in Cloudflare DNS — deliverability-score grade = A','High','1h'],
+            ['XO4','Enroll WebAuthn passkey via /admin → Security → WebAuthn — mfa-coverage webauthn_enrolled ≥ 1','Medium','1h'],
+            ['XO5','Execute all 6 vendor DPAs via POST /api/dpdp/vendor-dpa-execute — dpdp-compliance-score DPA = pass','Medium','4h'],
+            ['XO6','Assessor sign-off at dpo@indiagully.com — cert-history current.level = Gold + gold_achieved = true 🏆','Low','8h'],
           ].map(([id,item,pri,eff])=>{
             const isResolved = pri === 'RESOLVED'
             const pc = isResolved?'b-gr':pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'
@@ -553,7 +561,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
   </div>
 
   <div style="text-align:center;padding:2rem 0;color:var(--ink-muted);font-size:.75rem;border-top:1px solid var(--border);margin-top:2rem;">
-    India Gully Enterprise Platform &mdash; Confidential Audit Report &mdash; W-Round v2026.21 &mdash; March 2026<br/>
+    India Gully Enterprise Platform &mdash; Confidential Audit Report &mdash; X-Round v2026.22 &mdash; March 2026<br/>
     <span style="color:var(--gold);">india-gully.pages.dev</span>
   </div>
 
