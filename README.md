@@ -1016,3 +1016,40 @@ KV-backed session middleware · D1 local migration (28 SQL commands) · Razorpay
 ### Enhancement Rounds A5–A12, B1–B9, C1–C9
 
 Governance: quorum tracker, digital minute book, SS-1/SS-2, statutory registers · Finance ERP: multi-entity GL, e-Invoice IRN/QR, TDS 26Q, Form 26AS reconciliation · HR ERP: Form-16, appraisals & OKR, onboarding wizard · Security: ABAC matrix, device fingerprint, DPDP consent, document watermark · BI: predictive analytics, OKR/KPI tracker, mandate risk scoring · CMS v2: AI copy assist, page builder, approval workflow · UX: dark mode, Hindi/English toggle, guided tour, WCAG focus indicators
+
+## 🏆 AA-Round Complete — v2026.25-AA-Round (2026-03-01)
+
+| Metric | Value |
+|--------|-------|
+| Version | `2026.25` |
+| Routes | 240 (+6 since AA-Round) |
+| Security Score | 100/100 |
+| Open Findings | 0 |
+| Build Size | 1,945.95 kB (314 modules) |
+| Git Tag | `v2026.25-aa-round` |
+| Git Commit | `cec4924` |
+
+### AA-Round Delivered Endpoints (AA1–AA6, all 401 unauthenticated)
+- **AA1** `GET /api/finance/cashflow-forecast` – 12-month INR cashflow projection (operating/investing/financing activities, 4 scenarios)
+- **AA2** `GET /api/payments/fraud-signals` – real-time fraud signal dashboard (velocity, BIN, geo, device anomalies)
+- **AA3** `GET /api/integrations/api-gateway-metrics` – API latency P50/P95/P99, error rate, throughput, per-route breakdown
+- **AA4** `GET /api/auth/zero-trust-scorecard` – NIST SP 800-207 zero-trust maturity (5 pillars, 0–100 score)
+- **AA5** `GET /api/dpdp/data-map` – DPDP data inventory map (14 data categories, lawful basis, retention, sub-processors)
+- **AA6** `GET /api/compliance/risk-heatmap` – enterprise risk heatmap (18 risks across 6 domains, likelihood × impact)
+
+### What Changed
+- 6 AA-Round violet (`#7c3aed`) admin buttons: AA1–AA6
+- 6 JS modal handlers: `igCashflowForecast`, `igFraudSignals`, `igApiGatewayMetrics`, `igZeroTrustScorecard`, `igDataMap`, `igRiskHeatmap`
+- `tests/aa-round.spec.ts` — 28 Playwright assertions (health v2026.25, AA1–AA6 + Z1–Z6 + Y1–Y6 guard, public pages, audit content, CSP)
+- CI job `playwright-aa-round`; health gates updated to v2026.25 / routes ≥ 240
+
+**Production:** https://india-gully.pages.dev (v2026.25, 240 routes, 0 findings)
+**Preview:** https://1be6e4b1.india-gully.pages.dev
+
+**Round History:** W (2026.21, 216) → X (2026.22, 222) → Y (2026.23, 228) → Z (2026.24, 234) → **AA (2026.25, 240)**
+
+**AA-Round Operator Actions (AAO1–AAO4):**
+1. AAO1 (1h) — Approve Cashflow Policy → cashflow-forecast model_confidence = high
+2. AAO2 (2h) — Configure fraud webhook endpoint in Razorpay dashboard
+3. AAO3 (1h) — Enable DPDP data-map auto-refresh (D1 data-category table population)
+4. AAO4 (8h) — Complete prior ZO1–ZO4 operator actions
