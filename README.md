@@ -1127,3 +1127,50 @@ Governance: quorum tracker, digital minute book, SS-1/SS-2, statutory registers 
 2. CCO2 (1h) — Board-approve risk appetite statement → CC6 Risk gap cleared
 3. CCO3 (2h) — Complete BBO3 (DocuSign DPA) → CC6 Privacy gap cleared; CC5 cross-border improves
 4. CCO4 (8h) — Bind D1 remote + Razorpay live → CC6 Operations L3→L4
+
+## 🏆 DD-Round Complete — v2026.28-DD-Round (2026-03-01)
+
+| Metric | Value |
+|--------|-------|
+| Version | 2026.28 |
+| Routes | 258 (+6 since CC-Round) |
+| Security Score | 100/100 |
+| Open Findings | 0 |
+| Build Size | 2,017.57 kB (314 modules) |
+| Git Tag | v2026.28-dd-round |
+| Git Commit | 1ece075 |
+
+### DD-Round Delivered Endpoints (all 401 unauthenticated)
+
+| ID | Endpoint | Key Data |
+|----|----------|----------|
+| DD1 | GET /api/vendors/risk-scorecard | 12 vendors, portfolio avg 87/100, 0 high-risk, Tier-1/2/3 scoring |
+| DD2 | GET /api/finance/procurement-analytics | ₹21.8L spend, 78% budget utilisation, ₹3.2L savings (14.7%), 3.2% maverick |
+| DD3 | GET /api/integrations/api-dependency-map | 18 APIs mapped, 4 critical, 7 high, 12 with fallback, 2 deprecation alerts |
+| DD4 | GET /api/auth/third-party-audit | 8 integrations, 1 stale (DocuSign 320d), 1 excess scope, 1 key >365d |
+| DD5 | GET /api/dpdp/supply-chain-compliance | 8 sub-processors, 7 compliant, 1 non-compliant (Amplitude), §8(7) status |
+| DD6 | GET /api/vendors/onboarding-health | 6 vendors, 2 completed avg 18.5d, 3 in-progress, 1 on-hold, 3 stalled |
+
+### Production
+- **URL**: https://india-gully.pages.dev (v2026.28, 258 routes, 0 findings)
+- **Preview**: https://8295aff9.india-gully.pages.dev
+
+### Round History
+| Round | Version | Routes | Theme |
+|-------|---------|--------|-------|
+| W | 2026.21 | 216 | Gold |
+| X | 2026.22 | 222 | Dark Green |
+| Y | 2026.23 | 228 | Navy |
+| Z | 2026.24 | 234 | Purple |
+| AA | 2026.25 | 240 | Violet |
+| BB | 2026.26 | 246 | Blue |
+| CC | 2026.27 | 252 | Teal |
+| **DD** | **2026.28** | **258** | **Amber** |
+
+### Operator Actions (no code changes required)
+| ID | Action | Priority | Effort |
+|----|--------|----------|--------|
+| DDO1 | Revoke DocuSign "extended" OAuth scope — DD4 excess_perms cleared | High | 0.5h |
+| DDO2 | Rotate Twilio (245d) + SendGrid (180d) API keys — stale count 1→0 | Medium | 1h |
+| DDO3 | Execute Amplitude DPA — DD5 §8(7) non_compliant 1→0 | High | 2h |
+| DDO4 | Complete CCO4 (D1 bind + Razorpay live) — DD2/DD3 actuals improve | High | 8h |
