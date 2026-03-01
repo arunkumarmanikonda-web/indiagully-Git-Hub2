@@ -6451,6 +6451,28 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
             <i class="fas fa-book-open" style="margin-right:.3rem;"></i>Y6: Policy Registry
           </button>
         </div>
+
+        <!-- Z-Round buttons -->
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem;">
+          <button onclick="igCapacityForecast()" style="background:none;border:1px solid #4a1942;color:#4a1942;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-chart-line" style="margin-right:.3rem;"></i>Z1: Capacity Forecast
+          </button>
+          <button onclick="igChargebackReport()" style="background:none;border:1px solid #4a1942;color:#4a1942;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-undo-alt" style="margin-right:.3rem;"></i>Z2: Chargeback Report
+          </button>
+          <button onclick="igWebhookHealth()" style="background:none;border:1px solid #4a1942;color:#4a1942;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-bolt" style="margin-right:.3rem;"></i>Z3: Webhook Health
+          </button>
+          <button onclick="igPrivilegeAudit()" style="background:none;border:1px solid #4a1942;color:#4a1942;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-user-shield" style="margin-right:.3rem;"></i>Z4: Privilege Audit
+          </button>
+          <button onclick="igBreachSimulation()" style="background:none;border:1px solid #4a1942;color:#4a1942;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-shield-virus" style="margin-right:.3rem;"></i>Z5: Breach Simulation
+          </button>
+          <button onclick="igContinuousMonitoring()" style="background:none;border:1px solid #4a1942;color:#4a1942;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-eye" style="margin-right:.3rem;"></i>Z6: Continuous Monitoring
+          </button>
+        </div>
       </div>
     </div>
 
@@ -7699,6 +7721,147 @@ window.igPolicyRegistry = function() {
       '</div>' +
       (sm.overdue_alert ? '<p style="color:#dc2626;font-size:.73rem;margin-top:.5rem">&#9888; ' + sm.overdue_alert + '</p>' : ''));
   }).catch(function(){igModal('Y6: Policy Registry','Session expired — log in as Super Admin')});
+};
+
+// ─── Z-ROUND handlers (v2026.24) ───────────────────────────────────────────
+
+window.igCapacityForecast = function() {
+  igToast('Loading capacity forecast…','info');
+  igApi.get('/admin/capacity-forecast').then(function(d){
+    var cf = d.capacity_forecast || {};
+    var sm = cf.summary || {};
+    var sc = cf.overall_health === 'healthy' ? '#166534' : cf.overall_health === 'watch' ? '#b45309' : '#dc2626';
+    var rows = (cf.metrics||[]).map(function(m){
+      var mc = m.trend==='stable' ? '#166534' : m.trend==='growing' ? '#b45309' : '#dc2626';
+      return '<tr>' +
+        '<td style="font-size:.73rem;font-weight:600">' + m.resource + '</td>' +
+        '<td style="font-size:.7rem">' + m.current_util + '</td>' +
+        '<td style="font-size:.7rem">' + m.p95_30d + '</td>' +
+        '<td><span style="color:' + mc + ';font-size:.7rem;font-weight:700">' + m.trend + '</span></td>' +
+        '<td style="font-size:.68rem;color:#6b7280">' + m.recommendation + '</td>' +
+        '</tr>';
+    }).join('');
+    igModal('Z1: Capacity Forecast',
+      '<p style="font-size:.85rem"><b>Health:</b> <span style="color:' + sc + ';font-weight:700">' + (cf.overall_health||'—').toUpperCase() + '</span> &nbsp;|&nbsp; <b>Healthy:</b> ' + (sm.healthy||0) + '/' + (sm.total_resources||6) + ' &nbsp;|&nbsp; <b>D1 Bound:</b> ' + (sm.d1_bound ? '✓' : '✗') + '</p>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Resource</th><th>Current</th><th>P95 30d</th><th>Trend</th><th>Recommendation</th></tr></thead><tbody>' + rows + '</tbody></table>');
+  }).catch(function(){igModal('Z1: Capacity Forecast','Session expired — log in as Super Admin')});
+};
+
+window.igChargebackReport = function() {
+  igToast('Loading chargeback report…','info');
+  igApi.get('/payments/chargeback-report').then(function(d){
+    var cr = d.chargeback_report || {};
+    var sm = cr.summary || {};
+    var rb = cr.rbi_compliance || {};
+    var rc = rb.status && rb.status.includes('COMPLIANT') && !rb.status.includes('BREACH') ? '#166534' : '#dc2626';
+    var rows = (cr.disputes||[]).map(function(dp){
+      var sc = dp.status==='resolved_won' ? '#166534' : dp.status==='open' ? '#b45309' : '#dc2626';
+      return '<tr>' +
+        '<td style="font-size:.7rem;font-weight:700;color:#1e3a5f">' + dp.id + '</td>' +
+        '<td style="font-size:.7rem">₹' + dp.amount_inr.toLocaleString() + '</td>' +
+        '<td style="font-size:.68rem;color:#6b7280">' + dp.reason + '</td>' +
+        '<td><span style="color:' + sc + ';font-size:.7rem;font-weight:700">' + dp.status + '</span></td>' +
+        '<td style="font-size:.68rem;color:#6b7280">' + dp.due_date + '</td>' +
+        '</tr>';
+    }).join('');
+    igModal('Z2: Chargeback & Dispute Report',
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Total Disputes:</b> ' + (sm.total_disputes||0) + ' &nbsp;|&nbsp; <b>Open:</b> ' + (sm.open||0) + ' &nbsp;|&nbsp; <b>Won:</b> ' + (sm.resolved_won||0) + ' &nbsp;|&nbsp; <b>Lost:</b> ' + (sm.resolved_lost||0) + ' &nbsp;|&nbsp; <b>Win Rate:</b> ' + (sm.win_rate_pct||0) + '%</p>' +
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>RBI Status:</b> <span style="color:' + rc + ';font-weight:700">' + (rb.status||'—') + '</span> &nbsp;|&nbsp; <b>Ratio:</b> ' + (rb.chargeback_ratio_pct||'0') + '% (threshold: ' + (rb.rbi_threshold_pct||'1') + '%)</p>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>ID</th><th>Amount</th><th>Reason</th><th>Status</th><th>Due Date</th></tr></thead><tbody>' + rows + '</tbody></table>');
+  }).catch(function(){igModal('Z2: Chargeback Report','Session expired — log in as Super Admin')});
+};
+
+window.igWebhookHealth = function() {
+  igToast('Loading webhook health…','info');
+  igApi.get('/integrations/webhook-health').then(function(d){
+    var wh = d.webhook_health || {};
+    var sm = wh.summary || {};
+    var oc = wh.overall_status === 'healthy' ? '#166534' : wh.overall_status === 'partial' ? '#b45309' : '#dc2626';
+    var rows = (wh.integrations||[]).map(function(i){
+      var sc = i.status==='healthy' ? '#166534' : i.status==='test-mode' ? '#b45309' : '#dc2626';
+      var hc = i.hmac_status==='verified' ? '#166534' : '#dc2626';
+      return '<tr>' +
+        '<td style="font-size:.73rem;font-weight:600">' + i.name + '</td>' +
+        '<td style="font-size:.7rem">' + i.events_24h + '</td>' +
+        '<td style="font-size:.7rem">' + i.failed + '</td>' +
+        '<td style="font-size:.7rem">' + i.success_rate + '</td>' +
+        '<td><span style="color:' + hc + ';font-size:.7rem">' + i.hmac_status + '</span></td>' +
+        '<td><span style="color:' + sc + ';font-size:.7rem;font-weight:700">' + i.status + '</span></td>' +
+        '</tr>';
+    }).join('');
+    igModal('Z3: Webhook Health Monitor',
+      '<p style="font-size:.85rem"><b>Status:</b> <span style="color:' + oc + ';font-weight:700">' + (wh.overall_status||'—').toUpperCase() + '</span> &nbsp;|&nbsp; <b>Events 24h:</b> ' + (sm.events_24h||0) + ' &nbsp;|&nbsp; <b>Failed:</b> ' + (sm.failed_24h||0) + ' &nbsp;|&nbsp; <b>Success:</b> ' + (sm.success_rate_pct||100) + '%</p>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Integration</th><th>Events 24h</th><th>Failed</th><th>Success Rate</th><th>HMAC</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table>');
+  }).catch(function(){igModal('Z3: Webhook Health','Session expired — log in as Super Admin')});
+};
+
+window.igPrivilegeAudit = function() {
+  igToast('Loading privilege audit…','info');
+  igApi.get('/auth/privilege-audit').then(function(d){
+    var pa = d.privilege_audit || {};
+    var pam = pa.pam_controls || {};
+    var rc = pa.risk_level === 'Low' ? '#166534' : pa.risk_level === 'Medium' ? '#b45309' : '#dc2626';
+    var rows = (pa.actions||[]).slice(0,6).map(function(a){
+      var ac = a.unusual ? '#dc2626' : '#166534';
+      return '<tr>' +
+        '<td style="font-size:.67rem;color:#6b7280">' + (a.ts||'').substring(0,16).replace('T',' ') + '</td>' +
+        '<td style="font-size:.7rem">' + a.actor + '</td>' +
+        '<td style="font-size:.68rem;color:#1e3a5f">' + (a.action||'').substring(0,40) + '</td>' +
+        '<td style="font-size:.68rem"><span style="color:' + ac + '">' + (a.unusual ? '⚠ ' + (a.flag||'unusual') : '✓ normal') + '</span></td>' +
+        '</tr>';
+    }).join('');
+    igModal('Z4: Privilege Audit',
+      '<p style="font-size:.85rem"><b>Risk Level:</b> <span style="color:' + rc + ';font-weight:700">' + (pa.risk_level||'Low') + '</span> &nbsp;|&nbsp; <b>Unusual:</b> ' + (pa.unusual_access_count||0) + ' &nbsp;|&nbsp; <b>Actors:</b> ' + (pa.unique_actors||0) + ' &nbsp;|&nbsp; <b>Sensitive Actions:</b> ' + (pa.sensitive_actions||0) + '</p>' +
+      '<table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Time</th><th>Actor</th><th>Action</th><th>Flag</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<p style="font-size:.73rem;margin-top:.5rem;color:#1e3a5f"><b>PAM:</b> ' + (pam.super_admin_mfa||'—') + ' &nbsp;|&nbsp; Next review: ' + (pam.quarterly_review_due||'—') + '</p>');
+  }).catch(function(){igModal('Z4: Privilege Audit','Session expired — log in as Super Admin')});
+};
+
+window.igBreachSimulation = function() {
+  igToast('Loading breach simulation…','info');
+  igApi.get('/dpdp/breach-simulation').then(function(d){
+    var bs = d.breach_simulation || {};
+    var sc = bs.scenario || {};
+    var rd = bs.readiness || {};
+    var gc = rd.grade === 'A' ? '#166534' : rd.grade === 'B' ? '#b45309' : '#dc2626';
+    var rows = (bs.timeline_72h||[]).map(function(t){
+      return '<tr>' +
+        '<td style="font-size:.72rem;font-weight:700;color:#1e3a5f">H+' + t.hour + '</td>' +
+        '<td style="font-size:.73rem;font-weight:600">' + t.milestone + '</td>' +
+        '<td style="font-size:.7rem;color:#6b7280">' + t.owner + '</td>' +
+        '<td style="font-size:.68rem">' + t.action + '</td>' +
+        '</tr>';
+    }).join('');
+    igModal('Z5: DPDP §12 Breach Simulation',
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Scenario:</b> ' + (sc.title||'—') + '</p>' +
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Affected:</b> ~' + (sc.estimated_affected||0).toLocaleString() + ' data principals &nbsp;|&nbsp; <b>Data:</b> ' + (sc.data_categories||[]).join(', ') + '</p>' +
+      '<p style="font-size:.78rem;margin:.25rem 0"><b>Readiness:</b> <span style="color:' + gc + ';font-weight:700">Grade ' + (rd.grade||'?') + ' (' + (rd.score_pct||0) + '%)</span></p>' +
+      '<div style="max-height:280px;overflow-y:auto"><table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>Hour</th><th>Milestone</th><th>Owner</th><th>Action</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<p style="color:#6b7280;font-size:.7rem;margin-top:.4rem">Legal: DPDP §12 + CERT-In Directions 2022 + IT Act §43A</p>');
+  }).catch(function(){igModal('Z5: Breach Simulation','Session expired — log in as Super Admin')});
+};
+
+window.igContinuousMonitoring = function() {
+  igToast('Loading compliance monitor…','info');
+  igApi.get('/compliance/continuous-monitoring').then(function(d){
+    var cm = d.continuous_monitoring || {};
+    var sm = cm.summary || {};
+    var gc = cm.grade === 'A' ? '#166534' : cm.grade === 'B' ? '#b45309' : '#dc2626';
+    var rows = (cm.controls||[]).map(function(ctrl){
+      var sc = ctrl.status==='pass' ? '#166534' : ctrl.status==='watch' ? '#b45309' : '#dc2626';
+      var fc = {'ISO 27001':'#1e3a5f','DPDP':'#4a1942','PCI-DSS':'#7c2d12','SOC-2':'#065F46'}[ctrl.framework] || '#374151';
+      return '<tr>' +
+        '<td style="font-size:.68rem;font-weight:700;color:' + fc + '">' + ctrl.id + '</td>' +
+        '<td style="font-size:.68rem;color:' + fc + '">' + ctrl.framework + '</td>' +
+        '<td style="font-size:.7rem">' + ctrl.control + '</td>' +
+        '<td><span style="color:' + sc + ';font-size:.7rem;font-weight:700">' + ctrl.status + '</span></td>' +
+        '</tr>';
+    }).join('');
+    igModal('Z6: Continuous Compliance Monitor',
+      '<p style="font-size:.85rem"><b>Score:</b> <span style="color:' + gc + ';font-weight:700">Grade ' + (cm.grade||'?') + ' (' + (cm.overall_score_pct||0) + '%)</span> &nbsp;|&nbsp; <b>Pass:</b> ' + (sm.pass||0) + '/' + (sm.total_controls||20) + ' &nbsp;|&nbsp; <b>Watch:</b> ' + (sm.watch||0) + ' &nbsp;|&nbsp; <b>Drift Alerts:</b> ' + (sm.drift_alerts||0) + '</p>' +
+      '<p style="font-size:.73rem;color:#6b7280;margin:.2rem 0">Next assessment: ' + (sm.next_assessment||'—') + ' &nbsp;|&nbsp; ' + (sm.cert_status||'') + '</p>' +
+      '<div style="max-height:320px;overflow-y:auto"><table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.8rem"><thead><tr style="background:#f3f4f6"><th>ID</th><th>Framework</th><th>Control</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table></div>');
+  }).catch(function(){igModal('Z6: Continuous Monitoring','Session expired — log in as Super Admin')});
 };
 
 window.igSecTab = function(idx){

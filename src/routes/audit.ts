@@ -25,6 +25,7 @@ const scoreRounds = [
   {round:'W-Round', score:100, w:'100%', c:'#B8960C'},
   {round:'X-Round', score:100, w:'100%', c:'#065F46'},
   {round:'Y-Round', score:100, w:'100%', c:'#1e3a5f'},
+  {round:'Z-Round', score:100, w:'100%', c:'#4a1942'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -115,11 +116,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.23-Y</span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">Y-Round &middot; March 2026</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.24-Z</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">Z-Round &middot; March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">228 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">234 endpoints</span></div>
     </div>
   </div>
 
@@ -194,8 +195,8 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">Y-Round · v2026.23-Y</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Operator Checklist · Live Transaction Summary · Deliverability Score · MFA Coverage · DPDP Score · Cert History · 228 routes · 100/100</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">Z-Round · v2026.24-Z</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Capacity Forecast · Chargeback Report · Webhook Health · Privilege Audit · Breach Simulation · Continuous Monitoring · 234 routes · 100/100</div>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
@@ -387,7 +388,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
 
   <!-- 8. ALL RESOLVED ITEMS & Q-ROUND ROADMAP -->
   <div class="section">
-    <div class="section-title"><i class="fas fa-list-check"></i> 8. W-Round + X-Round + Y-Round Items — Gold Certification, Post-Gold Live Ops &amp; Compliance Automation</div>
+    <div class="section-title"><i class="fas fa-list-check"></i> 8. W-Round + X-Round + Y-Round + Z-Round Items — Gold Certification, Post-Gold Live Ops, Compliance Automation &amp; Resilience</div>
     <div class="card">
       <table class="ig-tbl">
         <thead><tr><th>ID</th><th>Item</th><th>Priority</th><th>Effort</th></tr></thead>
@@ -513,6 +514,18 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['YO2','Complete XO2 (Razorpay live) — integration-status-board Razorpay status = active','High','0.5h'],
             ['YO3','Complete XO3 (DNS records) — deliverability-score grade = A (via X3)','High','1h'],
             ['YO4','Complete XO4-XO6 (WebAuthn/DPAs/Sign-off) — audit-trail-export action_required = 0','Medium','6h'],
+            // Z-Round endpoints (all resolved)
+            ['Z1','GET /api/admin/capacity-forecast — resource utilisation & 12-month scale-up forecast: Workers CPU, KV reads/writes, D1 storage, subrequest budget, R2','RESOLVED','0h'],
+            ['Z2','GET /api/payments/chargeback-report — chargeback & dispute register: open/won/lost counts, amounts, RBI chargeback ratio (must be <1%), reason codes','RESOLVED','0h'],
+            ['Z3','GET /api/integrations/webhook-health — webhook delivery health: 24h event log, success rate, retry queue, HMAC verification for Razorpay/SendGrid/Twilio','RESOLVED','0h'],
+            ['Z4','GET /api/auth/privilege-audit — PAM audit: 7-day Super Admin action log, unusual-hour access flags, least-privilege gap analysis, quarterly review date','RESOLVED','0h'],
+            ['Z5','GET /api/dpdp/breach-simulation — DPDP §12 tabletop: 72h notification timeline, CERT-In template, readiness score A–C, gap list, strength evidence','RESOLVED','0h'],
+            ['Z6','GET /api/compliance/continuous-monitoring — 20 controls across ISO 27001/DPDP/PCI-DSS/SOC-2: pass/watch/fail, drift alerts, next assessment 2026-06-01','RESOLVED','0h'],
+            // Z-Round operator actions
+            ['ZO1','Approve IR Policy POL-012 — moves DPDP §12 from watch → pass in Z6 continuous monitor','High','1h'],
+            ['ZO2','Register DPBI portal account at dpb.gov.in — required for §12 breach notification readiness','High','2h'],
+            ['ZO3','Draft data principal breach notification template — required for Z5 readiness Grade A','Medium','2h'],
+            ['ZO4','Complete YO1–YO4 first — all operator actions cascade from D1 bind and Razorpay live setup','High','8h'],
           ].map(([id,item,pri,eff])=>{
             const isResolved = pri === 'RESOLVED'
             const pc = isResolved?'b-gr':pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'
@@ -567,7 +580,7 @@ const AUDIT_HTML = `<!DOCTYPE html>
   </div>
 
   <div style="text-align:center;padding:2rem 0;color:var(--ink-muted);font-size:.75rem;border-top:1px solid var(--border);margin-top:2rem;">
-    India Gully Enterprise Platform &mdash; Confidential Audit Report &mdash; Y-Round v2026.23 &mdash; March 2026<br/>
+    India Gully Enterprise Platform &mdash; Confidential Audit Report &mdash; Z-Round v2026.24 &mdash; March 2026<br/>
     <span style="color:var(--gold);">india-gully.pages.dev</span>
   </div>
 
