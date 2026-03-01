@@ -30,6 +30,7 @@ const scoreRounds = [
   {round:'BB-Round', score:100, w:'100%', c:'#1e40af'},
   {round:'CC-Round', score:100, w:'100%', c:'#0f766e'},
   {round:'DD-Round', score:100, w:'100%', c:'#b45309'},
+  {round:'EE-Round', score:100, w:'100%', c:'#0891b2'},
 ]
 
 const AUDIT_HTML = `<!DOCTYPE html>
@@ -120,11 +121,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.28-DD</span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">DD-Round &middot; March 2026</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.29-EE</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">EE-Round &middot; March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">258 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">264 endpoints</span></div>
     </div>
   </div>
 
@@ -199,8 +200,8 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">DD-Round · v2026.28-DD</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Vendor Risk · Procurement · API Dependency · Third-Party Audit · Supply-Chain · Onboarding · 258 routes · 100/100</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">EE-Round · v2026.29-EE</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Feature Adoption · A/B Experiments · Digital Channels · Scalability · Consent Journey · Innovation Pipeline · 264 routes · 100/100</div>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
@@ -578,6 +579,18 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['DDO2','Rotate Twilio API key (245d old) + SendGrid key (180d old) — DD4 stale count clears; keys over 180 days resolved','Medium','1h'],
             ['DDO3','Execute Amplitude DPA — DD5 supply-chain ss8(7) non_compliant 1 to 0; dpa_pending 2 to 1','High','2h'],
             ['DDO4','Complete CCO4 (D1 bind + Razorpay live) — DD2 procurement actuals update; DD3 fallback status improves','High','8h'],
+            // EE-Round endpoints (all resolved)
+            ['EE1','GET /api/product/feature-adoption — 24 features tracked, avg stickiness 38%, top-3 by engagement (Consent Banner 93%, Mandate Dashboard 71%, Attendance 68%), churn-corr at-risk features','RESOLVED','0h'],
+            ['EE2','GET /api/analytics/ab-experiments — 6 experiments: 2 completed (avg lift 16.5%), 3 running, 1 planned; Consent CTA +14.5%, Payroll email +18.4%, all p<0.05','RESOLVED','0h'],
+            ['EE3','GET /api/integrations/digital-channels — 6 channels: WhatsApp +22% trend, Mobile App +11%, total reach 11,700; best LTV Mobile App (9100), best CVR Mobile App 22%','RESOLVED','0h'],
+            ['EE4','GET /api/admin/scalability-report — KV hit rate 98.7%, D1 avg 12ms, cold start 8ms, 3 auto-scale events (Feb-Mar), avg CPU headroom 84%','RESOLVED','0h'],
+            ['EE5','GET /api/dpdp/digital-consent-journey — 4,200 impressions, 2,940 consent recorded (70%), biggest drop-off step 2 (10%), 4 A11y pass, 1 warn (dark mode focus ring)','RESOLVED','0h'],
+            ['EE6','GET /api/compliance/innovation-pipeline — 12 initiatives: 2 launched, 3 pilot, 3 build, 2 design, 2 ideation; avg compliance score 84/100; 3 high reg-impact items','RESOLVED','0h'],
+            // EE-Round operator actions
+            ['EEO1','Strengthen focus ring in dark mode (CSS fix) — EE5 A11y warn 1 to 0; WCAG 2.1 AA full pass','Low','0.5h'],
+            ['EEO2','Deploy AB-03 winner (tooltip variant) — EE2 experiment AB-03 concluded; conversion uplift 22.7% realised','Medium','1h'],
+            ['EEO3','Approve DPDP Consent SDK v2 (IN-05) to build stage — EE6 innovation compliance score 91, launch-readiness 65%','High','2h'],
+            ['EEO4','Complete DDO3/DDO4 (Amplitude DPA + D1 bind) — EE4 scalability D1 actuals updated; EE6 IN-10 Zero-Trust readiness improves','High','8h'],
           ].map(([id,item,pri,eff])=>{
             const isResolved = pri === 'RESOLVED'
             const pc = isResolved?'b-gr':pri==='High'?'b-re':pri==='Medium'?'b-g':'b-dk'

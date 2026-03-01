@@ -6573,6 +6573,31 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       </div>
     </div>
 
+    <!-- EE-Round buttons -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;padding:1rem;">
+      <div style="font-size:.75rem;font-weight:600;color:#0891b2;margin-bottom:.6rem;"><i class="fas fa-rocket" style="margin-right:.4rem;"></i>EE-Round — Digital Transformation &amp; Innovation Metrics (v2026.29)</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igFeatureAdoption()" style="background:none;border:1px solid #0891b2;color:#0891b2;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-chart-line" style="margin-right:.3rem;"></i>EE1: Feature Adoption
+        </button>
+        <button onclick="igAbExperiments()" style="background:none;border:1px solid #0891b2;color:#0891b2;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-flask" style="margin-right:.3rem;"></i>EE2: A/B Experiments
+        </button>
+        <button onclick="igDigitalChannels()" style="background:none;border:1px solid #0891b2;color:#0891b2;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-broadcast-tower" style="margin-right:.3rem;"></i>EE3: Digital Channels
+        </button>
+        <button onclick="igScalabilityReport()" style="background:none;border:1px solid #0891b2;color:#0891b2;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-server" style="margin-right:.3rem;"></i>EE4: Scalability
+        </button>
+        <button onclick="igDigitalConsentJourney()" style="background:none;border:1px solid #0891b2;color:#0891b2;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-route" style="margin-right:.3rem;"></i>EE5: Consent Journey
+        </button>
+        <button onclick="igInnovationPipeline()" style="background:none;border:1px solid #0891b2;color:#0891b2;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-lightbulb" style="margin-right:.3rem;"></i>EE6: Innovation Pipeline
+        </button>
+      </div>
+    </div>
+
     <!-- ── Gold Certification Live Progress (W-Round) ── -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;" id="gold-cert-widget">
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
@@ -8261,6 +8286,59 @@ window.igVendorOnboardingHealth = function() {
       return '<tr><td>'+v.vendor+'</td><td style="color:'+c+';">'+v.status+'</td><td>'+v.completed_steps+'/'+v.total_steps+'</td><td>'+(v.stalled_at||'—')+'</td><td>'+v.days_in_pipeline+'d</td></tr>';}).join('');
     igModal('DD6: Vendor Onboarding Health — v2026.28','<b>Pipeline:</b> '+s.total_in_pipeline+' | <b>Completed:</b> '+s.completed+' | <b>In Progress:</b> '+s.in_progress+' | <b>On Hold:</b> '+s.on_hold+' | <b>Avg Days:</b> '+s.avg_days_to_onboard+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>Vendor</th><th>Status</th><th>Steps</th><th>Stalled At</th><th>Days</th></tr>'+rows+'</table>'+(d.alerts.length?'<p style="color:#92400e;font-size:.7rem;margin-top:.4rem;">⚠ '+d.alerts.join(' | ')+'</p>':''));
   }).catch(function(){igModal('DD6: Onboarding','Session expired — log in as Super Admin')});
+};
+
+window.igFeatureAdoption = function() {
+  fetch('/product/feature-adoption',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.top_features||[]).map(function(f){
+      return '<tr><td>'+f.name+'</td><td>'+f.stickiness+'%</td><td>'+f.health+'/100</td></tr>';}).join('');
+    var risk=(d.at_risk||[]).map(function(f){return f.name+' (churn corr '+f.churn_corr+')';}).join(', ');
+    igModal('EE1: Feature Adoption — v2026.29','<b>Features:</b> '+s.total_features+' | <b>Avg Stickiness:</b> '+s.avg_stickiness_pct+'% | <b>High Stickiness:</b> '+s.high_stickiness+' | <b>At Risk:</b> '+s.at_risk_features+'<br/><b>Top 3 by stickiness:</b><br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>Feature</th><th>Stickiness</th><th>Health</th></tr>'+rows+'</table>'+(risk?'<p style="color:#991b1b;font-size:.7rem;margin-top:.4rem;">⚠ At-risk: '+risk+'</p>':''));
+  }).catch(function(){igModal('EE1: Feature Adoption','Session expired — log in as Super Admin')});
+};
+
+window.igAbExperiments = function() {
+  fetch('/analytics/ab-experiments',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.experiments||[]).filter(function(e){return e.status!=='planned';}).map(function(e){
+      var c=e.winner==='variant'?'#065f46':e.status==='running'?'#92400e':'#555';
+      return '<tr><td style="font-size:.65rem;">'+e.name+'</td><td>'+e.status+'</td><td>'+(e.lift_pct?e.lift_pct+'%':'—')+'</td><td style="color:'+c+';">'+e.winner+'</td></tr>';}).join('');
+    igModal('EE2: A/B Experiments — v2026.29','<b>Total:</b> '+s.total_experiments+' | <b>Running:</b> '+s.running+' | <b>Completed:</b> '+s.completed+' | <b>Avg Lift:</b> '+s.avg_lift_pct+'% | <b>Significant:</b> '+s.significant+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>Experiment</th><th>Status</th><th>Lift</th><th>Winner</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('EE2: A/B Experiments','Session expired — log in as Super Admin')});
+};
+
+window.igDigitalChannels = function() {
+  fetch('/integrations/digital-channels',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.channels||[]).map(function(ch){
+      var c=ch.trend.startsWith('+')?'#065f46':'#991b1b';
+      return '<tr><td>'+ch.name+'</td><td>'+ch.reach+'</td><td>'+ch.engagement_pct+'%</td><td>'+ch.conversion_pct+'%</td><td style="color:'+c+';">'+ch.trend+'</td></tr>';}).join('');
+    igModal('EE3: Digital Channel Performance — v2026.29','<b>Channels:</b> '+s.total_channels+' | <b>Total Reach:</b> '+s.total_reach.toLocaleString()+' | <b>Avg Engagement:</b> '+s.avg_engagement+'% | <b>Best LTV:</b> '+s.best_ltv_channel+' | <b>Best CVR:</b> '+s.best_cvr_channel+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>Channel</th><th>Reach</th><th>Engagement</th><th>CVR</th><th>Trend</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('EE3: Digital Channels','Session expired — log in as Super Admin')});
+};
+
+window.igScalabilityReport = function() {
+  fetch('/admin/scalability-report',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.services||[]).map(function(sv){
+      return '<tr><td>'+sv.name+'</td><td>'+sv.cold_start_ms+'ms</td><td>'+sv.p50_ms+'</td><td>'+sv.p95_ms+'</td><td>'+sv.cpu_headroom_pct+'%</td></tr>';}).join('');
+    igModal('EE4: Platform Scalability — v2026.29','<b>KV Hit Rate:</b> '+s.kv_hit_rate_pct+'% | <b>D1 Avg Query:</b> '+s.d1_avg_query_ms+'ms | <b>Cold Start:</b> '+s.worker_cold_start_ms+'ms | <b>Auto-scale Events:</b> '+s.autoscale_events_30d+' | <b>Avg CPU Headroom:</b> '+s.avg_cpu_headroom+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>Service</th><th>Cold Start</th><th>P50ms</th><th>P95ms</th><th>CPU Room</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('EE4: Scalability','Session expired — log in as Super Admin')});
+};
+
+window.igDigitalConsentJourney = function() {
+  fetch('/dpdp/digital-consent-journey',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.journey_steps||[]).map(function(st){
+      var c=st.drop_off_pct>8?'#991b1b':st.drop_off_pct>4?'#92400e':'#065f46';
+      return '<tr><td>'+st.step+'. '+st.name+'</td><td>'+st.users.toLocaleString()+'</td><td style="color:'+c+';">'+(st.drop_off_pct?st.drop_off_pct+'%':'—')+'</td><td>'+st.time_on_step_s+'s</td></tr>';}).join('');
+    igModal('EE5: Digital Consent Journey (DPDP §7) — v2026.29','<b>Impressions:</b> '+s.total_impressions.toLocaleString()+' | <b>Consent Recorded:</b> '+s.consent_recorded.toLocaleString()+' | <b>Acceptance:</b> '+s.acceptance_rate_pct+'% | <b>A11y Pass:</b> '+s.a11y_pass+' | <b>Warn:</b> '+s.a11y_warn+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>Step</th><th>Users</th><th>Drop-off</th><th>Time</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('EE5: Consent Journey','Session expired — log in as Super Admin')});
+};
+
+window.igInnovationPipeline = function() {
+  fetch('/compliance/innovation-pipeline',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+    var s=d.summary; var rows=(d.initiatives||[]).filter(function(i){return i.stage!=='ideation';}).map(function(i){
+      var c=i.compliance_score>=90?'#065f46':i.compliance_score>=75?'#92400e':'#991b1b';
+      return '<tr><td style="font-size:.65rem;">'+i.name+'</td><td>'+i.stage+'</td><td style="color:'+c+';">'+i.compliance_score+'</td><td>'+i.launch_readiness+'%</td></tr>';}).join('');
+    igModal('EE6: Innovation Pipeline — v2026.29','<b>Total:</b> '+s.total_initiatives+' | <b>Launched:</b> '+s.launched+' | <b>Pilot:</b> '+s.in_pilot+' | <b>Build:</b> '+s.in_build+' | <b>Avg Compliance:</b> '+s.avg_compliance_score+'/100 | <b>High Reg Impact:</b> '+s.high_reg_impact+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>Initiative</th><th>Stage</th><th>Comp Score</th><th>Readiness</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('EE6: Innovation Pipeline','Session expired — log in as Super Admin')});
 };
 
 window.igSecTab = function(idx){
