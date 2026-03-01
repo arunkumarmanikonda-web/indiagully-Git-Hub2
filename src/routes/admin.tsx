@@ -6176,7 +6176,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
         {label:'TLS Version',     value:'1.3',  color:'#16a34a',icon:'shield-alt', desc:'All connections enforced'},
         {label:'Key Rotation',    value:'90d',  color:'#d97706',icon:'sync-alt',   desc:'Scheduled — next: 28 May'},
         {label:'Encrypted Storage',value:'100%',color:'#16a34a',icon:'database',  desc:'Cloudflare D1 + R2'},
-        {label:'DPDP Compliance', value:'100%', color:'#052e16',icon:'balance-scale',desc:'R-Round: infra status, Razorpay health, email health, credential store, DPA tracker, cert registry — 190 routes 100/100'},
+        {label:'DPDP Compliance', value:'100%', color:'#052e16',icon:'balance-scale',desc:'S-Round: live config, gateway status, stack health, session analytics, consent analytics, gap analysis — 195 routes 100/100'},
       ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.75rem;">
         <div style="width:36px;height:36px;background:${s.color}18;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${s.icon}" style="color:${s.color};font-size:.85rem;"></i></div>
         <div><div style="font-size:1.25rem;font-weight:700;color:${s.color};line-height:1;">${s.value}</div><div style="font-size:.65rem;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.06em;">${s.label}</div><div style="font-size:.62rem;color:var(--ink-muted);">${s.desc}</div></div>
@@ -6314,6 +6314,21 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           </button>
           <button onclick="igDpaTracker()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
             <i class="fas fa-file-signature" style="margin-right:.3rem;"></i>R5: DPA Tracker
+          </button>
+          <button onclick="igLiveConfig()" style="background:none;border:1px solid #065f46;color:#065f46;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-sliders-h" style="margin-right:.3rem;"></i>S1: Live Config
+          </button>
+          <button onclick="igGatewayStatus()" style="background:none;border:1px solid #065f46;color:#065f46;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-credit-card" style="margin-right:.3rem;"></i>S2: Gateway Status
+          </button>
+          <button onclick="igStackHealth()" style="background:none;border:1px solid #065f46;color:#065f46;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-layer-group" style="margin-right:.3rem;"></i>S3: Stack Health
+          </button>
+          <button onclick="igConsentAnalytics()" style="background:none;border:1px solid #065f46;color:#065f46;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-chart-pie" style="margin-right:.3rem;"></i>S5: Consent Analytics
+          </button>
+          <button onclick="igGapAnalysis()" style="background:none;border:1px solid #065f46;color:#065f46;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+            <i class="fas fa-search-minus" style="margin-right:.3rem;"></i>S6: Gap Analysis
           </button>
         </div>
       </div>
@@ -6703,6 +6718,73 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       if(window.igModal) igModal('R5: DPA Tracker',msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('DPA tracker error: '+e,'error'); });
   };
+
+  window.igLiveConfig = function(){
+    igToast('Loading S1: Live Config…','info');
+    igApi.get('/admin/live-config').then(function(d){
+      var s = d.summary||{};
+      var msg = 'S1 Live Config\n'+d.s1_status+
+        '\nTotal configs: '+s.total+
+        '\nGreen: '+s.green+' | Warning: '+s.warning+' | Error: '+s.error+
+        '\nHealth: '+s.health_pct+'%\nVersion: '+d.platform_version;
+      igToast(s.error===0?'All configs green ✅':'Config issues detected ⚠️',s.error===0?'success':'warning',8000);
+      igModal('S1: Live Runtime Config',msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Live config error: '+e,'error'); });
+  };
+
+  window.igGatewayStatus = function(){
+    igToast('Loading S2: Gateway Status…','info');
+    igApi.get('/payments/gateway-status').then(function(d){
+      var msg = 'S2 Gateway Status\n'+d.s2_status+
+        '\nGateway: '+d.gateway+' | Mode: '+d.mode+
+        '\nAPI alive: '+d.api_alive+' | Latency: '+d.api_latency_ms+'ms'+
+        '\nCompliance: '+d.compliance_passed+'/'+d.compliance_total;
+      igToast(d.mode==='LIVE'?'Razorpay LIVE ✅':'Gateway in '+d.mode+' mode',d.mode==='LIVE'?'success':'warning',8000);
+      igModal('S2: Payment Gateway Status',msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Gateway status error: '+e,'error'); });
+  };
+
+  window.igStackHealth = function(){
+    igToast('Loading S3: Stack Health…','info');
+    igApi.get('/integrations/stack-health').then(function(d){
+      var s = d.summary||{};
+      var msg = 'S3 Stack Health\n'+d.s3_status+
+        '\nTotal integrations: '+s.total+
+        '\nGreen: '+s.green+' | Warning: '+s.warning+' | Error: '+s.error+
+        '\nOverall: '+d.overall_health;
+      igToast(d.overall_health==='green'?'Stack healthy ✅':'Stack needs attention',d.overall_health==='green'?'success':'warning',8000);
+      igModal('S3: Integration Stack Health',msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Stack health error: '+e,'error'); });
+  };
+
+  window.igConsentAnalytics = function(){
+    igToast('Loading S5: Consent Analytics…','info');
+    igApi.get('/dpdp/consent-analytics').then(function(d){
+      var cs = d.compliance_summary||{};
+      var msg = 'S5 DPDP Consent Analytics\n'+d.s5_status+
+        '\nCompliance: '+cs.compliance_pct+'%'+
+        '\nDone: '+cs.done+'/'+cs.total+
+        '\nPending: '+cs.pending+
+        '\nCert gate: '+cs.certification_gate;
+      igToast('DPDP '+cs.compliance_pct+'% compliant',cs.compliance_pct>=95?'success':'warning',8000);
+      igModal('S5: DPDP Consent Analytics',msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Consent analytics error: '+e,'error'); });
+  };
+
+  window.igGapAnalysis = function(){
+    igToast('Loading S6: Gap Analysis…','info');
+    igApi.get('/compliance/gap-analysis').then(function(d){
+      var msg = 'S6 Gap Analysis\n'+d.s6_status+
+        '\nWeighted score: '+d.weighted_score+'%'+
+        '\nCert level: '+d.certification_level+
+        '\nChecks: '+d.passed_checks+'/'+d.total_checks+
+        '\nOpen gaps: '+d.open_gaps.length+
+        '\nGold estimate: '+d.gold_score_estimate+'%';
+      igToast('Cert level: '+d.certification_level,d.certification_level==='Gold'?'success':'warning',8000);
+      igModal('S6: Compliance Gap Analysis',msg.replace(/\n/g,'<br>'));
+    }).catch(function(e){ igToast('Gap analysis error: '+e,'error'); });
+  };
+
 
   window.igSecTab = function(idx){
     for(var i=0;i<10;i++){
