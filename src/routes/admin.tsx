@@ -6711,6 +6711,34 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       </div>
     </div>
 
+    <!-- ── KK-Round: Sales & Revenue Operations Intelligence (v2026.35) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-chart-line" style="color:#7c3aed;margin-right:.5rem;"></i>KK-Round — Sales &amp; Revenue Intelligence (v2026.35)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">300 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igPipelineAnalytics()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-funnel-dollar" style="margin-right:.3rem;"></i>KK1: Pipeline
+        </button>
+        <button onclick="igRevenueLeakage()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-tint-slash" style="margin-right:.3rem;"></i>KK2: Rev Leakage
+        </button>
+        <button onclick="igQuotaAttainment()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-bullseye" style="margin-right:.3rem;"></i>KK3: Quota
+        </button>
+        <button onclick="igDealVelocity()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-bolt" style="margin-right:.3rem;"></i>KK4: Deal Velocity
+        </button>
+        <button onclick="igSalesDataCompliance()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>KK5: DPDP Sales
+        </button>
+        <button onclick="igPricingGovernance()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
+          <i class="fas fa-tags" style="margin-right:.3rem;"></i>KK6: Pricing Gov
+        </button>
+      </div>
+    </div>
+
     <!-- ── Gold Certification Live Progress (W-Round) ── -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;" id="gold-cert-widget">
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
@@ -8719,6 +8747,49 @@ window.igIso27001Tracker = function() {
       return '<tr><td style="font-size:.65rem;">'+dom.domain+'</td><td style="font-size:.65rem;">'+dom.total+'</td><td style="font-size:.65rem;">'+dom.implemented+'</td><td style="color:'+col+';">'+dom.completion_pct+'%</td></tr>';}).join('');
     igModal('JJ6: ISO 27001:2022 Tracker — v2026.34','<b>Total Controls:</b> '+s.total_controls+' | <b>Implemented:</b> '+s.implemented+' | <b>In Progress:</b> '+s.in_progress+' | <b>Completion:</b> '+s.completion_pct+'% | <b>Target Cert:</b> '+d.certification_meta.target_certification+' | <b>Days Left:</b> '+s.days_to_target_cert+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#134e4a;color:#fff;"><th>Domain</th><th>Total</th><th>Done</th><th>%</th></tr>'+rows+'</table>');
   }).catch(function(){igModal('JJ6: ISO 27001 Tracker','Session expired — log in as Super Admin')});
+};
+
+// ── KK-Round: Sales & Revenue Operations Intelligence ──────────────────────
+window.igPipelineAnalytics = function() {
+  fetch('/api/sales/pipeline-analytics').then(function(r){return r.json()}).then(function(d){
+    const s=d.summary;
+    const rows=d.stages.map(function(st){return '<tr><td>'+st.stage+'</td><td>'+st.deals+'</td><td>₹'+Number(st.value_inr).toLocaleString('en-IN')+'</td><td>'+st.probability_pct+'%</td></tr>';}).join('');
+    igModal('KK1: Sales Pipeline Analytics — v2026.35','<b>Deals:</b> '+s.total_deals+' | <b>Pipeline:</b> ₹'+Number(s.pipeline_value_inr).toLocaleString('en-IN')+' | <b>Weighted:</b> ₹'+Number(s.weighted_value_inr).toLocaleString('en-IN')+' | <b>Win Rate:</b> '+s.win_rate_pct+'% | <b>Avg Cycle:</b> '+s.avg_cycle_days+' days<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Stage</th><th>Deals</th><th>Value</th><th>Prob</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('KK1: Pipeline Analytics','Session expired — log in as Super Admin')});
+};
+window.igRevenueLeakage = function() {
+  fetch('/api/sales/revenue-leakage').then(function(r){return r.json()}).then(function(d){
+    const s=d.summary;
+    const rows=d.leakage_items.map(function(l){return '<tr><td>'+l.category+'</td><td>₹'+Number(l.amount_inr).toLocaleString('en-IN')+'</td><td>'+l.accounts_affected+'</td><td style="color:'+(l.priority==='High'?'#991b1b':l.priority==='Medium'?'#92400e':'#166534')+';">'+l.priority+'</td></tr>';}).join('');
+    igModal('KK2: Revenue Leakage — v2026.35','<b>Total Leakage:</b> ₹'+Number(s.total_leakage_inr).toLocaleString('en-IN')+' ('+s.leakage_pct_of_arr+'% ARR) | <b>Recoverable:</b> ₹'+Number(s.recoverable_inr).toLocaleString('en-IN')+' | <b>Categories:</b> '+s.categories_identified+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Category</th><th>Amount</th><th>Accounts</th><th>Priority</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('KK2: Revenue Leakage','Session expired — log in as Super Admin')});
+};
+window.igQuotaAttainment = function() {
+  fetch('/api/sales/quota-attainment').then(function(r){return r.json()}).then(function(d){
+    const s=d.summary;
+    const rows=d.by_rep.map(function(r){return '<tr><td>'+r.name+'</td><td>₹'+Number(r.quota_inr).toLocaleString('en-IN')+'</td><td>₹'+Number(r.attained_inr).toLocaleString('en-IN')+'</td><td style="color:'+(r.pct>=100?'#166534':r.pct>=75?'#92400e':'#991b1b')+';">'+r.pct+'%</td></tr>';}).join('');
+    igModal('KK3: Quota Attainment — v2026.35','<b>Q4 Total:</b> ₹'+Number(s.total_quota_inr).toLocaleString('en-IN')+' | <b>Attained:</b> ₹'+Number(s.total_attained_inr).toLocaleString('en-IN')+' ('+s.attainment_pct+'%) | <b>At 100%:</b> '+s.reps_at_100pct+' reps | <b>Below 50%:</b> '+s.reps_below_50pct+' reps<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Rep</th><th>Quota</th><th>Attained</th><th>%</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('KK3: Quota Attainment','Session expired — log in as Super Admin')});
+};
+window.igDealVelocity = function() {
+  fetch('/api/crm/deal-velocity').then(function(r){return r.json()}).then(function(d){
+    const s=d.summary;
+    const rows=d.velocity_breakdown.map(function(v){return '<tr><td>'+v.segment+'</td><td>'+v.avg_days+'d</td><td>'+v.win_rate_pct+'%</td><td>'+v.velocity_score+'</td></tr>';}).join('');
+    igModal('KK4: Deal Velocity — v2026.35','<b>Avg Score:</b> '+s.avg_velocity_score+' | <b>Accelerating:</b> '+s.deals_accelerating+' | <b>Stalling:</b> '+s.deals_stalling+' | <b>Avg Close:</b> '+s.avg_days_to_close+'d (Benchmark: '+s.benchmark_days+'d)<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Segment</th><th>Avg Days</th><th>Win Rate</th><th>Score</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('KK4: Deal Velocity','Session expired — log in as Super Admin')});
+};
+window.igSalesDataCompliance = function() {
+  fetch('/api/dpdp/sales-data-compliance').then(function(r){return r.json()}).then(function(d){
+    const rows=d.categories.map(function(c){return '<tr><td>'+c.category+'</td><td style="color:'+(c.status==='Compliant'?'#166534':c.status==='Non-Compliant'?'#991b1b':'#92400e')+';">'+c.status+'</td><td>'+c.score_pct+'%</td><td style="font-size:.68rem;">'+c.note+'</td></tr>';}).join('');
+    igModal('KK5: DPDP Sales Data Compliance — v2026.35','<b>Overall Score:</b> '+d.overall_score_pct+'% | <b>Open Actions:</b> '+d.open_actions+' | <b>DPO Review:</b> '+d.dpo_review_date+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Category</th><th>Status</th><th>Score</th><th>Note</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('KK5: Sales Data Compliance','Session expired — log in as Super Admin')});
+};
+window.igPricingGovernance = function() {
+  fetch('/api/compliance/pricing-governance').then(function(r){return r.json()}).then(function(d){
+    const s=d.summary;
+    const rows=d.breaches.map(function(b){return '<tr><td style="font-size:.68rem;">'+b.deal+'</td><td>'+b.rep+'</td><td>'+b.discount_pct+'%</td><td style="font-size:.68rem;color:#991b1b;">'+b.breach+'</td></tr>';}).join('');
+    igModal('KK6: Pricing Governance — v2026.35','<b>Pricing Tiers:</b> '+s.pricing_tiers+' | <b>Active Discounts:</b> '+s.active_discounts+' | <b>Non-Compliant:</b> '+s.non_compliant_discounts+' | <b>Compliance Score:</b> '+d.pricing_compliance_score_pct+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Deal</th><th>Rep</th><th>Discount</th><th>Breach</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('KK6: Pricing Governance','Session expired — log in as Super Admin')});
 };
 
 window.igSecTab = function(idx){

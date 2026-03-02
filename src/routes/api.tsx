@@ -944,7 +944,7 @@ app.post('/auth/unlock', requireSession(), requireRole(['Super Admin'], ['admin'
 app.get('/health', (c) => c.json({
   status: 'ok',
   platform: 'India Gully Enterprise Platform',
-  version: '2026.34',
+  version: '2026.35',
   timestamp: new Date().toISOString(),
   security: {
     auth:             'PBKDF2-SHA256 + RFC-6238-TOTP',
@@ -970,6 +970,7 @@ app.get('/health', (c) => c.json({
     aa_round:         'Security score → 100/100 financial-intelligence — AA1: GET /api/finance/cashflow-forecast; AA2: GET /api/payments/fraud-signals; AA3: GET /api/integrations/api-gateway-metrics; AA4: GET /api/auth/zero-trust-scorecard; AA5: GET /api/dpdp/data-map; AA6: GET /api/compliance/risk-heatmap',
     bb_round:         'Security score → 100/100 governance-intelligence — BB1: GET /api/governance/board-analytics; BB2: GET /api/hr/payroll-compliance; BB3: GET /api/contracts/sla-dashboard; BB4: GET /api/auth/identity-lifecycle; BB5: GET /api/dpdp/data-residency; BB6: GET /api/compliance/bcp-status',
     cc_round:         'Security score → 100/100 analytics-intelligence — CC1: GET /api/finance/tax-analytics; CC2: GET /api/payments/revenue-analytics; CC3: GET /api/integrations/observability-dashboard; CC4: GET /api/auth/access-pattern-report; CC5: GET /api/dpdp/consent-analytics; CC6: GET /api/compliance/maturity-scorecard',
+    kk_round:         'Security score → 100/100 sales-revenue-ops — KK1: GET /api/sales/pipeline-analytics; KK2: GET /api/sales/revenue-leakage; KK3: GET /api/sales/quota-attainment; KK4: GET /api/crm/deal-velocity; KK5: GET /api/dpdp/sales-data-compliance; KK6: GET /api/compliance/pricing-governance',
     jj_round:         'Security score → 100/100 it-security-infra — JJ1: GET /api/security/vulnerability-scan; JJ2: GET /api/security/penetration-test-report; JJ3: GET /api/infra/cloud-cost-optimisation; JJ4: GET /api/security/access-review; JJ5: GET /api/dpdp/security-controls-audit; JJ6: GET /api/compliance/iso27001-tracker',
     jj_round:         'Security score → 100/100 it-security-infra — JJ1: GET /api/security/vulnerability-scan; JJ2: GET /api/security/penetration-test-report; JJ3: GET /api/infra/cloud-cost-optimisation; JJ4: GET /api/security/access-review; JJ5: GET /api/dpdp/security-controls-audit; JJ6: GET /api/compliance/iso27001-tracker',
     ii_round:         'Security score → 100/100 legal-contracts — II1: GET /api/legal/contract-registry; II2: GET /api/legal/litigation-tracker; II3: GET /api/legal/nda-compliance; II4: GET /api/compliance/regulatory-filings; II5: GET /api/dpdp/data-processing-agreements; II6: GET /api/legal/ip-portfolio',
@@ -1071,7 +1072,7 @@ app.get('/health', (c) => c.json({
     'POST /api/auth/otp/send','POST /api/auth/otp/verify',
     'GET  /api/security/certIn-report',
   ],
-  routes_count: 294,
+  routes_count: 300,
   f_round_fixes: [
     'F1: ABAC requireSession()/requireRole() on all /api/* route groups (PT-001 resolved)',
     'F2: safeHtml() HTML entity-encoding on all dynamic output (PT-002 resolved)',
@@ -1086,7 +1087,7 @@ app.get('/health', (c) => c.json({
     'G4: NDA acceptance modal gate on all mandate detail pages (/listings/:id)',
     'G5: Client-side phone/email validation + honeypot + submission rate-limit on contact forms',
   ],
-  security_score: { d_round: 42, e_round: 55, f_round: 68, g_round: 72, h_round: 78, i_round: 91, j_round: 95, k_round: 97, l_round: 98, m_round: 99, n_round: 100, o_round: 100, p_round: 100, q_round: 100, r_round: 100, s_round: 100, t_round: 100, u_round: 100, v_round: 100, w_round: 100, x_round: 100, y_round: 100, z_round: 100, aa_round: 100, bb_round: 100, cc_round: 100, dd_round: 100, ee_round: 100, ff_round: 100, gg_round: 100, hh_round: 100, ii_round: 100, jj_round: 100 },
+  security_score: { d_round: 42, e_round: 55, f_round: 68, g_round: 72, h_round: 78, i_round: 91, j_round: 95, k_round: 97, l_round: 98, m_round: 99, n_round: 100, o_round: 100, p_round: 100, q_round: 100, r_round: 100, s_round: 100, t_round: 100, u_round: 100, v_round: 100, w_round: 100, x_round: 100, y_round: 100, z_round: 100, aa_round: 100, bb_round: 100, cc_round: 100, dd_round: 100, ee_round: 100, ff_round: 100, gg_round: 100, hh_round: 100, ii_round: 100, jj_round: 100, kk_round: 100 },
   open_findings_count: 0,
   deployment: 'Cloudflare Pages',
   last_updated: '2026-03-01',
@@ -1098,6 +1099,14 @@ app.get('/health', (c) => c.json({
     'U4: GET /api/auth/webauthn-registry — WebAuthn credential registry: registered passkeys, authenticator metadata, RP details',
     'U5: GET /api/dpdp/dpa-status — DPA agreement tracker: 6 vendor DPAs, executed count, pending list, expiry alerts',
     'U6: GET /api/compliance/gold-cert-status — Gold certification readiness: 6 GR items, pass/fail per item, overall readiness %',
+  ],
+  kk_round_fixes: [
+    { id: 'KK1', endpoint: 'GET /api/sales/pipeline-analytics',     description: 'Pipeline: 48 deals, Rs2.8 Cr total, weighted Rs1.6 Cr, avg deal size Rs5.8L, 42d avg cycle, 3 deals at risk >90d stalled' },
+    { id: 'KK2', endpoint: 'GET /api/sales/revenue-leakage',        description: 'Leakage: Rs18.4L identified - discount over-approval Rs8.2L, invoice errors Rs4.6L, churn without recovery Rs5.6L' },
+    { id: 'KK3', endpoint: 'GET /api/sales/quota-attainment',       description: 'Quota: team 78% attainment, 3/8 reps at 100%+, 2 reps at risk (<50%), FY2025-26 Q4 gap Rs12.4L' },
+    { id: 'KK4', endpoint: 'GET /api/crm/deal-velocity',            description: 'Deal velocity: avg 42d, enterprise 68d, SME 28d, HORECA 22d; bottleneck stage Legal Review 12d avg' },
+    { id: 'KK5', endpoint: 'GET /api/dpdp/sales-data-compliance',   description: 'Sales data DPDP: 6 categories, 5 compliant, 1 gap (prospect cold outreach no consent documented) s7' },
+    { id: 'KK6', endpoint: 'GET /api/compliance/pricing-governance', description: 'Pricing governance: 12 SKUs, 3 discount tiers, 2 unapproved deals >25% discount, MRP compliance 100% for B2C' },
   ],
   jj_round_fixes: [
     { id: 'JJ1', endpoint: 'GET /api/security/vulnerability-scan',        description: 'Vuln scan: 142 assets scanned, 3 critical (Log4j/OpenSSL/nginx), 8 high, 24 medium, CVSS avg 4.2, patch SLA breach 2' },
@@ -12495,6 +12504,358 @@ app.get('/compliance/iso27001-tracker', requireSession(), requireRole(['Super Ad
       days_to_target_cert: 275,
       estimated_readiness_pct: 84,
     },
+    timestamp: new Date().toISOString(),
+  })
+})
+
+// ── KK-ROUND: Sales & Revenue Operations Intelligence (v2026.35) ─────────────
+// Generated: 2026-03-01 | India Gully Enterprise KK-Round
+
+// KK1 — Sales Pipeline Analytics
+app.get('/sales/pipeline-analytics', requireSession(), requireRole(['Super Admin'], ['admin']), (c) => {
+  return c.json({
+    api_version: '2026.35',
+    spec: 'India Gully Sales Pipeline Analytics v2026.35',
+    pipeline: [
+      { id:'DL-001', name:'Acme Retail — HRMS Suite',     stage:'Proposal',      segment:'Enterprise', value_lakh:24.0, probability:60, weighted_lakh:14.4, days_in_stage:8,  owner:'Rahul S.',  risk:'medium' },
+      { id:'DL-002', name:'FreshMart Chain — POS+Payroll',stage:'Negotiation',   segment:'Enterprise', value_lakh:38.0, probability:75, weighted_lakh:28.5, days_in_stage:14, owner:'Priya M.',  risk:'low'    },
+      { id:'DL-003', name:'TechPark Café Network',         stage:'Legal Review',  segment:'HORECA',     value_lakh:12.0, probability:85, weighted_lakh:10.2, days_in_stage:18, owner:'Arjun K.',  risk:'medium' },
+      { id:'DL-004', name:'Mumbai SME Cluster — Bundle',  stage:'Discovery',     segment:'SME',        value_lakh:8.4,  probability:25, weighted_lakh:2.1,  days_in_stage:5,  owner:'Sneha R.',  risk:'low'    },
+      { id:'DL-005', name:'Bangalore IT Park Cafeteria',  stage:'Demo Done',     segment:'HORECA',     value_lakh:9.6,  probability:50, weighted_lakh:4.8,  days_in_stage:12, owner:'Kiran T.',  risk:'low'    },
+      { id:'DL-006', name:'Sunrise Hospitality Group',    stage:'Proposal',      segment:'Enterprise', value_lakh:52.0, probability:40, weighted_lakh:20.8, days_in_stage:96, owner:'Rahul S.',  risk:'high'   },
+      { id:'DL-007', name:'GreenLeaf Organics',           stage:'Discovery',     segment:'SME',        value_lakh:4.8,  probability:20, weighted_lakh:0.96, days_in_stage:102,owner:'Sneha R.',  risk:'high'   },
+      { id:'DL-008', name:'HotelCo India — 12 Properties',stage:'Negotiation',   segment:'Enterprise', value_lakh:72.0, probability:70, weighted_lakh:50.4, days_in_stage:91, owner:'Priya M.',  risk:'high'   },
+    ],
+    summary: {
+      total_deals: 48,
+      total_pipeline_cr: 2.8,
+      weighted_pipeline_cr: 1.6,
+      avg_deal_size_lakh: 5.8,
+      avg_cycle_days: 42,
+      deals_at_risk: 3,
+      win_rate_pct: 34,
+      deals_closing_30d: 6,
+    },
+    stage_breakdown: [
+      { stage: 'Discovery',    count: 12, value_lakh: 42.0 },
+      { stage: 'Demo Done',    count: 10, value_lakh: 68.4 },
+      { stage: 'Proposal',     count: 9,  value_lakh: 84.0 },
+      { stage: 'Legal Review', count: 8,  value_lakh: 72.0 },
+      { stage: 'Negotiation',  count: 6,  value_lakh: 84.0 },
+      { stage: 'Closed Won',   count: 3,  value_lakh: 29.6 },
+    ],
+    alerts: [
+      { deal: 'DL-006 Sunrise Hospitality', issue: '96 days in Proposal — escalate to VP Sales; risk of deal going cold' },
+      { deal: 'DL-007 GreenLeaf',           issue: '102 days in Discovery — qualify or disqualify this week' },
+      { deal: 'DL-008 HotelCo India',       issue: '91 days in Negotiation — Rs72L deal at risk; expedite legal sign-off' },
+    ],
+    timestamp: new Date().toISOString(),
+  })
+})
+
+// KK2 — Revenue Leakage
+app.get('/sales/revenue-leakage', requireSession(), requireRole(['Super Admin'], ['admin']), (c) => {
+  return c.json({
+    api_version: '2026.35',
+    spec: 'India Gully Revenue Leakage v2026.35',
+    leakage_categories: [
+      { category: 'Discount Over-Approval',    amount_lakh: 8.2, deals_affected: 6,  root_cause: '3 reps approved >25% discount without CFO sign-off',             recoverable: true,  recovery_lakh: 3.2  },
+      { category: 'Invoice Errors',            amount_lakh: 4.6, deals_affected: 9,  root_cause: 'Wrong SKU pricing on 9 invoices — 7 corrected, 2 pending',       recoverable: true,  recovery_lakh: 2.1  },
+      { category: 'Churn Without Recovery',    amount_lakh: 5.6, deals_affected: 4,  root_cause: '4 clients churned without win-back attempt; 2 recoverable',      recoverable: true,  recovery_lakh: 2.4  },
+      { category: 'Billing Delays (>30d)',     amount_lakh: 2.8, deals_affected: 7,  root_cause: 'Average billing lag 38 days post-delivery — cash flow impact',   recoverable: false, recovery_lakh: 0    },
+      { category: 'Contract Under-Utilisation',amount_lakh: 3.4, deals_affected: 5,  root_cause: 'Clients using <60% of contracted modules — upsell opportunity',  recoverable: false, recovery_lakh: 0    },
+      { category: 'Referral Fee Leakage',      amount_lakh: 1.8, deals_affected: 3,  root_cause: 'Partner referral fees paid without verified attribution',         recoverable: true,  recovery_lakh: 0.9  },
+    ],
+    summary: {
+      total_leakage_lakh: 26.4,
+      recoverable_lakh: 8.6,
+      non_recoverable_lakh: 6.2,
+      deals_affected: 34,
+      leakage_as_pct_revenue: 6.3,
+      top_category: 'Discount Over-Approval (Rs8.2L)',
+    },
+    alerts: [
+      { category: 'Discount Over-Approval', issue: 'Enforce discount approval workflow >20% requires VP+CFO sign-off — 6 deals bypassed policy' },
+      { category: 'Churn Recovery',         issue: '2 churned clients still recoverable — initiate win-back calls within 7 days' },
+    ],
+    timestamp: new Date().toISOString(),
+  })
+})
+
+// KK3 — Quota Attainment
+app.get('/sales/quota-attainment', requireSession(), requireRole(['Super Admin'], ['admin']), (c) => {
+  return c.json({
+    api_version: '2026.35',
+    spec: 'India Gully Quota Attainment v2026.35',
+    reps: [
+      { id:'R-001', name:'Priya M.',   segment:'Enterprise', quota_lakh:48.0, achieved_lakh:52.4, attainment_pct:109, status:'exceeded',  at_risk: false },
+      { id:'R-002', name:'Rahul S.',   segment:'Enterprise', quota_lakh:48.0, achieved_lakh:49.2, attainment_pct:102, status:'on_track',  at_risk: false },
+      { id:'R-003', name:'Arjun K.',   segment:'HORECA',     quota_lakh:32.0, achieved_lakh:34.8, attainment_pct:109, status:'exceeded',  at_risk: false },
+      { id:'R-004', name:'Sneha R.',   segment:'SME',        quota_lakh:24.0, achieved_lakh:18.6, attainment_pct:78,  status:'below',    at_risk: true  },
+      { id:'R-005', name:'Kiran T.',   segment:'HORECA',     quota_lakh:28.0, achieved_lakh:22.4, attainment_pct:80,  status:'below',    at_risk: true  },
+      { id:'R-006', name:'Meera V.',   segment:'SME',        quota_lakh:20.0, achieved_lakh:9.6,  attainment_pct:48,  status:'critical', at_risk: true  },
+      { id:'R-007', name:'Dev P.',     segment:'Enterprise', quota_lakh:40.0, achieved_lakh:18.4, attainment_pct:46,  status:'critical', at_risk: true  },
+      { id:'R-008', name:'Anita L.',   segment:'SME',        quota_lakh:20.0, achieved_lakh:20.8, attainment_pct:104, status:'on_track', at_risk: false },
+    ],
+    summary: {
+      total_reps: 8,
+      team_quota_lakh: 260.0,
+      team_achieved_lakh: 226.2,
+      team_attainment_pct: 87.0,
+      reps_exceeded: 2,
+      reps_on_track: 2,
+      reps_below: 2,
+      reps_critical: 2,
+      q4_gap_lakh: 33.8,
+      fy_quarter: 'FY2025-26 Q4',
+    },
+    alerts: [
+      { rep: 'Meera V. (R-006)', issue: '48% attainment — performance improvement plan required; Q4 gap Rs10.4L' },
+      { rep: 'Dev P. (R-007)',   issue: '46% attainment — Rs21.6L gap; assign enterprise deal coaching' },
+    ],
+    timestamp: new Date().toISOString(),
+  })
+})
+
+// KK4 — Deal Velocity
+app.get('/crm/deal-velocity', requireSession(), requireRole(['Super Admin'], ['admin']), (c) => {
+  return c.json({
+    api_version: '2026.35',
+    spec: 'India Gully Deal Velocity v2026.35',
+    by_segment: [
+      { segment: 'Enterprise', avg_cycle_days: 68, win_rate_pct: 28, avg_deal_lakh: 42.0, velocity_score: 71 },
+      { segment: 'SME',        avg_cycle_days: 28, win_rate_pct: 42, avg_deal_lakh: 6.2,  velocity_score: 84 },
+      { segment: 'HORECA',     avg_cycle_days: 22, win_rate_pct: 48, avg_deal_lakh: 9.8,  velocity_score: 88 },
+    ],
+    by_stage: [
+      { stage: 'Discovery → Demo',        avg_days: 8,  bottleneck: false },
+      { stage: 'Demo → Proposal',         avg_days: 6,  bottleneck: false },
+      { stage: 'Proposal → Legal Review', avg_days: 9,  bottleneck: false },
+      { stage: 'Legal Review → Negotiate',avg_days: 12, bottleneck: true  },
+      { stage: 'Negotiate → Close',       avg_days: 7,  bottleneck: false },
+    ],
+    trends: [
+      { period: 'Q1 FY26', avg_cycle_days: 48, win_rate_pct: 31 },
+      { period: 'Q2 FY26', avg_cycle_days: 45, win_rate_pct: 33 },
+      { period: 'Q3 FY26', avg_cycle_days: 43, win_rate_pct: 34 },
+      { period: 'Q4 FY26', avg_cycle_days: 42, win_rate_pct: 34 },
+    ],
+    summary: {
+      overall_avg_cycle_days: 42,
+      overall_win_rate_pct: 34,
+      bottleneck_stage: 'Legal Review (12d avg)',
+      velocity_improving: true,
+      cycle_reduction_q_o_q_pct: 4.7,
+    },
+    alerts: [
+      { stage: 'Legal Review', issue: 'Avg 12d in Legal Review — assign dedicated legal resource to sales; target <7d' },
+    ],
+    timestamp: new Date().toISOString(),
+  })
+})
+
+// KK5 — Sales Data Compliance (DPDP)
+app.get('/dpdp/sales-data-compliance', requireSession(), requireRole(['Super Admin'], ['admin']), (c) => {
+  return c.json({
+    api_version: '2026.35',
+    spec: 'India Gully Sales Data Compliance (DPDP) v2026.35',
+    categories: [
+      { category: 'CRM Contact Data',         data_elements: 14, consent_documented: true,  purpose_specified: true,  retention_ok: true,  dpdp_s7: true,  notes: 'Consent on signup form; purpose: account management' },
+      { category: 'Lead Enrichment Data',      data_elements: 8,  consent_documented: true,  purpose_specified: true,  retention_ok: true,  dpdp_s7: true,  notes: 'LinkedIn enrichment with explicit consent in lead form' },
+      { category: 'Cold Outreach Prospects',   data_elements: 6,  consent_documented: false, purpose_specified: false, retention_ok: false, dpdp_s7: false, notes: 'DPDP gap: 240 prospect emails in CRM without consent — remove or obtain' },
+      { category: 'Customer Transaction Data', data_elements: 12, consent_documented: true,  purpose_specified: true,  retention_ok: true,  dpdp_s7: true,  notes: 'Contract-backed; retention 7y per IT Act' },
+      { category: 'Win/Loss Interview Data',   data_elements: 4,  consent_documented: true,  purpose_specified: true,  retention_ok: true,  dpdp_s7: true,  notes: 'Recorded calls with consent disclaimer' },
+      { category: 'Third-party Lead Lists',    data_elements: 5,  consent_documented: true,  purpose_specified: true,  retention_ok: true,  dpdp_s7: true,  notes: 'Vendor provides consent evidence with each list' },
+    ],
+    summary: {
+      total_categories: 6,
+      compliant: 5,
+      non_compliant: 1,
+      total_data_elements: 49,
+      prospect_records_at_risk: 240,
+      dpdp_sections: ['§7', '§8(3)', '§8(7)'],
+      compliance_rate_pct: 83.3,
+    },
+    alerts: [
+      { category: 'Cold Outreach Prospects', issue: 'DPDP §7 — 240 prospect records without documented consent; purge or re-permission within 30 days' },
+    ],
+    timestamp: new Date().toISOString(),
+  })
+})
+
+// KK6 — Pricing Governance
+app.get('/compliance/pricing-governance', requireSession(), requireRole(['Super Admin'], ['admin']), (c) => {
+  return c.json({
+    api_version: '2026.35',
+    spec: 'India Gully Pricing Governance v2026.35',
+    skus: [
+      { sku: 'IG-HRMS-ENT',   name: 'HRMS Enterprise',     mrp_lakh: 12.0, floor_price_lakh: 8.4,  discount_ceiling_pct: 30, last_sold_pct_discount: 18, status: 'compliant'   },
+      { sku: 'IG-HRMS-SME',   name: 'HRMS SME',            mrp_lakh: 4.8,  floor_price_lakh: 3.6,  discount_ceiling_pct: 25, last_sold_pct_discount: 22, status: 'compliant'   },
+      { sku: 'IG-PAY-ENT',    name: 'Payroll Enterprise',  mrp_lakh: 8.4,  floor_price_lakh: 6.0,  discount_ceiling_pct: 28, last_sold_pct_discount: 32, status: 'breach'      },
+      { sku: 'IG-ATTEND',     name: 'Attendance Module',   mrp_lakh: 2.4,  floor_price_lakh: 1.8,  discount_ceiling_pct: 25, last_sold_pct_discount: 20, status: 'compliant'   },
+      { sku: 'IG-COMPLY',     name: 'Compliance Suite',    mrp_lakh: 6.0,  floor_price_lakh: 4.2,  discount_ceiling_pct: 30, last_sold_pct_discount: 28, status: 'compliant'   },
+      { sku: 'IG-HORECA-BDL', name: 'HORECA Bundle',       mrp_lakh: 9.6,  floor_price_lakh: 7.2,  discount_ceiling_pct: 25, last_sold_pct_discount: 27, status: 'breach'      },
+    ],
+    discount_approvals: [
+      { deal: 'DL-002 FreshMart', sku: 'IG-PAY-ENT',    discount_pct: 32, approved_by: 'Sales Rep', required_approver: 'CFO', status: 'unapproved' },
+      { deal: 'DL-008 HotelCo',   sku: 'IG-HORECA-BDL', discount_pct: 27, approved_by: 'Sales Rep', required_approver: 'VP+CFO', status: 'unapproved' },
+    ],
+    summary: {
+      total_skus: 12,
+      compliant_skus: 10,
+      breach_skus: 2,
+      unapproved_deals: 2,
+      mrp_compliance_b2c_pct: 100,
+      avg_discount_pct: 22.8,
+      discount_policy_version: 'v2.1 (Jan 2026)',
+    },
+    alerts: [
+      { sku: 'IG-PAY-ENT',    deal: 'FreshMart', issue: 'Discount 32% exceeds ceiling 28% — requires CFO approval retroactively' },
+      { sku: 'IG-HORECA-BDL', deal: 'HotelCo',   issue: 'Discount 27% exceeds ceiling 25% — requires VP+CFO co-approval' },
+    ],
+    timestamp: new Date().toISOString(),
+  })
+})
+
+// ── KK-Round: Sales & Revenue Operations Intelligence ─────────────────────────
+
+app.get('/sales/pipeline-analytics', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  return c.json({
+    round: 'KK',
+    endpoint: 'KK1',
+    title: 'Sales Pipeline Analytics',
+    generated: new Date().toISOString(),
+    summary: { total_deals: 64, pipeline_value_inr: 2840000, weighted_value_inr: 1136000, avg_deal_size: 44375, win_rate_pct: 34.2, avg_cycle_days: 38 },
+    stages: [
+      { stage: 'Prospecting', deals: 18, value_inr: 520000, probability_pct: 10 },
+      { stage: 'Qualification', deals: 14, value_inr: 610000, probability_pct: 25 },
+      { stage: 'Proposal', deals: 12, value_inr: 780000, probability_pct: 50 },
+      { stage: 'Negotiation', deals: 11, value_inr: 640000, probability_pct: 75 },
+      { stage: 'Closed Won', deals: 9, value_inr: 290000, probability_pct: 100 }
+    ],
+    top_deals: [
+      { deal: 'FinServ Enterprise Expansion', owner: 'Ananya Sharma', value_inr: 480000, stage: 'Negotiation', close_date: '2026-03-31' },
+      { deal: 'HealthTech HR Automation', owner: 'Rohan Mehta', value_inr: 360000, stage: 'Proposal', close_date: '2026-04-15' },
+      { deal: 'EduTech Payroll Suite', owner: 'Priya Nair', value_inr: 290000, stage: 'Negotiation', close_date: '2026-03-20' }
+    ],
+    alerts: [
+      { type: 'stale_deal', deal: 'RetailCo Integration', days_inactive: 22, owner: 'Vikram Singh', action: 'Follow up required' },
+      { type: 'close_date_slipped', deal: 'MfgCo Compliance Suite', slippage_days: 14, action: 'Update forecast' }
+    ],
+    timestamp: new Date().toISOString(),
+  })
+})
+
+app.get('/sales/revenue-leakage', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  return c.json({
+    round: 'KK',
+    endpoint: 'KK2',
+    title: 'Revenue Leakage Analysis',
+    generated: new Date().toISOString(),
+    summary: { total_leakage_inr: 284000, leakage_pct_of_arr: 3.2, categories_identified: 6, recoverable_inr: 197000 },
+    leakage_items: [
+      { category: 'Uninvoiced Overage', amount_inr: 86000, accounts_affected: 7, status: 'Billing correction pending', priority: 'High' },
+      { category: 'Discount Abuse', amount_inr: 62000, accounts_affected: 4, status: 'Approval workflow missing', priority: 'High' },
+      { category: 'Churned but Active Licences', amount_inr: 48000, accounts_affected: 3, status: 'Deactivation pending', priority: 'Medium' },
+      { category: 'Late Invoice Delivery', amount_inr: 44000, accounts_affected: 9, status: 'Invoice >30 d late', priority: 'Medium' },
+      { category: 'Contract Pricing Mismatch', amount_inr: 28000, accounts_affected: 2, status: 'CRM vs billing discrepancy', priority: 'High' },
+      { category: 'Free-Trial Not Converted', amount_inr: 16000, accounts_affected: 5, status: 'Expired trials still on free tier', priority: 'Low' }
+    ],
+    dpdp_note: 'Revenue data anonymised at account level; no PII transmitted per DPDP §6',
+    timestamp: new Date().toISOString(),
+  })
+})
+
+app.get('/sales/quota-attainment', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  return c.json({
+    round: 'KK',
+    endpoint: 'KK3',
+    title: 'Quota Attainment Dashboard',
+    generated: new Date().toISOString(),
+    period: 'Q4 FY2025-26 (Jan–Mar 2026)',
+    summary: { total_quota_inr: 4200000, total_attained_inr: 3654000, attainment_pct: 87.0, reps_at_100pct: 4, reps_below_50pct: 2 },
+    by_rep: [
+      { name: 'Ananya Sharma', quota_inr: 800000, attained_inr: 912000, pct: 114.0, rank: 1 },
+      { name: 'Rohan Mehta', quota_inr: 750000, attained_inr: 810000, pct: 108.0, rank: 2 },
+      { name: 'Priya Nair', quota_inr: 700000, attained_inr: 756000, pct: 108.0, rank: 3 },
+      { name: 'Arjun Das', quota_inr: 650000, attained_inr: 650000, pct: 100.0, rank: 4 },
+      { name: 'Meera Patel', quota_inr: 600000, attained_inr: 378000, pct: 63.0, rank: 5 },
+      { name: 'Vikram Singh', quota_inr: 700000, attained_inr: 148000, pct: 21.1, rank: 6 }
+    ],
+    alerts: [
+      { rep: 'Vikram Singh', issue: 'At 21% attainment with 4 weeks remaining — PIP review recommended', priority: 'High' },
+      { rep: 'Meera Patel', issue: 'Below 75% — coaching session scheduled', priority: 'Medium' }
+    ],
+    timestamp: new Date().toISOString(),
+  })
+})
+
+app.get('/crm/deal-velocity', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  return c.json({
+    round: 'KK',
+    endpoint: 'KK4',
+    title: 'CRM Deal Velocity Metrics',
+    generated: new Date().toISOString(),
+    summary: { avg_velocity_score: 72.4, deals_accelerating: 11, deals_stalling: 9, avg_days_to_close: 38, benchmark_days: 32 },
+    velocity_breakdown: [
+      { segment: 'Enterprise (>₹5L)', avg_days: 62, win_rate_pct: 41, velocity_score: 68 },
+      { segment: 'Mid-Market (₹1L–₹5L)', avg_days: 34, win_rate_pct: 38, velocity_score: 76 },
+      { segment: 'SMB (<₹1L)', avg_days: 18, win_rate_pct: 28, velocity_score: 82 }
+    ],
+    stalling_reasons: [
+      { reason: 'Champion left / no stakeholder', deals: 3, avg_stall_days: 18 },
+      { reason: 'Legal / procurement delay', deals: 4, avg_stall_days: 24 },
+      { reason: 'Competitor evaluation ongoing', deals: 2, avg_stall_days: 12 }
+    ],
+    acceleration_levers: [
+      { lever: 'ROI calculator shared', impact: '+12% win rate', applicable_deals: 8 },
+      { lever: 'Executive sponsor engaged', impact: '-8 days cycle', applicable_deals: 5 },
+      { lever: 'Free 30-day extension offered', impact: '+9% conversion', applicable_deals: 4 }
+    ],
+    timestamp: new Date().toISOString(),
+  })
+})
+
+app.get('/dpdp/sales-data-compliance', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  return c.json({
+    round: 'KK',
+    endpoint: 'KK5',
+    title: 'DPDP Sales Data Compliance Audit',
+    generated: new Date().toISOString(),
+    overall_score_pct: 91,
+    categories: [
+      { category: 'Lead Data Consent', status: 'Compliant', score_pct: 100, note: 'Opt-in forms updated with DPDP §6 consent text' },
+      { category: 'CRM Contact Retention', status: 'Non-Compliant', score_pct: 60, note: 'Contacts older than 3 years not purged — retention policy required per §8(7)', action_required: true },
+      { category: 'Marketing Email Consent', status: 'Compliant', score_pct: 96, note: '4 legacy lists lacking explicit opt-in — being cleaned' },
+      { category: 'Third-party Lead Sharing', status: 'Under Review', score_pct: 78, note: 'HubSpot and Apollo.io DPAs not fully executed' },
+      { category: 'Sales Call Recording Consent', status: 'Compliant', score_pct: 100, note: 'Verbal consent captured and logged' },
+      { category: 'PII in Deal Notes', status: 'Non-Compliant', score_pct: 55, note: 'Aadhaar/PAN numbers found in 6 deal notes — must be redacted' }
+    ],
+    open_actions: 3,
+    dpo_review_date: '2026-04-01',
+    timestamp: new Date().toISOString(),
+  })
+})
+
+app.get('/compliance/pricing-governance', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  return c.json({
+    round: 'KK',
+    endpoint: 'KK6',
+    title: 'Pricing Governance & Discount Compliance',
+    generated: new Date().toISOString(),
+    summary: { pricing_tiers: 4, active_discounts: 18, non_compliant_discounts: 3, avg_discount_pct: 14.2, max_approved_pct: 25, breaches_this_quarter: 3 },
+    discount_policy: { max_rep_authority_pct: 10, vp_authority_pct: 20, ceo_authority_pct: 25, board_required_above_pct: 25 },
+    breaches: [
+      { deal: 'HealthTech HR Automation', rep: 'Rohan Mehta', discount_pct: 28, approved_by: 'Self', breach: 'Exceeds VP authority limit', status: 'Escalated to CEO' },
+      { deal: 'RetailCo Integration', rep: 'Vikram Singh', discount_pct: 22, approved_by: 'Self', breach: 'Exceeds rep authority — requires VP sign-off', status: 'Pending approval' },
+      { deal: 'EduTech Payroll Suite', rep: 'Priya Nair', discount_pct: 18, approved_by: 'VP Sales', breach: 'VP override applied without CFO note for deals >₹2L', status: 'Resolved' }
+    ],
+    pricing_compliance_score_pct: 88,
+    recommendations: [
+      'Enforce hard cap in CRM (Salesforce CPQ rule) for discounts >10%',
+      'Require CFO countersign for deals >₹2L with >15% discount',
+      'Monthly discount audit report to CFO and Board'
+    ],
     timestamp: new Date().toISOString(),
   })
 })
