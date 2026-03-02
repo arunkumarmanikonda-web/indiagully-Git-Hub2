@@ -332,7 +332,7 @@ app.get('/', (c) => {
         ${ADVISORY_PARTNERS.slice(0,4).map((p: any) => `
         <div style="border:1px solid var(--border);padding:1.5rem;text-align:center;background:#fff;transition:border-color .25s,box-shadow .25s;" onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 8px 24px rgba(0,0,0,.07)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
           <div style="display:flex;align-items:center;justify-content:center;margin-bottom:.875rem;min-height:48px;">
-            <img src="${p.logo}" alt="${p.name}" style="max-width:110px;max-height:44px;width:auto;height:auto;object-fit:contain;display:block;"
+            <img src="${p.logo}" alt="${p.name}" style="max-width:130px;max-height:40px;width:auto;height:auto;object-fit:contain;display:block;"
                  onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex'">
             <div style="display:none;width:110px;height:40px;background:${p.color};align-items:center;justify-content:center;border-radius:2px;">
               <span style="font-size:.75rem;font-weight:800;letter-spacing:.06em;color:${p.textColor || '#fff'};text-align:center;">${p.abbr}</span>

@@ -177,7 +177,7 @@ ${SERVICES.map((s, i) => `
       ${ADVISORY_PARTNERS.map((p: any) => `
       <div style="background:#fff;padding:2.25rem 1.25rem;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;transition:background .2s;min-height:160px;" onmouseover="this.style.background='#f9f7f2'" onmouseout="this.style.background='#fff'">
         <div style="height:56px;display:flex;align-items:center;justify-content:center;">
-          <img src="${p.logo}" alt="${p.name}" style="max-height:52px;max-width:110px;width:auto;object-fit:contain;display:block;"
+          <img src="${p.logo}" alt="${p.name}" style="max-height:40px;max-width:130px;width:auto;height:auto;object-fit:contain;display:block;"
                onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex'">
         </div>
         <div style="display:none;height:56px;align-items:center;justify-content:center;">
