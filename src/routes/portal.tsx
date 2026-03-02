@@ -976,7 +976,7 @@ app.get('/client/invoices', (c) => {
             <img src="/assets/logo-primary.png" alt="India Gully" height="28"
                  style="height:28px;width:auto;max-width:160px;object-fit:contain;object-position:left center;display:block;margin-bottom:.4rem;"
                  draggable="false" decoding="async">
-            <div style="font-size:.72rem;color:var(--ink-muted);line-height:1.5;">Vivacious Entertainment &amp; Hospitality Pvt. Ltd.<br>GSTIN: 07AABCV1234F1Z5 · CIN: U74999DL2017PTC320001<br>support@indiagully.com</div>
+            <div style="font-size:.72rem;color:var(--ink-muted);line-height:1.5;">Vivacious Entertainment &amp; Hospitality Pvt. Ltd.<br>GSTIN: 07AAGCV0867P1ZN · CIN: U74999DL2017PTC323237<br>support@indiagully.com</div>
           </div>
             <div style="text-align:right;"><div id="inv-number" style="font-size:1rem;font-weight:700;color:var(--gold);"></div><div id="inv-due" style="font-size:.72rem;color:var(--ink-muted);margin-top:.25rem;"></div></div>
           </div>

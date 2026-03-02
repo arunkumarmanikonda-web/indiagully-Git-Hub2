@@ -2027,7 +2027,7 @@ app.post('/hr/epfo/ecr', async (c) => {
     ]
 
     // EPFO ECR v2.0 format
-    const header = `#~#EPFO ECR v2.0#~#${String(month).padStart(2,'0')}/${year}#~#AABCV1234F#~#07AABCV1234F1Z5#~#${employees.length}`
+    const header = `#~#EPFO ECR v2.0#~#${String(month).padStart(2,'0')}/${year}#~#AAGCV0867P#~#07AAGCV0867P1ZN#~#${employees.length}`
     const lines  = employees.map(e =>
       `${e.uan}#~#${e.name}#~#${e.epf_wages}#~#${e.eps_wages}#~#${e.epf_contrib}#~#${e.eps_contrib}#~#${e.diff}#~#0#~#0#~#0#~#0`
     )
@@ -2352,8 +2352,8 @@ app.get('/governance/resolutions', (c) => c.json({ total:7, passed:6, pending:1,
   {id:'BR-2025-007',title:'Authorisation for NCR Entertainment PMC',passed_on:null,votes:{for:1,against:1,abstain:1},dsc_signed:false,status:'Pending'},
 ]}))
 
-app.get('/finance/gst/gstr1',  (c) => c.json({ period:'Feb 2026', gstin:'07AABCV1234F1Z5', b2b_invoices:[{gstin:'27AAACN1234D1ZI',inv:'INV-2025-001',taxable:500000,cgst:45000,sgst:45000}], totals:{taxable:680000,cgst:61200,sgst:61200}, status:'Draft — Not filed', due_date:'11 Mar 2026' }))
-app.get('/finance/gst/gstr3b', (c) => c.json({ period:'Feb 2026', gstin:'07AABCV1234F1Z5', outward_taxable:{cgst:61200,sgst:61200}, itc_available:{cgst:12000,sgst:12000}, net_payable:{cgst:49200,sgst:49200}, status:'Draft — Not filed', due_date:'20 Mar 2026' }))
+app.get('/finance/gst/gstr1',  (c) => c.json({ period:'Feb 2026', gstin:'07AAGCV0867P1ZN', b2b_invoices:[{gstin:'27AAACN1234D1ZI',inv:'INV-2025-001',taxable:500000,cgst:45000,sgst:45000}], totals:{taxable:680000,cgst:61200,sgst:61200}, status:'Draft — Not filed', due_date:'11 Mar 2026' }))
+app.get('/finance/gst/gstr3b', (c) => c.json({ period:'Feb 2026', gstin:'07AAGCV0867P1ZN', outward_taxable:{cgst:61200,sgst:61200}, itc_available:{cgst:12000,sgst:12000}, net_payable:{cgst:49200,sgst:49200}, status:'Draft — Not filed', due_date:'20 Mar 2026' }))
 app.get('/finance/hsn-sac',    (c) => c.json({ master:[
   {code:'998313',type:'SAC',description:'Management Consulting Services',gst_rate:18},
   {code:'997212',type:'SAC',description:'Real Estate Advisory Services',gst_rate:18},
@@ -3188,7 +3188,7 @@ app.get('/security/fido2-config', (c) => c.json({
 app.get('/compliance/mca-integration', (c) => c.json({
   status: 'stub',
   mca_portal: 'https://www.mca.gov.in/content/mca/global/en/mca/my-workspace.html',
-  cin: 'U74999DL2023PTC000001',
+  cin: 'U74999DL2017PTC323237',
   company_name: 'Vivacious Entertainment & Hospitality Pvt. Ltd.',
   integration_roadmap: {
     phase: 'P3 (Month 4-6)',
@@ -5677,7 +5677,7 @@ app.get('/auth/webauthn/passkey-guide', requireSession(), async (c) => {
 /** P5: GET /api/dpdp/dfr-finalise — DFR 12/12 final checklist + DPB portal readiness */
 app.get('/dpdp/dfr-finalise', requireSession(), requireRole(['Super Admin']), (c) => {
   const dfrChecklist = [
-    { id: 'DFR-01', item: 'Legal entity name and CIN registered',              done: true,  note: 'Vivacious Entertainment and Hospitality Pvt. Ltd. — CIN U74999MH2017PTC123456' },
+    { id: 'DFR-01', item: 'Legal entity name and CIN registered',              done: true,  note: 'Vivacious Entertainment and Hospitality Pvt. Ltd. — CIN U74999DL2017PTC323237' },
     { id: 'DFR-02', item: 'Principal place of business in India documented',    done: true,  note: 'Registered office: Mumbai, Maharashtra' },
     { id: 'DFR-03', item: 'Nature of personal data processed documented',       done: true,  note: 'Email, phone, PAN, Aadhaar (masked), financial transaction data' },
     { id: 'DFR-04', item: 'Purpose of processing documented for each category', done: true,  note: 'KYC, payroll, invoicing, advisory services delivery' },
@@ -5991,8 +5991,8 @@ app.get('/payments/receipt/:id', requireSession(), async (c) => {
       order_id: orderId,
       platform: 'India Gully Enterprise Platform',
       issued_by: 'Vivacious Entertainment and Hospitality Pvt. Ltd.',
-      gstin: '27AABCV1234F1Z5',
-      pan: 'AABCV1234F',
+      gstin: '27AAGCV0867P1Z5',
+      pan: 'AAGCV0867P',
       address: 'Mumbai, Maharashtra, India — 400001',
       issued_at: new Date().toISOString(),
       customer: 'As per account records',
@@ -6194,8 +6194,8 @@ app.post('/dpdp/dfr-submit', requireSession(), requireRole(['Super Admin']), asy
   const dpbPayload = {
     fiduciary_registration: {
       entity_name: 'Vivacious Entertainment and Hospitality Pvt. Ltd.',
-      cin: 'U74999MH2017PTC123456',
-      gstin: '27AABCV1234F1Z5',
+      cin: 'U74999DL2017PTC323237',
+      gstin: '27AAGCV0867P1Z5',
       registered_office: 'Mumbai, Maharashtra, India',
       principal_business: 'Multi-vertical advisory — real estate, hospitality, HORECA, entertainment',
       contact_email: 'dpo@indiagully.com',
@@ -6293,7 +6293,7 @@ app.get('/compliance/audit-certificate', requireSession(), requireRole(['Super A
       title: 'India Gully Enterprise Platform — Compliance Certificate',
       certificate_id: `IGEP-CERT-${new Date().getFullYear()}-${Date.now().toString(36).toUpperCase().slice(-6)}`,
       issued_to: 'Vivacious Entertainment and Hospitality Pvt. Ltd.',
-      cin: 'U74999MH2017PTC123456',
+      cin: 'U74999DL2017PTC323237',
       platform: 'India Gully Enterprise Platform',
       version: '2026.17',
       framework: 'DPDP Act 2023 + CERT-In IT Act §70B',
@@ -6826,7 +6826,7 @@ app.get('/admin/live-config', requireSession(), requireRole(['Super Admin']), as
         { key: 'AUDIT_LOG_LEVEL',  value: 'full', source: 'hardcoded', status: '✅' },
         { key: 'CERT_IN_MODE',     value: 'active', source: 'hardcoded', status: '✅' },
         { key: 'DFR_STATUS',       value: '8/12 complete', source: 'runtime', status: '⚠️' },
-        { key: 'GSTIN',            value: '27AABCV1234A1Z5', source: 'hardcoded', status: '✅' },
+        { key: 'GSTIN',            value: '07AAGCV0867P1ZN', source: 'hardcoded', status: '✅' },
       ]
     },
   ]
@@ -8837,7 +8837,7 @@ app.get('/payments/live-transaction-summary', requireSession(), requireRole(['Su
         sgst_rs:             Math.round(sgst * 100) / 100,
         gst_rate_pct:        18,
         hsn_sac:             '998311',
-        gstin:               '07AABCV9876M1Z5',
+        gstin:               '07AAGCV0867P1ZN',
       },
       note: isLive ? 'Live Razorpay data' : 'Demo data — configure rzp_live_ key for live transactions',
     },
@@ -10260,7 +10260,7 @@ app.get('/dpdp/breach-simulation', requireSession(), requireRole(['Super Admin']
   const cert_in_template = {
     title:             'CERT-In Incident Report — India Gully',
     organization:      'India Gully Enterprises Pvt. Ltd.',
-    gstin:             '07AABCV1234F1Z5',
+    gstin:             '07AAGCV0867P1ZN',
     incident_type:     'Data Breach — Unauthorised Access',
     affected_systems:  'Portal API — /api/portal/* endpoints',
     data_compromised:  scenario.data_categories.join(', '),
@@ -13612,7 +13612,7 @@ app.get('/finance/tds/16a', requireSession(), requireRole(['Super Admin'], ['adm
 
 // Finance: 26AS Data
 app.get('/finance/tds/26as', requireSession(), requireRole(['Super Admin'], ['admin']), (c) => c.json({
-  success: true, fy: '2024-25', pan: '07AABCV1234F1Z5', tds_credit: 185000,
+  success: true, fy: '2024-25', pan: '07AAGCV0867P1ZN', tds_credit: 185000,
   advance_tax: 650000, self_assessment: 0, total: 835000, last_updated: new Date().toISOString(),
   message: '26AS data refreshed from TRACES for FY 2024-25.',
 }))

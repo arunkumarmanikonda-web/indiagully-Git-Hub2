@@ -179,10 +179,10 @@ app.get('/', (c) => {
       ${[
         { label:'Legal Name',       value:'Vivacious Entertainment and Hospitality Pvt. Ltd.' },
         { label:'Brand',            value:'India Gully™' },
-        { label:'CIN',              value:'U74900DL2017PTC000000' },
+        { label:'CIN',              value:'U74999DL2017PTC323237' },
         { label:'Incorporation',    value:'2017, New Delhi, India' },
         { label:'Registered Office',value:'New Delhi, India' },
-        { label:'GSTIN',            value:'07AABCV1234F1Z5' },
+        { label:'GSTIN',            value:'07AAGCV0867P1ZN' },
         { label:'Type',             value:'Private Limited Company' },
         { label:'ROC',              value:'Registrar of Companies, NCT of Delhi & Haryana' },
         { label:'Compliance',       value:'Companies Act, 2013 · ICSI SS-1 & SS-2' },
