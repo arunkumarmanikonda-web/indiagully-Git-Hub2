@@ -7622,7 +7622,7 @@ app.get('/config', (c) => {
           {l:'GSTIN',              v:'07XXXXXX000XXX',                                      t:'text'},
           {l:'Registered Address', v:'New Delhi, India',                                    t:'text'},
           {l:'Support Email',      v:'info@indiagully.com',                                 t:'email'},
-          {l:'Support Phone',      v:'+91 98108 89134',                                   t:'tel'},
+          {l:'Support Phone',      v:'+91 8988 988 988',                                   t:'tel'},
           {l:'Platform Domain',    v:'india-gully.pages.dev',                              t:'text'},
         ].map(f=>`<div><label class="ig-label">${f.l}</label><input type="${f.t}" class="ig-input" value="${f.v}" style="font-size:.82rem;"></div>`).join('')}
         <button onclick="igSettingsSave('platform')" style="background:var(--gold);color:#fff;border:none;padding:.6rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:fit-content;">Save Settings</button>

@@ -163,7 +163,7 @@ app.get('/', (c) => {
     </div>
 
     <div style="margin-top:3rem;background:var(--parch);border:1px solid var(--border);padding:1.25rem 1.5rem;max-width:700px;margin:3rem auto 0;text-align:center;">
-      <p style="font-size:.75rem;color:var(--ink-muted);line-height:1.7;"><i class="fas fa-envelope" style="color:var(--gold);margin-right:.5rem;"></i>To connect with our leadership directly, reach us at <a href="mailto:info@indiagully.com" style="color:var(--gold);font-weight:600;">info@indiagully.com</a> or call <strong style="color:var(--ink);">+91 98108 89134</strong>.</p>
+      <p style="font-size:.75rem;color:var(--ink-muted);line-height:1.7;"><i class="fas fa-envelope" style="color:var(--gold);margin-right:.5rem;"></i>To connect with our leadership directly, reach us at <a href="mailto:info@indiagully.com" style="color:var(--gold);font-weight:600;">info@indiagully.com</a> or call <strong style="color:var(--ink);">+91 8988 988 988</strong>.</p>
     </div>
   </div>
 </div>
