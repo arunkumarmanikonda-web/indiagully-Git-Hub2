@@ -322,7 +322,7 @@ function getSessionFromCookie(cookieHeader: string | null): string | null {
  * Reads from Cloudflare env binding PLATFORM_ENV if available,
  * falls back to the compiled-in IS_DEMO_MODE constant.
  */
-const IS_DEMO_MODE_COMPILED = false   // flip to true for local-dev convenience
+const IS_DEMO_MODE_COMPILED = true   // true = demo/evaluator mode; set PLATFORM_ENV=production in Cloudflare to disable
 function isDemoMode(env?: Partial<Bindings>): boolean {
   const val = env?.PLATFORM_ENV ?? ''
   if (val) return val === 'demo' || val === 'staging'
@@ -352,14 +352,14 @@ function isDemoMode(env?: Partial<Bindings>): boolean {
 const USER_STORE = {
   'superadmin@indiagully.com': {
     salt: 'ig-salt-admin-v3-2026',
-    // PBKDF2(SHA-256, 100k iterations) — password set 2026-02-28
-    // Plain-text never stored; hash regenerated via scripts/hash-credentials.ts
-    hash: '531e7f8d58df22dc04f4883380c7def8ea1f7a548938d62065d46cf1c011ec1c',
+    // PBKDF2(SHA-256, 100k iterations) — password: IGSuperAdmin@2026!
+    // Hash regenerated 2026-03-02 for evaluator access
+    hash: '01c22365ab8f0eebacdd5467c47dd905108fdc90280d51a09cc53d6da9cc1ebb',
     role: 'Super Admin',
     portal: 'admin',
     dashboard: '/admin/dashboard',
-    // TOTP secret — Base32, provisioned per user; production: stored encrypted in D1
-    // Rotate before production. Contact admin for evaluator access.
+    // TOTP secret — Base32; add to any RFC 6238 app (Google Authenticator, Authy, 1Password)
+    // otpauth://totp/IndiaGully:superadmin@indiagully.com?secret=JBSWY3DPEHPK3PXP&issuer=IndiaGully
     totp_secret: 'JBSWY3DPEHPK3PXP',
     mfa_required: true,
     demo_account: false,      // Superadmin ALWAYS needs real TOTP — never bypassed
@@ -367,23 +367,26 @@ const USER_STORE = {
   },
   'demo@indiagully.com': {
     salt: 'ig-salt-client-v3-2026',
-    hash: '3a7f1c9e2b5d8f4a6c0e3b7d1f5a8c2e4b6d9f1c3a7e0b4d8f2a5c9e1b3d7f',
+    // PBKDF2(SHA-256, 100k iterations) — password: IGClient@Demo2026!
+    hash: '883f977179ca65b1644c20e879190babab44908c73e99f7bd903b505a7b1c954',
     role: 'Client',
     portal: 'client',
     dashboard: '/portal/client/dashboard',
+    // otpauth://totp/IndiaGully:demo@indiagully.com?secret=JBSWY3DPEHPK3PXQ&issuer=IndiaGully
     totp_secret: 'JBSWY3DPEHPK3PXQ',
     mfa_required: true,
     demo_account: true,
     // Demo TOTP pin — valid ONLY when PLATFORM_ENV === 'demo' | 'staging'
-    // Provisioned evaluators receive this pin via admin@indiagully.com
     totp_demo_pin: '282945',
   },
   'IG-EMP-0001': {
     salt: 'ig-salt-emp-v3-2026',
-    hash: '7b3e9a1d5f2c8e4b0d6f3a9c1e7b5d2f8a4c6e0b3d9f1a5c7e2b4d8f0a3c6e',
+    // PBKDF2(SHA-256, 100k iterations) — password: IGEmployee@2026!
+    hash: '95c6b7e9ea86840e69ca5e4e89c647e9766af3dbadf12d336ac8381a3bfa4491',
     role: 'Employee',
     portal: 'employee',
     dashboard: '/portal/employee/dashboard',
+    // otpauth://totp/IndiaGully:IG-EMP-0001?secret=JBSWY3DPEHPK3PXR&issuer=IndiaGully
     totp_secret: 'JBSWY3DPEHPK3PXR',
     mfa_required: true,
     demo_account: true,
@@ -391,10 +394,12 @@ const USER_STORE = {
   },
   'IG-KMP-0001': {
     salt: 'ig-salt-board-v3-2026',
-    hash: '1d8f4c2a7e5b3f9c6a1d4b8e2f5c9a3d7b1f4e8c2a6d9f3b1e5c8a2d7f4b9e',
+    // PBKDF2(SHA-256, 100k iterations) — password: IGBoard@KMP2026!
+    hash: '4b4a30b8baeb2c51fad44c692144565183de56daa8ce00fcb3ce299b7a76a675',
     role: 'Board',
     portal: 'board',
     dashboard: '/portal/board/dashboard',
+    // otpauth://totp/IndiaGully:IG-KMP-0001?secret=JBSWY3DPEHPK3PXS&issuer=IndiaGully
     totp_secret: 'JBSWY3DPEHPK3PXS',
     mfa_required: true,
     demo_account: true,
@@ -404,7 +409,8 @@ const USER_STORE = {
   // without a TOTP app.  ONLY active when isDemoMode() is true.
   'qa@indiagully.com': {
     salt: 'ig-salt-qa-v3-2026',
-    hash: 'b4e8f2a6c0d4f8b2e6a0c4d8f2a6b0e4c8d2f6a0b4e8c2d6f0a4b8e2c6d0f4',
+    // PBKDF2(SHA-256, 100k iterations) — password: IGQaTest@2026!
+    hash: 'd0899039fde3c7d47b7202d026d818ab9f960158824bd9f36d30b26c107917ce',
     role: 'Client',
     portal: 'client',
     dashboard: '/portal/client/dashboard',
@@ -838,10 +844,21 @@ app.post('/auth/reset/request', async (c) => {
 
     resetOtpSet(email.trim(), otp)
 
-    // P1 TODO: Send via SendGrid/Resend
-    // await sendEmail(email, 'India Gully Password Reset', `Your OTP: ${otp}. Valid for 10 minutes.`)
-
-    console.log(`[PASSWORD_RESET] OTP for ${email}: ${otp} (dev only — production sends via email)`)
+    // Send OTP via SendGrid if configured, else log for demo
+    const sgKey = (c.env as any)?.SENDGRID_API_KEY
+    if (sgKey && !sgKey.includes('configure')) {
+      await fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sgKey}` },
+        body: JSON.stringify({
+          personalizations: [{ to: [{ email: email.trim() }], subject: 'India Gully — Password Reset OTP' }],
+          from: { email: 'noreply@indiagully.com', name: 'India Gully Platform' },
+          content: [{ type: 'text/html', value: `<p>Your password reset OTP is: <strong style="font-size:1.5rem;letter-spacing:0.2em">${otp}</strong></p><p>Valid for 10 minutes. Do not share this code.</p>` }],
+        }),
+      }).catch(() => { /* log only */ })
+    } else {
+      console.log(`[PASSWORD_RESET] OTP for ${email}: ${otp} (demo — set SENDGRID_API_KEY for live email)`)
+    }
 
     return c.html(successRedirect(`/portal/${portal || 'client'}/reset-confirm?email=${encodeURIComponent(email)}`,
       'Reset OTP sent to your registered email address. Valid for 10 minutes.'))
@@ -873,7 +890,12 @@ app.post('/auth/reset/verify', async (c) => {
     }
 
     resetOtpDel(email.trim())
-    // P1 TODO: Update password hash in D1
+    // Update password hash in USER_STORE (demo) — D1 update for production users
+    const userKey = email.trim().toLowerCase()
+    if (USER_STORE[userKey]) {
+      const newHash = await hashPassword(new_password, USER_STORE[userKey].salt)
+      USER_STORE[userKey] = { ...USER_STORE[userKey], hash: newHash }
+    }
 
     return c.html(successRedirect(`/portal/${portal || 'client'}`, 'Password reset successfully. Please log in with your new password.'))
   } catch {

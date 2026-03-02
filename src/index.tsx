@@ -180,4 +180,89 @@ app.route('/admin', adminRoute)
 app.route('/admin/sales', salesRoute)
 app.route('/api', apiRoute)
 
+// ── 404 NOT FOUND ─────────────────────────────────────────────────────────────
+app.notFound((c) => {
+  const path = new URL(c.req.url).pathname
+  return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>404 — Page Not Found | India Gully</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--ink:#1a1a2e;--gold:#B8960C;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#fafaf6;color:var(--ink);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+    .container{max-width:520px;text-align:center;}
+    .badge{display:inline-block;background:var(--gold);color:#fff;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .8rem;margin-bottom:1.5rem;}
+    h1{font-family:'DM Serif Display',Georgia,serif;font-size:5rem;color:var(--ink);line-height:1;margin-bottom:.5rem;}
+    h2{font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:var(--ink);margin-bottom:1rem;}
+    p{color:#555;line-height:1.7;margin-bottom:1.5rem;font-size:.9rem;}
+    .path{background:#f0ede5;padding:.3rem .7rem;border-radius:3px;font-family:monospace;font-size:.8rem;color:#666;display:inline-block;margin-bottom:1.5rem;}
+    .links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+    a.btn{display:inline-block;padding:.65rem 1.5rem;text-decoration:none;font-size:.82rem;font-weight:500;border-radius:3px;transition:opacity .2s;}
+    a.btn-primary{background:var(--ink);color:#fff;}
+    a.btn-outline{border:1px solid var(--ink);color:var(--ink);}
+    a.btn:hover{opacity:.8;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="badge">India Gully</div>
+    <h1>404</h1>
+    <h2>Page Not Found</h2>
+    <div class="path">${path}</div>
+    <p>The page you're looking for doesn't exist or has been moved.<br>
+    Please check the URL or navigate back to the homepage.</p>
+    <div class="links">
+      <a href="/" class="btn btn-primary">← Back to Home</a>
+      <a href="/contact" class="btn btn-outline">Contact Us</a>
+    </div>
+  </div>
+</body>
+</html>`, 404)
+})
+
+// ── 500 ERROR HANDLER ─────────────────────────────────────────────────────────
+app.onError((err, c) => {
+  console.error('[India Gully Error]', err)
+  const isApi = c.req.path.startsWith('/api/')
+  if (isApi) {
+    return c.json({ success: false, error: 'Internal server error. Please try again.' }, 500)
+  }
+  return c.html(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>500 — Server Error | India Gully</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{--ink:#1a1a2e;--gold:#B8960C;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:#fafaf6;color:var(--ink);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+    .container{max-width:520px;text-align:center;}
+    .badge{display:inline-block;background:#991b1b;color:#fff;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .8rem;margin-bottom:1.5rem;}
+    h1{font-family:'DM Serif Display',Georgia,serif;font-size:5rem;color:var(--ink);line-height:1;margin-bottom:.5rem;}
+    h2{font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:var(--ink);margin-bottom:1rem;}
+    p{color:#555;line-height:1.7;margin-bottom:1.5rem;font-size:.9rem;}
+    a.btn{display:inline-block;padding:.65rem 1.5rem;text-decoration:none;font-size:.82rem;font-weight:500;border-radius:3px;background:var(--ink);color:#fff;}
+    a.btn:hover{opacity:.8;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="badge">Server Error</div>
+    <h1>500</h1>
+    <h2>Something Went Wrong</h2>
+    <p>We encountered an unexpected error. Our team has been notified.<br>
+    Please try again in a few moments.</p>
+    <a href="/" class="btn">← Back to Home</a>
+  </div>
+</body>
+</html>`, 500)
+})
+
 export default app
