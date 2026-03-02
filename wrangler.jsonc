@@ -57,8 +57,8 @@
 
   // ── Environment Variables (non-secret) ───────────────────────────────────────
   "vars": {
-    "PLATFORM_ENV":       "production",
-    "PLATFORM_VERSION":   "2026.09",
+    "PLATFORM_ENV":       "demo",
+    "PLATFORM_VERSION":   "2026.50",
     "DPDP_DPO_EMAIL":     "dpo@indiagully.com",
     "SUPPORT_EMAIL":      "admin@indiagully.com",
     "SESSION_TTL_SECS":   "1800",
