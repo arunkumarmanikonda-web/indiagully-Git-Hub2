@@ -193,11 +193,6 @@ app.get('/', (c) => {
           <button type="submit" id="login-btn-admin" style="width:100%;padding:.875rem;background:#6B1A1A;color:#fff;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;"><i class="fas fa-shield-alt" style="margin-right:.5rem;"></i>Authenticate & Enter</button>
         </form>
         <p style="text-align:center;font-size:.68rem;color:#ef4444;margin-top:1rem;">Unauthorised access is a criminal offence under IT Act 2000.</p>
-        <div style="margin-top:1rem;padding:.6rem .9rem;background:#fefce8;border:1px solid #fde68a;border-radius:4px;font-size:.7rem;color:#92400e;text-align:center;">
-          <i class="fas fa-key" style="margin-right:.3rem;"></i>
-          <strong>Evaluator?</strong> &nbsp;
-          <a href="/api/auth/evaluator-access" target="_blank" style="color:#B8960C;font-weight:700;text-decoration:underline;">View all credentials &amp; TOTP QR codes →</a>
-        </div>
 <script>
 (function(){
   /* ── CSRF ── */
@@ -4717,6 +4712,13 @@ app.get('/horeca', (c) => {
     var project = document.getElementById('qt-project').value.trim();
     if(!project){ igToast('Please enter project name first','warn'); return; }
     igToast('Quote converted to PO-2025-009 for '+project+'. Sent for approval.','success');
+  };
+  window.igWHFilter = function(location){
+    var btns = document.querySelectorAll('[onclick*="igWHFilter"]');
+    btns.forEach(function(b){ b.style.background='var(--parch-dk)'; b.style.color='var(--ink)'; b.style.borderColor='var(--border)'; });
+    var clicked = Array.from(btns).find(function(b){ return b.getAttribute('onclick').indexOf(location) !== -1; });
+    if(clicked){ clicked.style.background='var(--gold)'; clicked.style.color='#fff'; clicked.style.borderColor='var(--gold)'; }
+    igToast('Showing inventory for: ' + location, 'success');
   };
   </script>`
   return c.html(layout('HORECA Inventory', adminShell('HORECA Inventory Management', 'horeca', body), {noNav:true,noFooter:true}))

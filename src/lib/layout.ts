@@ -636,6 +636,25 @@ const SCRIPTS = (_nonce?: string) => `
     igToast(msg || ('Opening '+filename+' in viewer …'), 'success');
   };
 
+  /* ── MODAL DIALOG ─────────────────────────────────────────────────────── */
+  window.igModal = function(title, bodyHtml){
+    var uid = 'igm_'+Date.now();
+    var overlay = document.createElement('div');
+    overlay.id = uid;
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:1.5rem;';
+    overlay.innerHTML = '<div style="background:#fff;max-width:680px;width:100%;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.4);">'
+      + '<div style="padding:1.25rem 1.5rem;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;background:#1A3A6B;">'
+      + '<h3 style="font-size:.9rem;font-weight:700;color:#fff;letter-spacing:.04em;margin:0;">'+title+'</h3>'
+      + '<button onclick="document.getElementById(\''+uid+'\').remove()" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:1.1rem;cursor:pointer;padding:.2rem .4rem;line-height:1;">&times;</button>'
+      + '</div>'
+      + '<div style="padding:1.5rem;overflow-y:auto;font-size:.82rem;color:#374151;line-height:1.7;">'+bodyHtml+'</div>'
+      + '<div style="padding:.875rem 1.5rem;border-top:1px solid #e5e7eb;display:flex;justify-content:flex-end;">'
+      + '<button onclick="document.getElementById(\''+uid+'\').remove()" style="padding:.5rem 1.25rem;background:#1A3A6B;color:#fff;border:none;font-size:.8rem;font-weight:600;cursor:pointer;letter-spacing:.04em;">Close</button>'
+      + '</div></div>';
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
+  };
+
   /* ── DOCUMENT WATERMARK ───────────────────────────────────────────────── */
   window.igWatermark = function(docEl, userLabel){
     if(!docEl) return;
