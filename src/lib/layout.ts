@@ -56,7 +56,44 @@ tailwind.config = {
   }
 }
 </script>
+<!-- DARK MODE: early init to prevent flash of unstyled content -->
+<script>
+(function(){
+  try{
+    var s=localStorage.getItem('ig_dark_mode');
+    var sys=window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches;
+    if(s?s==='1':sys) document.documentElement.setAttribute('data-theme','dark');
+    else document.documentElement.setAttribute('data-theme','light');
+  }catch(e){}
+})();
+</script>
 <style>
+/* ── DARK MODE VARIABLES (in <head> to prevent FOUC) ──────────────────── */
+[data-theme="dark"]{
+  --gold:#e6b412;--gold-pale:rgba(230,180,18,.1);
+  --ink:#e2e8f0;--ink-muted:#94a3b8;--ink-soft:#64748b;--ink-faint:#334155;
+  --parchment:#0f172a;--parch-dk:#1e293b;--border:#334155;
+}
+[data-theme="dark"] body{background:#0f172a;color:#e2e8f0;}
+[data-theme="dark"] .am,[data-theme="dark"] .ig-tbl thead tr,[data-theme="dark"] [style*="background:#fff"]{background:#1e293b!important;}
+[data-theme="dark"] table.ig-tbl tbody tr{background:#1e293b;}
+[data-theme="dark"] table.ig-tbl tbody tr:hover{background:#334155;}
+[data-theme="dark"] .ig-input{background:#1e293b;color:#e2e8f0;border-color:#334155;}
+[data-theme="dark"] .ig-panel{background:#1e293b;border-color:#334155;}
+/* ── FOCUS VISIBLE (ARIA) ──────────────────────────────────────────────── */
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+/* ── MODAL OVERLAY ──────────────────────────────── */
+.ig-modal{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:1rem;}
+.ig-modal-box{background:#fff;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.3);}
+.ig-modal-box.wide{max-width:860px;}
+.ig-modal-hd{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.ig-modal-bd{padding:1.5rem;}
+.ig-modal-ft{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:.75rem;justify-content:flex-end;}
+.ig-modal-close{background:none;border:none;cursor:pointer;color:var(--ink-muted);font-size:1rem;padding:.25rem;line-height:1;}
+.ig-modal-close:hover{color:var(--ink);}
+/* SLIDE PANEL */
+.ig-panel{display:none;background:var(--parch-dk);border:1px solid var(--border);padding:1.5rem;margin-top:1rem;}
 /* ── RESET ──────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -652,16 +689,22 @@ const SCRIPTS = (_nonce?: string) => `
     var overlay = document.createElement('div');
     overlay.id = uid;
     overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:1.5rem;';
+    var closeId = uid + '_close';
+    var closeId2 = uid + '_close2';
     overlay.innerHTML = '<div style="background:#fff;max-width:680px;width:100%;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.4);">'
       + '<div style="padding:1.25rem 1.5rem;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;background:#1A3A6B;">'
       + '<h3 style="font-size:.9rem;font-weight:700;color:#fff;letter-spacing:.04em;margin:0;">'+title+'</h3>'
-      + '<button onclick="document.getElementById(\''+uid+'\').remove()" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:1.1rem;cursor:pointer;padding:.2rem .4rem;line-height:1;">&times;</button>'
+      + '<button id="'+closeId+'" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:1.1rem;cursor:pointer;padding:.2rem .4rem;line-height:1;">&times;</button>'
       + '</div>'
       + '<div style="padding:1.5rem;overflow-y:auto;font-size:.82rem;color:#374151;line-height:1.7;">'+bodyHtml+'</div>'
       + '<div style="padding:.875rem 1.5rem;border-top:1px solid #e5e7eb;display:flex;justify-content:flex-end;">'
-      + '<button onclick="document.getElementById(\''+uid+'\').remove()" style="padding:.5rem 1.25rem;background:#1A3A6B;color:#fff;border:none;font-size:.8rem;font-weight:600;cursor:pointer;letter-spacing:.04em;">Close</button>'
+      + '<button id="'+closeId2+'" style="padding:.5rem 1.25rem;background:#1A3A6B;color:#fff;border:none;font-size:.8rem;font-weight:600;cursor:pointer;letter-spacing:.04em;">Close</button>'
       + '</div></div>';
     document.body.appendChild(overlay);
+    var btnClose = document.getElementById(closeId);
+    var btnClose2 = document.getElementById(closeId2);
+    if(btnClose)  btnClose.addEventListener('click',  function(){ overlay.remove(); });
+    if(btnClose2) btnClose2.addEventListener('click', function(){ overlay.remove(); });
     overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
   };
 
@@ -983,32 +1026,4 @@ const SCRIPTS = (_nonce?: string) => `
   };
 
 })();
-</script>
-<style>
-/* ── DARK MODE VARIABLES ───────────────────────────────────────────────── */
-[data-theme="dark"]{
-  --gold:#e6b412;--gold-pale:rgba(230,180,18,.1);
-  --ink:#e2e8f0;--ink-muted:#94a3b8;--ink-soft:#64748b;--ink-faint:#334155;
-  --parchment:#0f172a;--parch-dk:#1e293b;--border:#334155;
-}
-[data-theme="dark"] body{background:#0f172a;color:#e2e8f0;}
-[data-theme="dark"] .am,[data-theme="dark"] .ig-tbl thead tr,[data-theme="dark"] [style*="background:#fff"]{background:#1e293b!important;}
-[data-theme="dark"] table.ig-tbl tbody tr{background:#1e293b;}
-[data-theme="dark"] table.ig-tbl tbody tr:hover{background:#334155;}
-[data-theme="dark"] .ig-input{background:#1e293b;color:#e2e8f0;border-color:#334155;}
-[data-theme="dark"] .ig-panel{background:#1e293b;border-color:#334155;}
-/* ── FOCUS VISIBLE (ARIA) ──────────────────────────────────────────────── */
-:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
-a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
-/* ── MODAL OVERLAY ──────────────────────────────── */
-.ig-modal{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:1rem;}
-.ig-modal-box{background:#fff;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.3);}
-.ig-modal-box.wide{max-width:860px;}
-.ig-modal-hd{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.ig-modal-bd{padding:1.5rem;}
-.ig-modal-ft{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:.75rem;justify-content:flex-end;}
-.ig-modal-close{background:none;border:none;cursor:pointer;color:var(--ink-muted);font-size:1rem;padding:.25rem;line-height:1;}
-.ig-modal-close:hover{color:var(--ink);}
-/* SLIDE PANEL */
-.ig-panel{display:none;background:var(--parch-dk);border:1px solid var(--border);padding:1.5rem;margin-top:1rem;}
-</style>`
+</script>`
