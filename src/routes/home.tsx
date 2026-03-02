@@ -410,9 +410,9 @@ app.get('/', (c) => {
       </div>
       <div style="display:flex;flex-direction:column;gap:1rem;">
         ${[
-          { name:'Arun Manikonda',  title:'Managing Director',      sub:'Director on Board & KMP',   init:'AM', photo:'https://www.genspark.ai/api/files/s/gUf0JwAa', ph:'+91 8988 988 988', em:'akm@indiagully.com', bio:'Founding Director with 20+ years across hospitality, real estate and entertainment.' },
-          { name:'Pavan Manikonda', title:'Executive Director',      sub:'Director on Board & KMP',   init:'PM', photo:'https://www.genspark.ai/api/files/s/Q3swImT2', ph:'+91 62825 56067', em:'pavan@indiagully.com', bio:'Drives operations and business development across HORECA, hotel management and new verticals.' },
-          { name:'Amit Jhingan',    title:'President, Real Estate',  sub:'Key Managerial Personnel',  init:'AJ', photo:'https://www.genspark.ai/api/files/s/LQZueDyt', ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com', bio:'Real Estate Vertical Head. Specialist in retail leasing, commercial transactions and entertainment city advisory.' },
+          { name:'Arun Manikonda',  title:'Managing Director',      sub:'Director on Board & KMP',   init:'AM', photo:'/static/team/arun-manikonda.jpg', ph:'+91 8988 988 988', em:'akm@indiagully.com', bio:'Founding Director with 20+ years across hospitality, real estate and entertainment.' },
+          { name:'Pavan Manikonda', title:'Executive Director',      sub:'Director on Board & KMP',   init:'PM', photo:'/static/team/pavan-manikonda.jpg', ph:'+91 62825 56067', em:'pavan@indiagully.com', bio:'Drives operations and business development across HORECA, hotel management and new verticals.' },
+          { name:'Amit Jhingan',    title:'President, Real Estate',  sub:'Key Managerial Personnel',  init:'AJ', photo:'/static/team/amit-jhingan.png', ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com', bio:'Real Estate Vertical Head. Specialist in retail leasing, commercial transactions and entertainment city advisory.' },
         ].map(p => `
         <div class="card" style="padding:1.5rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.25rem;align-items:center;">
           <div style="width:56px;height:56px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--gold);background:var(--ink);">
