@@ -2983,6 +2983,7 @@ app.get('/finance', (c) => {
       +'<td style="font-size:.75rem;color:var(--ink-muted);">'+vendor+'</td>'
       +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+amt.toLocaleString('en-IN')+'</td>';
     tbody.insertBefore(tr,tbody.firstChild);
+    igApi.post('/finance/expenses',{amount:amt,description:desc,category:cat,vendor:vendor,date:date}).then(function(){}).catch(function(){});
     igToast('Expense recorded: '+cat+' — ₹'+amt.toLocaleString('en-IN'),'success');
     togglePanel('add-exp-panel');
     document.getElementById('exp-amt').value='';
