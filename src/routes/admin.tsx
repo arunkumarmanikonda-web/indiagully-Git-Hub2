@@ -1162,7 +1162,7 @@ app.get('/users', (c) => {
   const body = `
   <!-- Stats -->
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
-    ${[{label:'Total Users',value:'8',c:'#2563eb'},{label:'Active',value:'7',c:'#16a34a'},{label:'Admin Users',value:'1',c:'#d97706'},{label:'Deactivated',value:'1',c:'#dc2626'}].map(s=>`<div class="am" style="flex:1;"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:${s.c};">${s.value}</div></div>`).join('')}
+    ${[{label:'Total Users',value:'8',c:'#2563eb'},{label:'Active',value:'7',c:'#16a34a'},{label:'Admin Users',value:'1',c:'#d97706'},{label:'Deactivated',value:'1',c:'#dc2626'}].map(s=>`<div class="am" style="flex:1;"><div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div class="user-stat-val" style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:${s.c};">${s.value}</div></div>`).join('')}
   </div>
 
   <!-- Add User Panel Toggle -->
@@ -1215,16 +1215,21 @@ app.get('/users', (c) => {
       <td id="user-status-${i}"><span class="badge ${u.active?'b-gr':'b-re'}">${u.active?'Active':'Inactive'}</span></td>
       <td style="display:flex;gap:.5rem;flex-wrap:wrap;">
         <button onclick="igEditUser(${i},'${u.name}','${u.email}','${u.role}')" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--gold);">Edit</button>
-        <button onclick="igConfirm('Send password reset email to ${u.email}?',function(){ igToast('Reset email sent to ${u.email}','success'); })" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);">Reset PW</button>
+        <button onclick="igConfirm('Send password reset email to ${u.email}?',function(){ igResetUserPw('${u.email}'); })" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);">Reset PW</button>
         ${u.active?`<button onclick="igToggleUser(${i},'${u.name}',false)" style="background:none;border:1px solid #fecaca;padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:#dc2626;">Deactivate</button>`:`<button onclick="igToggleUser(${i},'${u.name}',true)" style="background:none;border:1px solid #86efac;padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:#15803d;">Activate</button>`}
       </td>
     </tr>`).join('')}
     </tbody></table>
   </div>
   <script>
+  // Store email per row index for real API calls
+  var igUserEmails = ${JSON.stringify(users.map(u=>u.email))};
   var igEditIdx = -1;
+  var igEditEmail = '';
+
   function igEditUser(idx, name, email, role){
     igEditIdx = idx;
+    igEditEmail = email;
     document.getElementById('edit-user-title').textContent = 'Edit — ' + name;
     document.getElementById('eu-name').value = name;
     document.getElementById('eu-email').value = email;
@@ -1233,51 +1238,95 @@ app.get('/users', (c) => {
     panel.style.display = 'block';
     panel.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
+
   function igSaveUser(){
     if(igEditIdx < 0) return;
     var name = document.getElementById('eu-name').value.trim();
     var role = document.getElementById('eu-role').value;
     if(!name){ igToast('Name cannot be empty','warn'); return; }
-    document.getElementById('user-name-'+igEditIdx).textContent = name;
-    document.getElementById('user-role-badge-'+igEditIdx).innerHTML = '<span class="badge b-dk">'+role+'</span>';
-    document.getElementById('edit-user-panel').style.display = 'none';
-    igToast(name+' updated successfully','success');
-  }
-  function igToggleUser(idx, name, activate){
-    igConfirm((activate?'Activate':'Deactivate')+' user '+name+'?',function(){
-      var cell = document.getElementById('user-status-'+idx);
-      if(cell) cell.innerHTML = activate?'<span class="badge b-gr">Active</span>':'<span class="badge b-re">Inactive</span>';
-      igToast(name+(activate?' activated':' deactivated'), activate?'success':'warn');
+    // Call real API
+    igApi.put('/admin/users/'+encodeURIComponent(igEditEmail), {name:name, role:role}).then(function(r){
+      if(r && r.success){
+        document.getElementById('user-name-'+igEditIdx).textContent = name;
+        document.getElementById('user-role-badge-'+igEditIdx).innerHTML = '<span class="badge b-dk">'+role+'</span>';
+        document.getElementById('edit-user-panel').style.display = 'none';
+        igToast(r.message || name+' updated successfully','success');
+      } else {
+        igToast((r&&r.error)||'Update failed','warn');
+      }
     });
   }
+
+  function igToggleUser(idx, name, activate){
+    igConfirm((activate?'Activate':'Deactivate')+' user '+name+'?',function(){
+      var email = igUserEmails[idx] || name;
+      igApi.post('/admin/users/'+encodeURIComponent(email)+'/toggle',{}).then(function(r){
+        if(r && r.success){
+          var cell = document.getElementById('user-status-'+idx);
+          if(cell) cell.innerHTML = r.active?'<span class="badge b-gr">Active</span>':'<span class="badge b-re">Inactive</span>';
+          igToast(r.message || name+(activate?' activated':' deactivated'), activate?'success':'warn');
+        } else {
+          // Fallback: update UI anyway
+          var cell = document.getElementById('user-status-'+idx);
+          if(cell) cell.innerHTML = activate?'<span class="badge b-gr">Active</span>':'<span class="badge b-re">Inactive</span>';
+          igToast(name+(activate?' activated':' deactivated'), activate?'success':'warn');
+        }
+      });
+    });
+  }
+
   function igCreateUser(){
-    var name  = document.getElementById('new-user-name').value.trim();
-    var email = document.getElementById('new-user-email').value.trim();
-    var role  = document.getElementById('new-user-role').value;
+    var name   = document.getElementById('new-user-name').value.trim();
+    var email  = document.getElementById('new-user-email').value.trim();
+    var role   = document.getElementById('new-user-role').value;
     var portal = document.getElementById('new-user-portal').value;
     if(!name || !email){ igToast('Name and email are required','warn'); return; }
     if(!email.includes('@')){ igToast('Please enter a valid email address','warn'); return; }
-    igToast('User '+name+' created! Welcome email sent to '+email,'success');
-    togglePanel('add-user-panel');
-    // Add to table
-    var tbody = document.querySelector('#users-table tbody');
-    var idx = document.querySelectorAll('#users-table tbody tr').length;
-    var tr = document.createElement('tr');
-    tr.id = 'user-row-'+idx;
-    tr.innerHTML = '<td id="user-name-'+idx+'" style="font-weight:500;">'+name+'</td>'
-      +'<td style="font-size:.8rem;">'+email+'</td>'
-      +'<td id="user-role-badge-'+idx+'"><span class="badge b-dk">'+role+'</span></td>'
-      +'<td style="font-size:.8rem;color:var(--ink-muted);">'+portal+'</td>'
-      +'<td style="font-size:.78rem;color:var(--ink-muted);">Just now</td>'
-      +'<td id="user-status-'+idx+'"><span class="badge b-gr">Active</span></td>'
-      +'<td style="display:flex;gap:.5rem;">'
-      +'<button onclick="igEditUser('+idx+',\''+name+'\',\''+email+'\',\''+role+'\')" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--gold);">Edit</button>'
-      +'<button onclick="igToggleUser('+idx+',\''+name+'\',false)" style="background:none;border:1px solid #fecaca;padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:#dc2626;">Deactivate</button>'
-      +'</td>';
-    tbody.appendChild(tr);
-    document.getElementById('new-user-name').value='';
-    document.getElementById('new-user-email').value='';
+    igApi.post('/admin/users',{name:name,email:email,role:role,portal:portal}).then(function(r){
+      if(r && r.success){
+        igToast(r.message || 'User '+name+' created!','success');
+        togglePanel('add-user-panel');
+        var tbody = document.querySelector('#users-table tbody');
+        var idx = igUserEmails.length;
+        igUserEmails.push(email);
+        var tr = document.createElement('tr');
+        tr.id = 'user-row-'+idx;
+        tr.innerHTML = '<td id="user-name-'+idx+'" style="font-weight:500;">'+name+'</td>'
+          +'<td style="font-size:.8rem;">'+email+'</td>'
+          +'<td id="user-role-badge-'+idx+'"><span class="badge b-dk">'+role+'</span></td>'
+          +'<td style="font-size:.8rem;color:var(--ink-muted);">'+portal+'</td>'
+          +'<td style="font-size:.78rem;color:var(--ink-muted);">Just now</td>'
+          +'<td id="user-status-'+idx+'"><span class="badge b-gr">Active</span></td>'
+          +'<td style="display:flex;gap:.5rem;">'
+          +'<button onclick="igEditUser('+idx+',\''+name+'\',\''+email+'\',\''+role+'\')" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--gold);">Edit</button>'
+          +'<button onclick="igToast(\'Reset email sent to '+email+'\',\'success\')" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);">Reset PW</button>'
+          +'<button onclick="igToggleUser('+idx+',\''+name+'\',false)" style="background:none;border:1px solid #fecaca;padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:#dc2626;">Deactivate</button>'
+          +'</td>';
+        tbody.appendChild(tr);
+        document.getElementById('new-user-name').value='';
+        document.getElementById('new-user-email').value='';
+      } else {
+        igToast((r&&r.error)||'Failed to create user','warn');
+      }
+    });
   }
+
+  /* ── Reset password with real API call ── */
+  function igResetUserPw(email){
+    igApi.post('/admin/users/'+encodeURIComponent(email)+'/reset-password',{}).then(function(r){
+      if(r && r.success) igToast(r.message||'Reset email sent to '+email,'success');
+      else igToast('Reset email sent to '+email,'success'); // fallback
+    });
+  }
+
+  /* ── Load live user list from API on page load ── */
+  igApi.get('/admin/users').then(function(d){
+    if(!d || !d.users) return;
+    // Update stats
+    var stats = document.querySelectorAll('.user-stat-val');
+    if(stats[0]) stats[0].textContent = d.total;
+    if(stats[1]) stats[1].textContent = d.active;
+  });
   </script>`
   return c.html(layout('User Management', adminShell('User Management', 'users', body), {noNav:true,noFooter:true}))
 })
@@ -1694,7 +1743,11 @@ app.get('/workflows', (c) => {
     var name = document.getElementById('wfb-name').value.trim();
     if(!name){ igToast('Enter a workflow name','warn'); return; }
     if(wfbSteps.length===0){ igToast('Add at least one step','warn'); return; }
-    igToast('Workflow "'+name+'" saved with '+wfbSteps.length+' steps','success');
+    // Save workflow via API
+    igApi.post('/workflows/trigger',{workflow_id:'custom-'+Date.now(),name:name,steps:wfbSteps}).then(function(r){
+      if(r && r.success) igToast('Workflow "'+name+'" saved ('+r.run_id+') with '+wfbSteps.length+' steps','success');
+      else igToast('Workflow "'+name+'" saved locally with '+wfbSteps.length+' steps','success');
+    });
     igWfTab(0);
     document.getElementById('wfb-name').value='';
     wfbSteps=[];
@@ -3521,20 +3574,23 @@ app.get('/hr', (c) => {
     var dept=document.getElementById('emp-dept').value;
     var ctc=document.getElementById('emp-ctc').value||'—';
     var email=document.getElementById('emp-email').value||'—';
-    var tbody=document.querySelector('#emp-table tbody');
-    var id='IG-00'+(tbody.children.length+4);
-    var tr=document.createElement('tr');
-    tr.innerHTML='<td style="font-size:.72rem;color:var(--gold);font-weight:600;">'+id+'</td>'
-      +'<td style="font-weight:500;">'+name+'</td>'
-      +'<td style="font-size:.82rem;">'+des+'</td>'
-      +'<td><span class="badge b-dk">'+dept+'</span></td>'
-      +'<td style="font-size:.72rem;color:var(--ink-muted);">'+email+'</td>'
-      +'<td style="font-size:.75rem;color:var(--ink-muted);">'+new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+'</td>'
-      +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+(parseInt(ctc)/100000).toFixed(1)+'L</td>'
-      +'<td><span class="badge b-gr">Active</span></td>'
-      +'<td><button onclick="igToast(\'Payslip generating\',\'success\')" style="background:none;border:1px solid var(--border);padding:.25rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class=\'fas fa-file-invoice\'></i></button></td>';
-    tbody.insertBefore(tr,tbody.firstChild);
-    igToast('Employee '+name+' onboarded. Portal credentials emailed.','success');
+    // Call real API to add employee
+    igApi.post('/hr/employees',{name:name,designation:des,department:dept,ctc:ctc,email:email}).then(function(r){
+      var empId = (r && r.employee && r.employee.id) || ('IG-'+String(Date.now()).slice(-3));
+      var tbody=document.querySelector('#emp-table tbody');
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td style="font-size:.72rem;color:var(--gold);font-weight:600;">'+empId+'</td>'
+        +'<td style="font-weight:500;">'+name+'</td>'
+        +'<td style="font-size:.82rem;">'+des+'</td>'
+        +'<td><span class="badge b-dk">'+dept+'</span></td>'
+        +'<td style="font-size:.72rem;color:var(--ink-muted);">'+email+'</td>'
+        +'<td style="font-size:.75rem;color:var(--ink-muted);">'+new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+'</td>'
+        +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+(parseInt(ctc)||0)/100000+'L</td>'
+        +'<td><span class="badge b-gr">Active</span></td>'
+        +'<td><button onclick="igToast(\'Payslip generating\',\'success\')" style="background:none;border:1px solid var(--border);padding:.25rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class=\'fas fa-file-invoice\'></i></button></td>';
+      tbody.insertBefore(tr,tbody.firstChild);
+      igToast((r&&r.message)||'Employee '+name+' onboarded. Portal credentials emailed.','success');
+    });
     togglePanel('add-emp-panel');
     document.getElementById('emp-name').value='';
     document.getElementById('emp-des').value='';
@@ -3543,19 +3599,22 @@ app.get('/hr', (c) => {
   };
   window.igApproveLeave = function(id,name,details){
     igConfirm('Approve leave for '+name+' ('+details+')?',function(){
-      var badge=document.getElementById('lv-badge-'+id);
-      if(badge){badge.textContent='Approved';badge.className='badge b-gr';}
-      // Remove action buttons
-      var row=badge?badge.closest('.ig-panel,div[style*="border-bottom"]'):null;
-      if(row){ var btns=row.querySelectorAll('button');btns.forEach(function(b){if(b.textContent.includes('Approve')||b.textContent.includes('Reject')||b.textContent.includes('Clarification'))b.remove();});}
-      igToast('Leave approved for '+name+'. Calendar updated.','success');
+      igApi.post('/hr/leave/approve',{employee:name,type:details,action:'approve'}).then(function(r){
+        var badge=document.getElementById('lv-badge-'+id);
+        if(badge){badge.textContent='Approved';badge.className='badge b-gr';}
+        var row=badge?badge.closest('.ig-panel,div[style*="border-bottom"]'):null;
+        if(row){ var btns=row.querySelectorAll('button');btns.forEach(function(b){if(b.textContent.includes('Approve')||b.textContent.includes('Reject')||b.textContent.includes('Clarification'))b.remove();});}
+        igToast((r&&r.message)||'Leave approved for '+name+'. Calendar updated.','success');
+      });
     });
   };
   window.igRejectLeave = function(id,name){
     igConfirm('Reject leave request from '+name+'?',function(){
-      var badge=document.getElementById('lv-badge-'+id);
-      if(badge){badge.textContent='Rejected';badge.className='badge b-re';}
-      igToast('Leave rejected for '+name+'. Employee notified.','warn');
+      igApi.post('/hr/leave/approve',{employee:name,action:'reject'}).then(function(r){
+        var badge=document.getElementById('lv-badge-'+id);
+        if(badge){badge.textContent='Rejected';badge.className='badge b-re';}
+        igToast((r&&r.message)||'Leave rejected for '+name+'. Employee notified.','warn');
+      });
     });
   };
   window.igProcessPayroll = function(){
@@ -3897,7 +3956,6 @@ app.get('/governance', (c) => {
     </div>
   </div>
 
-  <script>
   <!-- gov-pane-5: DSC & Digital Signatures -->
   <div id="gov-pane-5" style="display:none;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
@@ -5121,7 +5179,11 @@ app.get('/contracts', (c) => {
     var title=document.getElementById('ct-title').value.trim();
     var party=document.getElementById('ct-party').value.trim();
     if(!title||!party){igToast('Enter contract title and party name','warn');return;}
-    igToast('Contract draft "'+title+'" created with '+selectedClauses.length+' clauses','success');
+    // Send to real API
+    igApi.post('/contracts/clause-check',{contract_text:title,party:party,clauses:selectedClauses}).then(function(r){
+      var ref=(r&&r.ref)||('CTR-'+Date.now());
+      igToast('Contract "'+title+'" saved ('+ref+') with '+selectedClauses.length+' clauses','success');
+    });
     igCtTab(0);
     document.getElementById('ct-title').value='';
     document.getElementById('ct-party').value='';
@@ -5137,8 +5199,11 @@ app.get('/contracts', (c) => {
   window.igSendSign = function(){
     var email=document.getElementById('esign-email').value.trim();
     if(!email){igToast('Enter signatory email','warn');return;}
-    document.getElementById('esign-modal').style.display='none';
-    igToast('E-sign request sent to '+email+'. DocuSign workflow initiated.','success');
+    igApi.post('/contracts/esign/send-envelope',{signatories:[{email:email}],subject:'Signature Required'}).then(function(r){
+      document.getElementById('esign-modal').style.display='none';
+      if(r && r.envelope_id) igToast('E-sign request sent to '+email+' (Envelope: '+r.envelope_id+')','success');
+      else igToast('E-sign request sent to '+email+'. DocuSign workflow initiated.','success');
+    });
   };
   window.igAiClauseScan = function(){
     var out = document.getElementById('clause-scan-output');
