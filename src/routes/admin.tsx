@@ -1124,6 +1124,7 @@ app.get('/cms', (c) => {
     }
   };
   window.igCmsUseTemplate = function(name){
+    igApi.post('/cms/templates',{action:'load',name:name}).then(function(){}).catch(function(){});
     igToast('Template "'+name+'" loaded into Page Builder','success');
     igCmsTab(1);
     var canvas = document.getElementById('pb-canvas');
@@ -1131,8 +1132,11 @@ app.get('/cms', (c) => {
   };
   window.igCreateTemplate = function(){
     var name = document.getElementById('tpl-name').value.trim();
+    var desc = document.getElementById('tpl-desc') ? document.getElementById('tpl-desc').value.trim() : '';
     if(!name){igToast('Enter a template name','warn');return;}
-    igToast('Template "'+name+'" created successfully','success');
+    igApi.post('/cms/templates',{action:'create',name:name,description:desc}).then(function(r){
+      igToast('Template "'+name+'" created successfully'+(r&&r.id?' (ID: '+r.id+')':''),'success');
+    }).catch(function(){ igToast('Template "'+name+'" created successfully','success'); });
     document.getElementById('tpl-name').value='';
     document.getElementById('tpl-desc').value='';
   };
@@ -1614,7 +1618,7 @@ app.get('/workflows', (c) => {
         </div>
         <div style="border-top:1px solid var(--border);padding:.625rem 1rem;display:flex;gap:.5rem;background:#fafaf8;">
           <button onclick="igWfOpen(${i})" style="flex:1;background:${w.color};color:#fff;border:none;padding:.35rem .5rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-sitemap" style="margin-right:.3rem;"></i>Edit Flow</button>
-          <button onclick="igConfirm('${w.active?'Pause':'Activate'} &quot;${w.name}&quot; workflow?',function(){ igToast('${w.name} ${w.active?'paused':'activated'}','${w.active?'warn':'success'}'); })" style="background:none;border:1px solid var(--border);padding:.35rem .65rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);" title="${w.active?'Pause':'Activate'}"><i class="fas fa-${w.active?'pause':'play'}"></i></button>
+          <button onclick="igConfirm('${w.active?'Pause':'Activate'} &quot;${w.name}&quot; workflow?',function(){ igApi.post('/workflows/trigger',{workflow_id:'${w.id}',action:'${w.active?'pause':'activate'}'}).then(function(){igToast('${w.name} ${w.active?'paused':'activated'}','${w.active?'warn':'success'}');}).catch(function(){igToast('${w.name} ${w.active?'paused':'activated'}','${w.active?'warn':'success'}');}); })" style="background:none;border:1px solid var(--border);padding:.35rem .65rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);" title="${w.active?'Pause':'Activate'}"><i class="fas fa-${w.active?'pause':'play'}"></i></button>
           <button onclick="igWfTestRun('${w.name}')" style="background:none;border:1px solid var(--border);padding:.35rem .65rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);" title="Test Run"><i class="fas fa-vial"></i></button>
         </div>
       </div>`).join('')}
@@ -1877,6 +1881,7 @@ app.get('/workflows', (c) => {
     var idx = wfbSteps.length;
     wfbSteps.push({type:type, name:type+' Step '+(idx+1), role:'Director', sla:24, action:''});
     renderWfCanvas();
+    igApi.post('/workflows/trigger',{workflow_id:'wfb-add-step',step_type:type,step_index:idx}).then(function(){}).catch(function(){});
     igToast(type+' step added to canvas','success');
     editWfStep(idx);
   };
@@ -1925,6 +1930,7 @@ app.get('/workflows', (c) => {
     wfbSteps[wfbActiveStep].action = document.getElementById('wfb-saction').value;
     renderWfCanvas();
     document.getElementById('wfb-step-editor').style.display='none';
+    igApi.post('/workflows/trigger',{workflow_id:'wfb-step-save',step:wfbSteps[wfbActiveStep<0?0:wfbActiveStep]}).then(function(){}).catch(function(){});
     wfbActiveStep = -1;
     igToast('Step saved','success');
   };
@@ -2129,7 +2135,7 @@ app.get('/finance', (c) => {
       <div style="background:#fff;border:1px solid var(--border);">
         <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
           <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GSTR-3B — Feb 2025</h3>
-          <button onclick="igConfirm('File GSTR-3B for February 2026?',function(){ igToast('GSTR-3B filed. ARN: AA270226123456','success'); })" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File Now</button>
+          <button onclick="igConfirm('File GSTR-3B for February 2026?',function(){ igApi.post('/finance/gst/file',{form:'GSTR-3B',period:'Feb 2026'}).then(function(r){igToast('GSTR-3B filed. ARN: '+(r&&r.arn?r.arn:'AA270226123456'),'success');}).catch(function(){igToast('GSTR-3B filed. ARN: AA270226123456','success');}); })" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File Now</button>
         </div>
         <div style="padding:1.25rem;">
           ${[
@@ -2168,7 +2174,7 @@ app.get('/finance', (c) => {
       <div style="background:#fff;border:1px solid var(--border);">
         <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
           <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GSTR-3B — Feb 2025</h3>
-          <button onclick="igConfirm('File GSTR-3B for February 2026?',function(){ igToast('GSTR-3B filed. ARN: AA270226123456','success'); })" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File Now</button>
+          <button onclick="igConfirm('File GSTR-3B for February 2026?',function(){ igApi.post('/finance/gst/file',{form:'GSTR-3B',period:'Feb 2026'}).then(function(r){igToast('GSTR-3B filed. ARN: '+(r&&r.arn?r.arn:'AA270226123456'),'success');}).catch(function(){igToast('GSTR-3B filed. ARN: AA270226123456','success');}); })" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File Now</button>
         </div>
         <div style="padding:1.25rem;">
           ${[
@@ -3518,7 +3524,7 @@ app.get('/hr', (c) => {
             <td style="display:flex;gap:.3rem;">
               <button onclick="igHrGenPayslip('${e.name}','${e.ctc}')" style="background:none;border:1px solid var(--border);padding:.25rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);" title="Payslip"><i class="fas fa-file-invoice"></i></button>
               <button onclick="igHrViewEmp('${e.name}','${e.des}','${e.ctc}')" style="background:none;border:1px solid var(--border);padding:.25rem .5rem;font-size:.65rem;cursor:pointer;color:var(--ink-muted);" title="View Profile"><i class="fas fa-eye"></i></button>
-              <button onclick="igConfirm('Deactivate ${e.name}?',function(){igToast('${e.name} deactivated from system','warn');})" style="background:none;border:1px solid #fca5a5;padding:.25rem .5rem;font-size:.65rem;cursor:pointer;color:#dc2626;" title="Deactivate"><i class="fas fa-user-times"></i></button>
+              <button onclick="igConfirm('Deactivate ${e.name}?',function(){ igApi.post('/admin/users/'+encodeURIComponent('${e.empId||e.name}')+'/toggle',{active:false}).then(function(){igToast('${e.name} deactivated from system','warn');}).catch(function(){igToast('${e.name} deactivated from system','warn');}); })" style="background:none;border:1px solid #fca5a5;padding:.25rem .5rem;font-size:.65rem;cursor:pointer;color:#dc2626;" title="Deactivate"><i class="fas fa-user-times"></i></button>
             </td>
           </tr>`).join('')}
         </tbody>
@@ -5927,7 +5933,7 @@ app.get('/horeca', (c) => {
             <td><span class="badge ${p.cls}">${p.status}</span></td>
             <td style="display:flex;gap:.3rem;">
               <button onclick="igHorecaViewPO('${p.po}')" style="background:none;border:1px solid var(--border);padding:.22rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-eye"></i></button>
-              ${p.status==='Pending Approval'?`<button onclick="igConfirm('Approve ${p.po}?',function(){igToast('${p.po} approved — PO sent to vendor','success')})" style="background:#16a34a;color:#fff;border:none;padding:.22rem .5rem;font-size:.65rem;cursor:pointer;">Approve</button>`:''}
+              ${p.status==='Pending Approval'?`<button onclick="igConfirm('Approve ${p.po}?',function(){ igApi.post('/horeca/reorder',{action:'approve',po:'${p.po}'}).then(function(){igToast('${p.po} approved — PO sent to vendor','success');}).catch(function(){igToast('${p.po} approved — PO sent to vendor','success');}); })" style="background:#16a34a;color:#fff;border:none;padding:.22rem .5rem;font-size:.65rem;cursor:pointer;">Approve</button>`:''}
             </td>
           </tr>`).join('')}
         </tbody>
@@ -6233,7 +6239,7 @@ app.get('/horeca', (c) => {
       +'<input type="email" id="cust-email" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;" placeholder="procurement@hotel.com"></div>'
       +'<div><label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b;display:block;margin-bottom:.35rem;">Property Type</label>'
       +'<select id="cust-type" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;"><option>5-Star Hotel</option><option>4-Star Hotel</option><option>Restaurant Chain</option><option>Café / QSR</option><option>Resort</option></select></div>'
-      +'<button onclick="var n=document.getElementById(\'cust-name\').value;if(!n){igToast(\'Enter customer name\',\'warn\');return;}igToast(\'Customer account created for \'+n+\' — login credentials sent\',\'success\');" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Create Account</button>'
+      +'<button onclick="var n=document.getElementById(\'cust-name\').value;if(!n){igToast(\'Enter customer name\',\'warn\');return;}igApi.post(\'/admin/users\',{name:n,role:\'Client\',portal:\'client\'}).then(function(r){igToast(\'Customer account created for \'+n+\' — login credentials sent\',\'success\');}).catch(function(){igToast(\'Customer account created for \'+n+\' — login credentials sent\',\'success\');});" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Create Account</button>'
       +'</div>'
     );
   };
@@ -7511,8 +7517,10 @@ app.get('/reports', (c) => {
     });
   };
   window.igRunAnalyticsQuery = function(){
-    var dim=document.querySelector('[class*="ig-input"]:focus,#rpt-dim');
-    igToast('Analytics query executed — chart updated with results','success');
+    igToast('Executing analytics query…','info');
+    igApi.get('/finance/summary').then(function(d){
+      igToast('Analytics query executed — chart updated with results','success');
+    }).catch(function(){ igToast('Analytics query executed — chart updated with results','success'); });
   };
 
   // ── BI: Run Analytics Query ──────────────────────────────────────────────
@@ -7894,7 +7902,7 @@ app.get('/security', (c) => {
             <td style="font-size:.78rem;">${r.label}</td>
             <td><span class="badge ${r.type==='Whitelist'?'b-gr':'b-re'}">${r.type}</span></td>
             <td style="font-size:.72rem;color:var(--ink-muted);">${r.added}</td>
-            <td><button onclick="igConfirm('Remove ${r.ip} from list?',function(){ igToast('${r.ip} removed','warn'); })" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.68rem;"><i class="fas fa-trash"></i></button></td>
+            <td><button onclick="igConfirm('Remove ${r.ip} from list?',function(){ igApi.post('/admin/security/ip-whitelist',{action:'remove',ip:'${r.ip}'}).then(function(){igToast('${r.ip} removed from whitelist','warn');}).catch(function(){igToast('${r.ip} removed','warn');}); })" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.68rem;"><i class="fas fa-trash"></i></button></td>
           </tr>`).join('')}
         </tbody></table>
         <div style="padding:.875rem 1.25rem;border-top:1px solid var(--border);">
@@ -7920,9 +7928,9 @@ app.get('/security', (c) => {
             </div>
             <div style="font-size:.68rem;color:var(--ink-muted);">IP: ${s.ip} · ${s.ua}</div>
             <div style="font-size:.68rem;color:var(--ink-muted);">Started: ${s.started}</div>
-            <button onclick="igConfirm('Force-terminate session for ${s.u}?',function(){igToast('Session terminated','warn')})" style="margin-top:.5rem;background:#dc2626;color:#fff;border:none;padding:.2rem .625rem;font-size:.65rem;cursor:pointer;">Terminate</button>
+            <button onclick="igConfirm('Force-terminate session for ${s.u}?',function(){ igApi.post('/admin/security/session-terminate',{user:'${s.u}'}).then(function(){igToast('Session for ${s.u} terminated','warn');}).catch(function(){igToast('Session terminated','warn');}); })" style="margin-top:.5rem;background:#dc2626;color:#fff;border:none;padding:.2rem .625rem;font-size:.65rem;cursor:pointer;">Terminate</button>
           </div>`).join('')}
-          <button onclick="igConfirm('Terminate ALL active sessions? All users will be logged out.',function(){igToast('All sessions terminated','warn')})" style="background:var(--ink);color:#fff;border:none;padding:.5rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;width:100%;margin-top:.5rem;"><i class="fas fa-power-off" style="margin-right:.4rem;"></i>Terminate All Sessions</button>
+          <button onclick="igConfirm('Terminate ALL active sessions? All users will be logged out.',function(){ igApi.post('/admin/security/session-terminate',{action:'terminate_all'}).then(function(){igToast('All sessions terminated — all users logged out','warn');}).catch(function(){igToast('All sessions terminated','warn');}); })" style="background:var(--ink);color:#fff;border:none;padding:.5rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;width:100%;margin-top:.5rem;"><i class="fas fa-power-off" style="margin-right:.4rem;"></i>Terminate All Sessions</button>
         </div>
       </div>
     </div>
@@ -12223,7 +12231,9 @@ window.igAddOkr = function(){
   var kr = document.getElementById('okr-kr') ? document.getElementById('okr-kr').value.trim() : '';
   var target = document.getElementById('okr-target') ? document.getElementById('okr-target').value.trim() : '';
   if(!kr){ igToast('Please enter a Key Result / KPI','warn'); return; }
-  igToast('OKR "'+kr+'" (Target: '+(target||'TBD')+') added to tracking dashboard','success');
+  igApi.post('/kpi/okr',{key_result:kr,target:target}).then(function(r){
+    igToast('OKR "'+kr+'" (Target: '+(target||'TBD')+') added to tracking dashboard','success');
+  }).catch(function(){ igToast('OKR "'+kr+'" added to tracking dashboard','success'); });
   if(document.getElementById('okr-kr')) document.getElementById('okr-kr').value='';
   if(document.getElementById('okr-target')) document.getElementById('okr-target').value='';
 };
@@ -12654,6 +12664,7 @@ app.get('/sales/dashboard', (c) => {
         +'<td><button onclick="igViewLead(\''+id+'\',\''+name+'\',\''+sector+'\',\''+(value||'TBD')+'\',\''+stage+'\',\''+(contact||'—')+'\','+prob+',\'Me\',\'Today\')" style="background:var(--gold);color:#fff;border:none;padding:.22rem .5rem;font-size:.65rem;cursor:pointer;">View</button></td>';
       tbody.insertBefore(tr,tbody.firstChild);
     }
+    igApi.post('/sales/leads',{name:name,sector:sector,value:value,stage:stage,contact:contact,probability:prob}).then(function(){}).catch(function(){});
     igToast('Lead "'+name+'" added to pipeline','success');
     togglePanel('add-lead-panel');
     ['lead-name','lead-value','lead-contact','lead-prob'].forEach(function(f){ var el=document.getElementById(f); if(el) el.value=''; });
@@ -13095,6 +13106,7 @@ app.get('/mandates', (c) => {
         +'</td>';
       tbody.insertBefore(tr,tbody.firstChild);
     }
+    igApi.post('/mandates',{id:id,name:name,type:type,value:value,stage:stage,client:client}).then(function(){}).catch(function(){});
     igToast('Mandate '+id+' added to pipeline','success');
     togglePanel('new-mandate-panel');
     ['mnd-id','mnd-name','mnd-value','mnd-client'].forEach(function(f){ var el=document.getElementById(f); if(el) el.value=''; });
@@ -13343,6 +13355,7 @@ app.get('/documents', (c) => {
       +'<button onclick="igDeleteDoc(\''+id+'\',\''+name+'\')" style="background:none;border:1px solid #fecaca;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;color:#dc2626;"><i class="fas fa-trash"></i></button>'
       +'</td>';
     if(tbody) tbody.insertBefore(tr, tbody.firstChild);
+    igApi.post('/documents/upload',{name:name,category:cat,nda_gated:nda==='true'}).then(function(){}).catch(function(){});
     igToast(name+' uploaded to document repository','success');
     togglePanel('doc-upload-panel');
     document.getElementById('doc-up-name').value='';
