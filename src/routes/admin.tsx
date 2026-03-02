@@ -2633,7 +2633,7 @@ app.get('/finance', (c) => {
   };
   window.igRenderPL = function(){
     var period = document.getElementById('pl-month').value;
-    var d = plData[period] || plData['Feb 2025'];
+    var d = plData[period] || plData['Feb 2026'];
     var totalIncome = d.income.reduce((a,r)=>a+r.amt,0);
     var totalCogs   = d.cogs.reduce((a,r)=>a+r.amt,0);
     var grossProfit = totalIncome - totalCogs;
@@ -5471,7 +5471,7 @@ app.get('/reports', (c) => {
         {name:'Monthly P&L',           freq:'1st of month', to:'superadmin, directors',  fmt:'PDF',  last:'01 Feb 2026', on:true},
         {name:'Weekly Pipeline',       freq:'Every Monday', to:'superadmin',             fmt:'Email',last:'24 Feb 2026', on:true},
         {name:'GST Filing Reminder',   freq:'8th of month', to:'finance@indiagully.com', fmt:'Email',last:'08 Feb 2025', on:true},
-        {name:'HR Attendance Summary', freq:'Last day/month',to:'hr@indiagully.com',      fmt:'Excel',last:'28 Feb 2025', on:false},
+        {name:'HR Attendance Summary', freq:'Last day/month',to:'hr@indiagully.com',      fmt:'Excel',last:'28 Feb 2026', on:false},
       ].map(r=>`<tr>
         <td style="font-weight:500;font-size:.85rem;">${r.name}</td>
         <td style="font-size:.78rem;">${r.freq}</td>
@@ -5860,13 +5860,13 @@ app.get('/security', (c) => {
         <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">IP Whitelist & Block List</h3></div>
         <table class="ig-tbl"><thead><tr><th>IP Address</th><th>Label</th><th>Type</th><th>Added</th><th>Action</th></tr></thead><tbody>
           ${[
-            {ip:'103.21.44.0/24', label:'Admin Office — New Delhi',   type:'Whitelist',  added:'01 Jan 2025'},
-            {ip:'49.36.x.x',     label:'Directors — Static IP',       type:'Whitelist',  added:'01 Jan 2025'},
-            {ip:'115.99.x.x',    label:'Client Portal — Mumbai',       type:'Whitelist',  added:'15 Feb 2025'},
-            {ip:'182.65.x.x',    label:'Employee — Remote',            type:'Whitelist',  added:'01 Feb 2025'},
-            {ip:'103.55.x.x',    label:'Remote VPN Endpoint',          type:'Whitelist',  added:'20 Jan 2025'},
-            {ip:'185.220.x.x',   label:'Suspected Tor Exit Node',      type:'Blocked',    added:'27 Feb 2025'},
-            {ip:'91.108.x.x',    label:'Brute Force — Auto-blocked',   type:'Blocked',    added:'25 Feb 2025'},
+            {ip:'103.21.44.0/24', label:'Admin Office — New Delhi',   type:'Whitelist',  added:'01 Jan 2026'},
+            {ip:'49.36.x.x',     label:'Directors — Static IP',       type:'Whitelist',  added:'01 Jan 2026'},
+            {ip:'115.99.x.x',    label:'Client Portal — Mumbai',       type:'Whitelist',  added:'15 Feb 2026'},
+            {ip:'182.65.x.x',    label:'Employee — Remote',            type:'Whitelist',  added:'01 Feb 2026'},
+            {ip:'103.55.x.x',    label:'Remote VPN Endpoint',          type:'Whitelist',  added:'20 Jan 2026'},
+            {ip:'185.220.x.x',   label:'Suspected Tor Exit Node',      type:'Blocked',    added:'27 Feb 2026'},
+            {ip:'91.108.x.x',    label:'Brute Force — Auto-blocked',   type:'Blocked',    added:'25 Feb 2026'},
           ].map(r=>`<tr>
             <td style="font-size:.78rem;font-family:monospace;font-weight:500;">${r.ip}</td>
             <td style="font-size:.78rem;">${r.label}</td>
@@ -5938,11 +5938,11 @@ app.get('/security', (c) => {
         <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Device Trust Registry</h3></div>
         <div style="padding:.875rem;">
           ${[
-            {user:'superadmin@indiagully.com',device:'Chrome 121 / Win 11',fp:'d4f8a2...',added:'01 Feb 2025',trusted:true},
-            {user:'akm@indiagully.com',       device:'Safari 17 / macOS',  fp:'7c3b91...',added:'15 Jan 2025',trusted:true},
-            {user:'pavan@indiagully.com',     device:'Chrome 120 / Win 11',fp:'9e1d44...',added:'10 Jan 2025',trusted:true},
-            {user:'demo@indiagully.com',      device:'Chrome / Android 14', fp:'2f7c38...',added:'27 Feb 2025',trusted:true},
-            {user:'Unknown',                   device:'curl/7.68 / Linux',   fp:'a1b2c3...',added:'27 Feb 2025',trusted:false},
+            {user:'superadmin@indiagully.com',device:'Chrome 121 / Win 11',fp:'d4f8a2...',added:'01 Feb 2026',trusted:true},
+            {user:'akm@indiagully.com',       device:'Safari 17 / macOS',  fp:'7c3b91...',added:'15 Jan 2026',trusted:true},
+            {user:'pavan@indiagully.com',     device:'Chrome 120 / Win 11',fp:'9e1d44...',added:'10 Jan 2026',trusted:true},
+            {user:'demo@indiagully.com',      device:'Chrome / Android 14', fp:'2f7c38...',added:'27 Feb 2026',trusted:true},
+            {user:'Unknown',                   device:'curl/7.68 / Linux',   fp:'a1b2c3...',added:'27 Feb 2026',trusted:false},
           ].map(d=>`<div style="padding:.625rem .875rem;border:1px solid ${d.trusted?'var(--border)':'#fecaca'};margin-bottom:.4rem;background:${d.trusted?'#fff':'#fff5f5'};">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem;">
               <span style="font-size:.75rem;font-weight:600;color:var(--ink);">${d.user}</span>
@@ -6094,8 +6094,8 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
         </div>
         <div style="padding:1.25rem;">
           ${[
-            {user:'superadmin@indiagully.com',role:'Super Admin',key:'YubiKey 5C NFC',registered:'15 Jan 2025',last_used:'Today 06:10',status:'Active'},
-            {user:'akm@indiagully.com',        role:'Director MD', key:'YubiKey 5 NFC', registered:'20 Jan 2025',last_used:'Yesterday',  status:'Active'},
+            {user:'superadmin@indiagully.com',role:'Super Admin',key:'YubiKey 5C NFC',registered:'15 Jan 2026',last_used:'Today 06:10',status:'Active'},
+            {user:'akm@indiagully.com',        role:'Director MD', key:'YubiKey 5 NFC', registered:'20 Jan 2026',last_used:'Yesterday',  status:'Active'},
             {user:'pavan@indiagully.com',       role:'Director ED', key:'Not registered',registered:'—',          last_used:'—',          status:'Pending'},
           ].map(k=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border);">
             <div>
@@ -9758,10 +9758,10 @@ app.get('/api-docs', (c) => {
     <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
       <div style="font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:.875rem;letter-spacing:.06em;text-transform:uppercase;">Versioning & Changelog</div>
       ${[
-        {v:'2025.03',date:'05 Mar 2025',change:'Sales Force Engine, CMS v2, Phase 6 all modules live'},
-        {v:'2025.02',date:'28 Feb 2025',change:'BI dashboards, HORECA inventory+vendor, Finance e-invoice'},
+        {v:'2026.03',date:'05 Mar 2026',change:'Sales Force Engine, CMS v2, Phase 6 all modules live'},
+        {v:'2026.02',date:'28 Feb 2026',change:'BI dashboards, HORECA inventory+vendor, Finance e-invoice'},
         {v:'2025.01',date:'15 Feb 2025',change:'HR payroll builder, Governance voting engine, KYC upload'},
-        {v:'2024.12',date:'01 Jan 2025',change:'Client portal, Employee portal, Board portal initial release'},
+        {v:'2025.12',date:'01 Jan 2026',change:'Client portal, Employee portal, Board portal initial release'},
       ].map(v=>`<div style="display:flex;align-items:flex-start;gap:.625rem;padding:.5rem 0;border-bottom:1px solid var(--border);">
         <span style="background:#0f172a;color:#38bdf8;font-size:.6rem;font-weight:800;padding:.15rem .45rem;flex-shrink:0;border-radius:2px;">${v.v}</span>
         <div style="flex:1;">
@@ -10382,12 +10382,12 @@ app.get('/mandates', (c) => {
 // ── CLIENTS PAGE ───────────────────────────────────────────────────────────────
 app.get('/clients', (c) => {
   const clients = [
-    {id:'CLT-001', name:'Demo Advisory Client',      email:'demo@indiagully.com',    type:'Advisory',    since:'Jan 2025', status:'Active',  aum:'₹425 Cr',   manager:'AKM'},
-    {id:'CLT-002', name:'NCR Realty Corp',            email:'ncr@indiagully.com',      type:'Transaction', since:'Dec 2024', status:'Active',  aum:'₹2,100 Cr', manager:'Pavan'},
+    {id:'CLT-001', name:'Demo Advisory Client',      email:'demo@indiagully.com',    type:'Advisory',    since:'Jan 2026', status:'Active',  aum:'₹425 Cr',   manager:'AKM'},
+    {id:'CLT-002', name:'NCR Realty Corp',            email:'ncr@indiagully.com',      type:'Transaction', since:'Dec 2025', status:'Active',  aum:'₹2,100 Cr', manager:'Pavan'},
     {id:'CLT-003', name:'Mumbai F&B Group',           email:'mumbai@indiagully.com',   type:'HORECA',      since:'Nov 2024', status:'Active',  aum:'₹87 Cr',    manager:'AKM'},
-    {id:'CLT-004', name:'Jaipur Hotels Ltd',          email:'jaipur@indiagully.com',   type:'Hospitality', since:'Jan 2025', status:'Active',  aum:'₹320 Cr',   manager:'AKM'},
-    {id:'CLT-005', name:'Tech Parks India Ltd',       email:'techpark@indiagully.com', type:'Real Estate', since:'Jan 2025', status:'Active',  aum:'₹1,500 Cr', manager:'Pavan'},
-    {id:'CLT-006', name:'Bengaluru Foods Pvt Ltd',    email:'blr@indiagully.com',      type:'HORECA',      since:'Mar 2025', status:'Onboard', aum:'₹45 Cr',    manager:'AKM'},
+    {id:'CLT-004', name:'Jaipur Hotels Ltd',          email:'jaipur@indiagully.com',   type:'Hospitality', since:'Jan 2026', status:'Active',  aum:'₹320 Cr',   manager:'AKM'},
+    {id:'CLT-005', name:'Tech Parks India Ltd',       email:'techpark@indiagully.com', type:'Real Estate', since:'Jan 2026', status:'Active',  aum:'₹1,500 Cr', manager:'Pavan'},
+    {id:'CLT-006', name:'Bengaluru Foods Pvt Ltd',    email:'blr@indiagully.com',      type:'HORECA',      since:'Mar 2026', status:'Onboard', aum:'₹45 Cr',    manager:'AKM'},
   ]
   const body = `
   <div style="display:flex;flex-direction:column;gap:1.5rem;">
@@ -10397,7 +10397,7 @@ app.get('/clients', (c) => {
         {label:'Total Clients',  value:'6',           sub:'5 active, 1 onboarding', icon:'building',     color:'#2563eb'},
         {label:'Total AUM',      value:'₹8,815 Cr',   sub:'Across all mandates',    icon:'chart-line',   color:'#d97706'},
         {label:'NPS Score',      value:'72',          sub:'Strong promoter base',   icon:'smile',        color:'#16a34a'},
-        {label:'Avg. Tenure',    value:'14 months',   sub:'Since Jan 2025 avg',     icon:'calendar',     color:'#7c3aed'},
+        {label:'Avg. Tenure',    value:'14 months',   sub:'Since Jan 2026 avg',     icon:'calendar',     color:'#7c3aed'},
       ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.875rem;">
         <div style="width:38px;height:38px;background:${s.color}1a;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
           <i class="fas fa-${s.icon}" style="color:${s.color};font-size:.875rem;"></i></div>
