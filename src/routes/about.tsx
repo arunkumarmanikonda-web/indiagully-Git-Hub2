@@ -123,7 +123,7 @@ app.get('/', (c) => {
       <div class="gr-c"></div>
       <p class="eyebrow" style="margin-bottom:.75rem;">Our People</p>
       <h2 class="h2">Board &amp; Key Managerial<br>Personnel</h2>
-      <p class="lead" style="margin-top:1rem;">Our leadership operates under the Companies Act, 2013 governance framework with full compliance to ICSI secretarial standards.</p>
+      <p class="lead" style="margin-top:1rem;">Three decades of combined experience spanning hospitality, real estate, retail and entertainment — building India's most trusted multi-vertical advisory practice.</p>
     </div>
 
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:1000px;margin:0 auto;">
@@ -163,7 +163,7 @@ app.get('/', (c) => {
     </div>
 
     <div style="margin-top:3rem;background:var(--parch);border:1px solid var(--border);padding:1.25rem 1.5rem;max-width:700px;margin:3rem auto 0;text-align:center;">
-      <p style="font-size:.75rem;color:var(--ink-muted);line-height:1.7;"><i class="fas fa-shield-alt" style="color:var(--gold);margin-right:.5rem;"></i><strong style="color:var(--ink);">Governance Note:</strong> India Gully operates under full compliance with the Companies Act, 2013. All Directors hold valid DIN per MCA records. Board meetings, minutes and statutory registers are maintained per ICSI Secretarial Standards SS-1 and SS-2.</p>
+      <p style="font-size:.75rem;color:var(--ink-muted);line-height:1.7;"><i class="fas fa-envelope" style="color:var(--gold);margin-right:.5rem;"></i>To connect with our leadership directly, reach us at <a href="mailto:info@indiagully.com" style="color:var(--gold);font-weight:600;">info@indiagully.com</a> or call <strong style="color:var(--ink);">+91 8988 988 988</strong>.</p>
     </div>
   </div>
 </div>
