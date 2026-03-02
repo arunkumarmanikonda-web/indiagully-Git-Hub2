@@ -330,17 +330,16 @@ app.get('/', (c) => {
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
         ${ADVISORY_PARTNERS.slice(0,4).map((p: any) => `
-        <div style="border:1px solid var(--border);padding:1.5rem;text-align:center;transition:border-color .25s,box-shadow .25s;" onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 8px 24px rgba(0,0,0,.07)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
-          <div style="display:flex;align-items:center;justify-content:center;margin-bottom:.875rem;min-height:40px;">
-            <img src="${p.svg}" alt="${p.name}" style="width:110px;height:40px;object-fit:contain;display:block;"
-                 onerror="this.onerror=null;this.src='';this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div style="border:1px solid var(--border);padding:1.5rem;text-align:center;background:#fff;transition:border-color .25s,box-shadow .25s;" onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 8px 24px rgba(0,0,0,.07)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+          <div style="display:flex;align-items:center;justify-content:center;margin-bottom:.875rem;min-height:48px;">
+            <img src="${p.logo}" alt="${p.name}" style="max-width:110px;max-height:44px;width:auto;height:auto;object-fit:contain;display:block;"
+                 onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex'">
             <div style="display:none;width:110px;height:40px;background:${p.color};align-items:center;justify-content:center;border-radius:2px;">
               <span style="font-size:.75rem;font-weight:800;letter-spacing:.06em;color:${p.textColor || '#fff'};text-align:center;">${p.abbr}</span>
             </div>
           </div>
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">${p.name}</div>
-          <div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:.25rem;">${p.abbr}</div>
-          <div style="font-size:.68rem;color:var(--ink-muted);margin-top:.3rem;">${p.sub}</div>
+          <div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:.25rem;">${p.sub}</div>
         </div>`).join('')}
       </div>
     </div>
@@ -348,17 +347,16 @@ app.get('/', (c) => {
     <!-- 5th partner centred -->
     <div style="display:flex;justify-content:center;">
       ${ADVISORY_PARTNERS.slice(4).map((p: any) => `
-      <div style="border:1px solid var(--border);padding:1.5rem 2.5rem;text-align:center;transition:border-color .25s,box-shadow .25s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-        <div style="display:flex;align-items:center;justify-content:center;margin-bottom:.875rem;min-height:40px;">
-          <img src="${p.svg}" alt="${p.name}" style="width:110px;height:40px;object-fit:contain;display:block;"
-               onerror="this.onerror=null;this.src='';this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div style="border:1px solid var(--border);padding:1.5rem 2.5rem;text-align:center;background:#fff;transition:border-color .25s,box-shadow .25s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="display:flex;align-items:center;justify-content:center;margin-bottom:.875rem;min-height:48px;">
+          <img src="${p.logo}" alt="${p.name}" style="max-width:140px;max-height:44px;width:auto;height:auto;object-fit:contain;display:block;"
+               onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex'">
           <div style="display:none;width:110px;height:40px;background:${p.color};align-items:center;justify-content:center;border-radius:2px;">
             <span style="font-size:.75rem;font-weight:800;letter-spacing:.06em;color:${p.textColor || '#fff'};text-align:center;">${p.abbr}</span>
           </div>
         </div>
         <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">${p.name}</div>
-        <div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:.25rem;">${p.abbr}</div>
-        <div style="font-size:.68rem;color:var(--ink-muted);margin-top:.3rem;">${p.sub}</div>
+        <div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:.25rem;">${p.sub}</div>
       </div>`).join('')}
     </div>
   </div>
