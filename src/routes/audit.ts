@@ -126,11 +126,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.35-KK</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.36-LL</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">HH-Round &middot; March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">300 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">306 endpoints</span></div>
     </div>
   </div>
 
@@ -205,8 +205,8 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">KK-Round · v2026.35-KK</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Pipeline · Revenue · Quota · Deal Velocity · DPDP Sales · Pricing Gov · 300 routes · 100/100</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">LL-Round · v2026.36-LL</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Roadmap · Sprint Velocity · Tech Debt · Incident Log · DPDP Product · SLA · 306 routes · 100/100</div>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
@@ -646,6 +646,10 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['JJO2','Remediate IDOR invoice download (PT-2026-001) — restrict /api/invoices/:id to owner only','High','2h'],
             ['JJO3','Right-size 6 EC2 instances + apply S3 lifecycle policy — Rs1.1L/month savings (JJ3)','Medium','2h'],
             ['JJO4','Disable 12 stale accounts, eliminate 5 shared credentials, enforce MFA for 8 users (JJ4/JJ5)','High','3h'],
+            ['LLO1','Resolve INC-082 RCA and implement SMS OTP redundancy to prevent P1 recurrence','High','2h'],
+            ['LLO2','Add consent gate to AI Salary Benchmark and Attendance Geolocation features per DPDP §6','High','3h'],
+            ['LLO3','Fix SLA-001 API uptime breach: scale API gateway + CDN — clear ₹45K penalty','High','4h'],
+            ['LLO4','Resolve BLK-042 Twilio rate limit and unblock F-202 FIDO2 passkey feature','Medium','2h'],
             ['KKO1','Purge CRM contacts older than 3 years per DPDP §8(7) — ~840 stale records to be removed','High','3h'],
             ['KKO2','Enforce hard discount cap in CRM CPQ: reps >10%, VP >20%, CEO >25% — stop discount abuse','High','2h'],
             ['KKO3','Recover ₹1.97L revenue leakage: fix uninvoiced overage (₹86K) and deactivate churned licences (₹48K)','High','4h'],

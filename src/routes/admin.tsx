@@ -6739,6 +6739,22 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       </div>
     </div>
 
+    <!-- ── LL-Round: Product & Engineering Intelligence (v2026.36) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-code" style="color:#0891b2;margin-right:.5rem;"></i>LL-Round — Product &amp; Engineering Intelligence (v2026.36)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">306 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igRoadmapStatus()" style="background:none;border:1px solid #0891b2;color:#0891b2;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-map" style="margin-right:.3rem;"></i>LL1: Roadmap</button>
+        <button onclick="igSprintVelocity()" style="background:none;border:1px solid #0891b2;color:#0891b2;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-tachometer-alt" style="margin-right:.3rem;"></i>LL2: Sprint</button>
+        <button onclick="igTechDebt()" style="background:none;border:1px solid #0891b2;color:#0891b2;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-exclamation-triangle" style="margin-right:.3rem;"></i>LL3: Tech Debt</button>
+        <button onclick="igIncidentLog()" style="background:none;border:1px solid #0891b2;color:#0891b2;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-fire" style="margin-right:.3rem;"></i>LL4: Incidents</button>
+        <button onclick="igProductDataPrivacy()" style="background:none;border:1px solid #0891b2;color:#0891b2;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>LL5: DPDP Product</button>
+        <button onclick="igSlaCompliance()" style="background:none;border:1px solid #0891b2;color:#0891b2;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-check-double" style="margin-right:.3rem;"></i>LL6: SLA</button>
+      </div>
+    </div>
+
     <!-- ── Gold Certification Live Progress (W-Round) ── -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;" id="gold-cert-widget">
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
@@ -8790,6 +8806,49 @@ window.igPricingGovernance = function() {
     const rows=d.breaches.map(function(b){return '<tr><td style="font-size:.68rem;">'+b.deal+'</td><td>'+b.rep+'</td><td>'+b.discount_pct+'%</td><td style="font-size:.68rem;color:#991b1b;">'+b.breach+'</td></tr>';}).join('');
     igModal('KK6: Pricing Governance — v2026.35','<b>Pricing Tiers:</b> '+s.pricing_tiers+' | <b>Active Discounts:</b> '+s.active_discounts+' | <b>Non-Compliant:</b> '+s.non_compliant_discounts+' | <b>Compliance Score:</b> '+d.pricing_compliance_score_pct+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Deal</th><th>Rep</th><th>Discount</th><th>Breach</th></tr>'+rows+'</table>');
   }).catch(function(){igModal('KK6: Pricing Governance','Session expired — log in as Super Admin')});
+};
+
+// ── LL-Round: Product & Engineering Intelligence ────────────────────────────
+window.igRoadmapStatus = function() {
+  fetch('/api/product/roadmap-status').then(function(r){return r.json()}).then(function(d){
+    var s=d.summary;
+    var rows=d.features.map(function(f){var c=f.status==='On Track'?'#166534':f.status==='Blocked'?'#991b1b':'#92400e';return '<tr><td>'+f.id+'</td><td>'+f.name+'</td><td style="color:'+c+';">'+f.status+'</td><td>'+f.owner+'</td></tr>';}).join('');
+    igModal('LL1: Product Roadmap — v2026.36','<b>Total:</b> '+s.total_features+' | <b>On Track:</b> '+s.on_track+' | <b>At Risk:</b> '+s.at_risk+' | <b>Blocked:</b> '+s.blocked+' | <b>Velocity:</b> '+s.sprint_velocity_pct+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>ID</th><th>Feature</th><th>Status</th><th>Owner</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('LL1: Roadmap','Session expired')});
+};
+window.igSprintVelocity = function() {
+  fetch('/api/product/sprint-velocity').then(function(r){return r.json()}).then(function(d){
+    var s=d.current_sprint;
+    var brows=d.blockers.map(function(b){return '<tr><td>'+b.ticket+'</td><td style="font-size:.68rem;">'+b.summary+'</td><td>'+b.days_open+'d</td></tr>';}).join('');
+    igModal('LL2: Sprint Velocity — v2026.36','<b>Sprint S14:</b> '+s.points_completed+'/'+s.points_committed+' pts ('+s.velocity_pct+'%) | <b>Avg:</b> '+d.avg_velocity+'pts | <b>Blockers:</b> '+s.blockers+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>Ticket</th><th>Summary</th><th>Open</th></tr>'+brows+'</table>');
+  }).catch(function(){igModal('LL2: Sprint Velocity','Session expired')});
+};
+window.igTechDebt = function() {
+  fetch('/api/engineering/tech-debt').then(function(r){return r.json()}).then(function(d){
+    var s=d.sonar;
+    var rows=d.debt_by_module.map(function(m){return '<tr><td>'+m.module+'</td><td>'+m.smells+'</td><td>'+m.bugs+'</td><td>'+m.hotspots+'</td><td>'+m.debt_days+'d</td></tr>';}).join('');
+    igModal('LL3: Tech Debt — v2026.36','<b>SQALE:</b> '+s.sqale_index_days+'d | <b>Smells:</b> '+s.code_smells+' | <b>Hotspots:</b> '+s.security_hotspots+' | <b>Critical Bugs:</b> '+s.critical_bugs+' | <b>Coverage:</b> '+s.test_coverage_pct+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>Module</th><th>Smells</th><th>Bugs</th><th>Hotspots</th><th>Debt</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('LL3: Tech Debt','Session expired')});
+};
+window.igIncidentLog = function() {
+  fetch('/api/engineering/incident-log').then(function(r){return r.json()}).then(function(d){
+    var s=d.summary;
+    var rows=d.incidents.map(function(i){var c=i.severity==='P1'?'#991b1b':'#92400e';return '<tr><td>'+i.id+'</td><td style="color:'+c+';">'+i.severity+'</td><td style="font-size:.68rem;">'+i.title+'</td><td>'+i.mttr_hours+'h</td><td>'+(i.sla_breach?'⚠ Breach':i.status)+'</td></tr>';}).join('');
+    igModal('LL4: Incident Log — v2026.36','<b>Total:</b> '+s.total+' | <b>P1:</b> '+s.p1+' | <b>P2:</b> '+s.p2+' | <b>MTTR:</b> '+s.mttr_hours+'h | <b>SLA Breaches:</b> '+s.sla_breaches+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>ID</th><th>Sev</th><th>Title</th><th>MTTR</th><th>Status</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('LL4: Incident Log','Session expired')});
+};
+window.igProductDataPrivacy = function() {
+  fetch('/api/dpdp/product-data-privacy').then(function(r){return r.json()}).then(function(d){
+    var rows=d.items.map(function(i){var c=i.status==='Compliant'?'#166534':i.status==='Non-Compliant'?'#991b1b':'#92400e';return '<tr><td>'+i.feature+'</td><td style="color:'+c+';">'+i.status+'</td><td>'+i.pii_fields+'</td><td style="font-size:.65rem;">'+(i.gap||'—')+'</td></tr>';}).join('');
+    igModal('LL5: Product Data Privacy — v2026.36','<b>Score:</b> '+d.overall_score_pct+'% | <b>Features:</b> '+d.features_assessed+' | <b>Open Actions:</b> '+d.open_actions+' | <b>DPO Review:</b> '+d.dpo_review+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>Feature</th><th>Status</th><th>PII Fields</th><th>Gap</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('LL5: Product Privacy','Session expired')});
+};
+window.igSlaCompliance = function() {
+  fetch('/api/compliance/sla-compliance').then(function(r){return r.json()}).then(function(d){
+    var s=d.summary;
+    var rows=d.slas.map(function(sl){var c=sl.status==='Red'?'#991b1b':sl.status==='Amber'?'#92400e':'#166534';return '<tr><td>'+sl.id+'</td><td style="font-size:.68rem;">'+sl.metric+'</td><td>'+sl.target_pct+'%</td><td>'+sl.actual_pct+'%</td><td style="color:'+c+';">'+sl.status+'</td></tr>';}).join('');
+    igModal('LL6: SLA Compliance — v2026.36','<b>Total SLAs:</b> '+s.total_slas+' | <b>Green:</b> '+s.green+' | <b>Amber:</b> '+s.amber+' | <b>Red:</b> '+s.red+' | <b>Compliance:</b> '+s.compliance_pct+'% | <b>Penalty:</b> ₹'+Number(s.penalty_triggered_inr).toLocaleString('en-IN')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>ID</th><th>Metric</th><th>Target</th><th>Actual</th><th>Status</th></tr>'+rows+'</table>');
+  }).catch(function(){igModal('LL6: SLA Compliance','Session expired')});
 };
 
 window.igSecTab = function(idx){
