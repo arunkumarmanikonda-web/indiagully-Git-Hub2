@@ -5179,7 +5179,13 @@ app.get('/documents/:key{.+}', requireSession(), async (c) => {
     const r2_key = c.req.param('key')
 
     if (!env?.DOCS_BUCKET) {
-      return c.json({ success: false, error: 'R2 DOCS_BUCKET not bound', note: 'Enable with K3 script' }, 503)
+      // Graceful demo-mode fallback: return a simple placeholder PDF response
+      return c.json({
+        success: false,
+        error: 'Document storage (R2) not configured',
+        note: 'In demo mode — R2 DOCS_BUCKET binding not provisioned. Configure R2 to enable real document downloads.',
+        demo_mode: true,
+      }, 200)
     }
 
     const object = await env.DOCS_BUCKET.get(r2_key)

@@ -422,6 +422,7 @@ function clientShell(pageTitle: string, active: string, body: string) {
     { id:'proposals',  icon:'file-alt',       label:'Proposals',     badge:'1' },
     { id:'invoices',   icon:'receipt',        label:'Invoices & GST',badge:'2' },
     { id:'documents',  icon:'folder-open',    label:'Documents',     badge:'' },
+    { id:'reports',    icon:'chart-pie',      label:'Reports',       badge:'' },
     { id:'messages',   icon:'comments',       label:'Messages',      badge:'1' },
     { id:'profile',    icon:'user-cog',       label:'My Profile',    badge:'' },
   ]
@@ -1132,6 +1133,7 @@ function empShell(pageTitle: string, active: string, body: string) {
     { id:'leave',      icon:'umbrella-beach',  label:'Leave',      badge:'1' },
     { id:'payslips',   icon:'money-check-alt', label:'Payslips',   badge:'' },
     { id:'form16',     icon:'file-invoice',    label:'Form-16',    badge:'' },
+    { id:'documents',  icon:'folder-open',     label:'My Documents',badge:'' },
     { id:'policies',   icon:'book-open',       label:'Policies',   badge:'' },
     { id:'directory',  icon:'address-book',    label:'Directory',  badge:'' },
     { id:'profile',    icon:'user-cog',        label:'My Profile', badge:'' },
@@ -1805,6 +1807,9 @@ function boardShell(pageTitle: string, active: string, body: string) {
     { id:'registers',  icon:'book',           label:'Statutory Reg.'  },
     { id:'packs',      icon:'file-alt',       label:'Board Packs'     },
     { id:'finance',    icon:'chart-bar',      label:'Finance Reports' },
+    { id:'financials', icon:'chart-line',     label:'P&L / Financials'},
+    { id:'governance', icon:'balance-scale',  label:'Governance Docs' },
+    { id:'reports',    icon:'file-pdf',       label:'All Reports'     },
     { id:'compliance', icon:'shield-alt',     label:'Compliance'      },
   ]
   const notifs = [
@@ -2224,6 +2229,208 @@ app.get('/board/compliance', (c) => {
       </table>
     </div>`
   return c.html(layout('Compliance', boardShell('Compliance Calendar', 'compliance', body), { noNav:true, noFooter:true }))
+})
+
+// ── MISSING PORTAL ROUTES ─────────────────────────────────────────────────────
+
+// CLIENT: Reports page
+app.get('/client/reports', (c) => {
+  const reports = [
+    {id:'RPT-001', name:'Q4 FY2025 Mandate Progress Report',           type:'Mandate',    date:'01 Mar 2026', size:'1.2 MB', ready:true},
+    {id:'RPT-002', name:'Jaipur Hospitality Hub — Feasibility Summary',type:'Feasibility', date:'15 Feb 2026', size:'4.8 MB', ready:true},
+    {id:'RPT-003', name:'Market Research — Delhi NCR Commercial',       type:'Research',   date:'10 Feb 2026', size:'3.1 MB', ready:true},
+    {id:'RPT-004', name:'Q3 FY2025 Invoice & GST Summary',             type:'Finance',    date:'01 Jan 2026', size:'890 KB', ready:true},
+    {id:'RPT-005', name:'Competitive Landscape — HORECA Sector 2026',  type:'Research',   date:'20 Jan 2026', size:'2.4 MB', ready:true},
+    {id:'RPT-006', name:'Q1 FY2026 Mandate Progress Report',           type:'Mandate',    date:'—',           size:'—',       ready:false},
+  ]
+  const body = `
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">My Reports</h3>
+        <span style="font-size:.72rem;color:var(--ink-muted);">${reports.filter(r=>r.ready).length} reports available</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="ig-tbl" style="width:100%;">
+          <thead><tr><th>ID</th><th>Report Name</th><th>Type</th><th>Date</th><th>Size</th><th>Action</th></tr></thead>
+          <tbody>
+            ${reports.map(r=>`<tr>
+              <td style="font-size:.68rem;color:var(--ink-muted);">${r.id}</td>
+              <td style="font-size:.78rem;font-weight:500;">${r.name}</td>
+              <td><span style="background:var(--parch-dk);padding:.1rem .35rem;font-size:.62rem;">${r.type}</span></td>
+              <td style="font-size:.68rem;color:var(--ink-muted);">${r.date}</td>
+              <td style="font-size:.68rem;color:var(--ink-muted);">${r.size}</td>
+              <td>${r.ready
+                ?`<button onclick="igToast('Downloading ${r.name}…','success')" style="background:var(--gold);color:#fff;border:none;padding:.25rem .625rem;font-size:.65rem;font-weight:600;cursor:pointer;"><i class="fas fa-download" style="margin-right:.25rem;font-size:.55rem;"></i>PDF</button>`
+                :`<span style="font-size:.65rem;color:var(--ink-muted);">Preparing…</span>`
+              }</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div style="background:#fffbf0;border:1px solid #fde68a;padding:1rem 1.25rem;display:flex;align-items:center;gap:.75rem;">
+      <i class="fas fa-info-circle" style="color:#d97706;flex-shrink:0;"></i>
+      <span style="font-size:.78rem;color:#92400e;">Reports are prepared by the India Gully advisory team and uploaded here. Contact your relationship manager to request a custom report.</span>
+    </div>`
+  return c.html(layout('Reports', clientShell('Reports', 'reports', body), { noNav:true, noFooter:true }))
+})
+
+// EMPLOYEE: Documents page
+app.get('/employee/documents', (c) => {
+  const docs = [
+    {name:'Offer Letter — IG-EMP-0001.pdf',       cat:'Onboarding',  date:'15 Jan 2025', size:'244 KB'},
+    {name:'Employment Agreement v2.pdf',           cat:'Legal',       date:'15 Jan 2025', size:'1.1 MB'},
+    {name:'Form 16 — FY2024–25.pdf',               cat:'Tax',         date:'15 Jun 2025', size:'542 KB'},
+    {name:'Payslip — February 2026.pdf',           cat:'Payroll',     date:'28 Feb 2026', size:'188 KB'},
+    {name:'Payslip — January 2026.pdf',            cat:'Payroll',     date:'31 Jan 2026', size:'186 KB'},
+    {name:'Leave Policy FY2026.pdf',               cat:'Policy',      date:'01 Jan 2026', size:'320 KB'},
+    {name:'Employee Handbook v3.0.pdf',            cat:'Policy',      date:'01 Jan 2026', size:'2.1 MB'},
+    {name:'Performance Review — Q3 FY26.pdf',      cat:'Performance', date:'15 Feb 2026', size:'445 KB'},
+  ]
+  const catColors: Record<string,string> = {Onboarding:'#16a34a',Legal:'#7c3aed',Tax:'#d97706',Payroll:'#2563eb',Policy:'#0891b2',Performance:'#db2777'}
+  const body = `
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">My Documents</h3>
+        <span style="font-size:.72rem;color:var(--ink-muted);">${docs.length} files</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="ig-tbl" style="width:100%;">
+          <thead><tr><th>Document</th><th>Category</th><th>Date</th><th>Size</th><th>Download</th></tr></thead>
+          <tbody>
+            ${docs.map(d=>`<tr>
+              <td style="font-size:.78rem;"><i class="fas fa-file-pdf" style="color:#dc2626;margin-right:.35rem;font-size:.65rem;"></i>${d.name}</td>
+              <td><span style="background:${catColors[d.cat]||'#6b7280'}1a;color:${catColors[d.cat]||'#6b7280'};padding:.1rem .35rem;font-size:.62rem;font-weight:600;">${d.cat}</span></td>
+              <td style="font-size:.68rem;color:var(--ink-muted);">${d.date}</td>
+              <td style="font-size:.68rem;color:var(--ink-muted);">${d.size}</td>
+              <td><button onclick="igToast('Downloading ${d.name}…','success')" style="background:var(--gold);color:#fff;border:none;padding:.25rem .625rem;font-size:.65rem;cursor:pointer;"><i class="fas fa-download" style="font-size:.55rem;"></i></button></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`
+  return c.html(layout('My Documents', empShell('My Documents', 'documents', body), { noNav:true, noFooter:true }))
+})
+
+// BOARD: Governance page (alias for compliance-related governance docs)
+app.get('/board/governance', (c) => {
+  const items = [
+    {id:'GOV-001', doc:'Memorandum of Association (MOA)',               version:'Current', filed:'2017', status:'Active'},
+    {id:'GOV-002', doc:'Articles of Association (AOA)',                  version:'v2.0',    filed:'2022', status:'Active'},
+    {id:'GOV-003', doc:'Board Resolution Register (MGT-1)',              version:'FY26',    filed:'2026', status:'Current'},
+    {id:'GOV-004', doc:'Annual Return FY2024–25 (MGT-7)',               version:'Filed',   filed:'Sep 2025', status:'Filed'},
+    {id:'GOV-005', doc:'Director KYC & DIN Register',                   version:'2026',    filed:'Jan 2026', status:'Valid'},
+    {id:'GOV-006', doc:'Secretarial Audit Report (MR-3) FY2024–25',    version:'Final',   filed:'Oct 2025', status:'Filed'},
+    {id:'GOV-007', doc:'Code of Conduct & Ethics Policy',               version:'v2.0',    filed:'Jan 2025', status:'Active'},
+    {id:'GOV-008', doc:'Related Party Transaction Policy',              version:'v1.2',    filed:'Mar 2024', status:'Active'},
+  ]
+  const body = `
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Corporate Governance Documents</h3>
+        <button onclick="igToast('Governance register exported to PDF','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="ig-tbl" style="width:100%;">
+          <thead><tr><th>ID</th><th>Document</th><th>Version</th><th>Filed / Updated</th><th>Status</th><th>Download</th></tr></thead>
+          <tbody>
+            ${items.map(d=>`<tr>
+              <td style="font-size:.65rem;color:var(--ink-muted);">${d.id}</td>
+              <td style="font-size:.78rem;font-weight:500;">${d.doc}</td>
+              <td style="font-size:.68rem;">${d.version}</td>
+              <td style="font-size:.68rem;color:var(--ink-muted);">${d.filed}</td>
+              <td><span style="font-size:.62rem;background:${d.status==='Active'||d.status==='Valid'||d.status==='Current'?'#dcfce7':'#dbeafe'};color:${d.status==='Active'||d.status==='Valid'||d.status==='Current'?'#166534':'#1e40af'};padding:.15rem .4rem;font-weight:600;">${d.status}</span></td>
+              <td><button onclick="igToast('Downloading ${d.doc}…','success')" style="background:var(--gold);color:#fff;border:none;padding:.25rem .625rem;font-size:.65rem;cursor:pointer;"><i class="fas fa-download" style="font-size:.55rem;"></i></button></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`
+  return c.html(layout('Governance', boardShell('Governance Documents', 'governance', body), { noNav:true, noFooter:true }))
+})
+
+// BOARD: Financials page
+app.get('/board/financials', (c) => {
+  const body = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+      ${[
+        {label:'FY2025–26 Revenue (YTD)', value:'₹2.4 Cr',  sub:'Apr 2025 – Feb 2026', color:'#16a34a'},
+        {label:'EBITDA Margin',           value:'38.2%',     sub:'FY26 target: 35%',    color:'#2563eb'},
+        {label:'Mandate Pipeline',        value:'₹8,815 Cr', sub:'6 active mandates',   color:'#d97706'},
+      ].map(s=>`<div class="am">
+        <div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:${s.color};">${s.value}</div>
+        <div style="font-size:.68rem;color:var(--ink-muted);">${s.sub}</div>
+      </div>`).join('')}
+    </div>
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">P&amp;L Summary — FY2025–26</h3>
+        <button onclick="igToast('Financial report PDF generated','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Download PDF</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="ig-tbl" style="width:100%;">
+          <thead><tr><th>Line Item</th><th>Q1 FY26</th><th>Q2 FY26</th><th>Q3 FY26</th><th>FY25 Full Year</th></tr></thead>
+          <tbody>
+            ${[
+              {item:'Revenue',             q1:'₹58L',  q2:'₹67L',  q3:'₹82L',  fy:'₹1.8 Cr'},
+              {item:'Retainer Fees',        q1:'₹24L',  q2:'₹28L',  q3:'₹34L',  fy:'₹74L'},
+              {item:'Transaction Fees',     q1:'₹34L',  q2:'₹39L',  q3:'₹48L',  fy:'₹1.06 Cr'},
+              {item:'Operating Expenses',   q1:'₹32L',  q2:'₹38L',  q3:'₹47L',  fy:'₹1.02 Cr'},
+              {item:'Staff Costs',          q1:'₹14L',  q2:'₹16L',  q3:'₹20L',  fy:'₹42L'},
+              {item:'EBITDA',               q1:'₹26L',  q2:'₹29L',  q3:'₹35L',  fy:'₹78L'},
+              {item:'EBITDA Margin',        q1:'44.8%', q2:'43.3%', q3:'42.7%', fy:'43.3%'},
+            ].map(r=>`<tr>
+              <td style="font-size:.78rem;font-weight:500;">${r.item}</td>
+              <td style="font-size:.75rem;">${r.q1}</td>
+              <td style="font-size:.75rem;">${r.q2}</td>
+              <td style="font-size:.75rem;">${r.q3}</td>
+              <td style="font-size:.75rem;font-weight:600;color:#16a34a;">${r.fy}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`
+  return c.html(layout('Financials', boardShell('Financial Reports', 'financials', body), { noNav:true, noFooter:true }))
+})
+
+// BOARD: Reports page
+app.get('/board/reports', (c) => {
+  const reports = [
+    {name:'Board Pack — Q3 FY2025–26',              date:'01 Mar 2026', type:'Board Pack',    ready:true},
+    {name:'Management Report — February 2026',       date:'28 Feb 2026', type:'Management',    ready:true},
+    {name:'DPDP Compliance Report — FY2025–26',     date:'28 Feb 2026', type:'Compliance',    ready:true},
+    {name:'Secretarial Audit Report FY2024–25',     date:'15 Oct 2025', type:'Audit',         ready:true},
+    {name:'Annual Report FY2024–25 (Draft)',         date:'28 Feb 2026', type:'Annual Report', ready:true},
+    {name:'Risk Dashboard — Q3 FY26',               date:'01 Mar 2026', type:'Risk',          ready:true},
+    {name:'Board Pack — Q4 FY2025–26',              date:'—',           type:'Board Pack',    ready:false},
+    {name:'Statutory Audit FY2025–26',              date:'—',           type:'Audit',         ready:false},
+  ]
+  const typeColors: Record<string,string> = {'Board Pack':'#1e40af',Management:'#16a34a',Compliance:'#7c3aed',Audit:'#d97706','Annual Report':'#db2777',Risk:'#dc2626'}
+  const body = `
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Board Reports</h3>
+        <span style="font-size:.72rem;color:var(--ink-muted);">${reports.filter(r=>r.ready).length} available • ${reports.filter(r=>!r.ready).length} in preparation</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="ig-tbl" style="width:100%;">
+          <thead><tr><th>Report</th><th>Type</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody>
+            ${reports.map(r=>`<tr>
+              <td style="font-size:.78rem;font-weight:500;"><i class="fas fa-file-pdf" style="color:#dc2626;margin-right:.35rem;font-size:.65rem;"></i>${r.name}</td>
+              <td><span style="background:${typeColors[r.type]||'#6b7280'}1a;color:${typeColors[r.type]||'#6b7280'};padding:.1rem .35rem;font-size:.62rem;font-weight:600;">${r.type}</span></td>
+              <td style="font-size:.68rem;color:var(--ink-muted);">${r.date}</td>
+              <td>${r.ready
+                ?`<button onclick="igToast('Downloading ${r.name}…','success')" style="background:var(--gold);color:#fff;border:none;padding:.25rem .625rem;font-size:.65rem;font-weight:600;cursor:pointer;"><i class="fas fa-download" style="margin-right:.25rem;font-size:.55rem;"></i>PDF</button>`
+                :`<span style="font-size:.65rem;color:var(--ink-muted);">Preparing…</span>`
+              }</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`
+  return c.html(layout('Reports', boardShell('Reports', 'reports', body), { noNav:true, noFooter:true }))
 })
 
 export default app

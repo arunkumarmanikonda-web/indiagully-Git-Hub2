@@ -34,10 +34,16 @@ function adminShell(pageTitle: string, active: string, body: string) {
     { id:'horeca',       icon:'boxes',           label:'HORECA',         g:'ERP',      badge:'' },
     { id:'contracts',    icon:'file-signature',  label:'Contracts',      g:'ERP',      badge:'' },
     { id:'sales',        icon:'funnel-dollar',   label:'Sales Force',    g:'ERP',      badge:'5' },
+    { id:'mandates',     icon:'briefcase',       label:'Mandates',       g:'Business', badge:'' },
+    { id:'clients',      icon:'building',        label:'Clients',        g:'Business', badge:'' },
+    { id:'documents',    icon:'folder-open',     label:'Documents',      g:'Business', badge:'' },
     { id:'integrations', icon:'plug',            label:'Integrations',   g:'Platform', badge:'' },
     { id:'reports',      icon:'chart-pie',       label:'BI & Reports',   g:'Platform', badge:'' },
     { id:'kpi',          icon:'bullseye',        label:'KPI & OKRs',     g:'Platform', badge:'' },
     { id:'risk',         icon:'exclamation-triangle', label:'Risk Dashboard', g:'Platform', badge:'2' },
+    { id:'compliance',   icon:'balance-scale',   label:'Compliance',     g:'Platform', badge:'' },
+    { id:'dpdp',         icon:'user-shield',     label:'DPDP / Privacy', g:'Platform', badge:'' },
+    { id:'audit-log',    icon:'history',         label:'Audit Log',      g:'Platform', badge:'' },
     { id:'api-docs',     icon:'code',            label:'API Docs',       g:'Platform', badge:'' },
     { id:'config',       icon:'cog',             label:'System Config',  g:'Platform', badge:'' },
     { id:'security',     icon:'shield-alt',      label:'Security Audit', g:'Platform', badge:'!' },
@@ -49,7 +55,7 @@ function adminShell(pageTitle: string, active: string, body: string) {
     {msg:'EY Retainer contract expiring in 30 days',type:'danger',time:'2d ago'},
     {msg:'Failed login attempt from 185.x.x.x (3 attempts)',type:'danger',time:'3d ago'},
   ]
-  const nav = ['Main','ERP','Platform'].map(g =>
+  const nav = ['Main','ERP','Business','Platform'].map(g =>
     `<div class="sb-sec">${g}</div>` +
     S.filter(s => s.g === g).map(s =>
       `<a href="/admin/${s.id==='dashboard'?'dashboard':s.id==='sales'?'sales/dashboard':s.id}" class="sb-lk ${active===s.id?'on':''}">
@@ -8518,7 +8524,7 @@ window.igRiskHeatmap = function() {
 };
 
 window.igBoardAnalytics = function() {
-  fetch('/governance/board-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/governance/board-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.meetings||[]).filter(function(m){return m.status!=='scheduled';}).map(function(m){
       return '<tr><td>'+m.id+'</td><td>'+m.type+'</td><td>'+m.date+'</td><td>'+(m.quorum?'✅':'❌')+'</td><td>'+m.attendees+'/'+m.total+'</td><td>'+m.passed+'/'+m.resolutions+'</td></tr>';}).join('');
     igModal('BB1: Board Analytics — v2026.26','<b>Resolution Pass Rate:</b> '+s.resolution_pass_rate+' | <b>Quorum:</b> '+s.quorum_compliance+' | <b>AGM in:</b> '+s.agm_countdown_days+' days | <b>SS-1/SS-2:</b> '+(s.ss1_ss2_compliant?'✅ Compliant':'❌')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#1e40af;color:#fff;"><th>ID</th><th>Type</th><th>Date</th><th>Quorum</th><th>Attend</th><th>Resolutions</th></tr>'+rows+'</table>');
@@ -8526,14 +8532,14 @@ window.igBoardAnalytics = function() {
 };
 
 window.igPayrollCompliance = function() {
-  fetch('/hr/payroll-compliance',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/hr/payroll-compliance',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.statutory;
     igModal('BB2: Payroll Compliance — '+d.period,'<b>Employees:</b> '+d.employees+' | <b>Compliance Score:</b> 100/100<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#1e40af;color:#fff;"><th>Statute</th><th>Amount (₹)</th><th>Due Date</th><th>Status</th></tr><tr><td>EPF</td><td>'+((s.pf.amount_employee+s.pf.amount_employer)/100).toFixed(0)+'00</td><td>'+s.pf.due_date+'</td><td>✅ '+s.pf.status+'</td></tr><tr><td>ESI</td><td>'+((s.esi.amount_employee+s.esi.amount_employer)/100).toFixed(0)+'00</td><td>'+s.esi.due_date+'</td><td>✅ '+s.esi.status+'</td></tr><tr><td>PT</td><td>'+s.pt.deducted+'</td><td>'+s.pt.due_date+'</td><td>✅ '+s.pt.status+'</td></tr><tr><td>TDS §192</td><td>'+s.tds.deducted+'</td><td>'+s.tds.due_date+'</td><td>✅ '+s.tds.status+'</td></tr></table>');
   }).catch(function(){igModal('BB2: Payroll Compliance','Session expired — log in as Super Admin')});
 };
 
 window.igSlaDashboard = function() {
-  fetch('/contracts/sla-dashboard',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/contracts/sla-dashboard',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.vendors||[]).map(function(v){
       var c=v.status==='green'?'#065f46':v.status==='yellow'?'#92400e':'#991b1b';
       return '<tr><td>'+v.vendor+'</td><td>'+v.category+'</td><td>'+v.sla_uptime+'</td><td>'+v.actual_uptime+'</td><td>'+v.breaches+'</td><td style="color:'+c+';">'+v.status.toUpperCase()+'</td><td>'+v.score+'</td></tr>';}).join('');
@@ -8542,7 +8548,7 @@ window.igSlaDashboard = function() {
 };
 
 window.igIdentityLifecycle = function() {
-  fetch('/auth/identity-lifecycle',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/auth/identity-lifecycle',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.accounts||[]).map(function(a){
       var c=a.status==='active'?'#065f46':'#991b1b';
       return '<tr><td>'+a.email+'</td><td>'+a.role+'</td><td style="color:'+c+';">'+a.status+'</td><td>'+(a.mfa?'✅':'❌')+'</td><td>'+a.last_login+'</td></tr>';}).join('');
@@ -8551,7 +8557,7 @@ window.igIdentityLifecycle = function() {
 };
 
 window.igDataResidency = function() {
-  fetch('/dpdp/data-residency',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/dpdp/data-residency',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.categories||[]).map(function(c){
       var col=c.localised?'#065f46':'#92400e';
       return '<tr><td>'+c.category+'</td><td>'+c.stored_in+'</td><td style="color:'+col+';">'+(c.cross_border?'Yes':'No')+'</td><td>'+c.legal_basis+'</td><td>'+(c.approved?'✅':'⏳')+'</td></tr>';}).join('');
@@ -8560,7 +8566,7 @@ window.igDataResidency = function() {
 };
 
 window.igBcpStatus = function() {
-  fetch('/compliance/bcp-status',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/compliance/bcp-status',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.items||[]).map(function(i){
       var c=i.status==='pass'?'#065f46':i.status==='watch'?'#92400e':'#991b1b';
       return '<tr><td>'+i.area+'</td><td>'+i.target+'</td><td>'+i.actual+'</td><td style="color:'+c+';">'+i.status.toUpperCase()+'</td><td>'+i.last_tested+'</td></tr>';}).join('');
@@ -8569,14 +8575,14 @@ window.igBcpStatus = function() {
 };
 
 window.igTaxAnalytics = function() {
-  fetch('/finance/tax-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/finance/tax-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var g=d.gst; var t=d.tds; var a=d.advance_tax; var s=d.summary;
     igModal('CC1: Tax Analytics — '+d.fy,'<b>Total Tax Outflow:</b> ₹'+s.total_tax_outflow.toLocaleString()+' | <b>Effective Rate:</b> '+s.effective_tax_rate+' | <b>Tax/Revenue:</b> '+s.tax_to_revenue_ratio+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f766e;color:#fff;"><th>Item</th><th>Amount (₹)</th><th>Status</th></tr><tr><td>GST (CGST+SGST)</td><td>'+g.total_liability_inr.toLocaleString()+'</td><td>✅ '+g.gstr1_status+'</td></tr><tr><td>TDS §192 Salary</td><td>'+t.section_192_salary.toLocaleString()+'</td><td>✅ filed</td></tr><tr><td>TDS §194J Prof</td><td>'+t.section_194j_prof.toLocaleString()+'</td><td>✅ filed</td></tr><tr><td>TDS §194C Contract</td><td>'+t.section_194c_contract.toLocaleString()+'</td><td>✅ filed</td></tr><tr><td>Advance Tax</td><td>'+a.total_advance_tax.toLocaleString()+'</td><td>✅ all 4 qtrs paid</td></tr></table><p style="font-size:.7rem;color:#0f766e;margin-top:.4rem;">Form 26AS Reconciled: '+(t.form_26as_reconciled?'✅':'❌')+' | Compliance Score: '+s.compliance_score+'/100</p>');
   }).catch(function(){igModal('CC1: Tax Analytics','Session expired — log in as Super Admin')});
 };
 
 window.igRevenueAnalytics = function() {
-  fetch('/payments/revenue-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/payments/revenue-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.top_mandates||[]).slice(0,5).map(function(m){
       var rc=m.risk==='low'?'#065f46':m.risk==='medium'?'#92400e':'#991b1b';
       return '<tr><td>'+m.name+'</td><td>₹'+m.revenue_inr.toLocaleString()+'</td><td>'+m.growth_mom+'</td><td style="color:'+rc+';">'+m.risk+'</td></tr>';}).join('');
@@ -8586,7 +8592,7 @@ window.igRevenueAnalytics = function() {
 };
 
 window.igObservabilityDashboard = function() {
-  fetch('/integrations/observability-dashboard',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/integrations/observability-dashboard',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var sl=d.slo; var inf=d.infra; var rows=(d.routes||[]).map(function(r){
       var c=r.error_pct>0.3?'#991b1b':'#065f46';
       return '<tr><td style="font-family:monospace;font-size:.65rem;">'+r.route+'</td><td>'+r.p50_ms+'</td><td>'+r.p95_ms+'</td><td>'+r.p99_ms+'</td><td style="color:'+c+';">'+r.error_pct+'%</td></tr>';}).join('');
@@ -8595,7 +8601,7 @@ window.igObservabilityDashboard = function() {
 };
 
 window.igAccessPatternReport = function() {
-  fetch('/auth/access-pattern-report',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/auth/access-pattern-report',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var geoRows=(d.geo_distribution||[]).map(function(g){return '<tr><td>'+g.city+'</td><td>'+g.logins+'</td><td>'+g.pct+'</td></tr>';}).join('');
     var flags=(d.suspicious_patterns||[]).map(function(p){return '<li style="color:#991b1b;font-size:.72rem;">'+p.email+': '+p.flag+' ('+p.severity+')</li>';}).join('');
     igModal('CC4: Access Pattern Report — v2026.27','<b>Sessions:</b> '+s.total_sessions+' | <b>Peak Hour:</b> '+s.peak_hour+' | <b>MFA Rate:</b> '+s.mfa_challenge_rate+' | <b>Suspicious:</b> '+s.suspicious_flags+' flags<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0f766e;color:#fff;"><th>City</th><th>Logins</th><th>Share</th></tr>'+geoRows+'</table>'+(flags?'<ul style="margin-top:.5rem;padding-left:1rem;">'+flags+'</ul>':''));
@@ -8603,7 +8609,7 @@ window.igAccessPatternReport = function() {
 };
 
 window.igConsentAnalytics = function() {
-  fetch('/dpdp/consent-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/dpdp/consent-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.consent_categories||[]).map(function(c){
       var col=parseFloat(c.rate)>=80?'#065f46':'#991b1b';
       return '<tr><td>'+c.purpose+'</td><td style="color:'+col+';">'+c.rate+'</td><td>'+c.legal_basis+'</td></tr>';}).join('');
@@ -8612,7 +8618,7 @@ window.igConsentAnalytics = function() {
 };
 
 window.igMaturityScorecard = function() {
-  fetch('/compliance/maturity-scorecard',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/compliance/maturity-scorecard',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.domains||[]).map(function(dom){
       var c=dom.score>=100?'#065f46':dom.score>=80?'#92400e':'#991b1b';
       return '<tr><td>'+dom.domain+'</td><td style="color:'+c+';">L'+dom.level+'/5</td><td style="color:'+c+';">'+dom.score+'</td><td style="font-size:.65rem;">'+dom.gap+'</td></tr>';}).join('');
@@ -8621,7 +8627,7 @@ window.igMaturityScorecard = function() {
 };
 
 window.igVendorRiskScorecard = function() {
-  fetch('/vendors/risk-scorecard',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/vendors/risk-scorecard',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var p=d.portfolio; var rows=(d.vendors||[]).map(function(v){
       var c=v.risk==='low'?'#065f46':v.risk==='medium'?'#92400e':'#991b1b';
       return '<tr><td>'+v.name+'</td><td>'+v.cat+'</td><td>'+v.overall+'</td><td style="color:'+c+';">'+v.risk+'</td><td>T'+v.tier+'</td></tr>';}).join('');
@@ -8630,7 +8636,7 @@ window.igVendorRiskScorecard = function() {
 };
 
 window.igProcurementAnalytics = function() {
-  fetch('/finance/procurement-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/finance/procurement-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.categories||[]).map(function(c){
       return '<tr><td>'+c.cat+'</td><td>₹'+c.spend.toLocaleString()+'</td><td>'+Math.round(c.spend/c.budget*100)+'%</td><td>₹'+c.savings.toLocaleString()+'</td></tr>';}).join('');
     igModal('DD2: Procurement Analytics — '+d.period,'<b>Total Spend:</b> ₹'+s.total_spend_inr.toLocaleString()+' / ₹'+s.total_budget_inr.toLocaleString()+' ('+s.budget_utilisation+') | <b>Savings:</b> ₹'+s.total_savings_inr.toLocaleString()+' ('+s.savings_rate+') | <b>Maverick:</b> '+s.maverick_spend_pct+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#b45309;color:#fff;"><th>Category</th><th>Spend</th><th>Utilisation</th><th>Savings</th></tr>'+rows+'</table>');
@@ -8638,7 +8644,7 @@ window.igProcurementAnalytics = function() {
 };
 
 window.igApiDependencyMap = function() {
-  fetch('/integrations/api-dependency-map',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/integrations/api-dependency-map',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.apis||[]).filter(function(a){return a.criticality==='critical'||a.criticality==='high';}).map(function(a){
       var c=a.criticality==='critical'?'#991b1b':a.criticality==='high'?'#92400e':'#065f46';
       return '<tr><td style="font-size:.65rem;">'+a.name+'</td><td style="color:'+c+';">'+a.criticality+'</td><td>'+a.version+'</td><td>'+(a.fallback?'✅':'❌')+'</td><td>'+a.calls_day+'</td></tr>';}).join('');
@@ -8647,7 +8653,7 @@ window.igApiDependencyMap = function() {
 };
 
 window.igThirdPartyAudit = function() {
-  fetch('/auth/third-party-audit',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/auth/third-party-audit',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.integrations||[]).map(function(i){
       var c=i.status==='active'?'#065f46':i.status==='stale'?'#991b1b':'#92400e';
       return '<tr><td>'+i.name+'</td><td>'+i.access_type+'</td><td>'+i.key_age_days+'d</td><td style="color:'+c+';">'+i.status+'</td><td>'+(i.excess_perms?'⚠ Yes':'✅ No')+'</td></tr>';}).join('');
@@ -8656,7 +8662,7 @@ window.igThirdPartyAudit = function() {
 };
 
 window.igSupplyChainCompliance = function() {
-  fetch('/dpdp/supply-chain-compliance',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/dpdp/supply-chain-compliance',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.sub_processors||[]).map(function(sp){
       var c=sp.status==='compliant'?'#065f46':'#991b1b';
       return '<tr><td>'+sp.name+'</td><td>'+sp.location+'</td><td>'+sp.adequacy+'</td><td>'+(sp.dpa_executed?'✅':'❌')+'</td><td style="color:'+c+';">'+sp.status+'</td></tr>';}).join('');
@@ -8665,7 +8671,7 @@ window.igSupplyChainCompliance = function() {
 };
 
 window.igVendorOnboardingHealth = function() {
-  fetch('/vendors/onboarding-health',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/vendors/onboarding-health',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.pipeline||[]).map(function(v){
       var c=v.status==='completed'?'#065f46':v.status==='on-hold'?'#991b1b':'#92400e';
       return '<tr><td>'+v.vendor+'</td><td style="color:'+c+';">'+v.status+'</td><td>'+v.completed_steps+'/'+v.total_steps+'</td><td>'+(v.stalled_at||'—')+'</td><td>'+v.days_in_pipeline+'d</td></tr>';}).join('');
@@ -8674,7 +8680,7 @@ window.igVendorOnboardingHealth = function() {
 };
 
 window.igFeatureAdoption = function() {
-  fetch('/product/feature-adoption',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/product/feature-adoption',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.top_features||[]).map(function(f){
       return '<tr><td>'+f.name+'</td><td>'+f.stickiness+'%</td><td>'+f.health+'/100</td></tr>';}).join('');
     var risk=(d.at_risk||[]).map(function(f){return f.name+' (churn corr '+f.churn_corr+')';}).join(', ');
@@ -8683,7 +8689,7 @@ window.igFeatureAdoption = function() {
 };
 
 window.igAbExperiments = function() {
-  fetch('/analytics/ab-experiments',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/analytics/ab-experiments',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.experiments||[]).filter(function(e){return e.status!=='planned';}).map(function(e){
       var c=e.winner==='variant'?'#065f46':e.status==='running'?'#92400e':'#555';
       return '<tr><td style="font-size:.65rem;">'+e.name+'</td><td>'+e.status+'</td><td>'+(e.lift_pct?e.lift_pct+'%':'—')+'</td><td style="color:'+c+';">'+e.winner+'</td></tr>';}).join('');
@@ -8692,7 +8698,7 @@ window.igAbExperiments = function() {
 };
 
 window.igDigitalChannels = function() {
-  fetch('/integrations/digital-channels',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/integrations/digital-channels',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.channels||[]).map(function(ch){
       var c=ch.trend.startsWith('+')?'#065f46':'#991b1b';
       return '<tr><td>'+ch.name+'</td><td>'+ch.reach+'</td><td>'+ch.engagement_pct+'%</td><td>'+ch.conversion_pct+'%</td><td style="color:'+c+';">'+ch.trend+'</td></tr>';}).join('');
@@ -8701,7 +8707,7 @@ window.igDigitalChannels = function() {
 };
 
 window.igScalabilityReport = function() {
-  fetch('/admin/scalability-report',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/admin/scalability-report',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.services||[]).map(function(sv){
       return '<tr><td>'+sv.name+'</td><td>'+sv.cold_start_ms+'ms</td><td>'+sv.p50_ms+'</td><td>'+sv.p95_ms+'</td><td>'+sv.cpu_headroom_pct+'%</td></tr>';}).join('');
     igModal('EE4: Platform Scalability — v2026.29','<b>KV Hit Rate:</b> '+s.kv_hit_rate_pct+'% | <b>D1 Avg Query:</b> '+s.d1_avg_query_ms+'ms | <b>Cold Start:</b> '+s.worker_cold_start_ms+'ms | <b>Auto-scale Events:</b> '+s.autoscale_events_30d+' | <b>Avg CPU Headroom:</b> '+s.avg_cpu_headroom+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>Service</th><th>Cold Start</th><th>P50ms</th><th>P95ms</th><th>CPU Room</th></tr>'+rows+'</table>');
@@ -8709,7 +8715,7 @@ window.igScalabilityReport = function() {
 };
 
 window.igDigitalConsentJourney = function() {
-  fetch('/dpdp/digital-consent-journey',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/dpdp/digital-consent-journey',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.journey_steps||[]).map(function(st){
       var c=st.drop_off_pct>8?'#991b1b':st.drop_off_pct>4?'#92400e':'#065f46';
       return '<tr><td>'+st.step+'. '+st.name+'</td><td>'+st.users.toLocaleString()+'</td><td style="color:'+c+';">'+(st.drop_off_pct?st.drop_off_pct+'%':'—')+'</td><td>'+st.time_on_step_s+'s</td></tr>';}).join('');
@@ -8718,7 +8724,7 @@ window.igDigitalConsentJourney = function() {
 };
 
 window.igInnovationPipeline = function() {
-  fetch('/compliance/innovation-pipeline',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/compliance/innovation-pipeline',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.initiatives||[]).filter(function(i){return i.stage!=='ideation';}).map(function(i){
       var c=i.compliance_score>=90?'#065f46':i.compliance_score>=75?'#92400e':'#991b1b';
       return '<tr><td style="font-size:.65rem;">'+i.name+'</td><td>'+i.stage+'</td><td style="color:'+c+';">'+i.compliance_score+'</td><td>'+i.launch_readiness+'%</td></tr>';}).join('');
@@ -8727,7 +8733,7 @@ window.igInnovationPipeline = function() {
 };
 
 window.igWorkforceAnalytics = function() {
-  fetch('/hr/workforce-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/hr/workforce-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.departments||[]).map(function(dep){
       return '<tr><td>'+dep.dept+'</td><td>'+dep.headcount+'</td><td>'+dep.open+'</td><td>'+dep.avg_tenure_y+'y</td><td>'+dep.billability_pct+'%</td></tr>';}).join('');
     igModal('FF1: Workforce Analytics — v2026.30','<b>Headcount:</b> '+s.total_headcount+' | <b>Open:</b> '+s.total_open_positions+' | <b>Gender:</b> '+s.gender_ratio+' M:F | <b>Avg Tenure:</b> '+s.avg_tenure_years+'y | <b>Billability:</b> '+s.avg_billability_pct+'% | <b>6-Month Growth:</b> +'+s.mom_growth_pct+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Dept</th><th>HC</th><th>Open</th><th>Tenure</th><th>Billability</th></tr>'+rows+'</table>');
@@ -8735,7 +8741,7 @@ window.igWorkforceAnalytics = function() {
 };
 
 window.igAttritionRisk = function() {
-  fetch('/hr/attrition-risk',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/hr/attrition-risk',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.top_flight_risk||[]).map(function(e){
       return '<tr><td>'+e.name+'</td><td>'+e.dept+'</td><td style="color:#991b1b;font-weight:700;">'+e.score+'</td><td style="font-size:.65rem;">'+e.factors.join(', ')+'</td></tr>';}).join('');
     igModal('FF2: Attrition Risk — v2026.30','<b>High Risk:</b> '+s.high_risk+' | <b>Medium:</b> '+s.medium_risk+' | <b>12-Month Attrition:</b> '+s.rolling_attrition_12m_pct+'% | <b>Voluntary:</b> '+s.voluntary_pct+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Employee</th><th>Dept</th><th>Risk Score</th><th>Factors</th></tr>'+rows+'</table>');
@@ -8743,7 +8749,7 @@ window.igAttritionRisk = function() {
 };
 
 window.igTrainingEffectiveness = function() {
-  fetch('/hr/training-effectiveness',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/hr/training-effectiveness',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.programs||[]).map(function(p){
       return '<tr><td style="font-size:.65rem;">'+p.name+'</td><td>'+Math.round(p.completed/p.enrolled*100)+'%</td><td>'+p.score+'</td><td>'+p.roi_pct+'%</td><td>'+p.certs+'</td></tr>';}).join('');
     igModal('FF3: Training Effectiveness — v2026.30','<b>Programs:</b> '+s.total_programs+' | <b>Completion:</b> '+s.overall_completion_pct+'% | <b>Avg Score:</b> '+s.avg_score+'/100 | <b>Certs Earned:</b> '+s.total_certs_earned+' | <b>Avg ROI:</b> '+s.avg_roi_pct+'%<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#7c3aed;color:#fff;"><th>Program</th><th>Completion</th><th>Score</th><th>ROI</th><th>Certs</th></tr>'+rows+'</table>');
@@ -8751,7 +8757,7 @@ window.igTrainingEffectiveness = function() {
 };
 
 window.igOrgHealthScore = function() {
-  fetch('/admin/org-health-score',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/admin/org-health-score',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.dimensions||[]).map(function(dim){
       var c=dim.score>=dim.benchmark?'#065f46':'#991b1b';
       return '<tr><td>'+dim.dim+'</td><td style="color:'+c+';">'+dim.score+'</td><td>'+dim.benchmark+'</td><td>'+dim.trend+'</td></tr>';}).join('');
@@ -8760,7 +8766,7 @@ window.igOrgHealthScore = function() {
 };
 
 window.igEmployeeDataAudit = function() {
-  fetch('/dpdp/employee-data-audit',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/dpdp/employee-data-audit',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.categories||[]).filter(function(c){return c.status!=='not_collected';}).map(function(cat){
       var col=cat.status==='compliant'?'#065f46':'#92400e';
       return '<tr><td style="font-size:.65rem;">'+cat.cat+'</td><td>'+cat.consent+'</td><td>'+cat.retention+'</td><td style="color:'+col+';">'+cat.status+'</td></tr>';}).join('');
@@ -8769,7 +8775,7 @@ window.igEmployeeDataAudit = function() {
 };
 
 window.igLabourLawTracker = function() {
-  fetch('/compliance/labour-law-tracker',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/compliance/labour-law-tracker',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.acts||[]).map(function(a){
       var c=a.status==='compliant'?'#065f46':a.status==='review'?'#92400e':'#555';
       return '<tr><td style="font-size:.65rem;">'+a.act+'</td><td>'+a.jurisdiction+'</td><td style="color:'+c+';">'+a.status+'</td><td style="color:'+(a.penalty_risk==='medium'?'#92400e':a.penalty_risk==='high'?'#991b1b':'#065f46')+';">'+a.penalty_risk+'</td></tr>';}).join('');
@@ -8778,7 +8784,7 @@ window.igLabourLawTracker = function() {
 };
 
 window.igCustomerHealthScores = function() {
-  fetch('/crm/customer-health-scores',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/crm/customer-health-scores',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.top_risk_customers||[]).slice(0,5).map(function(c){
       var col=c.risk==='critical'?'#991b1b':'#92400e';
       return '<tr><td style="font-size:.65rem;">'+c.name+'</td><td>'+c.segment+'</td><td>'+c.health+'</td><td style="color:'+col+';">'+c.risk+'</td><td style="color:#991b1b;">'+c.churn_prob_pct+'%</td></tr>';}).join('');
@@ -8787,7 +8793,7 @@ window.igCustomerHealthScores = function() {
 };
 
 window.igRevenueForecast = function() {
-  fetch('/crm/revenue-forecast',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/crm/revenue-forecast',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.mrr_waterfall||[]).map(function(w){
       var c=w.amount_inr>0?'#065f46':'#991b1b';
       return '<tr><td>'+w.type+'</td><td style="color:'+c+';">₹'+Math.abs(w.amount_inr).toLocaleString()+'</td></tr>';}).join('');
@@ -8796,7 +8802,7 @@ window.igRevenueForecast = function() {
 };
 
 window.igSupportAnalytics = function() {
-  fetch('/crm/support-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/crm/support-analytics',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.by_category||[]).map(function(c){
       var col=c.sla_pct>=95?'#065f46':c.sla_pct>=88?'#92400e':'#991b1b';
       return '<tr><td style="font-size:.65rem;">'+c.cat+'</td><td>'+c.count+'</td><td style="color:'+col+';">'+c.sla_pct+'%</td><td>'+c.csat+'</td><td>'+c.avg_res_h+'h</td></tr>';}).join('');
@@ -8805,7 +8811,7 @@ window.igSupportAnalytics = function() {
 };
 
 window.igNpsCohortAnalysis = function() {
-  fetch('/crm/nps-cohort-analysis',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/crm/nps-cohort-analysis',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.cohorts||[]).map(function(co){
       var c=co.nps>=50?'#065f46':co.nps>=40?'#92400e':'#991b1b';
       return '<tr><td>'+co.cohort+'</td><td>'+co.size+'</td><td style="color:'+c+';font-weight:700;">+'+co.nps+'</td><td>'+co.trend+'</td></tr>';}).join('');
@@ -8814,7 +8820,7 @@ window.igNpsCohortAnalysis = function() {
 };
 
 window.igCustomerDataLifecycle = function() {
-  fetch('/dpdp/customer-data-lifecycle',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/dpdp/customer-data-lifecycle',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.data_categories||[]).map(function(cat){
       var col=cat.status==='compliant'?'#065f46':'#92400e';
       return '<tr><td style="font-size:.65rem;">'+cat.cat+'</td><td>'+cat.consent_age_d+'d</td><td>'+cat.retention_y+'y</td><td style="color:'+col+';">'+cat.status+'</td></tr>';}).join('');
@@ -8823,7 +8829,7 @@ window.igCustomerDataLifecycle = function() {
 };
 
 window.igConsumerProtectionTracker = function() {
-  fetch('/compliance/consumer-protection-tracker',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
+  fetch('/api/compliance/consumer-protection-tracker',{credentials:'include'}).then(function(r){return r.json();}).then(function(d){
     var s=d.summary; var rows=(d.areas||[]).map(function(a){
       var col=a.status==='compliant'?'#065f46':'#92400e';
       return '<tr><td style="font-size:.65rem;">'+a.area+'</td><td style="color:'+col+';">'+a.status+'</td></tr>';}).join('');
@@ -10115,6 +10121,498 @@ igApi.get('/risk/mandates').then(function(d){
 });
 </script>`
   return c.html(layout('Mandate Risk Dashboard', adminShell('Risk Dashboard', 'risk', body), {noNav:true,noFooter:true}))
+})
+
+// ── ALIAS ROUTES — redirect old/broken paths to correct pages ─────────────────
+app.get('/employees', (c) => c.redirect('/admin/hr', 302))
+app.get('/settings', (c) => c.redirect('/admin/config', 302))
+app.get('/sales', (c) => c.redirect('/admin/sales/dashboard', 302))
+
+// ── COMPLIANCE PAGE ────────────────────────────────────────────────────────────
+app.get('/compliance', (c) => {
+  const body = `
+  <div style="display:flex;flex-direction:column;gap:1.5rem;">
+    <!-- Stats Row -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;">
+      ${[
+        {label:'Compliance Score',    value:'96%',  sub:'DPDP+Sec+Legal',    icon:'shield-alt',   color:'#16a34a'},
+        {label:'Open Findings',       value:'0',    sub:'All resolved',      icon:'check-circle', color:'#16a34a'},
+        {label:'Pending Actions',     value:'3',    sub:'Due within 30 days',icon:'clock',        color:'#d97706'},
+        {label:'Audit Reports',       value:'12',   sub:'FY 2025–26',        icon:'file-alt',     color:'#2563eb'},
+      ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.875rem;">
+        <div style="width:38px;height:38px;background:${s.color}1a;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-${s.icon}" style="color:${s.color};font-size:.875rem;"></i>
+        </div>
+        <div><div style="font-size:1.2rem;font-weight:700;color:var(--ink);">${s.value}</div>
+          <div style="font-size:.68rem;color:var(--ink-muted);">${s.label}</div>
+          <div style="font-size:.62rem;color:${s.color};margin-top:.1rem;">${s.sub}</div></div>
+      </div>`).join('')}
+    </div>
+    <!-- Compliance Areas -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">DPDP Compliance — 2023 Act</h3>
+          <span style="background:#16a34a;color:#fff;font-size:.62rem;font-weight:700;padding:.2rem .5rem;">96/100</span>
+        </div>
+        <div style="padding:1.25rem;">
+          ${[
+            {item:'Data Principal consent management',    status:'✅ Compliant'},
+            {item:'Data Fiduciary registration',          status:'✅ Done'},
+            {item:'Privacy notice (§5)',                  status:'✅ Published'},
+            {item:'Data Protection Officer appointed',    status:'✅ DPO: AKM'},
+            {item:'Grievance redressal mechanism',        status:'✅ Active'},
+            {item:'Cross-border transfer safeguards',     status:'⚠ Partial'},
+            {item:'Breach notification (72h)',            status:'✅ Procedure in place'},
+            {item:'Annual DPDP audit',                    status:'🔄 Scheduled Apr 2026'},
+          ].map(r=>`<div style="display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.78rem;">
+            <span style="color:var(--ink);">${r.item}</span>
+            <span style="color:${r.status.startsWith('✅')?'#16a34a':r.status.startsWith('⚠')?'#d97706':'#2563eb'};font-size:.72rem;white-space:nowrap;margin-left:.5rem;">${r.status}</span>
+          </div>`).join('')}
+          <button onclick="igToast('DPDP compliance report downloaded','success')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;margin-top:.875rem;"><i class="fas fa-download" style="margin-right:.3rem;"></i>Download Report</button>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Regulatory Calendar — FY 2025–26</h3>
+          <button onclick="igToast('Calendar exported to PDF','success')" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button>
+        </div>
+        <div style="padding:1.25rem;">
+          ${[
+            {date:'11 Mar 2026', item:'GSTR-1 Filing',               status:'Upcoming', urgency:'warn'},
+            {date:'15 Mar 2026', item:'Advance Tax Q4',               status:'Upcoming', urgency:'warn'},
+            {date:'31 Mar 2026', item:'MCA Annual Return (MGT-7)',     status:'Pending',  urgency:'danger'},
+            {date:'31 Mar 2026', item:'ITR-6 Filing Deadline',        status:'Pending',  urgency:'danger'},
+            {date:'15 Apr 2026', item:'TM-006 Trademark Renewal',     status:'Action',   urgency:'danger'},
+            {date:'30 Apr 2026', item:'FSSAI License Renewal',        status:'Action',   urgency:'warn'},
+            {date:'30 Jun 2026', item:'Annual DPDP Audit',            status:'Scheduled',urgency:'ok'},
+            {date:'30 Sep 2026', item:'Companies Act §96 AGM',        status:'Scheduled',urgency:'ok'},
+          ].map(r=>`<div style="display:flex;align-items:center;gap:.625rem;padding:.4rem 0;border-bottom:1px solid var(--border);">
+            <span style="font-size:.62rem;color:#fff;background:${r.urgency==='danger'?'#dc2626':r.urgency==='warn'?'#d97706':'#16a34a'};padding:.15rem .4rem;border-radius:2px;white-space:nowrap;">${r.date}</span>
+            <span style="font-size:.75rem;color:var(--ink);flex:1;">${r.item}</span>
+            <span style="font-size:.65rem;color:${r.urgency==='danger'?'#dc2626':r.urgency==='warn'?'#d97706':'#16a34a'};">${r.status}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <!-- Policy Register & Risk -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Policy Register</h3>
+          <button onclick="igToast('Policy register exported','success')" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button>
+        </div>
+        <table class="ig-tbl" style="width:100%;"><thead><tr><th>Policy</th><th>Version</th><th>Review Due</th><th>Status</th></tr></thead><tbody>
+          ${[
+            {name:'Information Security Policy', ver:'v2.1', due:'Dec 2026', status:'Active'},
+            {name:'Data Privacy Policy (DPDP)',  ver:'v1.3', due:'Oct 2026', status:'Active'},
+            {name:'HR & Employee Handbook',       ver:'v3.0', due:'Apr 2026', status:'Review Due'},
+            {name:'Anti-Bribery & Corruption',   ver:'v1.2', due:'Jun 2026', status:'Active'},
+            {name:'Code of Conduct',             ver:'v2.0', due:'Sep 2026', status:'Active'},
+            {name:'Whistleblower Policy',        ver:'v1.1', due:'Nov 2026', status:'Active'},
+          ].map(p=>`<tr><td style="font-size:.75rem;">${p.name}</td><td style="font-size:.72rem;">${p.ver}</td>
+            <td style="font-size:.72rem;">${p.due}</td>
+            <td><span style="font-size:.62rem;background:${p.status==='Active'?'#dcfce7':p.status==='Review Due'?'#fef3c7':'#fee2e2'};color:${p.status==='Active'?'#166534':p.status==='Review Due'?'#92400e':'#991b1b'};padding:.15rem .4rem;">${p.status}</span></td>
+          </tr>`).join('')}
+        </tbody></table>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Compliance Actions Queue</h3>
+        </div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:.625rem;">
+          ${[
+            {id:'CA-001', action:'Renew FSSAI License (FSSAI/2023/001)',         due:'30 Apr 2026', owner:'Legal',   priority:'High'},
+            {id:'CA-002', action:'File GSTR-1 for February 2026',               due:'11 Mar 2026', owner:'Finance', priority:'High'},
+            {id:'CA-003', action:'Renew TM-006 trademark + USPTO brief',        due:'15 Apr 2026', owner:'Legal',   priority:'High'},
+            {id:'CA-004', action:'Complete Annual DPDP audit',                  due:'30 Jun 2026', owner:'DPO',     priority:'Medium'},
+            {id:'CA-005', action:'Update HR handbook to FY2026 revisions',      due:'30 Apr 2026', owner:'HR',      priority:'Medium'},
+          ].map(a=>`<div style="display:flex;align-items:flex-start;gap:.625rem;padding:.625rem;background:${a.priority==='High'?'#fff7f7':'#f8fafc'};border:1px solid ${a.priority==='High'?'#fecaca':'var(--border)'};">
+            <span style="font-size:.6rem;font-weight:700;color:#fff;background:${a.priority==='High'?'#dc2626':'#2563eb'};padding:.15rem .35rem;margin-top:.1rem;white-space:nowrap;">${a.priority}</span>
+            <div style="flex:1;"><div style="font-size:.78rem;color:var(--ink);font-weight:500;">${a.action}</div>
+              <div style="font-size:.65rem;color:var(--ink-muted);margin-top:.15rem;">${a.id} · Due: ${a.due} · Owner: ${a.owner}</div></div>
+            <button onclick="igToast('${a.id} marked complete','success')" style="background:#16a34a;color:#fff;border:none;padding:.2rem .5rem;font-size:.6rem;cursor:pointer;white-space:nowrap;">✓ Done</button>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>`
+  return c.html(layout('Compliance', adminShell('Compliance', 'compliance', body), {noNav:true,noFooter:true}))
+})
+
+// ── AUDIT LOG PAGE ─────────────────────────────────────────────────────────────
+app.get('/audit-log', (c) => {
+  const logs = [
+    {ts:'2026-03-02 09:15:22', user:'superadmin@indiagully.com', action:'Platform v2026.50 deployed',       mod:'Platform', ip:'103.21.x.x', ok:true,  risk:'Low'},
+    {ts:'2026-03-02 09:12:01', user:'superadmin@indiagully.com', action:'PLATFORM_ENV set to demo',         mod:'Config',   ip:'103.21.x.x', ok:true,  risk:'Low'},
+    {ts:'2026-03-01 22:14:53', user:'demo@indiagully.com',       action:'Client Portal Login',              mod:'Auth',     ip:'115.99.x.x', ok:true,  risk:'Low'},
+    {ts:'2026-03-01 18:42:15', user:'Unknown',                   action:'Failed Login — 3 attempts',        mod:'Auth',     ip:'185.220.x.x',ok:false, risk:'High'},
+    {ts:'2026-03-01 16:30:00', user:'superadmin@indiagully.com', action:'ZZ-Round v2026.50 committed',      mod:'Platform', ip:'49.36.x.x',  ok:true,  risk:'Low'},
+    {ts:'2026-03-01 14:22:10', user:'pavan@indiagully.com',      action:'Contract Downloaded — NDA-003',   mod:'Contracts',ip:'49.36.x.x',  ok:true,  risk:'Low'},
+    {ts:'2026-03-01 11:05:44', user:'superadmin@indiagully.com', action:'User Role Changed — IG-EMP-0001', mod:'Users',    ip:'103.21.x.x', ok:true,  risk:'Med'},
+    {ts:'2026-02-28 16:45:00', user:'Unknown',                   action:'Brute Force — 12 attempts',       mod:'Auth',     ip:'91.108.x.x', ok:false, risk:'Critical'},
+    {ts:'2026-02-28 14:30:00', user:'akm@indiagully.com',        action:'Invoice Approved ₹3.2L',          mod:'Finance',  ip:'49.36.x.x',  ok:true,  risk:'Low'},
+    {ts:'2026-02-28 12:15:00', user:'superadmin@indiagully.com', action:'DPDP consent gate enabled',       mod:'Platform', ip:'103.21.x.x', ok:true,  risk:'Low'},
+    {ts:'2026-02-27 10:00:00', user:'IG-EMP-0001',               action:'Leave Request Submitted',         mod:'HR',       ip:'115.99.x.x', ok:true,  risk:'Low'},
+    {ts:'2026-02-26 16:45:00', user:'superadmin@indiagully.com', action:'KK-Round v2026.35 deployed',      mod:'Platform', ip:'103.21.x.x', ok:true,  risk:'Low'},
+  ]
+  const riskColor = (r: string) => r==='Critical'?'#dc2626':r==='High'?'#ea580c':r==='Med'?'#d97706':'#16a34a'
+  const body = `
+  <div style="display:flex;flex-direction:column;gap:1.5rem;">
+    <!-- Filter Bar -->
+    <div style="background:#fff;border:1px solid var(--border);padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+      <input type="text" id="logSearch" placeholder="Search logs…" oninput="igFilterAuditLog()" style="padding:.45rem .75rem;border:1px solid var(--border);font-size:.78rem;flex:1;min-width:200px;">
+      <select id="logModule" onchange="igFilterAuditLog()" style="padding:.45rem .75rem;border:1px solid var(--border);font-size:.78rem;">
+        <option value="">All Modules</option>
+        <option>Auth</option><option>Finance</option><option>HR</option><option>Contracts</option><option>Platform</option><option>Config</option>
+      </select>
+      <select id="logRisk" onchange="igFilterAuditLog()" style="padding:.45rem .75rem;border:1px solid var(--border);font-size:.78rem;">
+        <option value="">All Risk</option>
+        <option>Critical</option><option>High</option><option>Med</option><option>Low</option>
+      </select>
+      <button onclick="igToast('Audit log exported to CSV','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.3rem;">
+        <i class="fas fa-download" style="font-size:.65rem;"></i>Export CSV
+      </button>
+      <button onclick="igToast('Audit log PDF generated','success')" style="background:var(--ink);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.3rem;">
+        <i class="fas fa-file-pdf" style="font-size:.65rem;"></i>Export PDF
+      </button>
+    </div>
+    <!-- Log Table -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Activity Log — ${logs.length} entries</h3>
+        <span style="font-size:.68rem;color:var(--ink-muted);">Real-time audit trail • Tamper-evident</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="auditLogTable" class="ig-tbl" style="width:100%;font-size:.72rem;">
+          <thead><tr><th>Timestamp</th><th>User</th><th>Action</th><th>Module</th><th>IP</th><th>Risk</th><th>Status</th></tr></thead>
+          <tbody>
+            ${logs.map(l=>`<tr>
+              <td style="font-size:.65rem;white-space:nowrap;color:var(--ink-muted);">${l.ts}</td>
+              <td style="font-size:.68rem;">${l.user}</td>
+              <td>${l.action}</td>
+              <td><span style="background:var(--parch-dk);padding:.1rem .35rem;font-size:.6rem;">${l.mod}</span></td>
+              <td style="font-size:.65rem;color:var(--ink-muted);">${l.ip}</td>
+              <td><span style="color:${riskColor(l.risk)};font-weight:600;">${l.risk}</span></td>
+              <td><span style="font-size:.62rem;background:${l.ok?'#dcfce7':'#fee2e2'};color:${l.ok?'#166534':'#991b1b'};padding:.1rem .35rem;">${l.ok?'✅ OK':'❌ Fail'}</span></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+  function igFilterAuditLog(){
+    var q=(document.getElementById('logSearch').value||'').toLowerCase();
+    var mod=document.getElementById('logModule').value;
+    var risk=document.getElementById('logRisk').value;
+    var rows=document.querySelectorAll('#auditLogTable tbody tr');
+    rows.forEach(function(r){
+      var txt=r.textContent.toLowerCase();
+      var show=(!q||txt.includes(q))&&(!mod||txt.includes(mod.toLowerCase()))&&(!risk||txt.includes(risk.toLowerCase()));
+      r.style.display=show?'':'none';
+    });
+  }
+  </script>`
+  return c.html(layout('Audit Log', adminShell('Audit Log', 'audit-log', body), {noNav:true,noFooter:true}))
+})
+
+// ── MANDATES PAGE ──────────────────────────────────────────────────────────────
+app.get('/mandates', (c) => {
+  const mandates = [
+    {id:'MND-001', name:'Jaipur Hospitality Hub — 5-Star Hotel',    type:'Hospitality', value:'₹425 Cr', stage:'LOI Signed',    client:'Jaipur Hotels Ltd',      date:'Jan 2026', status:'Active'},
+    {id:'MND-002', name:'Delhi NCR Mixed-Use Commercial Complex',    type:'Real Estate', value:'₹2,100 Cr',stage:'Due Diligence', client:'NCR Realty Corp',        date:'Dec 2025', status:'Active'},
+    {id:'MND-003', name:'Mumbai HORECA Supply Chain Consolidation',  type:'HORECA',      value:'₹87 Cr',  stage:'Mandate Signed', client:'Mumbai F&B Group',       date:'Nov 2025', status:'Active'},
+    {id:'MND-004', name:'Goa Beachfront Resort Development',         type:'Hospitality', value:'₹320 Cr', stage:'Proposal Sent', client:'Goa Ventures Pvt Ltd',    date:'Feb 2026', status:'Active'},
+    {id:'MND-005', name:'Hyderabad IT Park — Entertainment Zone',    type:'Entertainment',value:'₹1,500 Cr',stage:'NDA Signed',   client:'Tech Parks India Ltd',   date:'Jan 2026', status:'Active'},
+    {id:'MND-006', name:'Bengaluru Food Court Chain Rollout',        type:'HORECA',      value:'₹45 Cr',  stage:'LOI Signed',    client:'Bengaluru Foods Pvt Ltd', date:'Mar 2026', status:'Active'},
+  ]
+  const body = `
+  <div style="display:flex;flex-direction:column;gap:1.5rem;">
+    <!-- Stats -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;">
+      ${[
+        {label:'Total Pipeline',  value:'₹8,815 Cr', sub:'6 active mandates', icon:'rupee-sign', color:'#d97706'},
+        {label:'Active Mandates', value:'6',         sub:'Across 4 sectors',  icon:'briefcase',  color:'#2563eb'},
+        {label:'LOI Signed',      value:'3',         sub:'Ready to execute',  icon:'handshake',  color:'#16a34a'},
+        {label:'In Due Diligence',value:'1',         sub:'₹2,100 Cr',         icon:'search',     color:'#7c3aed'},
+      ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.875rem;">
+        <div style="width:38px;height:38px;background:${s.color}1a;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-${s.icon}" style="color:${s.color};font-size:.875rem;"></i></div>
+        <div><div style="font-size:1.2rem;font-weight:700;color:var(--ink);">${s.value}</div>
+          <div style="font-size:.68rem;color:var(--ink-muted);">${s.label}</div>
+          <div style="font-size:.62rem;color:${s.color};margin-top:.1rem;">${s.sub}</div></div></div>`).join('')}
+    </div>
+    <!-- Mandate Table -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Active Mandate Pipeline</h3>
+        <div style="display:flex;gap:.5rem;">
+          <button onclick="igToast('Mandate report exported to PDF','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export PDF</button>
+          <button onclick="igToast('New mandate form opened','success')" style="background:var(--gold);color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.3rem;"></i>New Mandate</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="ig-tbl" style="width:100%;">
+          <thead><tr><th>ID</th><th>Mandate</th><th>Type</th><th>Value</th><th>Stage</th><th>Client</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody>
+            ${mandates.map(m=>`<tr>
+              <td style="font-size:.68rem;font-weight:600;color:var(--gold);">${m.id}</td>
+              <td style="font-size:.75rem;font-weight:500;">${m.name}</td>
+              <td><span style="background:var(--parch-dk);padding:.1rem .35rem;font-size:.62rem;">${m.type}</span></td>
+              <td style="font-size:.78rem;font-weight:600;color:#16a34a;">${m.value}</td>
+              <td><span style="background:${m.stage==='LOI Signed'?'#dcfce7':m.stage==='Due Diligence'?'#dbeafe':m.stage==='Mandate Signed'?'#f3e8ff':'#fef9c3'};color:${m.stage==='LOI Signed'?'#166534':m.stage==='Due Diligence'?'#1e40af':m.stage==='Mandate Signed'?'#6d28d9':'#92400e'};padding:.15rem .4rem;font-size:.62rem;font-weight:600;">${m.stage}</span></td>
+              <td style="font-size:.72rem;">${m.client}</td>
+              <td style="font-size:.65rem;color:var(--ink-muted);">${m.date}</td>
+              <td style="display:flex;gap:.3rem;">
+                <button onclick="igToast('${m.id} details opened','success')" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;">View</button>
+                <button onclick="igToast('${m.id} PDF downloaded','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.62rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button>
+              </td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>`
+  return c.html(layout('Mandates', adminShell('Mandates', 'mandates', body), {noNav:true,noFooter:true}))
+})
+
+// ── CLIENTS PAGE ───────────────────────────────────────────────────────────────
+app.get('/clients', (c) => {
+  const clients = [
+    {id:'CLT-001', name:'Demo Advisory Client',      email:'demo@indiagully.com',    type:'Advisory',    since:'Jan 2025', status:'Active',  aum:'₹425 Cr',   manager:'AKM'},
+    {id:'CLT-002', name:'NCR Realty Corp',            email:'ncr@indiagully.com',      type:'Transaction', since:'Dec 2024', status:'Active',  aum:'₹2,100 Cr', manager:'Pavan'},
+    {id:'CLT-003', name:'Mumbai F&B Group',           email:'mumbai@indiagully.com',   type:'HORECA',      since:'Nov 2024', status:'Active',  aum:'₹87 Cr',    manager:'AKM'},
+    {id:'CLT-004', name:'Jaipur Hotels Ltd',          email:'jaipur@indiagully.com',   type:'Hospitality', since:'Jan 2025', status:'Active',  aum:'₹320 Cr',   manager:'AKM'},
+    {id:'CLT-005', name:'Tech Parks India Ltd',       email:'techpark@indiagully.com', type:'Real Estate', since:'Jan 2025', status:'Active',  aum:'₹1,500 Cr', manager:'Pavan'},
+    {id:'CLT-006', name:'Bengaluru Foods Pvt Ltd',    email:'blr@indiagully.com',      type:'HORECA',      since:'Mar 2025', status:'Onboard', aum:'₹45 Cr',    manager:'AKM'},
+  ]
+  const body = `
+  <div style="display:flex;flex-direction:column;gap:1.5rem;">
+    <!-- Stats -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;">
+      ${[
+        {label:'Total Clients',  value:'6',           sub:'5 active, 1 onboarding', icon:'building',     color:'#2563eb'},
+        {label:'Total AUM',      value:'₹8,815 Cr',   sub:'Across all mandates',    icon:'chart-line',   color:'#d97706'},
+        {label:'NPS Score',      value:'72',          sub:'Strong promoter base',   icon:'smile',        color:'#16a34a'},
+        {label:'Avg. Tenure',    value:'14 months',   sub:'Since Jan 2025 avg',     icon:'calendar',     color:'#7c3aed'},
+      ].map(s=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem;display:flex;align-items:center;gap:.875rem;">
+        <div style="width:38px;height:38px;background:${s.color}1a;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-${s.icon}" style="color:${s.color};font-size:.875rem;"></i></div>
+        <div><div style="font-size:1.2rem;font-weight:700;color:var(--ink);">${s.value}</div>
+          <div style="font-size:.68rem;color:var(--ink-muted);">${s.label}</div>
+          <div style="font-size:.62rem;color:${s.color};margin-top:.1rem;">${s.sub}</div></div></div>`).join('')}
+    </div>
+    <!-- Client Table -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Client Register</h3>
+        <div style="display:flex;gap:.5rem;">
+          <input type="text" id="clientSearch" placeholder="Search clients…" oninput="filterClients()" style="padding:.35rem .625rem;border:1px solid var(--border);font-size:.72rem;">
+          <button onclick="igToast('Client list exported to Excel','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="clientTable" class="ig-tbl" style="width:100%;">
+          <thead><tr><th>ID</th><th>Client</th><th>Email</th><th>Type</th><th>AUM</th><th>Manager</th><th>Since</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            ${clients.map(cl=>`<tr>
+              <td style="font-size:.68rem;font-weight:600;color:var(--gold);">${cl.id}</td>
+              <td style="font-size:.75rem;font-weight:500;">${cl.name}</td>
+              <td style="font-size:.68rem;color:var(--ink-muted);">${cl.email}</td>
+              <td><span style="background:var(--parch-dk);padding:.1rem .35rem;font-size:.62rem;">${cl.type}</span></td>
+              <td style="font-size:.78rem;font-weight:600;color:#16a34a;">${cl.aum}</td>
+              <td style="font-size:.72rem;">${cl.manager}</td>
+              <td style="font-size:.65rem;color:var(--ink-muted);">${cl.since}</td>
+              <td><span style="background:${cl.status==='Active'?'#dcfce7':'#dbeafe'};color:${cl.status==='Active'?'#166534':'#1e40af'};padding:.15rem .4rem;font-size:.62rem;font-weight:600;">${cl.status}</span></td>
+              <td style="display:flex;gap:.3rem;">
+                <button onclick="igToast('${cl.name} profile opened','success')" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;">View</button>
+                <button onclick="igToast('Sending NDA to ${cl.email}…','success')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.62rem;cursor:pointer;color:var(--gold);">NDA</button>
+              </td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+  function filterClients(){
+    var q=(document.getElementById('clientSearch').value||'').toLowerCase();
+    document.querySelectorAll('#clientTable tbody tr').forEach(function(r){
+      r.style.display=r.textContent.toLowerCase().includes(q)?'':'none';
+    });
+  }
+  </script>`
+  return c.html(layout('Clients', adminShell('Clients', 'clients', body), {noNav:true,noFooter:true}))
+})
+
+// ── DOCUMENTS PAGE ─────────────────────────────────────────────────────────────
+app.get('/documents', (c) => {
+  const docs = [
+    {id:'DOC-001', name:'NDA — Demo Advisory Client.pdf',          cat:'Legal',       size:'244 KB', date:'15 Jan 2026', uploader:'superadmin', ndaGated:true},
+    {id:'DOC-002', name:'EY Retainer Agreement v3.pdf',            cat:'Contracts',   size:'1.2 MB', date:'10 Jan 2026', uploader:'pavan',       ndaGated:false},
+    {id:'DOC-003', name:'Jaipur Hotel Feasibility Report.pdf',     cat:'Mandates',    size:'4.8 MB', date:'05 Jan 2026', uploader:'akm',         ndaGated:false},
+    {id:'DOC-004', name:'GSTR-1 Feb 2026 Filing.xlsx',             cat:'Finance',     size:'188 KB', date:'28 Feb 2026', uploader:'finance',     ndaGated:false},
+    {id:'DOC-005', name:'Employee Handbook v3.0.pdf',              cat:'HR',          size:'2.1 MB', date:'01 Jan 2026', uploader:'hr',          ndaGated:false},
+    {id:'DOC-006', name:'MCA Annual Return MGT-7 Draft.pdf',       cat:'Compliance',  size:'542 KB', date:'20 Feb 2026', uploader:'legal',       ndaGated:false},
+    {id:'DOC-007', name:'Investor Deck — India Gully 2026.pdf',    cat:'Investment',  size:'6.3 MB', date:'01 Feb 2026', uploader:'superadmin',  ndaGated:true},
+    {id:'DOC-008', name:'DPDP Compliance Report Q4 FY26.pdf',      cat:'Compliance',  size:'890 KB', date:'28 Feb 2026', uploader:'dpo',         ndaGated:false},
+  ]
+  const catColors: Record<string,string> = {Legal:'#7c3aed',Contracts:'#2563eb',Mandates:'#d97706',Finance:'#16a34a',HR:'#0891b2',Compliance:'#dc2626',Investment:'#db2777'}
+  const body = `
+  <div style="display:flex;flex-direction:column;gap:1.5rem;">
+    <!-- Upload + Filter Bar -->
+    <div style="background:#fff;border:1px solid var(--border);padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+      <div style="flex:1;min-width:200px;">
+        <input type="text" id="docSearch" placeholder="Search documents…" oninput="filterDocs()" style="width:100%;padding:.45rem .75rem;border:1px solid var(--border);font-size:.78rem;">
+      </div>
+      <select id="docCat" onchange="filterDocs()" style="padding:.45rem .75rem;border:1px solid var(--border);font-size:.78rem;">
+        <option value="">All Categories</option>
+        ${['Legal','Contracts','Mandates','Finance','HR','Compliance','Investment'].map(c=>`<option>${c}</option>`).join('')}
+      </select>
+      <button onclick="igToast('Document upload panel opened','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-upload" style="font-size:.65rem;"></i>Upload Document</button>
+    </div>
+    <!-- Document Grid -->
+    <div style="background:#fff;border:1px solid var(--border);">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Document Repository — ${docs.length} files</h3>
+        <span style="font-size:.68rem;color:var(--ink-muted);">R2 Object Storage • NDA-gated items require signed NDA</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="docTable" class="ig-tbl" style="width:100%;">
+          <thead><tr><th>ID</th><th>Document Name</th><th>Category</th><th>Size</th><th>Uploaded By</th><th>Date</th><th>NDA</th><th>Actions</th></tr></thead>
+          <tbody>
+            ${docs.map(d=>`<tr>
+              <td style="font-size:.65rem;color:var(--ink-muted);">${d.id}</td>
+              <td style="font-size:.75rem;"><i class="fas fa-file-pdf" style="color:#dc2626;margin-right:.3rem;font-size:.65rem;"></i>${d.name}</td>
+              <td><span style="background:${catColors[d.cat]||'#6b7280'}1a;color:${catColors[d.cat]||'#6b7280'};padding:.1rem .35rem;font-size:.62rem;font-weight:600;">${d.cat}</span></td>
+              <td style="font-size:.68rem;color:var(--ink-muted);">${d.size}</td>
+              <td style="font-size:.68rem;">${d.uploader}</td>
+              <td style="font-size:.65rem;color:var(--ink-muted);">${d.date}</td>
+              <td><span style="font-size:.62rem;color:${d.ndaGated?'#dc2626':'#16a34a'};">${d.ndaGated?'🔒 Required':'✅ Open'}</span></td>
+              <td style="display:flex;gap:.3rem;">
+                <button onclick="igToast('Downloading ${d.name}…','success')" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;"><i class="fas fa-download"></i></button>
+                <button onclick="igToast('${d.id} deleted','success')" style="background:none;border:1px solid #fecaca;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;color:#dc2626;"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+  function filterDocs(){
+    var q=(document.getElementById('docSearch').value||'').toLowerCase();
+    var cat=document.getElementById('docCat').value.toLowerCase();
+    document.querySelectorAll('#docTable tbody tr').forEach(function(r){
+      var txt=r.textContent.toLowerCase();
+      r.style.display=(!q||txt.includes(q))&&(!cat||txt.includes(cat))?'':'none';
+    });
+  }
+  </script>`
+  return c.html(layout('Documents', adminShell('Documents', 'documents', body), {noNav:true,noFooter:true}))
+})
+
+// ── DPDP / DATA PRIVACY PAGE ───────────────────────────────────────────────────
+app.get('/dpdp', (c) => {
+  const body = `
+  <div style="display:flex;flex-direction:column;gap:1.5rem;">
+    <!-- DPDP Score Banner -->
+    <div style="background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%);padding:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:1.75rem;font-weight:700;color:#fff;">DPDP Compliance Score: <span style="color:#fbbf24;">96/100</span></div>
+        <div style="font-size:.82rem;color:rgba(255,255,255,.8);margin-top:.25rem;">Digital Personal Data Protection Act 2023 — Platform Compliance Status</div>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.7);margin-top:.15rem;">Last assessed: 02 Mar 2026 · DPO: AKM (Anand Kumar Mehta) · Next audit: Apr 2026</div>
+      </div>
+      <div style="display:flex;gap:.75rem;">
+        <button onclick="igToast('DPDP audit report downloading…','success')" style="background:#fbbf24;color:#1e3a5f;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:700;cursor:pointer;"><i class="fas fa-download" style="margin-right:.35rem;"></i>Download Report</button>
+        <button onclick="igToast('DFR filing form opened','success')" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-paper-plane" style="margin-right:.35rem;"></i>File DFR</button>
+      </div>
+    </div>
+    <!-- DPDP Grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <!-- Consent Analytics -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Consent Analytics (§5–§6)</h3></div>
+        <div style="padding:1.25rem;">
+          ${[
+            {label:'Total Data Principals',   value:'142',  color:'#2563eb'},
+            {label:'Active Consents',         value:'138',  color:'#16a34a'},
+            {label:'Withdrawn Consents',      value:'4',    color:'#d97706'},
+            {label:'Pending Re-consent',      value:'2',    color:'#dc2626'},
+            {label:'Purpose-specific gates',  value:'12',   color:'#7c3aed'},
+            {label:'Consent Health',          value:'97%',  color:'#16a34a'},
+          ].map(s=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--border);">
+            <span style="font-size:.78rem;color:var(--ink);">${s.label}</span>
+            <span style="font-size:.875rem;font-weight:700;color:${s.color};">${s.value}</span>
+          </div>`).join('')}
+          <button onclick="igToast('Consent analytics report generated','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;margin-top:.875rem;width:100%;"><i class="fas fa-chart-bar" style="margin-right:.35rem;"></i>Full Consent Report</button>
+        </div>
+      </div>
+      <!-- DPA Tracker -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Data Processing Agreements (§8)</h3></div>
+        <div style="padding:1.25rem;">
+          ${[
+            {vendor:'Amazon Web Services', role:'Infrastructure',   status:'Signed',  date:'Jan 2026'},
+            {vendor:'Cloudflare',          role:'Edge/CDN',         status:'Signed',  date:'Feb 2026'},
+            {vendor:'SendGrid (Twilio)',   role:'Email',            status:'Signed',  date:'Dec 2025'},
+            {vendor:'Razorpay',            role:'Payments',         status:'Signed',  date:'Nov 2025'},
+            {vendor:'Amplitude',           role:'Analytics',        status:'Pending', date:'—'},
+            {vendor:'Mixpanel',            role:'Product Analytics',status:'Pending', date:'—'},
+          ].map(d=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--border);">
+            <div><div style="font-size:.78rem;font-weight:500;color:var(--ink);">${d.vendor}</div>
+              <div style="font-size:.62rem;color:var(--ink-muted);">${d.role}</div></div>
+            <div style="text-align:right;">
+              <span style="font-size:.62rem;background:${d.status==='Signed'?'#dcfce7':'#fef3c7'};color:${d.status==='Signed'?'#166534':'#92400e'};padding:.15rem .4rem;font-weight:600;">${d.status}</span>
+              <div style="font-size:.6rem;color:var(--ink-muted);margin-top:.1rem;">${d.date}</div>
+            </div>
+          </div>`).join('')}
+          <button onclick="igToast('DPA tracker exported','success')" style="background:none;border:1px solid var(--border);padding:.4rem 1rem;font-size:.72rem;cursor:pointer;color:var(--gold);margin-top:.875rem;width:100%;"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export DPA Register</button>
+        </div>
+      </div>
+      <!-- Rights Requests -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Data Principal Rights Requests (§12–§16)</h3></div>
+        <div style="padding:1.25rem;">
+          ${[
+            {type:'Right to Access',      total:5,  fulfilled:5, pending:0},
+            {type:'Right to Correction',  total:3,  fulfilled:3, pending:0},
+            {type:'Right to Erasure',     total:2,  fulfilled:2, pending:0},
+            {type:'Right to Portability', total:1,  fulfilled:1, pending:0},
+            {type:'Right to Nominate',    total:1,  fulfilled:1, pending:0},
+            {type:'Grievances (§13)',      total:2,  fulfilled:2, pending:0},
+          ].map(r=>`<div style="display:flex;align-items:center;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--border);">
+            <span style="font-size:.75rem;color:var(--ink);flex:1;">${r.type}</span>
+            <span style="font-size:.68rem;color:var(--ink-muted);">${r.total} total</span>
+            <span style="font-size:.62rem;background:#dcfce7;color:#166534;padding:.1rem .35rem;">✅ ${r.fulfilled} done</span>
+            ${r.pending>0?`<span style="font-size:.62rem;background:#fef3c7;color:#92400e;padding:.1rem .35rem;">⏳ ${r.pending}</span>`:''}
+          </div>`).join('')}
+        </div>
+      </div>
+      <!-- Breach Readiness -->
+      <div style="background:#fff;border:1px solid var(--border);">
+        <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Breach Notification Readiness (§8(7))</h3></div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:.75rem;">
+          ${[
+            {item:'Breach detection SIEM in place',           status:'✅ Active'},
+            {item:'72-hour notification procedure documented', status:'✅ Ready'},
+            {item:'Data Fiduciary (DF) contact registered',   status:'✅ Registered'},
+            {item:'Breach simulation exercise completed',     status:'✅ Mar 2026'},
+            {item:'CERT-In notification template ready',      status:'✅ Ready'},
+            {item:'Data Principal notification template',     status:'✅ Ready'},
+            {item:'Legal counsel notified on breach protocol',status:'✅ EY on retainer'},
+            {item:'Incident response playbook v2.1',          status:'✅ Current'},
+          ].map(r=>`<div style="display:flex;justify-content:space-between;font-size:.75rem;padding:.3rem 0;border-bottom:1px solid var(--border);">
+            <span style="color:var(--ink);">${r.item}</span>
+            <span style="color:#16a34a;white-space:nowrap;margin-left:.5rem;">${r.status}</span>
+          </div>`).join('')}
+          <button onclick="igToast('Running breach simulation…','success')" style="background:var(--ink);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;margin-top:.5rem;"><i class="fas fa-shield-alt" style="margin-right:.35rem;"></i>Run Breach Simulation</button>
+        </div>
+      </div>
+    </div>
+  </div>`
+  return c.html(layout('DPDP Compliance', adminShell('DPDP Compliance', 'dpdp', body), {noNav:true,noFooter:true}))
 })
 
 export default app
