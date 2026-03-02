@@ -18,8 +18,8 @@ export const META = {
   legalName: 'Vivacious Entertainment and Hospitality Pvt. Ltd.',
   tagline: 'Celebrating Desiness',
   taglineFull: 'Celebrating Desiness Across Every Vertical',
-  cin: 'U74900DL2017PTC000000',
-  gstin: '07XXXXXX000XXX',
+  cin: 'U74999DL2017PTC323237',
+  gstin: '07AAGCV0867P1ZN',
   address: 'New Delhi, India',
   email: 'info@indiagully.com',
   phone: '+91 8988 988 988',
@@ -32,7 +32,7 @@ export const TEAM = [
     name: 'Arun Manikonda',
     title: 'Managing Director',
     designation: 'Director on Board & KMP',
-    phone: '+91 8988 988 988',
+    phone: '+91 98108 89134',
     email: 'akm@indiagully.com',
     initials: 'AM',
     // Professional portrait — verified Unsplash ID
@@ -197,6 +197,7 @@ export const LISTINGS = [
     highlight: true,
     contact: 'akm@indiagully.com',
     contactName: 'Arun Manikonda',
+    contactPhone: '+91 98108 89134',
     nda: true,
   },
   {
@@ -240,6 +241,7 @@ export const LISTINGS = [
     highlight: true,
     contact: 'amit.jhingan@indiagully.com',
     contactName: 'Amit Jhingan',
+    contactPhone: '+91 98999 93543',
     nda: true,
   },
   {
@@ -283,6 +285,7 @@ export const LISTINGS = [
     highlight: false,
     contact: 'akm@indiagully.com',
     contactName: 'Arun Manikonda',
+    contactPhone: '+91 98108 89134',
     nda: true,
   },
   {
@@ -326,6 +329,7 @@ export const LISTINGS = [
     highlight: false,
     contact: 'akm@indiagully.com',
     contactName: 'Arun Manikonda',
+    contactPhone: '+91 98108 89134',
     nda: true,
   },
   {
@@ -369,6 +373,7 @@ export const LISTINGS = [
     highlight: true,
     contact: 'amit.jhingan@indiagully.com',
     contactName: 'Amit Jhingan',
+    contactPhone: '+91 98999 93543',
     nda: true,
   },
   {
@@ -412,6 +417,7 @@ export const LISTINGS = [
     highlight: false,
     contact: 'amit.jhingan@indiagully.com',
     contactName: 'Amit Jhingan',
+    contactPhone: '+91 98999 93543',
     nda: false,
   },
 ]
