@@ -138,7 +138,7 @@ app.get('/legal/terms', (c) => c.html(legalPage('Terms of Use', `
 <p>These Terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of courts in New Delhi.</p>
 
 <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:var(--ink);margin-bottom:.875rem;margin-top:2rem;">7. Contact</h2>
-<p>For queries: <a href="mailto:info@indiagully.com" style="color:var(--gold);">info@indiagully.com</a> · +91 8988 988 988</p>
+<p>For queries: <a href="mailto:info@indiagully.com" style="color:var(--gold);">info@indiagully.com</a> · +91 98108 89134</p>
 `)))
 
 app.get('/legal/disclaimer', (c) => c.html(legalPage('Disclaimer', `

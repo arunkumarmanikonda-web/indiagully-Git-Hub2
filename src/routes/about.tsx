@@ -128,7 +128,7 @@ app.get('/', (c) => {
 
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:1000px;margin:0 auto;">
       ${[
-        { name:'Arun Manikonda',  title:'Managing Director',       role:'Director on Board & KMP',        phone:'+91 8988 988 988', email:'akm@indiagully.com',          init:'AM', photo:'/static/team/arun-manikonda.jpg', bio:"Arun leads India Gully's strategic direction and client relationships, bringing deep expertise in multi-vertical enterprise advisory across hospitality, retail and real estate. As Managing Director and Director on Board, he oversees all major mandates and institutional partnerships." },
+        { name:'Arun Manikonda',  title:'Managing Director',       role:'Director on Board & KMP',        phone:'+91 98108 89134', email:'akm@indiagully.com',          init:'AM', photo:'/static/team/arun-manikonda.jpg', bio:"Arun leads India Gully's strategic direction and client relationships, bringing deep expertise in multi-vertical enterprise advisory across hospitality, retail and real estate. As Managing Director and Director on Board, he oversees all major mandates and institutional partnerships." },
         { name:'Pavan Manikonda', title:'Executive Director',       role:'Director on Board & KMP',        phone:'+91 6282556067', email:'pavan@indiagully.com',        init:'PM', photo:'/static/team/pavan-manikonda.jpg', bio:"Pavan drives operational excellence and business development across India Gully's advisory verticals. As Executive Director and Director on Board, he leads execution across hospitality management, brand on-boarding and project delivery mandates." },
         { name:'Amit Jhingan',    title:'President, Real Estate',   role:'Key Managerial Personnel (KMP)', phone:'+91 9899993543', email:'amit.jhingan@indiagully.com', init:'AJ', photo:'/static/team/amit-jhingan.png', bio:"Amit leads India Gully's Real Estate advisory vertical, overseeing transaction advisory mandates, investment sales, asset management and real estate brokerage across commercial, hospitality and mixed-use assets nationwide." },
       ].map(p => `
@@ -163,7 +163,7 @@ app.get('/', (c) => {
     </div>
 
     <div style="margin-top:3rem;background:var(--parch);border:1px solid var(--border);padding:1.25rem 1.5rem;max-width:700px;margin:3rem auto 0;text-align:center;">
-      <p style="font-size:.75rem;color:var(--ink-muted);line-height:1.7;"><i class="fas fa-envelope" style="color:var(--gold);margin-right:.5rem;"></i>To connect with our leadership directly, reach us at <a href="mailto:info@indiagully.com" style="color:var(--gold);font-weight:600;">info@indiagully.com</a> or call <strong style="color:var(--ink);">+91 8988 988 988</strong>.</p>
+      <p style="font-size:.75rem;color:var(--ink-muted);line-height:1.7;"><i class="fas fa-envelope" style="color:var(--gold);margin-right:.5rem;"></i>To connect with our leadership directly, reach us at <a href="mailto:info@indiagully.com" style="color:var(--gold);font-weight:600;">info@indiagully.com</a> or call <strong style="color:var(--ink);">+91 98108 89134</strong>.</p>
     </div>
   </div>
 </div>

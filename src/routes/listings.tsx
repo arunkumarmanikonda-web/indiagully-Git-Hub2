@@ -455,8 +455,8 @@ ${ndaModal}
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:.5rem;">
-            <a href="tel:+918988988988" style="font-size:.78rem;color:var(--ink-soft);display:flex;align-items:center;gap:.5rem;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-soft)'">
-              <i class="fas fa-phone" style="color:var(--gold);width:14px;font-size:.65rem;"></i>+91 8988 988 988
+            <a href="tel:+919810889134" style="font-size:.78rem;color:var(--ink-soft);display:flex;align-items:center;gap:.5rem;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-soft)'">
+              <i class="fas fa-phone" style="color:var(--gold);width:14px;font-size:.65rem;"></i>+91 98108 89134
             </a>
             <a href="mailto:${l.contact || 'info@indiagully.com'}" style="font-size:.78rem;color:var(--ink-soft);display:flex;align-items:center;gap:.5rem;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-soft)'">
               <i class="fas fa-envelope" style="color:var(--gold);width:14px;font-size:.65rem;"></i>${l.contact || 'info@indiagully.com'}

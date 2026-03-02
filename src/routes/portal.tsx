@@ -110,7 +110,7 @@ function loginPage(opts: {
       </div>
       ${errorBanner}
       <div style="padding:2rem;">
-        <div id="lockout-banner-${opts.portal}" style="display:none;background:#fef2f2;border:1px solid #fecaca;padding:.7rem 1rem;margin-bottom:1rem;font-size:.78rem;color:#991b1b;border-radius:2px;"><i class="fas fa-ban" style="margin-right:.4rem;"></i>Too many failed attempts, account locked for <span id="lockout-timer-${opts.portal}">300</span>s. Contact <a href="mailto:admin@indiagully.com" style="color:#dc2626;">admin@indiagully.com</a> or call <a href="tel:+918988988988" style="color:#dc2626;">+91 8988 988 988</a> for immediate unlock.</div>
+        <div id="lockout-banner-${opts.portal}" style="display:none;background:#fef2f2;border:1px solid #fecaca;padding:.7rem 1rem;margin-bottom:1rem;font-size:.78rem;color:#991b1b;border-radius:2px;"><i class="fas fa-ban" style="margin-right:.4rem;"></i>Too many failed attempts, account locked for <span id="lockout-timer-${opts.portal}">300</span>s. Contact <a href="mailto:admin@indiagully.com" style="color:#dc2626;">admin@indiagully.com</a> or call <a href="tel:+919810889134" style="color:#dc2626;">+91 98108 89134</a> for immediate unlock.</div>
         <form id="login-form-${opts.portal}" method="POST" action="/api/auth/login" style="display:flex;flex-direction:column;gap:1.1rem;">
           <input type="hidden" name="portal" value="${opts.portal}">
           <input type="hidden" name="csrf" id="csrf-${opts.portal}" value="">
@@ -385,7 +385,7 @@ app.get('/support', (c) => {
       <div style="margin-top:1.25rem;background:#fafafa;border:1px solid #f1f5f9;padding:.875rem 1rem;display:flex;align-items:center;gap:.75rem;">
         <i class="fas fa-headset" style="color:#B8960C;font-size:1.1rem;flex-shrink:0;"></i>
         <div style="font-size:.75rem;color:#64748b;line-height:1.7;">
-          Urgent issue? Call us at <a href="tel:+918988988988" style="color:#1A3A6B;font-weight:700;">+91 8988 988 988</a>
+          Urgent issue? Call us at <a href="tel:+919810889134" style="color:#1A3A6B;font-weight:700;">+91 98108 89134</a>
           or email <a href="mailto:admin@indiagully.com" style="color:#1A3A6B;font-weight:700;">admin@indiagully.com</a>
           · Mon to Fri, 9:00 AM to 7:00 PM IST
         </div>
@@ -396,7 +396,7 @@ app.get('/support', (c) => {
     <div id="panel-faq" class="sup-panel">
       <p style="font-size:.78rem;color:#64748b;margin:0 0 1.25rem;">Find answers to common questions about login, TOTP, and platform usage.</p>
       ${[
-        {q:'My account is locked, what do I do?', a:'After 5 failed login attempts, your account locks for 5 minutes. Wait for the countdown to complete, then try again. For immediate manual unlock, email <a href="mailto:admin@indiagully.com" style="color:#1A3A6B;">admin@indiagully.com</a> with your user ID or call +91 8988 988 988.'},
+        {q:'My account is locked, what do I do?', a:'After 5 failed login attempts, your account locks for 5 minutes. Wait for the countdown to complete, then try again. For immediate manual unlock, email <a href="mailto:admin@indiagully.com" style="color:#1A3A6B;">admin@indiagully.com</a> with your user ID or call +91 98108 89134.'},
         {q:'How do I set up my TOTP authenticator app?', a:'1. Install Google Authenticator, Authy, or Microsoft Authenticator on your phone.<br>2. Email admin@indiagully.com to request your personal QR code.<br>3. In the app, tap "+" → "Scan QR code".<br>4. Use the 6-digit rotating code during login. Codes refresh every 30 seconds.'},
         {q:'My TOTP code is being rejected even though it looks right.', a:'This is usually a clock-sync issue. On Google Authenticator: tap ⋮ → Time correction for codes → Sync now. On Authy: Settings → Account → Sync. Make sure your phone\'s date/time is set to Automatic (internet time).'},
         {q:'How do I reset my password?', a:'Click "Forgot Password" on any login page or visit <a href="/portal/reset" style="color:#1A3A6B;">/portal/reset</a>. Enter your registered email/employee ID and a secure reset link will be sent. The link is valid for 15 minutes.'},
@@ -1327,7 +1327,7 @@ app.get('/client/profile', (c) => {
           ${[
             { label:'Full Name',     value:'Demo Client'                     },
             { label:'Email Address', value:'demo@indiagully.com'             },
-            { label:'Phone',         value:'+91 8988 988 988'               },
+            { label:'Phone',         value:'+91 98108 89134'               },
             { label:'Organisation',  value:'Demo Corp Pvt. Ltd.'             },
             { label:'GST Number',    value:'07XXXXXXXXXXX1ZX'               },
             { label:'PAN Number',    value:'XXXXX0000X'                     },
@@ -1342,7 +1342,7 @@ app.get('/client/profile', (c) => {
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
               <div><label class="ig-label">Full Name</label><input type="text" class="ig-input" value="Demo Client" style="font-size:.82rem;"></div>
               <div><label class="ig-label">Email Address</label><input type="email" class="ig-input" value="demo@indiagully.com" style="font-size:.82rem;"></div>
-              <div><label class="ig-label">Phone</label><input type="tel" class="ig-input" value="+91 8988 988 988" style="font-size:.82rem;"></div>
+              <div><label class="ig-label">Phone</label><input type="tel" class="ig-input" value="+91 98108 89134" style="font-size:.82rem;"></div>
               <div><label class="ig-label">Organisation</label><input type="text" class="ig-input" value="Demo Corp Pvt. Ltd." style="font-size:.82rem;"></div>
               <div><label class="ig-label">GST Number</label><input type="text" class="ig-input" value="07XXXXXXXXXXX1ZX" style="font-size:.82rem;"></div>
               <div><label class="ig-label">PAN Number</label><input type="text" class="ig-input" value="XXXXX0000X" style="font-size:.82rem;"></div>
@@ -2005,7 +2005,7 @@ app.get('/employee/profile', (c) => {
             { label:'Department',      value:'Operations'             },
             { label:'Date of Joining', value:'01 January 2025'        },
             { label:'Work Email',      value:'emp@indiagully.com'     },
-            { label:'Phone',           value:'+91 8988 988 988'       },
+            { label:'Phone',           value:'+91 98108 89134'       },
             { label:'PAN Number',      value:'XXXXX0000X'             },
           ].map(f => `
           <div>
@@ -2017,7 +2017,7 @@ app.get('/employee/profile', (c) => {
             <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">Edit My Details</h4>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;">
               <div><label class="ig-label">Full Name</label><input type="text" class="ig-input" value="Demo Employee" style="font-size:.82rem;"></div>
-              <div><label class="ig-label">Phone</label><input type="tel" class="ig-input" value="+91 8988 988 988" style="font-size:.82rem;"></div>
+              <div><label class="ig-label">Phone</label><input type="tel" class="ig-input" value="+91 98108 89134" style="font-size:.82rem;"></div>
               <div><label class="ig-label">Emergency Contact Name</label><input type="text" class="ig-input" placeholder="Emergency contact" style="font-size:.82rem;"></div>
               <div><label class="ig-label">Emergency Contact Phone</label><input type="tel" class="ig-input" placeholder="+91 XXXXX XXXXX" style="font-size:.82rem;"></div>
               <div><label class="ig-label">Bank Account (for salary)</label><input type="text" class="ig-input" placeholder="XXXX XXXX XXXX" style="font-size:.82rem;"></div>

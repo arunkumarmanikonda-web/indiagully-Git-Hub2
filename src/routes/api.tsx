@@ -14023,7 +14023,7 @@ app.post('/support/ticket', async (c) => {
             <strong>Respond by:</strong> ${new Date(respondBy).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',dateStyle:'medium',timeStyle:'short'})} IST
           </div>
           <hr style="border:none;border-top:1px solid #f1f5f9;margin:1.25rem 0;">
-          <p style="font-size:.78rem;color:#94a3b8;">For urgent help call <strong>+91 8988 988 988</strong> · Mon–Fri 9:00 AM–7:00 PM IST</p>
+          <p style="font-size:.78rem;color:#94a3b8;">For urgent help call <strong>+91 98108 89134</strong> · Mon–Fri 9:00 AM–7:00 PM IST</p>
         </div>
       </div>`
       // Send acknowledgement to user

@@ -410,7 +410,7 @@ app.get('/', (c) => {
       </div>
       <div style="display:flex;flex-direction:column;gap:1rem;">
         ${[
-          { name:'Arun Manikonda',  title:'Managing Director',      sub:'Director on Board & KMP',   init:'AM', photo:'/static/team/arun-manikonda.jpg', ph:'+91 8988 988 988', em:'akm@indiagully.com', bio:'Founding Director with 20+ years across hospitality, real estate and entertainment.' },
+          { name:'Arun Manikonda',  title:'Managing Director',      sub:'Director on Board & KMP',   init:'AM', photo:'/static/team/arun-manikonda.jpg', ph:'+91 98108 89134', em:'akm@indiagully.com', bio:'Founding Director with 20+ years across hospitality, real estate and entertainment.' },
           { name:'Pavan Manikonda', title:'Executive Director',      sub:'Director on Board & KMP',   init:'PM', photo:'/static/team/pavan-manikonda.jpg', ph:'+91 62825 56067', em:'pavan@indiagully.com', bio:'Drives operations and business development across HORECA, hotel management and new verticals.' },
           { name:'Amit Jhingan',    title:'President, Real Estate',  sub:'Key Managerial Personnel',  init:'AJ', photo:'/static/team/amit-jhingan.png', ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com', bio:'Real Estate Vertical Head. Specialist in retail leasing, commercial transactions and entertainment city advisory.' },
         ].map(p => `
