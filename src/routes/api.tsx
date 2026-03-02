@@ -3885,7 +3885,31 @@ app.get('/security/certIn-report', async (c) => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // J1: CMS BACKEND — D1-backed page create / update / publish
+//     In-memory fallback active when D1 binding is not provisioned.
 // ─────────────────────────────────────────────────────────────────────────────
+
+// ── CMS in-memory store (fallback when D1 is not bound) ──────────────────────
+type CmsPage = {
+  id: number; slug: string; title: string; meta_title?: string; meta_desc?: string;
+  og_image?: string; hero_headline?: string; hero_subheading?: string; body_html?: string;
+  status: string; version: number; author: string; approved_by?: string;
+  approved_at?: string; published_at?: string; updated_at: string; created_at: string;
+}
+type CmsApproval = {
+  id: number; page_id: number; approval_ref: string; change_note: string;
+  submitted_by: string; status: string; reviewed_by?: string; reviewed_at?: string; created_at: string;
+}
+const CMS_PAGES_STORE: Map<number, CmsPage> = new Map([
+  [1, { id:1, slug:'/', title:'Home Page', meta_title:'India Gully — Premier Advisory', meta_desc:'Multi-vertical advisory firm', status:'published', version:1, author:'system', updated_at:new Date().toISOString(), created_at:new Date().toISOString() }],
+  [2, { id:2, slug:'/about', title:'About India Gully', status:'published', version:1, author:'system', updated_at:new Date().toISOString(), created_at:new Date().toISOString() }],
+  [3, { id:3, slug:'/services', title:'Our Services', status:'published', version:1, author:'system', updated_at:new Date().toISOString(), created_at:new Date().toISOString() }],
+  [4, { id:4, slug:'/horeca', title:'HORECA Advisory', status:'published', version:1, author:'system', updated_at:new Date().toISOString(), created_at:new Date().toISOString() }],
+  [5, { id:5, slug:'/listings', title:'Property Listings', status:'published', version:1, author:'system', updated_at:new Date().toISOString(), created_at:new Date().toISOString() }],
+  [6, { id:6, slug:'/contact', title:'Contact Us', status:'draft', version:1, author:'system', updated_at:new Date().toISOString(), created_at:new Date().toISOString() }],
+])
+const CMS_APPROVALS_STORE: Map<number, CmsApproval> = new Map()
+let CMS_PAGE_NEXT_ID = 7
+let CMS_APPROVAL_NEXT_ID = 1
 
 /** GET /api/cms/pages — List all CMS pages (admin only) */
 app.get('/cms/pages', requireSession(), requireRole(['Super Admin']), async (c) => {
@@ -3896,15 +3920,10 @@ app.get('/cms/pages', requireSession(), requireRole(['Super Admin']), async (c) 
     ).all()
     return c.json({ success: true, pages: rows.results, storage: 'D1' })
   }
-  // In-memory fallback
-  const pages = [
-    { id:1, slug:'/', title:'Home Page', status:'published', version:1, author:'system', updated_at: new Date().toISOString() },
-    { id:2, slug:'/about', title:'About Page', status:'published', version:1, author:'system', updated_at: new Date().toISOString() },
-    { id:3, slug:'/services', title:'Services Page', status:'published', version:1, author:'system', updated_at: new Date().toISOString() },
-    { id:4, slug:'/horeca', title:'HORECA Page', status:'published', version:1, author:'system', updated_at: new Date().toISOString() },
-    { id:5, slug:'/listings', title:'Listings Page', status:'published', version:1, author:'system', updated_at: new Date().toISOString() },
-    { id:6, slug:'/contact', title:'Contact Page', status:'draft', version:1, author:'system', updated_at: new Date().toISOString() },
-  ]
+  // In-memory fallback — fully functional CRUD
+  const pages = Array.from(CMS_PAGES_STORE.values()).sort((a, b) =>
+    new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+  )
   return c.json({ success: true, pages, storage: 'fallback' })
 })
 
@@ -3916,14 +3935,19 @@ app.get('/cms/pages/:id', requireSession(), requireRole(['Super Admin']), async 
       ? await c.env.DB.prepare(`SELECT * FROM ig_cms_pages WHERE slug = ?`).bind(id).first()
       : await c.env.DB.prepare(`SELECT * FROM ig_cms_pages WHERE id = ?`).bind(Number(id)).first()
     if (!row) return c.json({ success: false, error: 'Page not found' }, 404)
-    // Also fetch version history
     const versions = await c.env.DB.prepare(
       `SELECT version, status, changed_by, change_note, created_at
        FROM ig_cms_page_versions WHERE page_id = ? ORDER BY version DESC LIMIT 10`
     ).bind((row as any).id).all()
     return c.json({ success: true, page: row, versions: versions.results })
   }
-  return c.json({ success: false, error: 'D1 not available' }, 503)
+  // In-memory fallback
+  const numId = Number(id)
+  const page = isNaN(numId)
+    ? Array.from(CMS_PAGES_STORE.values()).find(p => p.slug === id)
+    : CMS_PAGES_STORE.get(numId)
+  if (!page) return c.json({ success: false, error: 'Page not found' }, 404)
+  return c.json({ success: true, page, versions: [], storage: 'fallback' })
 })
 
 /** POST /api/cms/pages — Create a new CMS page */
@@ -3948,7 +3972,13 @@ app.post('/cms/pages', requireSession(), requireRole(['Super Admin']), async (c)
       return c.json({ success: false, error: 'Failed to create page' }, 500)
     }
   }
-  return c.json({ success: false, error: 'D1 not available — page will be created when D1 is provisioned' }, 503)
+  // In-memory fallback
+  if (Array.from(CMS_PAGES_STORE.values()).some(p => p.slug === slug))
+    return c.json({ success: false, error: `Page with slug '${slug}' already exists` }, 409)
+  const newId = CMS_PAGE_NEXT_ID++
+  const now = new Date().toISOString()
+  CMS_PAGES_STORE.set(newId, { id: newId, slug, title, meta_title, meta_desc, og_image, hero_headline, hero_subheading, body_html, status: 'draft', version: 1, author: session.user, updated_at: now, created_at: now })
+  return c.json({ success: true, page_id: newId, slug, status: 'draft', storage: 'fallback' }, 201)
 })
 
 /** PUT /api/cms/pages/:id — Update (save draft) a CMS page */
@@ -3958,30 +3988,41 @@ app.put('/cms/pages/:id', requireSession(), requireRole(['Super Admin']), async 
   const body = await c.req.json() as Record<string, string>
   const { title, meta_title, meta_desc, og_image, hero_headline, hero_subheading, body_html, change_note } = body
 
-  if (!c.env?.DB) return c.json({ success: false, error: 'D1 not available' }, 503)
-
-  const existing = await c.env.DB.prepare(`SELECT * FROM ig_cms_pages WHERE id = ?`).bind(id).first() as any
+  if (c.env?.DB) {
+    const existing = await c.env.DB.prepare(`SELECT * FROM ig_cms_pages WHERE id = ?`).bind(id).first() as any
+    if (!existing) return c.json({ success: false, error: 'Page not found' }, 404)
+    const newVersion = (existing.version || 1) + 1
+    await c.env.DB.prepare(
+      `INSERT INTO ig_cms_page_versions (page_id, version, title, body_html, status, changed_by, change_note)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`
+    ).bind(id, existing.version, existing.title, existing.body_html, existing.status, session.user, change_note || 'Draft update').run()
+    await c.env.DB.prepare(
+      `UPDATE ig_cms_pages SET
+         title=COALESCE(?,title), meta_title=COALESCE(?,meta_title), meta_desc=COALESCE(?,meta_desc),
+         og_image=COALESCE(?,og_image), hero_headline=COALESCE(?,hero_headline),
+         hero_subheading=COALESCE(?,hero_subheading), body_html=COALESCE(?,body_html),
+         status='draft', version=?, author=?, updated_at=CURRENT_TIMESTAMP
+       WHERE id=?`
+    ).bind(title, meta_title, meta_desc, og_image, hero_headline, hero_subheading, body_html, newVersion, session.user, id).run()
+    await kvAuditLog(c.env?.IG_AUDIT_KV, 'CMS_PAGE_UPDATED', session.user, 'N/A', String(id))
+    return c.json({ success: true, page_id: id, version: newVersion, status: 'draft' })
+  }
+  // In-memory fallback
+  const existing = CMS_PAGES_STORE.get(id)
   if (!existing) return c.json({ success: false, error: 'Page not found' }, 404)
-
-  const newVersion = (existing.version || 1) + 1
-  // Archive current version
-  await c.env.DB.prepare(
-    `INSERT INTO ig_cms_page_versions (page_id, version, title, body_html, status, changed_by, change_note)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`
-  ).bind(id, existing.version, existing.title, existing.body_html, existing.status, session.user, change_note || 'Draft update').run()
-
-  // Update page
-  await c.env.DB.prepare(
-    `UPDATE ig_cms_pages SET
-       title=COALESCE(?,title), meta_title=COALESCE(?,meta_title), meta_desc=COALESCE(?,meta_desc),
-       og_image=COALESCE(?,og_image), hero_headline=COALESCE(?,hero_headline),
-       hero_subheading=COALESCE(?,hero_subheading), body_html=COALESCE(?,body_html),
-       status='draft', version=?, author=?, updated_at=CURRENT_TIMESTAMP
-     WHERE id=?`
-  ).bind(title, meta_title, meta_desc, og_image, hero_headline, hero_subheading, body_html, newVersion, session.user, id).run()
-
-  await kvAuditLog(c.env?.IG_AUDIT_KV, 'CMS_PAGE_UPDATED', session.user, 'N/A', String(id))
-  return c.json({ success: true, page_id: id, version: newVersion, status: 'draft' })
+  const newVersion = existing.version + 1
+  CMS_PAGES_STORE.set(id, {
+    ...existing,
+    title: title || existing.title,
+    meta_title: meta_title ?? existing.meta_title,
+    meta_desc: meta_desc ?? existing.meta_desc,
+    og_image: og_image ?? existing.og_image,
+    hero_headline: hero_headline ?? existing.hero_headline,
+    hero_subheading: hero_subheading ?? existing.hero_subheading,
+    body_html: body_html ?? existing.body_html,
+    status: 'draft', version: newVersion, author: session.user, updated_at: new Date().toISOString(),
+  })
+  return c.json({ success: true, page_id: id, version: newVersion, status: 'draft', storage: 'fallback' })
 })
 
 /** POST /api/cms/pages/:id/submit — Submit page for approval */
@@ -3989,22 +4030,26 @@ app.post('/cms/pages/:id/submit', requireSession(), requireRole(['Super Admin'])
   const session = c.get('session') as SessionData
   const id = Number(c.req.param('id'))
   const { change_note } = await c.req.json() as { change_note?: string }
-
-  if (!c.env?.DB) return c.json({ success: false, error: 'D1 not available' }, 503)
-
-  const existing = await c.env.DB.prepare(`SELECT id, slug, title FROM ig_cms_pages WHERE id = ?`).bind(id).first() as any
-  if (!existing) return c.json({ success: false, error: 'Page not found' }, 404)
-
   const approval_ref = `APR-${Date.now().toString(36).toUpperCase()}`
-  await c.env.DB.prepare(
-    `INSERT INTO ig_cms_approvals (page_id, approval_ref, change_note, submitted_by)
-     VALUES (?, ?, ?, ?)`
-  ).bind(id, approval_ref, change_note || 'Content update', session.user).run()
 
-  await c.env.DB.prepare(`UPDATE ig_cms_pages SET status='pending', updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(id).run()
-  await kvAuditLog(c.env?.IG_AUDIT_KV, 'CMS_SUBMITTED', session.user, 'N/A', approval_ref)
-
-  return c.json({ success: true, approval_ref, status: 'pending', page_id: id })
+  if (c.env?.DB) {
+    const existing = await c.env.DB.prepare(`SELECT id, slug, title FROM ig_cms_pages WHERE id = ?`).bind(id).first() as any
+    if (!existing) return c.json({ success: false, error: 'Page not found' }, 404)
+    await c.env.DB.prepare(
+      `INSERT INTO ig_cms_approvals (page_id, approval_ref, change_note, submitted_by) VALUES (?, ?, ?, ?)`
+    ).bind(id, approval_ref, change_note || 'Content update', session.user).run()
+    await c.env.DB.prepare(`UPDATE ig_cms_pages SET status='pending', updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(id).run()
+    await kvAuditLog(c.env?.IG_AUDIT_KV, 'CMS_SUBMITTED', session.user, 'N/A', approval_ref)
+    return c.json({ success: true, approval_ref, status: 'pending', page_id: id })
+  }
+  // In-memory fallback
+  const existing = CMS_PAGES_STORE.get(id)
+  if (!existing) return c.json({ success: false, error: 'Page not found' }, 404)
+  CMS_PAGES_STORE.set(id, { ...existing, status: 'pending', updated_at: new Date().toISOString() })
+  const aprId = CMS_APPROVAL_NEXT_ID++
+  const now = new Date().toISOString()
+  CMS_APPROVALS_STORE.set(aprId, { id: aprId, page_id: id, approval_ref, change_note: change_note || 'Content update', submitted_by: session.user, status: 'pending', created_at: now })
+  return c.json({ success: true, approval_ref, status: 'pending', page_id: id, storage: 'fallback' })
 })
 
 /** POST /api/cms/pages/:id/approve — Approve and publish a CMS page */
@@ -4012,21 +4057,29 @@ app.post('/cms/pages/:id/approve', requireSession(), requireRole(['Super Admin']
   const session = c.get('session') as SessionData
   const id = Number(c.req.param('id'))
 
-  if (!c.env?.DB) return c.json({ success: false, error: 'D1 not available' }, 503)
-
-  const existing = await c.env.DB.prepare(`SELECT id, slug FROM ig_cms_pages WHERE id=?`).bind(id).first() as any
+  if (c.env?.DB) {
+    const existing = await c.env.DB.prepare(`SELECT id, slug FROM ig_cms_pages WHERE id=?`).bind(id).first() as any
+    if (!existing) return c.json({ success: false, error: 'Page not found' }, 404)
+    await c.env.DB.prepare(
+      `UPDATE ig_cms_pages SET status='published', approved_by=?, approved_at=CURRENT_TIMESTAMP, published_at=CURRENT_TIMESTAMP, updated_at=CURRENT_TIMESTAMP WHERE id=?`
+    ).bind(session.user, id).run()
+    await c.env.DB.prepare(
+      `UPDATE ig_cms_approvals SET status='approved', reviewed_by=?, reviewed_at=CURRENT_TIMESTAMP WHERE page_id=? AND status='pending'`
+    ).bind(session.user, id).run()
+    await kvAuditLog(c.env?.IG_AUDIT_KV, 'CMS_PUBLISHED', session.user, 'N/A', existing.slug)
+    return c.json({ success: true, page_id: id, slug: existing.slug, status: 'published', published_at: new Date().toISOString() })
+  }
+  // In-memory fallback
+  const existing = CMS_PAGES_STORE.get(id)
   if (!existing) return c.json({ success: false, error: 'Page not found' }, 404)
-
-  await c.env.DB.prepare(
-    `UPDATE ig_cms_pages SET status='published', approved_by=?, approved_at=CURRENT_TIMESTAMP, published_at=CURRENT_TIMESTAMP, updated_at=CURRENT_TIMESTAMP WHERE id=?`
-  ).bind(session.user, id).run()
-
-  await c.env.DB.prepare(
-    `UPDATE ig_cms_approvals SET status='approved', reviewed_by=?, reviewed_at=CURRENT_TIMESTAMP WHERE page_id=? AND status='pending'`
-  ).bind(session.user, id).run()
-
-  await kvAuditLog(c.env?.IG_AUDIT_KV, 'CMS_PUBLISHED', session.user, 'N/A', existing.slug)
-  return c.json({ success: true, page_id: id, slug: existing.slug, status: 'published', published_at: new Date().toISOString() })
+  const now = new Date().toISOString()
+  CMS_PAGES_STORE.set(id, { ...existing, status: 'published', approved_by: session.user, approved_at: now, published_at: now, updated_at: now })
+  // Mark pending approvals as approved
+  CMS_APPROVALS_STORE.forEach((apr, k) => {
+    if (apr.page_id === id && apr.status === 'pending')
+      CMS_APPROVALS_STORE.set(k, { ...apr, status: 'approved', reviewed_by: session.user, reviewed_at: now })
+  })
+  return c.json({ success: true, page_id: id, slug: existing.slug, status: 'published', published_at: now, storage: 'fallback' })
 })
 
 /** POST /api/cms/pages/:id/reject — Reject a CMS approval */
@@ -4035,15 +4088,24 @@ app.post('/cms/pages/:id/reject', requireSession(), requireRole(['Super Admin'])
   const id = Number(c.req.param('id'))
   const { reason } = await c.req.json() as { reason?: string }
 
-  if (!c.env?.DB) return c.json({ success: false, error: 'D1 not available' }, 503)
-
-  await c.env.DB.prepare(`UPDATE ig_cms_pages SET status='draft', updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(id).run()
-  await c.env.DB.prepare(
-    `UPDATE ig_cms_approvals SET status='rejected', reviewed_by=?, reviewed_at=CURRENT_TIMESTAMP WHERE page_id=? AND status='pending'`
-  ).bind(session.user, id).run()
-
-  await kvAuditLog(c.env?.IG_AUDIT_KV, 'CMS_REJECTED', session.user, 'N/A', String(id))
-  return c.json({ success: true, page_id: id, status: 'rejected', reason: reason || 'No reason provided' })
+  if (c.env?.DB) {
+    await c.env.DB.prepare(`UPDATE ig_cms_pages SET status='draft', updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(id).run()
+    await c.env.DB.prepare(
+      `UPDATE ig_cms_approvals SET status='rejected', reviewed_by=?, reviewed_at=CURRENT_TIMESTAMP WHERE page_id=? AND status='pending'`
+    ).bind(session.user, id).run()
+    await kvAuditLog(c.env?.IG_AUDIT_KV, 'CMS_REJECTED', session.user, 'N/A', String(id))
+    return c.json({ success: true, page_id: id, status: 'rejected', reason: reason || 'No reason provided' })
+  }
+  // In-memory fallback
+  const existing = CMS_PAGES_STORE.get(id)
+  if (!existing) return c.json({ success: false, error: 'Page not found' }, 404)
+  const now = new Date().toISOString()
+  CMS_PAGES_STORE.set(id, { ...existing, status: 'draft', updated_at: now })
+  CMS_APPROVALS_STORE.forEach((apr, k) => {
+    if (apr.page_id === id && apr.status === 'pending')
+      CMS_APPROVALS_STORE.set(k, { ...apr, status: 'rejected', reviewed_by: session.user, reviewed_at: now })
+  })
+  return c.json({ success: true, page_id: id, status: 'rejected', reason: reason || 'No reason provided', storage: 'fallback' })
 })
 
 /** GET /api/cms/approvals — List pending approvals */
@@ -4057,7 +4119,15 @@ app.get('/cms/approvals', requireSession(), requireRole(['Super Admin']), async 
     ).all()
     return c.json({ success: true, approvals: rows.results })
   }
-  return c.json({ success: true, approvals: [], note: 'D1 not available — no pending approvals' })
+  // In-memory fallback
+  const pending = Array.from(CMS_APPROVALS_STORE.values())
+    .filter(a => a.status === 'pending')
+    .map(a => {
+      const pg = CMS_PAGES_STORE.get(a.page_id)
+      return { ...a, slug: pg?.slug || '', title: pg?.title || '' }
+    })
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+  return c.json({ success: true, approvals: pending, storage: 'fallback' })
 })
 
 // ─────────────────────────────────────────────────────────────────────────────

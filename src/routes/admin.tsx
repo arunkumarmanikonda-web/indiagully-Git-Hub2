@@ -138,6 +138,18 @@ window.igApi = {
       if(r.status===401){window.location.href='/admin?error=Session+expired';return null;}
       return r.json();
     });
+  },
+  put: function(path,data){
+    return fetch('/api'+path,{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(function(r){
+      if(r.status===401){window.location.href='/admin?error=Session+expired';return null;}
+      return r.json();
+    });
+  },
+  del: function(path){
+    return fetch('/api'+path,{method:'DELETE',credentials:'include'}).then(function(r){
+      if(r.status===401){window.location.href='/admin?error=Session+expired';return null;}
+      return r.json();
+    });
   }
 };
 
@@ -974,15 +986,16 @@ app.get('/cms', (c) => {
 
     // Determine page ID from panel index (1-based in DB seeded order)
     var pageId = idx + 1;
-    igApi('PUT', '/api/cms/pages/' + pageId, payload)
+    igApi.put('/cms/pages/' + pageId, payload)
       .then(function(r){
+        if(!r){ return; }
         if(r.success){
-          igToast(pageName + ' saved as draft (v' + r.version + ')', 'success');
+          igToast(pageName + ' saved as draft (v' + (r.version||1) + ')', 'success');
           setTimeout(function(){ togglePanel('cms-panel-'+idx); }, 800);
         } else {
-          igToast((r.error || 'Save failed') + ' — ' + (r.note || ''), 'warn');
+          igToast((r.error || 'Save failed') + (r.note ? ' — ' + r.note : ''), 'warn');
         }
-      }).catch(function(){ igToast('Save failed — check D1 binding', 'warn'); });
+      }).catch(function(){ igToast('Save failed — check session', 'warn'); });
   };
   window.igCmsAiAssist = function(page){
     document.getElementById('ai-brief').value = 'Page: '+page+'. India Gully advisory firm, multi-vertical, premium brand.';
@@ -994,8 +1007,9 @@ app.get('/cms', (c) => {
     var pages = ['Home Page','About Page','Services Page','HORECA Page','Listings Page','Contact Page'];
     var pageId = pages.indexOf(page) + 1;
     if(!pageId){ igToast('Unknown page: '+page,'warn'); return; }
-    igApi('POST', '/api/cms/pages/' + pageId + '/submit', { change_note: page + ' change submitted for approval' })
+    igApi.post('/cms/pages/' + pageId + '/submit', { change_note: page + ' change submitted for approval' })
       .then(function(r){
+        if(!r){ return; }
         igToast((r.approval_ref||'APR-???')+' submitted for approval — ' + page, 'success');
       }).catch(function(){ igToast('Submission failed','warn'); });
   };
@@ -1037,7 +1051,7 @@ app.get('/cms', (c) => {
     var row = document.getElementById('apr-row-'+idx);
     var pageId = row ? row.getAttribute('data-page-id') : null;
     if(pageId){
-      igApi('POST', '/api/cms/pages/' + pageId + '/approve', {})
+      igApi.post('/cms/pages/' + pageId + '/approve', {})
         .then(function(r){
           if(badge){ badge.textContent='Published'; badge.className='badge b-gr'; badge.style.fontSize='.6rem'; }
           document.querySelectorAll('#apr-row-'+idx+' button').forEach(function(b){b.remove();});
@@ -1059,7 +1073,7 @@ app.get('/cms', (c) => {
     var pageId = row ? row.getAttribute('data-page-id') : null;
     var reason = window.prompt('Rejection reason (optional):') || 'No reason provided';
     if(pageId){
-      igApi('POST', '/api/cms/pages/' + pageId + '/reject', { reason: reason })
+      igApi.post('/cms/pages/' + pageId + '/reject', { reason: reason })
         .then(function(){
           if(badge){ badge.textContent='Rejected'; badge.className='badge b-re'; badge.style.fontSize='.6rem'; }
           document.querySelectorAll('#apr-row-'+idx+' button').forEach(function(b){b.remove();});
