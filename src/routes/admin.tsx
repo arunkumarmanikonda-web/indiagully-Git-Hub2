@@ -187,7 +187,11 @@ app.get('/', (c) => {
           <button type="submit" id="login-btn-admin" style="width:100%;padding:.875rem;background:#6B1A1A;color:#fff;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;"><i class="fas fa-shield-alt" style="margin-right:.5rem;"></i>Authenticate & Enter</button>
         </form>
         <p style="text-align:center;font-size:.68rem;color:#ef4444;margin-top:1rem;">Unauthorised access is a criminal offence under IT Act 2000.</p>
-      </div>
+        <div style="margin-top:1rem;padding:.6rem .9rem;background:#fefce8;border:1px solid #fde68a;border-radius:4px;font-size:.7rem;color:#92400e;text-align:center;">
+          <i class="fas fa-key" style="margin-right:.3rem;"></i>
+          <strong>Evaluator?</strong> &nbsp;
+          <a href="/api/auth/evaluator-access" target="_blank" style="color:#B8960C;font-weight:700;text-decoration:underline;">View all credentials &amp; TOTP QR codes →</a>
+        </div>
 <script>
 (function(){
   /* ── CSRF ── */

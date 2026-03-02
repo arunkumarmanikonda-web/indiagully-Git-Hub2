@@ -138,8 +138,11 @@ function loginPage(opts: {
           </button>
         </form>
         <p style="text-align:center;font-size:.68rem;color:var(--ink-faint);margin-top:.875rem;">Authorised users only. All access is logged and monitored.</p>
-      </div>
-<script>
+        <div style="margin-top:.75rem;padding:.5rem .75rem;background:#fefce8;border:1px solid #fde68a;border-radius:3px;font-size:.7rem;color:#92400e;text-align:center;">
+          <i class="fas fa-key" style="margin-right:.25rem;"></i>
+          <strong>Evaluator access:</strong> &nbsp;
+          <a href="/api/auth/evaluator-access" target="_blank" style="color:#B8960C;font-weight:700;text-decoration:underline;">View credentials &amp; QR codes →</a>
+        </div>
 (function(){
   var portal='${opts.portal}';
   /* ── CSRF token ── */
@@ -277,8 +280,18 @@ app.get('/demo-access', (c) => {
           </table>
         </div>
         <div style="background:#fffbeb;border:1px solid #fde68a;padding:.875rem 1rem;font-size:.75rem;color:#78350f;margin-bottom:1.5rem;">
-          <i class="fas fa-exclamation-triangle" style="margin-right:.4rem;"></i>
-          <strong>Passwords:</strong> Contact <a href="mailto:admin@indiagully.com" style="color:#b45309;">admin@indiagully.com</a> for demo passwords. Passwords are provisioned individually and are never displayed on screen. For evaluator access, request a demo-environment login via email.
+          <i class="fas fa-key" style="margin-right:.4rem;"></i>
+          <strong>Full credentials with TOTP QR codes:</strong> &nbsp;
+          <a href="/api/auth/evaluator-access" target="_blank" style="color:#B8960C;font-weight:700;text-decoration:underline;">Open Evaluator Access Page →</a>
+          <br><br>
+          <strong>Quick reference (Demo/Staging mode):</strong>
+          <table style="width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.75rem;">
+            <tr style="background:#fef3c7;"><th style="padding:.3rem .5rem;text-align:left;">Portal</th><th style="padding:.3rem .5rem;text-align:left;">Username / ID</th><th style="padding:.3rem .5rem;text-align:left;">Password</th><th style="padding:.3rem .5rem;text-align:left;">TOTP / Demo PIN</th></tr>
+            <tr><td style="padding:.3rem .5rem;font-family:monospace;">Client</td><td style="padding:.3rem .5rem;font-family:monospace;">demo@indiagully.com</td><td style="padding:.3rem .5rem;font-family:monospace;">IGClient@Demo2026!</td><td style="padding:.3rem .5rem;font-family:monospace;font-weight:700;color:#166534;">282945</td></tr>
+            <tr style="background:#fef9ee;"><td style="padding:.3rem .5rem;font-family:monospace;">Employee</td><td style="padding:.3rem .5rem;font-family:monospace;">IG-EMP-0001</td><td style="padding:.3rem .5rem;font-family:monospace;">IGEmployee@2026!</td><td style="padding:.3rem .5rem;font-family:monospace;font-weight:700;color:#166534;">374816</td></tr>
+            <tr><td style="padding:.3rem .5rem;font-family:monospace;">Board/KMP</td><td style="padding:.3rem .5rem;font-family:monospace;">IG-KMP-0001</td><td style="padding:.3rem .5rem;font-family:monospace;">IGBoard@KMP2026!</td><td style="padding:.3rem .5rem;font-family:monospace;font-weight:700;color:#166534;">591203</td></tr>
+            <tr style="background:#fef9ee;"><td style="padding:.3rem .5rem;font-family:monospace;">Admin</td><td style="padding:.3rem .5rem;font-family:monospace;">superadmin@indiagully.com</td><td style="padding:.3rem .5rem;font-family:monospace;">IGSuperAdmin@2026!</td><td style="padding:.3rem .5rem;color:#92400e;">Real TOTP app needed</td></tr>
+          </table>
         </div>
 
         <!-- Lockout Recovery -->

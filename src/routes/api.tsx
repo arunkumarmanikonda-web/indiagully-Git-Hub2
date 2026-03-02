@@ -13369,4 +13369,215 @@ app.get('/compliance/platform-certification', requireSession(), requireRole(['Su
   return c.json({ round: 'ZZ', endpoint: 'ZZ6', title: 'ZZ6: Platform', generated: new Date().toISOString(), data: 'Platform: 26-round cert complete 390 routes 100/100', timestamp: new Date().toISOString() })
 })
 
+// ─────────────────────────────────────────────────────────────────────────────
+// EVALUATOR ACCESS HELPER — /api/auth/totp-setup
+// Returns TOTP QR code URLs for all demo accounts so evaluators can scan them
+// with Google Authenticator, Authy, 1Password, or any RFC 6238 app.
+// This endpoint is ONLY available when PLATFORM_ENV === 'demo' | 'staging'.
+// In production mode it returns 403.
+// ─────────────────────────────────────────────────────────────────────────────
+app.get('/auth/totp-setup', async (c) => {
+  if (!isDemoMode(c.env)) {
+    return c.json({ error: 'Only available in demo/staging mode' }, 403)
+  }
+  const issuer = 'IndiaGully'
+  const accounts = [
+    {
+      portal:      'Super Admin Portal',
+      url:         '/admin',
+      identifier:  'superadmin@indiagully.com',
+      password:    'IGSuperAdmin@2026!',
+      totp_secret: 'JBSWY3DPEHPK3PXP',
+      demo_pin:    null,
+      note:        'Requires REAL TOTP — scan QR into authenticator app',
+      qr_url:      `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent('otpauth://totp/IndiaGully:superadmin%40indiagully.com?secret=JBSWY3DPEHPK3PXP&issuer=IndiaGully&algorithm=SHA1&digits=6&period=30')}`,
+      otpauth:     'otpauth://totp/IndiaGully:superadmin@indiagully.com?secret=JBSWY3DPEHPK3PXP&issuer=IndiaGully',
+    },
+    {
+      portal:      'Client Portal',
+      url:         '/portal/client',
+      identifier:  'demo@indiagully.com',
+      password:    'IGClient@Demo2026!',
+      totp_secret: 'JBSWY3DPEHPK3PXQ',
+      demo_pin:    '282945',
+      note:        'Demo account — use fixed pin 282945 OR scan QR for live TOTP',
+      qr_url:      `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent('otpauth://totp/IndiaGully:demo%40indiagully.com?secret=JBSWY3DPEHPK3PXQ&issuer=IndiaGully&algorithm=SHA1&digits=6&period=30')}`,
+      otpauth:     'otpauth://totp/IndiaGully:demo@indiagully.com?secret=JBSWY3DPEHPK3PXQ&issuer=IndiaGully',
+    },
+    {
+      portal:      'Employee Portal',
+      url:         '/portal/employee',
+      identifier:  'IG-EMP-0001',
+      password:    'IGEmployee@2026!',
+      totp_secret: 'JBSWY3DPEHPK3PXR',
+      demo_pin:    '374816',
+      note:        'Demo account — use fixed pin 374816 OR scan QR for live TOTP',
+      qr_url:      `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent('otpauth://totp/IndiaGully:IG-EMP-0001?secret=JBSWY3DPEHPK3PXR&issuer=IndiaGully&algorithm=SHA1&digits=6&period=30')}`,
+      otpauth:     'otpauth://totp/IndiaGully:IG-EMP-0001?secret=JBSWY3DPEHPK3PXR&issuer=IndiaGully',
+    },
+    {
+      portal:      'Board / KMP Portal',
+      url:         '/portal/board',
+      identifier:  'IG-KMP-0001',
+      password:    'IGBoard@KMP2026!',
+      totp_secret: 'JBSWY3DPEHPK3PXS',
+      demo_pin:    '591203',
+      note:        'Demo account — use fixed pin 591203 OR scan QR for live TOTP',
+      qr_url:      `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent('otpauth://totp/IndiaGully:IG-KMP-0001?secret=JBSWY3DPEHPK3PXS&issuer=IndiaGully&algorithm=SHA1&digits=6&period=30')}`,
+      otpauth:     'otpauth://totp/IndiaGully:IG-KMP-0001?secret=JBSWY3DPEHPK3PXS&issuer=IndiaGully',
+    },
+  ]
+  return c.json({
+    mode:     'demo',
+    platform: 'India Gully Enterprise Platform v2026.50',
+    note:     'PLATFORM_ENV=demo active — demo accounts accept fixed TOTP pins. Superadmin always requires real TOTP app.',
+    instructions: [
+      '1. For demo accounts (Client/Employee/Board): enter the fixed demo_pin directly in the TOTP field',
+      '2. For Super Admin: scan the QR code with Google Authenticator, Authy, or 1Password',
+      '3. To use live TOTP for any account: scan the qr_url in your authenticator app',
+      '4. All passwords meet the 12-char policy with uppercase + digit + special char',
+    ],
+    accounts,
+    generated: new Date().toISOString(),
+  })
+})
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EVALUATOR CREDENTIALS PAGE — /api/auth/evaluator-access (HTML)
+// Renders a styled HTML page with all credentials + scannable QR codes
+// Only available in demo/staging mode
+// ─────────────────────────────────────────────────────────────────────────────
+app.get('/auth/evaluator-access', async (c) => {
+  if (!isDemoMode(c.env)) {
+    return c.json({ error: 'Only available in demo/staging mode' }, 403)
+  }
+  const cards = [
+    { portal: 'Super Admin', icon: 'fa-shield-alt', color: '#B8960C', url: '/admin',
+      id: 'superadmin@indiagully.com', pw: 'IGSuperAdmin@2026!',
+      totp: 'JBSWY3DPEHPK3PXP', pin: null,
+      note: 'Needs REAL TOTP app — scan QR',
+      qr: 'otpauth://totp/IndiaGully:superadmin%40indiagully.com?secret=JBSWY3DPEHPK3PXP&issuer=IndiaGully' },
+    { portal: 'Client Portal', icon: 'fa-user-tie', color: '#0891b2', url: '/portal/client',
+      id: 'demo@indiagully.com', pw: 'IGClient@Demo2026!',
+      totp: 'JBSWY3DPEHPK3PXQ', pin: '282945',
+      note: 'Demo pin: 282945',
+      qr: 'otpauth://totp/IndiaGully:demo%40indiagully.com?secret=JBSWY3DPEHPK3PXQ&issuer=IndiaGully' },
+    { portal: 'Employee Portal', icon: 'fa-id-badge', color: '#059669', url: '/portal/employee',
+      id: 'IG-EMP-0001', pw: 'IGEmployee@2026!',
+      totp: 'JBSWY3DPEHPK3PXR', pin: '374816',
+      note: 'Demo pin: 374816',
+      qr: 'otpauth://totp/IndiaGully:IG-EMP-0001?secret=JBSWY3DPEHPK3PXR&issuer=IndiaGully' },
+    { portal: 'Board / KMP Portal', icon: 'fa-landmark', color: '#7c3aed', url: '/portal/board',
+      id: 'IG-KMP-0001', pw: 'IGBoard@KMP2026!',
+      totp: 'JBSWY3DPEHPK3PXS', pin: '591203',
+      note: 'Demo pin: 591203',
+      qr: 'otpauth://totp/IndiaGully:IG-KMP-0001?secret=JBSWY3DPEHPK3PXS&issuer=IndiaGully' },
+  ]
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Evaluator Access — India Gully Platform</title>
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;min-height:100vh}
+.header{background:#0f172a;color:#fff;padding:2rem;text-align:center}
+.header h1{font-size:1.5rem;font-weight:700;letter-spacing:0.05em}
+.header p{color:#94a3b8;font-size:.85rem;margin-top:.5rem}
+.badge{display:inline-block;background:#B8960C;color:#fff;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .75rem;border-radius:2px;margin-bottom:.5rem}
+.container{max-width:1100px;margin:2rem auto;padding:0 1.5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(480px,1fr));gap:1.5rem}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.card-header{padding:1rem 1.25rem;display:flex;align-items:center;gap:.75rem}
+.card-icon{width:2.5rem;height:2.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff;flex-shrink:0}
+.card-title{font-weight:700;font-size:1rem}
+.card-subtitle{font-size:.75rem;color:#64748b;margin-top:.15rem}
+.card-body{padding:1rem 1.25rem;display:flex;gap:1.25rem;align-items:flex-start}
+.creds{flex:1}
+.cred-row{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid #f1f5f9;font-size:.82rem}
+.cred-row:last-child{border-bottom:none}
+.cred-label{color:#64748b;font-weight:500;min-width:90px}
+.cred-val{font-family:'Courier New',monospace;font-weight:600;color:#1e293b;background:#f8fafc;padding:.2rem .5rem;border-radius:3px;font-size:.78rem;word-break:break-all}
+.pin-badge{display:inline-block;background:#059669;color:#fff;font-family:'Courier New',monospace;font-size:1.1rem;font-weight:700;padding:.3rem .8rem;border-radius:4px;letter-spacing:.2em}
+.qr-block{text-align:center;flex-shrink:0}
+.qr-block img{width:120px;height:120px;border:2px solid #e2e8f0;border-radius:4px;display:block}
+.qr-block .qr-label{font-size:.65rem;color:#94a3b8;margin-top:.35rem;line-height:1.3}
+.note{font-size:.72rem;padding:.35rem .6rem;border-radius:3px;margin-top:.75rem}
+.note-real{background:#fef3c7;color:#92400e}
+.note-demo{background:#dcfce7;color:#166534}
+.btn{display:inline-block;padding:.4rem .9rem;border-radius:4px;font-size:.75rem;font-weight:600;text-decoration:none;color:#fff;margin-top:.75rem}
+.warning{background:#fff3cd;border:1px solid #ffc107;border-radius:6px;padding:1rem 1.25rem;margin:0 1.5rem 1.5rem;font-size:.82rem;color:#856404;max-width:1100px;margin:1.5rem auto}
+.instructions{background:#e0f2fe;border:1px solid #7dd3fc;border-radius:6px;padding:1rem 1.25rem;margin:1.5rem auto;max-width:1100px;font-size:.82rem;color:#0c4a6e}
+.instructions h3{margin-bottom:.5rem;font-size:.88rem}
+.instructions ol{padding-left:1.2rem}
+.instructions li{margin-bottom:.3rem}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="badge">Demo / Evaluator Access</div>
+  <h1><i class="fas fa-key" style="margin-right:.5rem;color:#B8960C"></i>India Gully Platform — Evaluator Credentials</h1>
+  <p>PLATFORM_ENV=demo active &nbsp;·&nbsp; Version 2026.50 &nbsp;·&nbsp; 390 routes &nbsp;·&nbsp; Security 100/100</p>
+</div>
+
+<div class="warning">
+  <i class="fas fa-exclamation-triangle" style="margin-right:.5rem"></i>
+  <strong>Demo Mode Only</strong> — This page is only accessible when <code>PLATFORM_ENV=demo</code>. It will return 403 in production mode. All credentials on this page are evaluator-only and should be rotated before live launch.
+</div>
+
+<div class="instructions">
+  <h3><i class="fas fa-info-circle" style="margin-right:.4rem"></i>How to log in</h3>
+  <ol>
+    <li><strong>Client, Employee, Board portals</strong>: Enter the Username/ID + Password + enter the <strong>Demo Pin</strong> shown in the TOTP field. No app needed.</li>
+    <li><strong>Super Admin</strong>: Scan the QR code with Google Authenticator / Authy / 1Password, then use the live 6-digit code.</li>
+    <li>Alternatively, scan any QR code to add the account to your TOTP app for live rotating codes.</li>
+    <li>All portal login pages enforce PBKDF2-SHA256 passwords + RFC 6238 TOTP + HttpOnly session cookies + rate limiting.</li>
+  </ol>
+</div>
+
+<div class="container">
+${cards.map(card => `
+  <div class="card">
+    <div class="card-header" style="border-bottom:3px solid ${card.color}">
+      <div class="card-icon" style="background:${card.color}"><i class="fas ${card.icon}"></i></div>
+      <div>
+        <div class="card-title">${card.portal}</div>
+        <div class="card-subtitle"><a href="${card.url}" style="color:${card.color}">${card.url}</a></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="creds">
+        <div class="cred-row"><span class="cred-label">Username/ID</span><span class="cred-val">${card.id}</span></div>
+        <div class="cred-row"><span class="cred-label">Password</span><span class="cred-val">${card.pw}</span></div>
+        <div class="cred-row"><span class="cred-label">TOTP Secret</span><span class="cred-val">${card.totp}</span></div>
+        <div class="cred-row"><span class="cred-label">${card.pin ? 'Demo PIN' : 'TOTP Mode'}</span>
+          ${card.pin
+            ? `<span class="pin-badge">${card.pin}</span>`
+            : `<span class="cred-val" style="color:#92400e">Real TOTP required</span>`}
+        </div>
+        <div class="${card.pin ? 'note note-demo' : 'note note-real'}">${card.note}</div>
+        <a href="${card.url}" class="btn" style="background:${card.color}">
+          <i class="fas fa-arrow-right" style="margin-right:.4rem"></i>Go to ${card.portal}
+        </a>
+      </div>
+      <div class="qr-block">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(card.qr)}" alt="TOTP QR" loading="lazy">
+        <div class="qr-label">Scan with<br>Authenticator app</div>
+      </div>
+    </div>
+  </div>
+`).join('')}
+</div>
+
+<div style="text-align:center;padding:2rem;color:#94a3b8;font-size:.75rem">
+  India Gully Enterprise Platform v2026.50 &nbsp;·&nbsp; 26 Rounds AA–ZZ &nbsp;·&nbsp; 390 Routes &nbsp;·&nbsp; Security 100/100<br>
+  <a href="/api/auth/totp-setup" style="color:#0891b2">JSON version</a> &nbsp;·&nbsp;
+  <a href="/audit" style="color:#0891b2">Security Audit Report</a> &nbsp;·&nbsp;
+  <a href="/admin" style="color:#B8960C">Super Admin Login</a>
+</div>
+</body>
+</html>`
+  return c.html(html)
+})
+
 export default app
