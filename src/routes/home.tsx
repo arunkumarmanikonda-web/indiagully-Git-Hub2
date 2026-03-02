@@ -410,13 +410,14 @@ app.get('/', (c) => {
       </div>
       <div style="display:flex;flex-direction:column;gap:1rem;">
         ${[
-          { name:'Arun Manikonda',  title:'Managing Director',      sub:'Director on Board & KMP',   init:'AM', ph:'+91 8988 988 988', em:'akm@indiagully.com', bio:'Founding Director with 20+ years across hospitality, real estate and entertainment.' },
-          { name:'Pavan Manikonda', title:'Executive Director',      sub:'Director on Board & KMP',   init:'PM', ph:'+91 62825 56067', em:'pavan@indiagully.com', bio:'Drives operations and business development across HORECA, hotel management and new verticals.' },
-          { name:'Amit Jhingan',    title:'President, Real Estate',  sub:'Key Managerial Personnel',  init:'AJ', ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com', bio:'Real Estate Vertical Head. Specialist in retail leasing, commercial transactions and entertainment city advisory.' },
+          { name:'Arun Manikonda',  title:'Managing Director',      sub:'Director on Board & KMP',   init:'AM', photo:'https://www.genspark.ai/api/files/s/gUf0JwAa', ph:'+91 8988 988 988', em:'akm@indiagully.com', bio:'Founding Director with 20+ years across hospitality, real estate and entertainment.' },
+          { name:'Pavan Manikonda', title:'Executive Director',      sub:'Director on Board & KMP',   init:'PM', photo:'https://www.genspark.ai/api/files/s/Q3swImT2', ph:'+91 62825 56067', em:'pavan@indiagully.com', bio:'Drives operations and business development across HORECA, hotel management and new verticals.' },
+          { name:'Amit Jhingan',    title:'President, Real Estate',  sub:'Key Managerial Personnel',  init:'AJ', photo:'https://www.genspark.ai/api/files/s/LQZueDyt', ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com', bio:'Real Estate Vertical Head. Specialist in retail leasing, commercial transactions and entertainment city advisory.' },
         ].map(p => `
         <div class="card" style="padding:1.5rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.25rem;align-items:center;">
-          <div style="width:52px;height:52px;background:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--gold);">${p.init}</span>
+          <div style="width:56px;height:56px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--gold);background:var(--ink);">
+            <img src="${p.photo}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;object-position:center top;"
+                 onerror="this.onerror=null;this.style.display='none';this.parentElement.innerHTML='<div style=\'width:56px;height:56px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;\'><span style=\'font-family:DM Serif Display,Georgia,serif;font-size:1.1rem;color:var(--gold);\'>${p.init}</span></div>';">
           </div>
           <div>
             <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.05rem;color:var(--ink);margin-bottom:.12rem;">${p.name}</div>

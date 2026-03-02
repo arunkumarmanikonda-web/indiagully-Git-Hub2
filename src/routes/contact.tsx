@@ -249,13 +249,14 @@ app.get('/', (c) => {
         <div style="background:var(--ink);padding:2rem;">
           <p class="eyebrow-lt" style="margin-bottom:1.25rem;">Leadership Direct</p>
           ${[
-            { name:'Arun Manikonda',  title:'Managing Director',    init:'AM', ph:'+91 8988 988 988', em:'akm@indiagully.com' },
-            { name:'Pavan Manikonda', title:'Executive Director',    init:'PM', ph:'+91 62825 56067', em:'pavan@indiagully.com' },
-            { name:'Amit Jhingan',    title:'President, Real Estate',init:'AJ', ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com' },
+            { name:'Arun Manikonda',  title:'Managing Director',    init:'AM', photo:'https://www.genspark.ai/api/files/s/gUf0JwAa', ph:'+91 8988 988 988', em:'akm@indiagully.com' },
+            { name:'Pavan Manikonda', title:'Executive Director',    init:'PM', photo:'https://www.genspark.ai/api/files/s/Q3swImT2', ph:'+91 62825 56067', em:'pavan@indiagully.com' },
+            { name:'Amit Jhingan',    title:'President, Real Estate',init:'AJ', photo:'https://www.genspark.ai/api/files/s/LQZueDyt', ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com' },
           ].map(p => `
           <div style="display:flex;align-items:center;gap:1rem;padding:.875rem 0;border-bottom:1px solid rgba(255,255,255,.06);">
-            <div style="width:38px;height:38px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-              <span style="font-family:'DM Serif Display',Georgia,serif;font-size:.85rem;color:#fff;font-weight:700;">${p.init}</span>
+            <div style="width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--gold);background:var(--ink);">
+              <img src="${p.photo}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;object-position:center top;"
+                   onerror="this.onerror=null;this.style.display='none';this.parentElement.innerHTML='<div style=\'width:44px;height:44px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;\'><span style=\'font-family:DM Serif Display,Georgia,serif;font-size:.85rem;color:#fff;font-weight:700;\'>${p.init}</span></div>';">
             </div>
             <div style="flex:1;min-width:0;">
               <div style="font-size:.85rem;font-weight:600;color:#fff;margin-bottom:.1rem;">${p.name}</div>
