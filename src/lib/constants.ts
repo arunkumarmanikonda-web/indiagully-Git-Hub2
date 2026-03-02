@@ -144,11 +144,11 @@ export const RETAIL_BRANDS = [
 
 // Transaction Advisory partners
 export const ADVISORY_PARTNERS = [
-  { name: 'Ernst & Young',   abbr: 'EY',        svg: svgToDataUri(svgLogo('EY',        '#FFE600', '#2E2E2E', 22)), color: '#FFE600', textColor: '#2E2E2E', sub: 'Transaction Advisory & Assurance' },
-  { name: 'CBRE',            abbr: 'CBRE',       svg: svgToDataUri(svgLogo('CBRE',      '#003087', '#fff', 18)),    color: '#003087', textColor: '#fff',    sub: 'Real Estate & Capital Markets' },
-  { name: 'ANAROCK',         abbr: 'ANAROCK',    svg: svgToDataUri(svgLogo('ANAROCK',   '#E4003A', '#fff', 12)),    color: '#E4003A', textColor: '#fff',    sub: 'Property Consultants' },
-  { name: 'Pipara & Co',     abbr: 'PIPARA',     svg: svgToDataUri(svgLogo('PIPARA',    '#1A5276', '#fff', 13)),    color: '#1A5276', textColor: '#fff',    sub: 'Chartered Accountants' },
-  { name: 'Resurgent India', abbr: 'RESURGENT',  svg: svgToDataUri(svgLogo('RESURGENT', '#1E8449', '#fff', 11)),   color: '#1E8449', textColor: '#fff',    sub: 'Investment Banking' },
+  { name: 'Ernst & Young',   abbr: 'EY',        logo: '/static/partners/ey.png',              color: '#FFE600', textColor: '#2E2E2E', sub: 'Transaction Advisory & Assurance',  logoBg: '#fff' },
+  { name: 'CBRE',            abbr: 'CBRE',       logo: '/static/partners/cbre.png',            color: '#006A4D', textColor: '#fff',    sub: 'Real Estate & Capital Markets',     logoBg: '#fff' },
+  { name: 'ANAROCK',         abbr: 'ANAROCK',    logo: '/static/partners/anarock.png',         color: '#E4003A', textColor: '#fff',    sub: 'Property Consultants',              logoBg: '#fff' },
+  { name: 'Pipara & Co LLP', abbr: 'PIPARA',     logo: '/static/partners/pipara-co.png',       color: '#1A5276', textColor: '#fff',    sub: 'Chartered Accountants',             logoBg: '#fff' },
+  { name: 'Resurgent India', abbr: 'RESURGENT',  logo: '/static/partners/resurgent-india.png', color: '#F4A900', textColor: '#1e3a5f', sub: 'Investment Banking',                logoBg: '#fff' },
 ]
 
 // ── LISTINGS ────────────────────────────────────────────────────────────────

@@ -175,14 +175,18 @@ ${SERVICES.map((s, i) => `
 
     <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);margin-bottom:2rem;">
       ${ADVISORY_PARTNERS.map((p: any) => `
-      <div style="background:#fff;padding:2.25rem 1.5rem;text-align:center;transition:background .2s;" onmouseover="this.style.background='var(--parch)'" onmouseout="this.style.background='#fff'">
-        <img src="${p.logo}" alt="${p.name}" style="height:36px;width:auto;object-fit:contain;margin:0 auto 1.1rem;filter:grayscale(100%);opacity:.65;transition:all .25s;"
-             onmouseover="this.style.filter='grayscale(0)';this.style.opacity='1'" onmouseout="this.style.filter='grayscale(100%)';this.style.opacity='.65'"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <div style="display:none;font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:var(--ink);margin-bottom:.75rem;">${p.abbr}</div>
-        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.05rem;color:var(--ink);margin-bottom:.3rem;">${p.name}</div>
-        <div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;">${p.abbr}</div>
-        <div style="font-size:.7rem;color:var(--ink-muted);">${p.sub}</div>
+      <div style="background:#fff;padding:2.25rem 1.25rem;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;transition:background .2s;min-height:160px;" onmouseover="this.style.background='#f9f7f2'" onmouseout="this.style.background='#fff'">
+        <div style="height:56px;display:flex;align-items:center;justify-content:center;">
+          <img src="${p.logo}" alt="${p.name}" style="max-height:52px;max-width:110px;width:auto;object-fit:contain;display:block;"
+               onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex'">
+        </div>
+        <div style="display:none;height:56px;align-items:center;justify-content:center;">
+          <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.3rem;font-weight:700;color:var(--ink);">${p.abbr}</span>
+        </div>
+        <div>
+          <div style="font-size:.75rem;font-weight:700;color:var(--ink);margin-bottom:.2rem;">${p.name}</div>
+          <div style="font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);">${p.sub}</div>
+        </div>
       </div>`).join('')}
     </div>
 
