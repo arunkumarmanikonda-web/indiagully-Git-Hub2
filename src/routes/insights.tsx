@@ -20,7 +20,7 @@ const ARTICLES = [
     category: 'Entertainment',
     date: 'January 2026',
     title: 'Navigating the Entertainment Zone Regulatory Landscape in India',
-    excerpt: 'India\'s entertainment real estate sector sits at the intersection of multiple regulatory frameworks — town planning, fire safety, excise and consumer protection laws. We map the regulatory landscape across key states and outline a compliance-first development strategy.',
+    excerpt: 'India\'s entertainment real estate sector sits at the intersection of multiple regulatory frameworks, town planning, fire safety, excise and consumer protection laws. We map the regulatory landscape across key states and outline a compliance-first development strategy.',
     tags: ['Entertainment', 'Regulatory', 'Real Estate', 'Compliance'],
     readTime: '8 min read',
   },
@@ -47,7 +47,7 @@ const ARTICLES = [
     category: 'Retail',
     date: 'October 2025',
     title: 'The Mall-Hotel-Office Trinity: Mixed-Use Integration in Indian Retail Real Estate',
-    excerpt: 'India\'s leading mall developers are pivoting from pure retail to mixed-use destinations. We study five live projects across NCR, Mumbai and Bengaluru — examining lease structure innovations, anchor tenant strategies, and financial models that make mixed-use work.',
+    excerpt: 'India\'s leading mall developers are pivoting from pure retail to mixed-use destinations. We study five live projects across NCR, Mumbai and Bengaluru, examining lease structure innovations, anchor tenant strategies, and financial models that make mixed-use work.',
     tags: ['Retail', 'Mixed-Use', 'Real Estate', 'Mall', 'Office'],
     readTime: '9 min read',
   },
@@ -55,7 +55,7 @@ const ARTICLES = [
     id: 'greenfield-midscale-hotels',
     category: 'Hospitality',
     date: 'September 2025',
-    title: 'The Greenfield Mid-Scale Hotel Opportunity: Project Economics for 2025–27',
+    title: 'The Greenfield Mid-Scale Hotel Opportunity: Project Economics for 2025-27',
     excerpt: 'Mid-scale branded hotel development in India offers compelling risk-adjusted returns. We model the economics for 80-key and 120-key projects across 12 Tier 2 cities, covering land costs, construction timelines, brand fee structures and stabilised RevPAR projections.',
     tags: ['Hospitality', 'Greenfield', 'Hotel', 'Investment', 'Tier 2'],
     readTime: '11 min read',
@@ -65,7 +65,7 @@ const ARTICLES = [
     id: 'india-hospitality-2024',
     category: 'Hospitality',
     date: 'December 2024',
-    title: 'India Hospitality Market Outlook 2024–2025',
+    title: 'India Hospitality Market Outlook 2024-2025',
     excerpt: 'India\'s hospitality sector is experiencing unprecedented growth, driven by domestic travel resurgence, infrastructure investment and international brand expansion. We examine key demand drivers, market dynamics and investment opportunities across segments.',
     tags: ['Hospitality','Market Research','Investment'],
     readTime: '8 min read',
@@ -75,7 +75,7 @@ const ARTICLES = [
     category: 'Entertainment',
     date: 'November 2024',
     title: 'The Rise of Integrated Entertainment Destinations in India',
-    excerpt: 'India\'s entertainment real estate sector is entering a transformational phase — with ₹15,000+ Cr of integrated entertainment destinations in planning or execution. We analyse the structural drivers, developer strategies and investment thesis.',
+    excerpt: 'India\'s entertainment real estate sector is entering a transformational phase, with ₹15,000+ Cr of integrated entertainment destinations in planning or execution. We analyse the structural drivers, developer strategies and investment thesis.',
     tags: ['Entertainment','Real Estate','Trends'],
     readTime: '12 min read',
   },
@@ -102,7 +102,7 @@ const ARTICLES = [
     category: 'Retail',
     date: 'August 2024',
     title: 'Mall Leasing Strategy in the Experience Economy',
-    excerpt: 'India\'s retail malls are evolving from pure shopping destinations to integrated experience hubs — requiring a fundamental rethinking of tenant mix, space allocation and lease structures. We explore what\'s working and what\'s not.',
+    excerpt: 'India\'s retail malls are evolving from pure shopping destinations to integrated experience hubs, requiring a fundamental rethinking of tenant mix, space allocation and lease structures. We explore what\'s working and what\'s not.',
     tags: ['Retail','Leasing','Consumer Trends'],
     readTime: '9 min read',
   },
@@ -128,7 +128,7 @@ app.get('/', (c) => {
       <div class="gr-lt"></div>
       <p class="eyebrow" style="margin-bottom:.875rem;">Insights &amp; Research</p>
       <h1 class="h1" style="margin-bottom:1.5rem;">Thought Leadership<br><em style="color:var(--gold);font-style:italic;">from the Field</em></h1>
-      <p class="lead-lt" style="max-width:540px;">Market research, sector analysis and operational insights from India Gully's advisory practice — drawn from active mandates across hospitality, real estate, retail and entertainment.</p>
+      <p class="lead-lt" style="max-width:540px;">Market research, sector analysis and operational insights from India Gully's advisory practice, drawn from active mandates across hospitality, real estate, retail and entertainment.</p>
     </div>
   </div>
 </div>
@@ -192,7 +192,7 @@ app.get('/', (c) => {
         <div class="gr-lt"></div>
         <p class="eyebrow" style="margin-bottom:.75rem;">Stay Informed</p>
         <h2 class="h2-lt" style="margin-bottom:1rem;">Subscribe to<br>India Gully Insights</h2>
-        <p class="lead-lt" style="font-size:.9rem;">Receive our sector research, market updates and mandate alerts directly — for qualified investors, developers and industry professionals.</p>
+        <p class="lead-lt" style="font-size:.9rem;">Receive our sector research, market updates and mandate alerts directly, for qualified investors, developers and industry professionals.</p>
       </div>
       <div>
         <form class="ig-form" method="POST" action="/api/subscribe" style="display:flex;flex-direction:column;gap:1rem;">
@@ -229,7 +229,7 @@ app.get('/', (c) => {
 
 `
   return c.html(layout('Insights & Research', content, {
-    description: 'India Gully Insights — thought leadership, market research and sector analysis across hospitality, real estate, retail and entertainment.'
+    description: 'India Gully Insights, thought leadership, market research and sector analysis across hospitality, real estate, retail and entertainment.'
   }))
 })
 
@@ -262,7 +262,7 @@ app.get('/:id', (c) => {
     <div style="background:var(--parch);border:1px solid var(--border);padding:1.5rem;margin-bottom:2.5rem;display:flex;align-items:center;gap:1rem;">
       <i class="fas fa-lock" style="color:var(--gold);font-size:1.25rem;flex-shrink:0;"></i>
       <div>
-        <p style="font-size:.85rem;font-weight:600;color:var(--ink);margin-bottom:.2rem;">Full Article — Qualified Access</p>
+        <p style="font-size:.85rem;font-weight:600;color:var(--ink);margin-bottom:.2rem;">Full Article. Qualified Access</p>
         <p style="font-size:.78rem;color:var(--ink-muted);">This article is available in full to qualified investors, developers and industry professionals. Subscribe or contact us to access.</p>
       </div>
       <a href="/insights#subscribe" class="btn btn-g" style="flex-shrink:0;font-size:.72rem;">Gain Access</a>

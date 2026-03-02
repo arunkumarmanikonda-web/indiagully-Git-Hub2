@@ -126,10 +126,10 @@ app.get('/legal/terms', (c) => c.html(legalPage('Terms of Use', `
 <p>The Platform is for authorised users only. Access to the enterprise portal is restricted to individuals with valid login credentials issued by India Gully. Sharing credentials or unauthorised access is strictly prohibited and may constitute an offence under the Information Technology Act 2000.</p>
 
 <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:var(--ink);margin-bottom:.875rem;margin-top:2rem;">3. Intellectual Property</h2>
-<p>All content on the Platform—including text, graphics, data, reports, analyses, the India Gully brand, and the "Celebrating Desiness" mark—is proprietary to Vivacious Entertainment and Hospitality Pvt. Ltd. and protected under applicable copyright and trademark law. No content may be reproduced, distributed, or used without prior written permission.</p>
+<p>All content on the Platform, including text, graphics, data, reports, analyses, the India Gully brand, and the "Celebrating Desiness" mark, is proprietary to Vivacious Entertainment and Hospitality Pvt. Ltd. and protected under applicable copyright and trademark law. No content may be reproduced, distributed, or used without prior written permission.</p>
 
 <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:var(--ink);margin-bottom:.875rem;margin-top:2rem;">4. Confidentiality</h2>
-<p>All information accessed through the Platform—including mandate data, financial statements, client details, board resolutions, and strategic analyses—is strictly confidential. Users must not disclose such information to any third party without the prior written consent of India Gully.</p>
+<p>All information accessed through the Platform, including mandate data, financial statements, client details, board resolutions, and strategic analyses, is strictly confidential. Users must not disclose such information to any third party without the prior written consent of India Gully.</p>
 
 <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:var(--ink);margin-bottom:.875rem;margin-top:2rem;">5. Limitation of Liability</h2>
 <p>India Gully shall not be liable for any indirect, incidental, or consequential damages arising from use of the Platform. Advisory services are provided on the basis of our best professional judgement; outcomes are not guaranteed.</p>
@@ -145,7 +145,7 @@ app.get('/legal/disclaimer', (c) => c.html(legalPage('Disclaimer', `
 <p style="color:var(--ink-muted);font-size:.82rem;margin-bottom:1.75rem;">Last Updated: 27 February 2025</p>
 
 <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:var(--ink);margin-bottom:.875rem;margin-top:2rem;">Advisory Disclaimer</h2>
-<p>India Gully is a multi-vertical advisory firm. The information, analyses, and recommendations provided by India Gully—whether on this website or through the enterprise platform—are prepared on the basis of information believed to be reliable but are provided "as is" without any warranty, express or implied.</p>
+<p>India Gully is a multi-vertical advisory firm. The information, analyses, and recommendations provided by India Gully, whether on this website or through the enterprise platform, are prepared on the basis of information believed to be reliable but are provided "as is" without any warranty, express or implied.</p>
 
 <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:var(--ink);margin-bottom:.875rem;margin-top:2rem;">No Investment Advice</h2>
 <p>Nothing on this Platform constitutes investment advice, a solicitation to invest, or a guarantee of returns. Real estate, hospitality, and entertainment transactions carry inherent risks. Recipients of advisory reports should conduct their own independent due diligence before making any investment or business decision.</p>
@@ -160,7 +160,7 @@ app.get('/legal/disclaimer', (c) => c.html(legalPage('Disclaimer', `
 <p>India Gully operates in compliance with applicable Indian laws including the Companies Act 2013, RERA, SEBI guidelines (where applicable), and GST legislation. This Platform does not constitute a public offer of any kind.</p>
 
 <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:var(--ink);margin-bottom:.875rem;margin-top:2rem;">Contact</h2>
-<p>For legal queries: <strong>Vivacious Entertainment and Hospitality Pvt. Ltd.</strong>, New Delhi — <a href="mailto:info@indiagully.com" style="color:var(--gold);">info@indiagully.com</a></p>
+<p>For legal queries: <strong>Vivacious Entertainment and Hospitality Pvt. Ltd.</strong>, New Delhi, <a href="mailto:info@indiagully.com" style="color:var(--gold);">info@indiagully.com</a></p>
 `)))
 
 // ── AUDIT REPORT ─────────────────────────────────────────────────────────────
@@ -188,7 +188,7 @@ app.notFound((c) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>404 — Page Not Found | India Gully</title>
+  <title>404, Page Not Found | India Gully</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -237,7 +237,7 @@ app.onError((err, c) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>500 — Server Error | India Gully</title>
+  <title>500, Server Error | India Gully</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root{--ink:#1a1a2e;--gold:#B8960C;}

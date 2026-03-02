@@ -170,7 +170,7 @@ function filterMandates(sector) {
 
 `
   return c.html(layout('Active Mandates', content, {
-    description: 'India Gully active mandates — institutional-grade investment opportunities across Real Estate, Hospitality, Entertainment and Retail. All opportunities subject to NDA.'
+    description: 'India Gully active mandates, institutional-grade investment opportunities across Real Estate, Hospitality, Entertainment and Retail. All opportunities subject to NDA.'
   }))
 })
 
@@ -189,7 +189,7 @@ app.get('/:id', (c) => {
   // Acceptance stored in sessionStorage keyed by mandate ID.
   // Only the hero image is visible before acceptance; all sensitive detail is blurred/hidden.
   const ndaModal = l.nda ? `
-<!-- ══ NDA GATE MODAL — G4 ═══════════════════════════════════════════ -->
+<!-- ══ NDA GATE MODAL, G4 ═══════════════════════════════════════════ -->
 <div id="nda-gate" style="position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;padding:1.5rem;background:rgba(8,8,8,.88);backdrop-filter:blur(12px);">
   <div style="width:100%;max-width:520px;background:#fff;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.6);">
     <div style="background:var(--ink);padding:2rem;text-align:center;">
@@ -205,7 +205,7 @@ app.get('/:id', (c) => {
         <strong>${l.title}</strong> is subject to a mutual Non-Disclosure Agreement. The Information Memorandum, financial projections, legal documentation and full mandate details are only accessible to qualified investors who have accepted NDA obligations.
       </div>
       <div style="border:1px solid var(--border);padding:1rem;margin-bottom:1.25rem;max-height:160px;overflow-y:auto;font-size:.75rem;color:var(--ink-soft);line-height:1.8;">
-        <p style="font-weight:700;margin-bottom:.5rem;color:var(--ink);">Non-Disclosure Agreement — Key Obligations</p>
+        <p style="font-weight:700;margin-bottom:.5rem;color:var(--ink);">Non-Disclosure Agreement. Key Obligations</p>
         <ol style="padding-left:1.25rem;margin:0;">
           <li>All information disclosed about this mandate, including financial data, legal structure, counterparty details and advisory analysis, is strictly confidential.</li>
           <li>You agree not to disclose, reproduce, distribute or use this information for any purpose other than evaluating a potential investment.</li>
@@ -265,7 +265,7 @@ ${ndaModal}
     <div class="detail-track" style="display:flex;height:100%;transition:transform .85s cubic-bezier(.77,0,.175,1);">
       ${(l.images || []).map((img: string, i: number) => `
       <div style="flex:0 0 100%;position:relative;overflow:hidden;">
-        <img src="${img}" alt="${l.title} — image ${i+1}"
+        <img src="${img}" alt="${l.title}, image ${i+1}"
              style="width:100%;height:100%;object-fit:cover;transform:scale(1.04);transition:transform 10s ease-out;"
              class="detail-img" loading="${i === 0 ? 'eager' : 'lazy'}">
         <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,.7) 0%,rgba(0,0,0,.3) 50%,rgba(0,0,0,.15) 100%);"></div>
@@ -345,7 +345,7 @@ ${ndaModal}
           </div>`).join('')}
         </div>
 
-        <!-- Full spec sheet — Sotheby's style table -->
+        <!-- Full spec sheet. Sotheby's style table -->
         <div style="margin-bottom:2.5rem;">
           <p style="font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.875rem;padding-bottom:.625rem;border-bottom:1px solid var(--border);">Full Specifications</p>
           <table style="width:100%;border-collapse:collapse;">
@@ -578,7 +578,7 @@ ${ndaModal}
 `
 
   return c.html(layout(listing.title, content, {
-    description: `${listing.title} — ${listing.location} — ${listing.value} — India Gully exclusive transaction advisory mandate.`,
+    description: `${listing.title}, ${listing.location}, ${listing.value}, India Gully exclusive transaction advisory mandate.`,
     ogImage: listing.images?.[0],
   }))
 })

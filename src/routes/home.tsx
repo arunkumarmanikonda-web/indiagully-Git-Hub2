@@ -12,7 +12,7 @@ const SLIDES = [
     h1a: 'Celebrating',
     h1b: 'Desiness',
     h1c: 'Across Every Vertical',
-    sub: "India Gully is India's premier multi-vertical advisory firm — bringing institutional rigour to Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions.",
+    sub: "India Gully is India's premier multi-vertical advisory firm, bringing institutional rigour to Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions.",
     cta1: { text: 'View Active Mandates', href: '/listings' },
     cta2: { text: 'Submit Mandate', href: '/contact' },
     img: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1600&q=85',
@@ -22,7 +22,7 @@ const SLIDES = [
     tag: 'Active Mandate · Maharashtra · ₹4,500 Cr',
     h1a: 'Integrated',
     h1b: 'Entertainment',
-    h1c: 'Destination — Maharashtra',
+    h1c: 'Destination. Maharashtra',
     sub: '200+ acres. Theme Park, Luxury Hotel & Retail Mall. Phase 1 approved. Exclusive transaction advisory mandate. First-of-its-kind project in India.',
     cta1: { text: 'View This Mandate', href: '/listings/entertainment-maharashtra' },
     cta2: { text: 'Request Brochure', href: '/contact' },
@@ -34,7 +34,7 @@ const SLIDES = [
     h1a: '15+ Hotels.',
     h1b: '20+ Brands.',
     h1c: 'One Trusted Partner.',
-    sub: "From Marriott to Radisson to IHG — India Gully navigates brand negotiations, manages hotel openings and drives revenue strategy with institutional authority.",
+    sub: "From Marriott to Radisson to IHG, India Gully navigates brand negotiations, manages hotel openings and drives revenue strategy with institutional authority.",
     cta1: { text: 'Our Hospitality Practice', href: '/services#hospitality' },
     cta2: { text: 'Explore All Services', href: '/services' },
     img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600&q=85',
@@ -247,8 +247,8 @@ app.get('/', (c) => {
       ${[
         { icon:'flag',      title:'India-Deep Expertise',    desc:'Born in India. We understand local markets, regulations, culture and consumer behaviour at granular depth across Tier 1, 2 and 3 cities.' },
         { icon:'handshake', title:'20+ Brand Relationships', desc:'Deep relationships with every major hotel brand. We know which brand fits which project and navigate negotiations with authority.' },
-        { icon:'utensils',  title:'HORECA End-to-End',       desc:'One of the few consultants who also procure and supply — giving clients a single accountable partner from strategy to FF&E delivery.' },
-        { icon:'bolt',      title:'Execution-Led',           desc:'We stay involved through implementation — not just advisory. Turnkey delivery and hands-on project management is our differentiator.' },
+        { icon:'utensils',  title:'HORECA End-to-End',       desc:'One of the few consultants who also procure and supply, giving clients a single accountable partner from strategy to FF&E delivery.' },
+        { icon:'bolt',      title:'Execution-Led',           desc:'We stay involved through implementation, not just advisory. Turnkey delivery and hands-on project management is our differentiator.' },
       ].map((d,i) => `
       <div style="padding:2.75rem 2.25rem;border-right:1px solid rgba(255,255,255,.07);${i===3?'border-right:none;':''}transition:background .25s;" onmouseover="this.style.background='rgba(255,255,255,.03)'" onmouseout="this.style.background='transparent'">
         <div style="width:44px;height:44px;border:1px solid rgba(184,150,12,.35);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;transition:background .22s;" onmouseover="this.style.background='var(--gold)'" onmouseout="this.style.background='transparent'">
@@ -268,7 +268,7 @@ app.get('/', (c) => {
       <div class="gr-c"></div>
       <p class="eyebrow" style="margin-bottom:.75rem;">Hospitality Partners</p>
       <h2 class="h2">Hotel Brands We<br>Work With</h2>
-      <p class="lead" style="margin-top:1rem;">India Gully holds active relationships with India's most prominent hospitality brands — from global chains to homegrown operators.</p>
+      <p class="lead" style="margin-top:1rem;">India Gully holds active relationships with India's most prominent hospitality brands, from global chains to homegrown operators.</p>
     </div>
 
     <!-- Logo grid with fallback text logos -->
@@ -326,7 +326,7 @@ app.get('/', (c) => {
         <div class="gr"></div>
         <p class="eyebrow" style="margin-bottom:.75rem;">Transaction Advisory</p>
         <h2 class="h2">Our Advisory<br>Partners</h2>
-        <p class="lead" style="margin-top:1.25rem;">India Gully collaborates with globally recognised advisory and consulting firms — bringing institutional credibility, financial rigour and sector depth to complex mandates.</p>
+        <p class="lead" style="margin-top:1.25rem;">India Gully collaborates with globally recognised advisory and consulting firms, bringing institutional credibility, financial rigour and sector depth to complex mandates.</p>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
         ${ADVISORY_PARTNERS.slice(0,4).map((p: any) => `
@@ -382,7 +382,7 @@ app.get('/', (c) => {
         { title:'Regenta Central, Noida',         loc:'Business Hotel · Delhi NCR',   icon:'🌸', type:'Turnkey PMC',        desc:'Turnkey project management and brand on-boarding for Regenta Central Noida. Advisory from planning through pre-opening and launch.' },
         { title:'Park Inn by Radisson, Delhi',    loc:'Business Hotel · Delhi',       icon:'🔴', type:'Pre-Opening',        desc:'Mock-up room execution and pre-opening support. FF&E specification and vendor management for the IP Extension property.' },
         { title:'Villa Hotel, Jim Corbett',       loc:'Villa Resort · Uttarakhand',   icon:'🌿', type:'Turnkey + Equity',   desc:'Strategic cum turnkey management for this villa-styled eco resort. Project planning, execution, equity advisory and asset monetisation.' },
-        { title:'100-Room Hotel, Hosur',          loc:'Business Hotel · Tamil Nadu',  icon:'🏗️', type:'Greenfield Turnkey', desc:'Greenfield 100-room branded upscale hotel in Hosur — first branded upscale hotel of the industrial town on the TN-Karnataka border.' },
+        { title:'100-Room Hotel, Hosur',          loc:'Business Hotel · Tamil Nadu',  icon:'🏗️', type:'Greenfield Turnkey', desc:'Greenfield 100-room branded upscale hotel in Hosur, first branded upscale hotel of the industrial town on the TN-Karnataka border.' },
       ].map(p => `
       <div class="card card-lift" style="padding:1.75rem;">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;">
@@ -405,7 +405,7 @@ app.get('/', (c) => {
         <div class="gr"></div>
         <p class="eyebrow" style="margin-bottom:.75rem;">Leadership</p>
         <h2 class="h2" style="margin-bottom:1.25rem;">Steered by<br>Industry Veterans</h2>
-        <p class="lead" style="margin-bottom:2rem;">Our leadership brings decades of combined experience across hospitality, real estate, retail and entertainment — having led marquee mandates for India's most prominent developers, hotel brands and institutional investors.</p>
+        <p class="lead" style="margin-bottom:2rem;">Our leadership brings decades of combined experience across hospitality, real estate, retail and entertainment, having led marquee mandates for India's most prominent developers, hotel brands and institutional investors.</p>
         <a href="/about" class="btn btn-dk">Meet the Full Team</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:1rem;">
@@ -442,7 +442,7 @@ app.get('/', (c) => {
     <div class="gr-c"></div>
     <p class="eyebrow-lt" style="margin-bottom:.75rem;">Get in Touch</p>
     <h2 class="h2-lt" style="margin-bottom:1.25rem;">Ready to Work<br>With India Gully?</h2>
-    <p class="lead-lt" style="max-width:560px;margin:0 auto 2.5rem;">Whether you are a developer, investor, brand or operator — we bring the advisory depth, network and execution capability to deliver results.</p>
+    <p class="lead-lt" style="max-width:560px;margin:0 auto 2.5rem;">Whether you are a developer, investor, brand or operator, we bring the advisory depth, network and execution capability to deliver results.</p>
     <div style="display:flex;flex-wrap:wrap;gap:.875rem;justify-content:center;">
       <a href="/contact"  class="btn btn-g">Submit a Mandate Enquiry</a>
       <a href="/listings" class="btn btn-ghost-g">View Active Mandates</a>
@@ -453,7 +453,7 @@ app.get('/', (c) => {
 
 `
   return c.html(layout('Home', content, {
-    description: "India Gully — Celebrating Desiness. India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions. ₹10,000 Cr+ advisory pipeline."
+    description: "India Gully. Celebrating Desiness. India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions. ₹10,000 Cr+ advisory pipeline."
   }))
 })
 

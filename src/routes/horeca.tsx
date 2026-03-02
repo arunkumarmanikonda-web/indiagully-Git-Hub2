@@ -5,11 +5,11 @@ const app = new Hono()
 
 const CATEGORIES = [
   { icon: '🍳', name: 'Kitchen Equipment',    desc: 'Commercial cooking ranges, ovens, fryers, refrigeration, dishwashers, ventilation hoods and cold storage units from leading global brands.' },
-  { icon: '🛏️', name: 'FF&E — Furniture',     desc: 'Beds, sofas, chairs, tables, wardrobes, mirrors and all room furniture. Specified to brand standards and sourced to budget.' },
-  { icon: '🧴', name: 'OS&E — Supplies',      desc: 'Operating supplies and equipment — cutlery, crockery, glassware, small appliances, cleaning equipment and back-of-house consumables.' },
+  { icon: '🛏️', name: 'FF&E: Furniture',     desc: 'Beds, sofas, chairs, tables, wardrobes, mirrors and all room furniture. Specified to brand standards and sourced to budget.' },
+  { icon: '🧴', name: 'OS&E: Supplies',      desc: 'Operating supplies and equipment, cutlery, crockery, glassware, small appliances, cleaning equipment and back-of-house consumables.' },
   { icon: '🍽️', name: 'Linen & Tableware',    desc: 'Bed linen, bath towels, napkins, tablecloths and F&B tableware. Custom monogramming and brand colour matching available.' },
   { icon: '👔', name: 'Staff Uniforms',        desc: 'Front desk, F&B, housekeeping, security and management uniforms. Design, fabric selection, tailoring and volume procurement.' },
-  { icon: '🌸', name: 'Guest Amenities',       desc: 'In-room toiletries, welcome kits, branded stationery, minibar items and guest experience accessories — curated to property positioning.' },
+  { icon: '🌸', name: 'Guest Amenities',       desc: 'In-room toiletries, welcome kits, branded stationery, minibar items and guest experience accessories, curated to property positioning.' },
   { icon: '💻', name: 'Technology & AV',       desc: 'Smart room systems, in-room entertainment, property management system integration, AV for conferencing and back-of-house IT infrastructure.' },
   { icon: '📦', name: 'Turnkey Supply',        desc: 'End-to-end procurement management from specification, vendor identification and price negotiation through to delivery, installation and snagging.' },
 ]
@@ -33,7 +33,7 @@ app.get('/', (c) => {
         <div class="gr-lt"></div>
         <p class="eyebrow" style="margin-bottom:.875rem;">HORECA Solutions</p>
         <h1 class="h1" style="margin-bottom:1.5rem;">Complete Supply<br>Chain for<br><em style="color:var(--gold);font-style:italic;">Hotels & F&B</em></h1>
-        <p class="lead-lt" style="max-width:500px;margin-bottom:2rem;">Kitchen equipment, FF&E, OS&E, linens, uniforms and guest amenities — procured to spec, delivered on schedule for hotels and F&B operators across India.</p>
+        <p class="lead-lt" style="max-width:500px;margin-bottom:2rem;">Kitchen equipment, FF&E, OS&E, linens, uniforms and guest amenities, procured to spec, delivered on schedule for hotels and F&B operators across India.</p>
         <div style="display:flex;gap:.875rem;flex-wrap:wrap;">
           <a href="#enquiry" class="btn btn-g">Request a Quote</a>
           <a href="#categories" class="btn btn-ghost">View Categories</a>
@@ -157,7 +157,7 @@ app.get('/', (c) => {
           <div>
             <label class="ig-lbl">Supply Categories Required *</label>
             <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin-top:.35rem;">
-              ${['Kitchen Equipment','FF&E — Furniture','OS&E — Supplies','Linen & Tableware','Staff Uniforms','Guest Amenities','Technology & AV','Turnkey (All Categories)'].map(cat => `
+              ${['Kitchen Equipment','FF&E: Furniture','OS&E: Supplies','Linen & Tableware','Staff Uniforms','Guest Amenities','Technology & AV','Turnkey (All Categories)'].map(cat => `
               <label style="display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--ink-soft);cursor:pointer;">
                 <input type="checkbox" name="categories" value="${cat}" style="accent-color:var(--gold);">${cat}
               </label>
@@ -169,9 +169,9 @@ app.get('/', (c) => {
             <select name="budget" class="ig-inp">
               <option value="">Select range</option>
               <option>Below ₹25 Lakhs</option>
-              <option>₹25L – ₹1 Crore</option>
-              <option>₹1 Cr – ₹5 Crore</option>
-              <option>₹5 Cr – ₹25 Crore</option>
+              <option>₹25L to ₹1 Crore</option>
+              <option>₹1 Cr, ₹5 Crore</option>
+              <option>₹5 Cr, ₹25 Crore</option>
               <option>Above ₹25 Crore</option>
             </select>
           </div>
@@ -222,7 +222,7 @@ app.get('/', (c) => {
 
 `
   return c.html(layout('HORECA Solutions', content, {
-    description: 'India Gully HORECA Solutions — kitchen equipment, FF&E, OS&E, linens, uniforms and guest amenities for hotels and F&B operators across India.'
+    description: 'India Gully HORECA Solutions, kitchen equipment, FF&E, OS&E, linens, uniforms and guest amenities for hotels and F&B operators across India.'
   }))
 })
 
@@ -239,14 +239,14 @@ app.get('/portal', (c) => {
     {cat:'Technology',        icon:'desktop',        color:'#9f1239', skus:8,  inStock:8},
   ]
   const products = [
-    {id:'SKU-KE-001',cat:'Kitchen Equipment',name:'Commercial Induction Range — 4 Burner',brand:'Vollrath',unit:'Unit',price:185000,tier_price:148000,stock:5,moq:1},
-    {id:'SKU-KE-002',cat:'Kitchen Equipment',name:'Blast Freezer — 10-tray',              brand:'Williams',unit:'Unit',price:320000,tier_price:256000,stock:2,moq:1},
-    {id:'SKU-CC-001',cat:'Crockery & Cutlery',name:'Fine Dining Crockery Set — 12 pieces', brand:'Wedgwood',unit:'Set', price:12500, tier_price:10000, stock:80,moq:10},
-    {id:'SKU-CC-002',cat:'Crockery & Cutlery',name:'Silver-plate Cutlery — 24 piece set',  brand:'Oneida',  unit:'Set', price:8500,  tier_price:6800,  stock:45,moq:5},
-    {id:'SKU-LF-001',cat:'Linen & Fabrics',   name:'Hotel Cotton Bedsheet Set — King',     brand:'Trident', unit:'Set', price:4200,  tier_price:3360,  stock:200,moq:20},
-    {id:'SKU-LF-002',cat:'Linen & Fabrics',   name:'Bath Towel Set — 6 pcs (600 GSM)',     brand:'Spaces',  unit:'Set', price:2800,  tier_price:2240,  stock:150,moq:10},
-    {id:'SKU-FB-001',cat:'Food & Beverage',   name:'Commercial Espresso Machine — 2 Group',brand:'La Marzocco',unit:'Unit',price:580000,tier_price:464000,stock:3,moq:1},
-    {id:'SKU-FB-002',cat:'Food & Beverage',   name:'Bar Blender — Commercial Grade',       brand:'Vitamix', unit:'Unit',price:45000, tier_price:36000, stock:10,moq:1},
+    {id:'SKU-KE-001',cat:'Kitchen Equipment',name:'Commercial Induction Range, 4 Burner',brand:'Vollrath',unit:'Unit',price:185000,tier_price:148000,stock:5,moq:1},
+    {id:'SKU-KE-002',cat:'Kitchen Equipment',name:'Blast Freezer, 10-tray',              brand:'Williams',unit:'Unit',price:320000,tier_price:256000,stock:2,moq:1},
+    {id:'SKU-CC-001',cat:'Crockery & Cutlery',name:'Fine Dining Crockery Set, 12 pieces', brand:'Wedgwood',unit:'Set', price:12500, tier_price:10000, stock:80,moq:10},
+    {id:'SKU-CC-002',cat:'Crockery & Cutlery',name:'Silver-plate Cutlery, 24 piece set',  brand:'Oneida',  unit:'Set', price:8500,  tier_price:6800,  stock:45,moq:5},
+    {id:'SKU-LF-001',cat:'Linen & Fabrics',   name:'Hotel Cotton Bedsheet Set. King',     brand:'Trident', unit:'Set', price:4200,  tier_price:3360,  stock:200,moq:20},
+    {id:'SKU-LF-002',cat:'Linen & Fabrics',   name:'Bath Towel Set, 6 pcs (600 GSM)',     brand:'Spaces',  unit:'Set', price:2800,  tier_price:2240,  stock:150,moq:10},
+    {id:'SKU-FB-001',cat:'Food & Beverage',   name:'Commercial Espresso Machine, 2 Group',brand:'La Marzocco',unit:'Unit',price:580000,tier_price:464000,stock:3,moq:1},
+    {id:'SKU-FB-002',cat:'Food & Beverage',   name:'Bar Blender. Commercial Grade',       brand:'Vitamix', unit:'Unit',price:45000, tier_price:36000, stock:10,moq:1},
   ]
   const body = `
   <!DOCTYPE html>
@@ -254,7 +254,7 @@ app.get('/portal', (c) => {
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>India Gully HORECA — Customer Portal</title>
+    <title>India Gully HORECA, Customer Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet">
     <style>

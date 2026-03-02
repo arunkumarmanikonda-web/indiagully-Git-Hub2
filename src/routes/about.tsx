@@ -14,7 +14,7 @@ app.get('/', (c) => {
       <div class="gr-lt"></div>
       <p class="eyebrow" style="margin-bottom:.875rem;">About India Gully</p>
       <h1 class="h1" style="margin-bottom:1.5rem;">Celebrating<br><em style="color:var(--gold);font-style:italic;">Desiness</em><br><span style="font-size:.6em;font-weight:300;color:rgba(255,255,255,.5);">Since 2017.</span></h1>
-      <p class="lead-lt" style="max-width:580px;">Vivacious Entertainment and Hospitality Pvt. Ltd. — a Delhi-based, multi-vertical enterprise advisory firm operating across Hospitality, Retail, Real Estate and Entertainment with a distinctly Indian identity.</p>
+      <p class="lead-lt" style="max-width:580px;">Vivacious Entertainment and Hospitality Pvt. Ltd. A Delhi-based, multi-vertical enterprise advisory firm operating across Hospitality, Retail, Real Estate and Entertainment with a distinctly Indian identity.</p>
     </div>
   </div>
 </div>
@@ -30,7 +30,7 @@ app.get('/', (c) => {
 
         <div style="border-left:3px solid var(--gold);padding:1.5rem 1.75rem;background:var(--parch);margin-bottom:1.5rem;">
           <p class="eyebrow" style="margin-bottom:.75rem;">Vision</p>
-          <p style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);line-height:1.65;font-style:italic;">"To be India's most respected diversified advisory enterprise — creating extraordinary experiences in hospitality and entertainment while delivering unmatched strategic value to our clients and stakeholders."</p>
+          <p style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);line-height:1.65;font-style:italic;">"To be India's most respected diversified advisory enterprise, creating extraordinary experiences in hospitality and entertainment while delivering unmatched strategic value to our clients and stakeholders."</p>
         </div>
 
         <div style="border-left:3px solid var(--ink-soft);padding:1.5rem 1.75rem;background:var(--parch);">
@@ -47,7 +47,7 @@ app.get('/', (c) => {
         <div style="display:flex;flex-direction:column;gap:0;">
           ${[
             { icon:'⚖️', name:'Integrity',   desc:'Transparent, ethical conduct in every engagement. We act in the best interests of our clients and maintain the highest standards of professional ethics.' },
-            { icon:'🏆', name:'Excellence',  desc:'Relentless pursuit of the highest standards in everything we do — from mandate delivery to client communication and internal governance.' },
+            { icon:'🏆', name:'Excellence',  desc:'Relentless pursuit of the highest standards in everything we do, from mandate delivery to client communication and internal governance.' },
             { icon:'🤝', name:'Partnership', desc:'Long-term relationships built on trust, shared objectives and sustained value creation for clients, partners and communities we operate in.' },
             { icon:'💡', name:'Innovation',  desc:'Embracing new ideas, methodologies and technologies to solve complex challenges and create differentiated outcomes.' },
           ].map(v => `
@@ -80,11 +80,11 @@ app.get('/', (c) => {
       ${[
         { year:'2017', desc:'Incorporated as Vivacious Entertainment and Hospitality Pvt. Ltd. in New Delhi. Commenced advisory operations across Hospitality and Entertainment sectors with founding team.' },
         { year:'2018', desc:'Launched hotel management and pre-opening consultancy vertical. First mandates executed for Cygnett, Regenta and Radisson brand properties across North India.' },
-        { year:'2019', desc:'Expanded into Real Estate consulting and Retail Leasing strategy — building a truly diversified advisory practice across four complementary verticals.' },
+        { year:'2019', desc:'Expanded into Real Estate consulting and Retail Leasing strategy, building a truly diversified advisory practice across four complementary verticals.' },
         { year:'2020', desc:'HORECA Supplies vertical launched. Providing end-to-end FF&E, OS&E and kitchen procurement for hotel pre-openings and renovations across India.' },
         { year:'2021', desc:'Launched India Gully brand identity, celebrating Desiness. Deepened retail leasing practice with 30+ brand relationships across fashion, F&B and entertainment.' },
         { year:'2023', desc:'Greenfield hotel projects in Hosur, Shirdi and Goa underway. Entertainment destination advisory scaled to ₹4,500 Cr pipeline. Debt & Special Situations vertical established.' },
-        { year:'2024', desc:'Digital transformation initiative. India Gully Enterprise Platform (ERP) — integrated advisory management, governance and HORECA procurement system launched.' },
+        { year:'2024', desc:'Digital transformation initiative. India Gully Enterprise Platform (ERP), integrated advisory management, governance and HORECA procurement system launched.' },
       ].map((t,i) => `
       <div style="display:grid;grid-template-columns:1fr 40px 1fr;gap:0;margin-bottom:2rem;align-items:center;">
         ${i%2===0 ? `
@@ -123,14 +123,14 @@ app.get('/', (c) => {
       <div class="gr-c"></div>
       <p class="eyebrow" style="margin-bottom:.75rem;">Our People</p>
       <h2 class="h2">Board &amp; Key Managerial<br>Personnel</h2>
-      <p class="lead" style="margin-top:1rem;">Three decades of combined experience spanning hospitality, real estate, retail and entertainment — building India's most trusted multi-vertical advisory practice.</p>
+      <p class="lead" style="margin-top:1rem;">Three decades of combined experience spanning hospitality, real estate, retail and entertainment, building India's most trusted multi-vertical advisory practice.</p>
     </div>
 
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:1000px;margin:0 auto;">
       ${[
         { name:'Arun Manikonda',  title:'Managing Director',       role:'Director on Board & KMP',        phone:'+91 8988 988 988', email:'akm@indiagully.com',          init:'AM', photo:'/static/team/arun-manikonda.jpg', bio:"Arun leads India Gully's strategic direction and client relationships, bringing deep expertise in multi-vertical enterprise advisory across hospitality, retail and real estate. As Managing Director and Director on Board, he oversees all major mandates and institutional partnerships." },
         { name:'Pavan Manikonda', title:'Executive Director',       role:'Director on Board & KMP',        phone:'+91 6282556067', email:'pavan@indiagully.com',        init:'PM', photo:'/static/team/pavan-manikonda.jpg', bio:"Pavan drives operational excellence and business development across India Gully's advisory verticals. As Executive Director and Director on Board, he leads execution across hospitality management, brand on-boarding and project delivery mandates." },
-        { name:'Amit Jhingan',    title:'President, Real Estate',   role:'Key Managerial Personnel (KMP)', phone:'+91 9899993543', email:'amit.jhingan@indiagully.com', init:'AJ', photo:'/static/team/amit-jhingan.png', bio:"Amit leads India Gully's Real Estate advisory vertical — overseeing transaction advisory mandates, investment sales, asset management and real estate brokerage across commercial, hospitality and mixed-use assets nationwide." },
+        { name:'Amit Jhingan',    title:'President, Real Estate',   role:'Key Managerial Personnel (KMP)', phone:'+91 9899993543', email:'amit.jhingan@indiagully.com', init:'AJ', photo:'/static/team/amit-jhingan.png', bio:"Amit leads India Gully's Real Estate advisory vertical, overseeing transaction advisory mandates, investment sales, asset management and real estate brokerage across commercial, hospitality and mixed-use assets nationwide." },
       ].map(p => `
       <div class="card" style="overflow:hidden;">
         <div style="background:var(--ink);padding:0;text-align:center;position:relative;overflow:hidden;">
@@ -198,7 +198,7 @@ app.get('/', (c) => {
 
 `
   return c.html(layout('About India Gully', content, {
-    description: "About India Gully — Celebrating Desiness since 2017. Leadership, vision, values and the story behind India's premier multi-vertical advisory firm."
+    description: "About India Gully. Celebrating Desiness since 2017. Leadership, vision, values and the story behind India's premier multi-vertical advisory firm."
   }))
 })
 

@@ -87,16 +87,16 @@ app.get('/', (c) => {
             <select name="scale" class="ig-inp">
               <option value="">Select scale</option>
               <option>Below ₹25 Crores</option>
-              <option>₹25 Cr – ₹100 Cr</option>
-              <option>₹100 Cr – ₹500 Cr</option>
-              <option>₹500 Cr – ₹2,000 Cr</option>
+              <option>₹25 Cr, ₹100 Cr</option>
+              <option>₹100 Cr, ₹500 Cr</option>
+              <option>₹500 Cr, ₹2,000 Cr</option>
               <option>Above ₹2,000 Cr</option>
             </select>
           </div>
 
           <div>
             <label class="ig-lbl">Message / Brief *</label>
-            <textarea name="message" class="ig-inp" required placeholder="Please provide a brief description of your project, mandate or enquiry — including sector, location and stage of development…"></textarea>
+            <textarea name="message" class="ig-inp" required placeholder="Please provide a brief description of your project, mandate or enquiry, including sector, location and stage of development…"></textarea>
           </div>
 
           <div>
@@ -306,7 +306,7 @@ app.get('/', (c) => {
 
 `
   return c.html(layout('Contact & Enquiry', content, {
-    description: 'Contact India Gully — submit a mandate enquiry, HORECA RFQ or advisory request. Our leadership team responds within 24 hours.'
+    description: 'Contact India Gully, submit a mandate enquiry, HORECA RFQ or advisory request. Our leadership team responds within 24 hours.'
   }))
 })
 

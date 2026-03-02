@@ -31,7 +31,7 @@ app.get('/', (c) => {
   <div style="position:relative;width:100%;max-width:1100px;">
     <div style="text-align:center;margin-bottom:3.5rem;">
       <a href="/" style="display:inline-flex;align-items:center;gap:.75rem;margin-bottom:2.5rem;">
-        <!-- LOGO: official white-text lockup — read-only, no crop, no AI, lossless -->
+        <!-- LOGO: official white-text lockup, read-only, no crop, no AI, lossless -->
         <img src="/assets/logo-white.png"
              alt="India Gully"
              height="36"
@@ -100,7 +100,7 @@ function loginPage(opts: {
         <p style="font-size:.78rem;color:rgba(255,255,255,.65);">${opts.subtitle}</p>
         <p style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:.5rem;">India Gully Enterprise Platform</p>
       </div>
-      <!-- 2FA instruction — no codes displayed on screen -->
+      <!-- 2FA instruction, no codes displayed on screen -->
       <div style="background:#f0f9ff;border-bottom:1px solid #bae6fd;padding:.875rem 1.5rem;display:flex;gap:.6rem;">
         <i class="fas fa-shield-alt" style="color:#0369a1;font-size:.75rem;margin-top:.15rem;flex-shrink:0;"></i>
         <div>
@@ -110,7 +110,7 @@ function loginPage(opts: {
       </div>
       ${errorBanner}
       <div style="padding:2rem;">
-        <div id="lockout-banner-${opts.portal}" style="display:none;background:#fef2f2;border:1px solid #fecaca;padding:.7rem 1rem;margin-bottom:1rem;font-size:.78rem;color:#991b1b;border-radius:2px;"><i class="fas fa-ban" style="margin-right:.4rem;"></i>Too many failed attempts — account locked for <span id="lockout-timer-${opts.portal}">300</span>s. Contact <a href="mailto:admin@indiagully.com" style="color:#dc2626;">admin@indiagully.com</a> or call <a href="tel:+918988988988" style="color:#dc2626;">+91 8988 988 988</a> for immediate unlock.</div>
+        <div id="lockout-banner-${opts.portal}" style="display:none;background:#fef2f2;border:1px solid #fecaca;padding:.7rem 1rem;margin-bottom:1rem;font-size:.78rem;color:#991b1b;border-radius:2px;"><i class="fas fa-ban" style="margin-right:.4rem;"></i>Too many failed attempts, account locked for <span id="lockout-timer-${opts.portal}">300</span>s. Contact <a href="mailto:admin@indiagully.com" style="color:#dc2626;">admin@indiagully.com</a> or call <a href="tel:+918988988988" style="color:#dc2626;">+91 8988 988 988</a> for immediate unlock.</div>
         <form id="login-form-${opts.portal}" method="POST" action="/api/auth/login" style="display:flex;flex-direction:column;gap:1.1rem;">
           <input type="hidden" name="portal" value="${opts.portal}">
           <input type="hidden" name="csrf" id="csrf-${opts.portal}" value="">
@@ -279,7 +279,7 @@ app.get('/support', (c) => {
     <div class="sup-hero">
       <div class="sup-hero-icon"><i class="fas fa-life-ring" style="color:#fff;font-size:1.4rem;"></i></div>
       <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.6rem;color:#fff;margin:0 0 .35rem;">Platform Support</h1>
-      <p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:0;">India Gully Enterprise — We're here to help</p>
+      <p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:0;">India Gully Enterprise. We're here to help</p>
       <div style="display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:.875rem;">
         <span class="status-badge badge-green"><i class="fas fa-circle" style="font-size:.45rem;"></i> All Systems Operational</span>
         <span style="color:rgba(255,255,255,.3);font-size:.7rem;">·</span>
@@ -343,9 +343,9 @@ app.get('/support', (c) => {
           <div class="form-row">
             <label class="form-label">Priority</label>
             <select id="sup-priority" class="form-input form-select">
-              <option value="normal">Normal — Response within 4h</option>
-              <option value="high">High — Response within 2h</option>
-              <option value="critical">Critical — Response within 1h</option>
+              <option value="normal">Normal. Response within 4h</option>
+              <option value="high">High. Response within 2h</option>
+              <option value="critical">Critical. Response within 1h</option>
             </select>
           </div>
         </div>
@@ -371,7 +371,7 @@ app.get('/support', (c) => {
         </div>
         <div class="form-row">
           <label class="form-label">Detailed Description *</label>
-          <textarea id="sup-desc" class="form-input form-textarea" placeholder="Please describe the issue in detail — include error messages, steps to reproduce, screenshots if applicable…" required></textarea>
+          <textarea id="sup-desc" class="form-input form-textarea" placeholder="Please describe the issue in detail, include error messages, steps to reproduce, screenshots if applicable…" required></textarea>
         </div>
         <div class="form-row" style="margin-bottom:1.25rem;">
           <label class="form-label">Your User ID / Employee ID <span style="font-weight:400;color:#94a3b8;">(optional)</span></label>
@@ -387,7 +387,7 @@ app.get('/support', (c) => {
         <div style="font-size:.75rem;color:#64748b;line-height:1.7;">
           Urgent issue? Call us at <a href="tel:+918988988988" style="color:#1A3A6B;font-weight:700;">+91 8988 988 988</a>
           or email <a href="mailto:admin@indiagully.com" style="color:#1A3A6B;font-weight:700;">admin@indiagully.com</a>
-          · Mon–Fri 9:00 AM – 7:00 PM IST
+          · Mon to Fri, 9:00 AM to 7:00 PM IST
         </div>
       </div>
     </div>
@@ -396,11 +396,11 @@ app.get('/support', (c) => {
     <div id="panel-faq" class="sup-panel">
       <p style="font-size:.78rem;color:#64748b;margin:0 0 1.25rem;">Find answers to common questions about login, TOTP, and platform usage.</p>
       ${[
-        {q:'My account is locked — what do I do?', a:'After 5 failed login attempts, your account locks for 5 minutes. Wait for the countdown to complete, then try again. For immediate manual unlock, email <a href="mailto:admin@indiagully.com" style="color:#1A3A6B;">admin@indiagully.com</a> with your user ID or call +91 8988 988 988.'},
+        {q:'My account is locked, what do I do?', a:'After 5 failed login attempts, your account locks for 5 minutes. Wait for the countdown to complete, then try again. For immediate manual unlock, email <a href="mailto:admin@indiagully.com" style="color:#1A3A6B;">admin@indiagully.com</a> with your user ID or call +91 8988 988 988.'},
         {q:'How do I set up my TOTP authenticator app?', a:'1. Install Google Authenticator, Authy, or Microsoft Authenticator on your phone.<br>2. Email admin@indiagully.com to request your personal QR code.<br>3. In the app, tap "+" → "Scan QR code".<br>4. Use the 6-digit rotating code during login. Codes refresh every 30 seconds.'},
         {q:'My TOTP code is being rejected even though it looks right.', a:'This is usually a clock-sync issue. On Google Authenticator: tap ⋮ → Time correction for codes → Sync now. On Authy: Settings → Account → Sync. Make sure your phone\'s date/time is set to Automatic (internet time).'},
         {q:'How do I reset my password?', a:'Click "Forgot Password" on any login page or visit <a href="/portal/reset" style="color:#1A3A6B;">/portal/reset</a>. Enter your registered email/employee ID and a secure reset link will be sent. The link is valid for 15 minutes.'},
-        {q:'Which portal should I use?', a:'<strong>Client Portal</strong> — for advisory clients (mandates, invoices, deliverables).<br><strong>Employee Portal</strong> — for staff (payroll, leave, Form-16, attendance).<br><strong>Board & KMP</strong> — for directors and KMPs (governance, voting, board packs).<br><strong>Super Admin</strong> — for platform administrators only.'},
+        {q:'Which portal should I use?', a:'<strong>Client Portal</strong>, for advisory clients (mandates, invoices, deliverables).<br><strong>Employee Portal</strong>, for staff (payroll, leave, Form-16, attendance).<br><strong>Board & KMP</strong>, for directors and KMPs (governance, voting, board packs).<br><strong>Super Admin</strong>, for platform administrators only.'},
         {q:'I can\'t see my invoice / document. What should I check?', a:'Ensure you\'re logged into the correct portal. For invoices, go to Invoices → All and check the date filter. For documents, go to Documents → All Files. If the item is still missing, contact support with the document reference or invoice number.'},
         {q:'How do I update my profile or email address?', a:'Log in to your portal → click your avatar top-right → Profile Settings. Email address changes require admin approval for security. Raise a ticket if you need to update your primary email.'},
         {q:'How do I download my Form-16 or payslip?', a:'Employee Portal → Payslips (for payslips) or Employee Portal → Form-16 (for Form-16 PDFs). Payslips are available from the month after joining. Form-16 is issued annually in June for the prior financial year.'},
@@ -470,7 +470,7 @@ app.get('/support', (c) => {
         {name:'Payments (Razorpay)',      status:'operational', uptime:'99.93%', resp:'89ms'},
         {name:'Document Storage (R2)',   status:'operational', uptime:'99.99%', resp:'22ms'},
         {name:'Email Notifications',     status:'degraded',    uptime:'96.20%', resp:'480ms'},
-        {name:'WhatsApp Alerts',         status:'pending',     uptime:'—',      resp:'—'},
+        {name:'WhatsApp Alerts',         status:'pending',     uptime:'N/A',      resp:'N/A'},
       ].map(s=>{
         const cls = s.status==='operational'?'badge-green':s.status==='degraded'?'badge-yellow':'badge-red'
         const label = s.status==='operational'?'Operational':s.status==='degraded'?'Degraded':'Pending Setup'
@@ -553,13 +553,13 @@ function supSubmit(e){
       supShowToast('Ticket ' + data.ref + ' submitted!','success');
       window.scrollTo({top:0,behavior:'smooth'});
     } else {
-      supShowToast(data.error||'Submission failed — please try again.','error');
+      supShowToast(data.error||'Submission failed, please try again.','error');
       btn.disabled=false;
       btn.innerHTML='<i class="fas fa-paper-plane"></i> Submit Support Ticket';
     }
   })
   .catch(function(){
-    supShowToast('Network error — please try again.','error');
+    supShowToast('Network error, please try again.','error');
     btn.disabled=false;
     btn.innerHTML='<i class="fas fa-paper-plane"></i> Submit Support Ticket';
   });
@@ -570,7 +570,7 @@ function supRefreshStatus(){
   fetch('/api/health').then(function(r){return r.json();}).then(function(d){
     document.getElementById('status-time').textContent = new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short',year:'numeric'});
     spin.style.animation='';
-    supShowToast('Status refreshed — all core systems operational','success');
+    supShowToast('Status refreshed, all core systems operational','success');
   }).catch(function(){ spin.style.animation=''; });
 }
 // Auto-open FAQ if hash = #faq, portals if #portals, status if #status
@@ -659,8 +659,8 @@ function clientShell(pageTitle: string, active: string, body: string) {
     { id:'profile',    icon:'user-cog',       label:'My Profile',    badge:'' },
   ]
   const notifs = [
-    {msg:'INV-2025-002 is overdue — ₹1.8L pending',type:'danger',  time:'2h ago'},
-    {msg:'Proposal signed — Hotel PMC Engagement Letter',type:'success',time:'5h ago'},
+    {msg:'INV-2025-002 is overdue, ₹1.8L pending',type:'danger',  time:'2h ago'},
+    {msg:'Proposal signed. Hotel PMC Engagement Letter',type:'success',time:'5h ago'},
     {msg:'New document shared: Market Research Q4 2024',type:'info',  time:'1d ago'},
   ]
   return `
@@ -769,7 +769,7 @@ app.get('/client/dashboard', (c) => {
         <table class="ig-tbl">
           <thead><tr><th>Mandate</th><th>Sector</th><th>Status</th><th>Value</th></tr></thead>
           <tbody>
-            <tr><td style="font-size:.85rem;font-weight:500;">Retail Leasing – Mumbai</td><td style="font-size:.8rem;color:var(--ink-muted);">Real Estate</td><td><span class="badge b-gr">Active</span></td><td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹2,100 Cr</td></tr>
+            <tr><td style="font-size:.85rem;font-weight:500;">Retail Leasing, Mumbai</td><td style="font-size:.8rem;color:var(--ink-muted);">Real Estate</td><td><span class="badge b-gr">Active</span></td><td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹2,100 Cr</td></tr>
             <tr><td style="font-size:.85rem;font-weight:500;">Hotel Pre-Opening PMC</td><td style="font-size:.8rem;color:var(--ink-muted);">Hospitality</td><td><span class="badge b-g">In Progress</span></td><td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹45 Cr</td></tr>
             <tr><td style="font-size:.85rem;font-weight:500;">Entertainment Feasibility</td><td style="font-size:.8rem;color:var(--ink-muted);">Entertainment</td><td><span class="badge b-bl">Review</span></td><td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹4,500 Cr</td></tr>
           </tbody>
@@ -808,7 +808,7 @@ app.get('/client/mandates', (c) => {
     </div>
     <div style="display:flex;flex-direction:column;gap:1rem;">
       ${[
-        { id:'MND-001', name:'Retail Leasing — Mumbai',      sector:'Real Estate',   value:'₹2,100 Cr', advisor:'Amit Jhingan',    start:'01 Jan 2026', status:'Active',      cls:'b-gr', progress:75,
+        { id:'MND-001', name:'Retail Leasing. Mumbai',      sector:'Real Estate',   value:'₹2,100 Cr', advisor:'Amit Jhingan',    start:'01 Jan 2026', status:'Active',      cls:'b-gr', progress:75,
           milestones:[{done:true,label:'Engagement Signed'},{done:true,label:'Site Survey'},{done:true,label:'Shortlisting'},{done:false,label:'LOI Exchange'},{done:false,label:'Execution'}] },
         { id:'MND-002', name:'Hotel Pre-Opening PMC',         sector:'Hospitality',   value:'₹45 Cr',    advisor:'Arun Manikonda', start:'15 Feb 2026', status:'In Progress', cls:'b-g',  progress:45,
           milestones:[{done:true,label:'Scope Finalised'},{done:true,label:'Team Deployed'},{done:false,label:'Pre-opening Check'},{done:false,label:'Staff Training'},{done:false,label:'Soft Opening'}] },
@@ -880,10 +880,10 @@ app.get('/client/proposals', (c) => {
         <thead><tr><th>Document</th><th>Type</th><th>Date Sent</th><th>Valid Until</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
           ${[
-            { doc:'Advisory Proposal — Q1 2025',     type:'Proposal',           sent:'01 Jan 2026', valid:'31 Mar 2026', status:'Accepted',     cls:'b-gr', canSign:false },
+            { doc:'Advisory Proposal. Q1 2025',     type:'Proposal',           sent:'01 Jan 2026', valid:'31 Mar 2026', status:'Accepted',     cls:'b-gr', canSign:false },
             { doc:'Hotel PMC Engagement Letter',      type:'Engagement Letter',  sent:'10 Feb 2026', valid:'10 Mar 2026', status:'Signed',       cls:'b-gr', canSign:false },
             { doc:'Entertainment Feasibility Scope',  type:'Scope Letter',       sent:'20 Feb 2026', valid:'20 Mar 2026', status:'Pending Sign', cls:'b-g',  canSign:true  },
-            { doc:'Revised Fee Proposal — FY 2026',   type:'Proposal',           sent:'25 Feb 2026', valid:'25 Mar 2026', status:'Under Review', cls:'b-bl', canSign:false },
+            { doc:'Revised Fee Proposal. FY 2026',   type:'Proposal',           sent:'25 Feb 2026', valid:'25 Mar 2026', status:'Under Review', cls:'b-bl', canSign:false },
           ].map((p,pi) => `
           <tr>
             <td style="font-weight:500;">${p.doc}</td>
@@ -941,8 +941,8 @@ app.get('/client/invoices', (c) => {
         <thead><tr><th>Invoice #</th><th>Description</th><th>Amount</th><th>GST (18%)</th><th>Total</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
           ${[
-            { inv:'INV-2026-001', desc:'Advisory Retainer — Jan 2026',   base:212000, gst:38160, total:250160, due:'15 Feb 2026', status:'Paid',    cls:'b-gr' },
-            { inv:'INV-2026-002', desc:'Hotel PMC — Phase 1',             base:152542, gst:27458, total:180000, due:'28 Feb 2026', status:'Overdue', cls:'b-re' },
+            { inv:'INV-2026-001', desc:'Advisory Retainer. Jan 2026',   base:212000, gst:38160, total:250160, due:'15 Feb 2026', status:'Paid',    cls:'b-gr' },
+            { inv:'INV-2026-002', desc:'Hotel PMC, Phase 1',             base:152542, gst:27458, total:180000, due:'28 Feb 2026', status:'Overdue', cls:'b-re' },
             { inv:'INV-2026-003', desc:'Entertainment Feasibility Study', base:271186, gst:48814, total:320000, due:'31 Mar 2026', status:'Draft',   cls:'b-dk' },
           ].map(r => `
           <tr>
@@ -956,7 +956,7 @@ app.get('/client/invoices', (c) => {
             <td style="display:flex;gap:.4rem;">
               <button onclick="igViewInvoice('${r.inv}','${r.desc}','${r.total}','${r.due}','${r.status}')" style="font-size:.68rem;color:var(--gold);background:none;border:1px solid #B8960C;cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-eye'></i></button>
               ${r.status!=='Paid'?`<button onclick="igPayInvoice('${r.inv}','${r.total}','${r.status}')" style="font-size:.68rem;color:#fff;background:#16a34a;border:none;cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-credit-card'></i> Pay</button>`:'<span style="font-size:.68rem;color:#16a34a;"><i class="fas fa-check-circle"></i> Paid</span>'}
-              <button onclick="igToast('Invoice PDF — ${r.inv} downloading','success')" style="font-size:.68rem;color:var(--ink-muted);background:none;border:1px solid var(--border);cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-download'></i></button>
+              <button onclick="igToast('Invoice PDF, ${r.inv} downloading','success')" style="font-size:.68rem;color:var(--ink-muted);background:none;border:1px solid var(--border);cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-download'></i></button>
             </td>
           </tr>`).join('')}
         </tbody>
@@ -972,7 +972,7 @@ app.get('/client/invoices', (c) => {
         <div style="padding:1.5rem;">
           <div style="display:flex;justify-content:space-between;margin-bottom:1.5rem;">
             <div>
-            <!-- INVOICE LOGO: primary dark-text lockup — read-only, no crop, no AI, lossless -->
+            <!-- INVOICE LOGO: primary dark-text lockup, read-only, no crop, no AI, lossless -->
             <img src="/assets/logo-primary.png" alt="India Gully" height="28"
                  style="height:28px;width:auto;max-width:160px;object-fit:contain;object-position:left center;display:block;margin-bottom:.4rem;"
                  draggable="false" decoding="async">
@@ -991,11 +991,11 @@ app.get('/client/invoices', (c) => {
         </div>
       </div>
     </div>
-    <!-- Payment Modal (Phase 6 — Razorpay gateway integration) -->
+    <!-- Payment Modal (Phase 6, Razorpay gateway integration) -->
     <div id="pay-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:10000;align-items:center;justify-content:center;">
       <div style="background:#fff;width:480px;max-width:95vw;border-top:4px solid #16a34a;">
         <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Pay Invoice — <span id="pay-inv-id"></span></div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Pay Invoice, <span id="pay-inv-id"></span></div>
           <button onclick="document.getElementById('pay-modal').style.display='none'" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--ink-muted);">✕</button>
         </div>
         <div style="padding:1.5rem;">
@@ -1019,7 +1019,7 @@ app.get('/client/invoices', (c) => {
           <!-- Razorpay panel -->
           <div id="pay-panel-rz" style="">
             <div style="background:#eff6ff;border:1px solid #bfdbfe;padding:.875rem;margin-bottom:1rem;font-size:.78rem;color:#1d4ed8;">
-              <i class="fas fa-shield-alt" style="margin-right:.4rem;"></i><strong>Razorpay Secure Gateway</strong> — Cards, UPI, Wallets, NetBanking
+              <i class="fas fa-shield-alt" style="margin-right:.4rem;"></i><strong>Razorpay Secure Gateway</strong>, Cards, UPI, Wallets, NetBanking
             </div>
             <div style="display:flex;flex-direction:column;gap:.75rem;">
               <div><label class="ig-label">Card / UPI Number</label><input type="text" class="ig-input" placeholder="XXXX XXXX XXXX XXXX / UPI ID" style="font-size:.82rem;"></div>
@@ -1375,7 +1375,7 @@ function empShell(pageTitle: string, active: string, body: string) {
     { id:'profile',    icon:'user-cog',        label:'My Profile', badge:'' },
   ]
   const notifs = [
-    {msg:'Leave application pending approval — Casual Leave 5-7 Mar',type:'warn',time:'1h ago'},
+    {msg:'Leave application pending approval. Casual Leave 5-7 Mar',type:'warn',time:'1h ago'},
     {msg:'Payslip for February 2025 processed',type:'success',time:'3h ago'},
     {msg:'New policy update: Performance Review Process',type:'info',time:'2d ago'},
   ]
@@ -1446,7 +1446,7 @@ app.get('/employee/dashboard', (c) => {
         { label:'Leave Balance',     value:'12',  sub:'Days available',   icon:'umbrella-beach',  color:'#1A3A6B' },
         { label:'Attendance MTD',    value:'96%', sub:'Present this month', icon:'calendar-check', color:'#16a34a' },
         { label:'Pending Approvals', value:'1',   sub:'Leave pending',    icon:'clock',           color:'#d97706' },
-        { label:'Payroll Month',     value:'Feb', sub:'2025 — Processed', icon:'money-check-alt', color:'#7c3aed' },
+        { label:'Payroll Month',     value:'Feb', sub:'2025, Processed', icon:'money-check-alt', color:'#7c3aed' },
       ].map(s => `
       <div class="am">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;">
@@ -1465,8 +1465,8 @@ app.get('/employee/dashboard', (c) => {
         <a href="/portal/employee/policies" style="font-size:.72rem;color:var(--gold);">View All →</a>
       </div>
       ${[
-        { date:'27 Feb 2026', title:'Q1 2026 Performance Reviews — Schedule Released',     type:'HR' },
-        { date:'20 Feb 2026', title:'Office Closure — Holi 2026 (14th March)',             type:'Holiday' },
+        { date:'27 Feb 2026', title:'Q1 2026 Performance Reviews. Schedule Released',     type:'HR' },
+        { date:'20 Feb 2026', title:'Office Closure. Holi 2026 (14th March)',             type:'Holiday' },
         { date:'15 Feb 2026', title:'Updated Travel & Expense Reimbursement Policy',       type:'Policy' },
       ].map(n => `
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;gap:1rem;align-items:flex-start;">
@@ -1510,7 +1510,7 @@ app.get('/employee/attendance', (c) => {
     <!-- Calendar heatmap -->
     <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;margin-bottom:1.5rem;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">February 2025 — Calendar View</h3>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">February 2025, Calendar View</h3>
         <div style="display:flex;gap:.5rem;align-items:center;font-size:.68rem;color:var(--ink-muted);">
           <span style="width:12px;height:12px;background:#16a34a;display:inline-block;"></span>Present
           <span style="width:12px;height:12px;background:#dc2626;display:inline-block;margin-left:.5rem;"></span>Absent
@@ -1531,7 +1531,7 @@ app.get('/employee/attendance', (c) => {
           const bg = status==='wknd'?'#f3f4f6':status==='absent'?'#fef2f2':status==='late'?'#fffbeb':'#f0fdf4';
           const border = status==='wknd'?'#e5e7eb':status==='absent'?'#fca5a5':status==='late'?'#fcd34d':'#86efac';
           const tc = status==='wknd'?'#9ca3af':status==='absent'?'#dc2626':status==='late'?'#d97706':'#15803d';
-          return `<div style="padding:.4rem .1rem;background:${bg};border:1px solid ${border};cursor:pointer;" title="${d} Feb — ${status==='wknd'?'Weekend':status==='absent'?'Absent':status==='late'?'Late Arrival':'Present'}" onclick="igToast('${d} Feb 2026 — ${status==='wknd'?'Weekend/Holiday':status==='absent'?'Absent':status==='late'?'Late Arrival (after 9:30 AM)':'Present'}','${status==='absent'?'warn':'info'}')"><div style="font-size:.75rem;font-weight:600;color:${tc};">${d}</div>${!isWknd?`<div style="font-size:.58rem;color:${tc};margin-top:.1rem;">${status==='absent'?'ABS':status==='late'?'LATE':'PRE'}</div>`:''}</div>`;
+          return `<div style="padding:.4rem .1rem;background:${bg};border:1px solid ${border};cursor:pointer;" title="${d} Feb, ${status==='wknd'?'Weekend':status==='absent'?'Absent':status==='late'?'Late Arrival':'Present'}" onclick="igToast('${d} Feb 2026, ${status==='wknd'?'Weekend/Holiday':status==='absent'?'Absent':status==='late'?'Late Arrival (after 9:30 AM)':'Present'}','${status==='absent'?'warn':'info'}')"><div style="font-size:.75rem;font-weight:600;color:${tc};">${d}</div>${!isWknd?`<div style="font-size:.58rem;color:${tc};margin-top:.1rem;">${status==='absent'?'ABS':status==='late'?'LATE':'PRE'}</div>`:''}</div>`;
         }).join('')}
       </div>
     </div>
@@ -1555,7 +1555,7 @@ app.get('/employee/attendance', (c) => {
             { date:'26 Feb', day:'Wed', in:'09:05 AM', out:'06:55 PM', hrs:'9h 50m',  ok:true  },
             { date:'25 Feb', day:'Tue', in:'09:22 AM', out:'07:05 PM', hrs:'9h 43m',  ok:true  },
             { date:'24 Feb', day:'Mon', in:'09:00 AM', out:'06:30 PM', hrs:'9h 30m',  ok:true  },
-            { date:'22 Feb', day:'Sat', in:'—',        out:'—',        hrs:'—',       ok:false },
+            { date:'22 Feb', day:'Sat', in:'N/A',        out:'N/A',        hrs:'N/A',       ok:false },
             { date:'21 Feb', day:'Fri', in:'09:18 AM', out:'06:45 PM', hrs:'9h 27m',  ok:true  },
           ].map(r => `
           <tr>
@@ -1599,7 +1599,7 @@ app.get('/employee/attendance', (c) => {
           statusEl.style.color = '#15803d';
           statusEl.style.borderColor = '#16a34a';
           fetch('/api/admin/audit',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({action:'check_in',time:tStr,module:'Attendance'})}).then(function(){}).catch(function(){});
-          igToast('Checked in at '+tStr+' — attendance marked for today','success');
+          igToast('Checked in at '+tStr+', attendance marked for today','success');
           // Add today to table
           var tbody = document.getElementById('att-tbody');
           var tr = document.createElement('tr');
@@ -1607,7 +1607,7 @@ app.get('/employee/attendance', (c) => {
           tr.innerHTML = '<td style="font-size:.82rem;font-weight:500;">Today</td>'
             +'<td style="font-size:.8rem;color:var(--ink-muted);">'+now.toLocaleDateString('en-IN',{weekday:'short'})+'</td>'
             +'<td style="font-size:.82rem;color:#15803d;font-weight:600;">'+tStr+'</td>'
-            +'<td style="font-size:.82rem;color:var(--ink-muted);">—</td>'
+            +'<td style="font-size:.82rem;color:var(--ink-muted);">N/A</td>'
             +'<td style="font-size:.82rem;color:var(--ink-muted);">In progress</td>'
             +'<td><span class="badge b-gr">Present</span></td>';
           tbody.insertBefore(tr, tbody.firstChild);
@@ -1622,7 +1622,7 @@ app.get('/employee/attendance', (c) => {
           statusEl.style.color = '#b91c1c';
           statusEl.style.borderColor = '#dc2626';
           fetch('/api/admin/audit',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({action:'check_out',time:tStr,module:'Attendance'})}).then(function(){}).catch(function(){});
-          igToast('Checked out at '+tStr+' — have a great evening!','success');
+          igToast('Checked out at '+tStr+', have a great evening!','success');
           // Update today row
           var rows = document.getElementById('att-tbody').querySelectorAll('tr');
           if(rows[0]){
@@ -1698,7 +1698,7 @@ app.get('/employee/leave', (c) => {
           <thead><tr><th>Dates</th><th>Type</th><th>Days</th><th>Status</th></tr></thead>
           <tbody>
             ${[
-              { dates:'10–12 Jan 2026', type:'Casual',  days:'3', status:'Approved',  cls:'b-gr' },
+              { dates:'10-12 Jan 2026', type:'Casual',  days:'3', status:'Approved',  cls:'b-gr' },
               { dates:'25 Jan 2026',    type:'Sick',    days:'1', status:'Approved',  cls:'b-gr' },
               { dates:'14 Mar 2026',    type:'Optional',days:'1', status:'Approved',  cls:'b-gr' },
             ].map(r => `
@@ -1743,14 +1743,14 @@ app.get('/employee/leave', (c) => {
       var type = document.getElementById('lv-type').value;
       var diff = Math.round((d2-d1)/(1000*60*60*24))+1;
       fetch('/api/hr/leave/apply',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({type:type,from:from,to:to,reason:reason,ref:ref,days:diff})}).then(function(){}).catch(function(){});
-      igToast('Leave application submitted! Ref: '+ref+' — '+diff+' day(s) pending approval','success');
+      igToast('Leave application submitted! Ref: '+ref+', '+diff+' day(s) pending approval','success');
       // Add to history
       var tbody = document.querySelector('#lv-history-list table tbody');
       var tr = document.createElement('tr');
       tr.style.background = '#fffbeb';
       var fromFmt = d1.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
       var toFmt   = d2.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
-      tr.innerHTML = '<td style="font-size:.8rem;">'+(from===to?fromFmt:fromFmt+' – '+toFmt)+'</td>'
+      tr.innerHTML = '<td style="font-size:.8rem;">'+(from===to?fromFmt:fromFmt+', '+toFmt)+'</td>'
         +'<td><span class="badge b-dk">'+type+'</span></td>'
         +'<td style="font-size:.82rem;">'+diff+'</td>'
         +'<td><span class="badge b-g">Pending</span></td>';
@@ -1820,7 +1820,7 @@ app.get('/employee/payslips', (c) => {
             <td><span class="badge ${p.cls}">Processed</span></td>
             <td style="display:flex;gap:.4rem;">
               <button onclick="igShowPayslip('${p.month}')" style="font-size:.68rem;color:var(--gold);background:none;border:1px solid #B8960C;cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-eye'></i></button>
-              <button onclick="igToast('Payslip PDF — ${p.month} downloading','success')" style="font-size:.68rem;color:var(--ink-muted);background:none;border:1px solid var(--border);cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-download'></i></button>
+              <button onclick="igToast('Payslip PDF, ${p.month} downloading','success')" style="font-size:.68rem;color:var(--ink-muted);background:none;border:1px solid var(--border);cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-download'></i></button>
             </td>
           </tr>`).join('')}
         </tbody>
@@ -1831,7 +1831,7 @@ app.get('/employee/payslips', (c) => {
       <div style="background:#fff;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;border-top:4px solid var(--gold);">
         <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
           <div>
-            <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);">India Gully — Payslip</div>
+            <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);">India Gully. Payslip</div>
             <div id="ps-month-title" style="font-size:.75rem;color:var(--ink-muted);margin-top:.15rem;"></div>
           </div>
           <button onclick="document.getElementById('payslip-modal').style.display='none'" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--ink-muted);">✕</button>
@@ -1880,7 +1880,7 @@ app.get('/employee/payslips', (c) => {
           if(taxable<=prev) break;
           var chunk=Math.min(taxable,s.limit)-prev;
           var t=chunk*s.rate;
-          if(chunk>0) slabDetails.push('₹'+(prev/100000).toFixed(1)+'L–₹'+(Math.min(taxable,s.limit)/100000).toFixed(1)+'L @'+(s.rate*100)+'% = ₹'+Math.round(t).toLocaleString('en-IN'));
+          if(chunk>0) slabDetails.push('₹'+(prev/100000).toFixed(1)+'L-₹'+(Math.min(taxable,s.limit)/100000).toFixed(1)+'L @'+(s.rate*100)+'% = ₹'+Math.round(t).toLocaleString('en-IN'));
           tax+=t; prev=s.limit;
         }
         if(taxable<=700000) tax=0; // rebate u/s 87A
@@ -1891,7 +1891,7 @@ app.get('/employee/payslips', (c) => {
         document.getElementById('tc-tax').textContent='₹'+Math.round(total).toLocaleString('en-IN');
         document.getElementById('tc-tds').textContent='₹'+monthly.toLocaleString('en-IN');
         document.getElementById('tc-rate').textContent=rate+'%';
-        document.getElementById('tc-slab').innerHTML='<strong>Slab breakdown:</strong> '+(taxable<=700000?'<span style="color:#15803d;">Nil tax — Rebate u/s 87A applies (Income ≤ ₹7L)</span>':slabDetails.join(' · '))+(cess>0?' + Cess ₹'+Math.round(cess).toLocaleString('en-IN'):'');
+        document.getElementById('tc-slab').innerHTML='<strong>Slab breakdown:</strong> '+(taxable<=700000?'<span style="color:#15803d;">Nil tax. Rebate u/s 87A applies (Income ≤ ₹7L)</span>':slabDetails.join(' · '))+(cess>0?' + Cess ₹'+Math.round(cess).toLocaleString('en-IN'):'');
       };
       igCalcTax();
 
@@ -1928,7 +1928,7 @@ app.get('/employee/form16', (c) => {
             <td style="font-family:'DM Serif Display',Georgia,serif;">${r.gross}</td>
             <td style="font-size:.82rem;color:#dc2626;">${r.tds}</td>
             <td style="font-size:.82rem;">${r.doc}</td>
-            <td><button onclick="igToast('Form-16 for '+this.closest('tr').querySelector('td').textContent+' ready — downloading','success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;"><i class='fas fa-download'></i> Download</button></td>
+            <td><button onclick="igToast('Form-16 for '+this.closest('tr').querySelector('td').textContent+' ready, downloading','success')" style="font-size:.72rem;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;"><i class='fas fa-download'></i> Download</button></td>
           </tr>`).join('')}
         </tbody>
       </table>
@@ -2052,10 +2052,10 @@ function boardShell(pageTitle: string, active: string, body: string) {
     { id:'compliance', icon:'shield-alt',     label:'Compliance'      },
   ]
   const notifs = [
-    {msg:'Board Meeting Q3 Review — 15 Mar 2026 confirmed',type:'info',  time:'1h ago'},
-    {msg:'Resolution BM-2025-003 — Vote closes in 2 days', type:'warn',  time:'3h ago'},
-    {msg:'GSTR-1 due 11 Mar — Finance team notified',      type:'warn',  time:'1d ago'},
-    {msg:'DIN renewal reminder — Arun Manikonda expiry',   type:'danger', time:'2d ago'},
+    {msg:'Board Meeting Q3 Review, 15 Mar 2026 confirmed',type:'info',  time:'1h ago'},
+    {msg:'Resolution BM-2025-003, Vote closes in 2 days', type:'warn',  time:'3h ago'},
+    {msg:'GSTR-1 due 11 Mar. Finance team notified',      type:'warn',  time:'1d ago'},
+    {msg:'DIN renewal reminder. Arun Manikonda expiry',   type:'danger', time:'2d ago'},
   ]
   return `
 <div style="display:flex;height:100vh;overflow:hidden;background:#f7f7f7;">
@@ -2131,7 +2131,7 @@ app.get('/board/dashboard', (c) => {
   const body = `
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem;">
       ${[
-        { label:'Next Board Meeting', value:'Mar 15', sub:'2025 — Scheduled',    icon:'calendar',    color:'#1E1E1E' },
+        { label:'Next Board Meeting', value:'Mar 15', sub:'2025, Scheduled',    icon:'calendar',    color:'#1E1E1E' },
         { label:'Pending Resolutions',value:'2',      sub:'For director approval', icon:'vote-yea',  color:'#d97706' },
         { label:'Open Compliance',    value:'0',      sub:'All filings current',  icon:'check-circle', color:'#16a34a' },
         { label:'DIN Status',         value:'Active', sub:'All directors valid',  icon:'id-card',     color:'#2563eb' },
@@ -2153,7 +2153,7 @@ app.get('/board/dashboard', (c) => {
         <a href="/portal/board/compliance" style="font-size:.72rem;color:var(--gold);">Full Calendar →</a>
       </div>
       ${[
-        { date:'15 Mar 2026', event:'Board Meeting — Q3 Review',           status:'Scheduled', cls:'b-gr' },
+        { date:'15 Mar 2026', event:'Board Meeting. Q3 Review',           status:'Scheduled', cls:'b-gr' },
         { date:'31 Mar 2026', event:'Annual Accounts Filing (Form AOC-4)', status:'Due',       cls:'b-g'  },
         { date:'30 Jun 2025', event:'Annual Return Filing (Form MGT-7)',   status:'Upcoming',  cls:'b-dk' },
         { date:'30 Sep 2025', event:'Secretarial Audit (Form MR-3)',       status:'Upcoming',  cls:'b-dk' },
@@ -2218,7 +2218,7 @@ app.get('/board/meetings', (c) => {
 app.get('/board/voting', (c) => {
   const body = `
     <div style="display:flex;flex-direction:column;gap:1.25rem;">
-      <h3 style="font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);">Pending Resolutions — Action Required</h3>
+      <h3 style="font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);">Pending Resolutions. Action Required</h3>
       ${[
         {
           res:'RES-2025-003', title:'Approval of Q1 2025 Financial Statements',
@@ -2309,7 +2309,7 @@ app.get('/board/registers', (c) => {
         { name:'Register of KMPs',                     desc:'KMP details, appointment dates, remuneration',                     entries:3,  updated:'15 Jan 2026',
           data:[{col:'Name',v:'Pavan Manikonda'},{col:'Designation',v:'Executive Director'},{col:'Date of Appointment',v:'01 Apr 2017'},{col:'Remuneration (FY2025)',v:'₹1,50,000 p.m.'}] },
         { name:'Register of Members',                  desc:'Shareholder names, addresses, shareholding pattern',               entries:2,  updated:'05 Jan 2026',
-          data:[{col:'Shareholder 1',v:'Arun Manikonda — 50%'},{col:'Shareholder 2',v:'Pavan Manikonda — 50%'},{col:'Total Paid-up Capital',v:'₹1,00,000'},{col:'Face Value',v:'₹10 per share'}] },
+          data:[{col:'Shareholder 1',v:'Arun Manikonda, 50%'},{col:'Shareholder 2',v:'Pavan Manikonda, 50%'},{col:'Total Paid-up Capital',v:'₹1,00,000'},{col:'Face Value',v:'₹10 per share'}] },
         { name:'Register of Charges (CHG-7)',          desc:'All charges created, modified or satisfied',                       entries:0,  updated:'01 Jan 2026',
           data:[{col:'Status',v:'No charges registered'},{col:'Lenders',v:'Nil'},{col:'Secured Assets',v:'Nil'}] },
         { name:'Register of Contracts (AOC-2)',        desc:'Related party transactions requiring board approval',              entries:4,  updated:'15 Feb 2026',
@@ -2331,7 +2331,7 @@ app.get('/board/registers', (c) => {
           </div>
         </div>
         <div id="reg-view-${ri}" class="ig-panel">
-          <div style="font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">${reg.name} — Entries</div>
+          <div style="font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">${reg.name}, Entries</div>
           ${reg.data.map(d=>`<div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border);"><span style="font-size:.78rem;color:var(--ink-muted);">${d.col}</span><span style="font-size:.82rem;color:var(--ink);font-weight:500;">${d.v}</span></div>`).join('')}
           <div style="display:flex;gap:.5rem;margin-top:.875rem;">
             <button onclick="igToast('Entry added to ${reg.name}','success')" style="background:var(--gold);color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.3rem;font-size:.6rem;"></i>Add Entry</button>
@@ -2350,21 +2350,21 @@ app.get('/board/packs', (c) => {
         <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Board Meeting Packs & Minutes</h3>
       </div>
       ${[
-        { meeting:'BM-2026-03 — March Board Meeting',  date:'15 Mar 2026', status:'Upcoming', cls:'b-g',
+        { meeting:'BM-2026-03, March Board Meeting',  date:'15 Mar 2026', status:'Upcoming', cls:'b-g',
           files:[
             {name:'Board Meeting Notice.pdf',           type:'Notice',      size:'0.3 MB'},
             {name:'Q1 2025 Financial Statements.pdf',   type:'Finance',     size:'2.1 MB'},
             {name:'Proposed Resolutions RES-003.pdf',   type:'Resolution',  size:'0.4 MB'},
             {name:'Management Discussion & Analysis.pdf',type:'Report',     size:'1.5 MB'},
           ]},
-        { meeting:'BM-2025-02 — January Board Meeting', date:'15 Jan 2025', status:'Final', cls:'b-gr',
+        { meeting:'BM-2025-02, January Board Meeting', date:'15 Jan 2025', status:'Final', cls:'b-gr',
           files:[
-            {name:'Board Meeting Minutes — Approved.pdf', type:'Minutes',   size:'0.8 MB'},
+            {name:'Board Meeting Minutes. Approved.pdf', type:'Minutes',   size:'0.8 MB'},
             {name:'FY2025 Q2 Financial Statements.pdf',   type:'Finance',   size:'1.9 MB'},
             {name:'Auditor Report Q2.pdf',                type:'Audit',     size:'1.2 MB'},
             {name:'Director Attendance Register.pdf',     type:'Register',  size:'0.2 MB'},
           ]},
-        { meeting:'BM-2025-01 — January EGM',           date:'05 Jan 2025', status:'Final', cls:'b-gr',
+        { meeting:'BM-2025-01, January EGM',           date:'05 Jan 2025', status:'Final', cls:'b-gr',
           files:[
             {name:'EGM Notice & Agenda.pdf',              type:'Notice',    size:'0.3 MB'},
             {name:'Proxy Form.pdf',                       type:'Form',      size:'0.1 MB'},
@@ -2430,7 +2430,7 @@ app.get('/board/finance', (c) => {
     <div style="background:#fff;border:1px solid var(--border);padding:1rem 1.25rem;">
       <div style="display:flex;gap:1rem;flex-wrap:wrap;">
         ${['P&L Statement FY2025', 'Balance Sheet FY2025', 'Cash Flow Statement', 'Auditor\'s Report', 'Notes to Accounts', 'Management Discussion & Analysis'].map(r =>
-          `<button onclick="igToast('${r} — generating PDF report','success')" style="background:var(--parch-dk);border:1px solid var(--border);padding:.5rem 1rem;font-size:.78rem;font-weight:500;color:var(--ink);display:flex;align-items:center;gap:.4rem;cursor:pointer;"><i class="fas fa-file-pdf" style="color:#dc2626;font-size:.7rem;"></i>${r}</button>`
+          `<button onclick="igToast('${r}, generating PDF report','success')" style="background:var(--parch-dk);border:1px solid var(--border);padding:.5rem 1rem;font-size:.78rem;font-weight:500;color:var(--ink);display:flex;align-items:center;gap:.4rem;cursor:pointer;"><i class="fas fa-file-pdf" style="color:#dc2626;font-size:.7rem;"></i>${r}</button>`
         ).join('')}
       </div>
     </div>`
@@ -2441,20 +2441,20 @@ app.get('/board/compliance', (c) => {
   const body = `
     <div style="background:#fff;border:1px solid var(--border);">
       <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Annual Compliance Calendar — FY 2025-26</h3>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Annual Compliance Calendar. FY 2025-26</h3>
       </div>
       <table class="ig-tbl">
         <thead><tr><th>Due Date</th><th>Filing / Event</th><th>Form / Act</th><th>Responsible</th><th>Penalty if Missed</th><th>Status</th></tr></thead>
         <tbody>
           ${[
-            { date:'15 Mar 2025', event:'Board Meeting — Q1 2025',           form:'Companies Act §173',  resp:'Board', penalty:'₹5,000–25,000',    status:'Scheduled', cls:'b-gr' },
+            { date:'15 Mar 2025', event:'Board Meeting. Q1 2025',           form:'Companies Act §173',  resp:'Board', penalty:'₹5,000-25,000',    status:'Scheduled', cls:'b-gr' },
             { date:'31 Mar 2025', event:'Annual Accounts Filing',            form:'AOC-4',               resp:'CFO/CS', penalty:'₹1,000/day',      status:'Due',       cls:'b-g'  },
             { date:'30 Apr 2025', event:'Annual Return Filing',              form:'MGT-7A',              resp:'CS',     penalty:'₹200/day',        status:'Upcoming',  cls:'b-dk' },
             { date:'30 Jun 2025', event:'Income Tax Return',                 form:'ITR-6',               resp:'CFO',    penalty:'₹5,000',          status:'Upcoming',  cls:'b-dk' },
             { date:'31 Jul 2025', event:'Filing of Financial Statements',   form:'AOC-4 XBRL',          resp:'CS',     penalty:'₹1,000/day',      status:'Upcoming',  cls:'b-dk' },
             { date:'30 Sep 2025', event:'Secretarial Audit',                 form:'MR-3',                resp:'CS',     penalty:'₹1,00,000+',      status:'Upcoming',  cls:'b-dk' },
             { date:'30 Nov 2025', event:'MSME Payment Compliance Report',    form:'Specified Form',       resp:'CFO',    penalty:'N/A',             status:'Upcoming',  cls:'b-dk' },
-            { date:'31 Dec 2025', event:'Board Meeting — Q3 2025',           form:'Companies Act §173',  resp:'Board',  penalty:'₹5,000–25,000',   status:'Upcoming',  cls:'b-dk' },
+            { date:'31 Dec 2025', event:'Board Meeting. Q3 2025',           form:'Companies Act §173',  resp:'Board',  penalty:'₹5,000-25,000',   status:'Upcoming',  cls:'b-dk' },
           ].map(r => `
           <tr>
             <td style="font-size:.82rem;white-space:nowrap;font-weight:500;">${r.date}</td>
@@ -2476,11 +2476,11 @@ app.get('/board/compliance', (c) => {
 app.get('/client/reports', (c) => {
   const reports = [
     {id:'RPT-001', name:'Q4 FY2025 Mandate Progress Report',           type:'Mandate',    date:'01 Mar 2026', size:'1.2 MB', ready:true},
-    {id:'RPT-002', name:'Jaipur Hospitality Hub — Feasibility Summary',type:'Feasibility', date:'15 Feb 2026', size:'4.8 MB', ready:true},
-    {id:'RPT-003', name:'Market Research — Delhi NCR Commercial',       type:'Research',   date:'10 Feb 2026', size:'3.1 MB', ready:true},
+    {id:'RPT-002', name:'Jaipur Hospitality Hub. Feasibility Summary',type:'Feasibility', date:'15 Feb 2026', size:'4.8 MB', ready:true},
+    {id:'RPT-003', name:'Market Research. Delhi NCR Commercial',       type:'Research',   date:'10 Feb 2026', size:'3.1 MB', ready:true},
     {id:'RPT-004', name:'Q3 FY2025 Invoice & GST Summary',             type:'Finance',    date:'01 Jan 2026', size:'890 KB', ready:true},
-    {id:'RPT-005', name:'Competitive Landscape — HORECA Sector 2026',  type:'Research',   date:'20 Jan 2026', size:'2.4 MB', ready:true},
-    {id:'RPT-006', name:'Q1 FY2026 Mandate Progress Report',           type:'Mandate',    date:'—',           size:'—',       ready:false},
+    {id:'RPT-005', name:'Competitive Landscape. HORECA Sector 2026',  type:'Research',   date:'20 Jan 2026', size:'2.4 MB', ready:true},
+    {id:'RPT-006', name:'Q1 FY2026 Mandate Progress Report',           type:'Mandate',    date:'TBD',           size:'N/A',       ready:false},
   ]
   const body = `
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
@@ -2517,14 +2517,14 @@ app.get('/client/reports', (c) => {
 // EMPLOYEE: Documents page
 app.get('/employee/documents', (c) => {
   const docs = [
-    {name:'Offer Letter — IG-EMP-0001.pdf',       cat:'Onboarding',  date:'15 Jan 2025', size:'244 KB'},
+    {name:'Offer Letter. IG-EMP-0001.pdf',       cat:'Onboarding',  date:'15 Jan 2025', size:'244 KB'},
     {name:'Employment Agreement v2.pdf',           cat:'Legal',       date:'15 Jan 2025', size:'1.1 MB'},
-    {name:'Form 16 — FY2024–25.pdf',               cat:'Tax',         date:'15 Jun 2025', size:'542 KB'},
-    {name:'Payslip — February 2026.pdf',           cat:'Payroll',     date:'28 Feb 2026', size:'188 KB'},
-    {name:'Payslip — January 2026.pdf',            cat:'Payroll',     date:'31 Jan 2026', size:'186 KB'},
+    {name:'Form 16, FY2024-25.pdf',               cat:'Tax',         date:'15 Jun 2025', size:'542 KB'},
+    {name:'Payslip. February 2026.pdf',           cat:'Payroll',     date:'28 Feb 2026', size:'188 KB'},
+    {name:'Payslip. January 2026.pdf',            cat:'Payroll',     date:'31 Jan 2026', size:'186 KB'},
     {name:'Leave Policy FY2026.pdf',               cat:'Policy',      date:'01 Jan 2026', size:'320 KB'},
     {name:'Employee Handbook v3.0.pdf',            cat:'Policy',      date:'01 Jan 2026', size:'2.1 MB'},
-    {name:'Performance Review — Q3 FY26.pdf',      cat:'Performance', date:'15 Feb 2026', size:'445 KB'},
+    {name:'Performance Review. Q3 FY26.pdf',      cat:'Performance', date:'15 Feb 2026', size:'445 KB'},
   ]
   const catColors: Record<string,string> = {Onboarding:'#16a34a',Legal:'#7c3aed',Tax:'#d97706',Payroll:'#2563eb',Policy:'#0891b2',Performance:'#db2777'}
   const body = `
@@ -2557,9 +2557,9 @@ app.get('/board/governance', (c) => {
     {id:'GOV-001', doc:'Memorandum of Association (MOA)',               version:'Current', filed:'2017', status:'Active'},
     {id:'GOV-002', doc:'Articles of Association (AOA)',                  version:'v2.0',    filed:'2022', status:'Active'},
     {id:'GOV-003', doc:'Board Resolution Register (MGT-1)',              version:'FY26',    filed:'2026', status:'Current'},
-    {id:'GOV-004', doc:'Annual Return FY2024–25 (MGT-7)',               version:'Filed',   filed:'Sep 2025', status:'Filed'},
+    {id:'GOV-004', doc:'Annual Return FY2024-25 (MGT-7)',               version:'Filed',   filed:'Sep 2025', status:'Filed'},
     {id:'GOV-005', doc:'Director KYC & DIN Register',                   version:'2026',    filed:'Jan 2026', status:'Valid'},
-    {id:'GOV-006', doc:'Secretarial Audit Report (MR-3) FY2024–25',    version:'Final',   filed:'Oct 2025', status:'Filed'},
+    {id:'GOV-006', doc:'Secretarial Audit Report (MR-3) FY2024-25',    version:'Final',   filed:'Oct 2025', status:'Filed'},
     {id:'GOV-007', doc:'Code of Conduct & Ethics Policy',               version:'v2.0',    filed:'Jan 2025', status:'Active'},
     {id:'GOV-008', doc:'Related Party Transaction Policy',              version:'v1.2',    filed:'Mar 2024', status:'Active'},
   ]
@@ -2593,7 +2593,7 @@ app.get('/board/financials', (c) => {
   const body = `
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
       ${[
-        {label:'FY2025–26 Revenue (YTD)', value:'₹2.4 Cr',  sub:'Apr 2025 – Feb 2026', color:'#16a34a'},
+        {label:'FY2025-26 Revenue (YTD)', value:'₹2.4 Cr',  sub:'Apr 2025, Feb 2026', color:'#16a34a'},
         {label:'EBITDA Margin',           value:'38.2%',     sub:'FY26 target: 35%',    color:'#2563eb'},
         {label:'Mandate Pipeline',        value:'₹8,815 Cr', sub:'6 active mandates',   color:'#d97706'},
       ].map(s=>`<div class="am">
@@ -2604,7 +2604,7 @@ app.get('/board/financials', (c) => {
     </div>
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
       <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">P&amp;L Summary — FY2025–26</h3>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">P&amp;L Summary. FY2025-26</h3>
         <button onclick="igToast('Financial report PDF generated','success')" style="background:none;border:1px solid var(--border);padding:.3rem .75rem;font-size:.68rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download" style="margin-right:.3rem;"></i>Download PDF</button>
       </div>
       <div style="overflow-x:auto;">
@@ -2636,14 +2636,14 @@ app.get('/board/financials', (c) => {
 // BOARD: Reports page
 app.get('/board/reports', (c) => {
   const reports = [
-    {name:'Board Pack — Q3 FY2025–26',              date:'01 Mar 2026', type:'Board Pack',    ready:true},
-    {name:'Management Report — February 2026',       date:'28 Feb 2026', type:'Management',    ready:true},
-    {name:'DPDP Compliance Report — FY2025–26',     date:'28 Feb 2026', type:'Compliance',    ready:true},
-    {name:'Secretarial Audit Report FY2024–25',     date:'15 Oct 2025', type:'Audit',         ready:true},
-    {name:'Annual Report FY2024–25 (Draft)',         date:'28 Feb 2026', type:'Annual Report', ready:true},
-    {name:'Risk Dashboard — Q3 FY26',               date:'01 Mar 2026', type:'Risk',          ready:true},
-    {name:'Board Pack — Q4 FY2025–26',              date:'—',           type:'Board Pack',    ready:false},
-    {name:'Statutory Audit FY2025–26',              date:'—',           type:'Audit',         ready:false},
+    {name:'Board Pack. Q3 FY2025-26',              date:'01 Mar 2026', type:'Board Pack',    ready:true},
+    {name:'Management Report. February 2026',       date:'28 Feb 2026', type:'Management',    ready:true},
+    {name:'DPDP Compliance Report. FY2025-26',     date:'28 Feb 2026', type:'Compliance',    ready:true},
+    {name:'Secretarial Audit Report FY2024-25',     date:'15 Oct 2025', type:'Audit',         ready:true},
+    {name:'Annual Report FY2024-25 (Draft)',         date:'28 Feb 2026', type:'Annual Report', ready:true},
+    {name:'Risk Dashboard. Q3 FY26',               date:'01 Mar 2026', type:'Risk',          ready:true},
+    {name:'Board Pack. Q4 FY2025-26',              date:'TBD',           type:'Board Pack',    ready:false},
+    {name:'Statutory Audit FY2025-26',              date:'TBD',           type:'Audit',         ready:false},
   ]
   const typeColors: Record<string,string> = {'Board Pack':'#1e40af',Management:'#16a34a',Compliance:'#7c3aed',Audit:'#d97706','Annual Report':'#db2777',Risk:'#dc2626'}
   const body = `
