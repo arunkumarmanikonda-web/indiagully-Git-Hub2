@@ -190,14 +190,14 @@ app.get('/dashboard', (c) => {
 // ── LEADS & CRM ───────────────────────────────────────────────────────────────
 app.get('/leads', (c) => {
   const leads = [
-    {id:'LD-001',name:'Heritage Hotels Ltd',     contact:'Ravi Sharma',     email:'ravi@heritage.co',   phone:'+91 98100 XXXXX',vertical:'Hospitality', source:'Website',   status:'Qualified', value:'₹4.5 Cr',  assigned:'Amit Jhingan', date:'01 Mar 2025',score:82},
-    {id:'LD-002',name:'NCR Entertainment Pvt',   contact:'Priya Mehta',     email:'priya@ncrvent.com',  phone:'+91 99990 XXXXX',vertical:'Entertainment',source:'Referral',  status:'Proposal',  value:'₹18 Cr',   assigned:'Arun Manikonda',date:'25 Feb 2025',score:91},
-    {id:'LD-003',name:'Desi Brands Pvt Ltd',     contact:'Vivek Agarwal',   email:'vivek@desibrands.in',phone:'+91 97110 XXXXX',vertical:'Retail',      source:'LinkedIn',   status:'Enquiry',   value:'₹1.2 Cr',  assigned:'Pavan Manikonda',date:'22 Feb 2025',score:65},
-    {id:'LD-004',name:'Rajasthan Resort Group',  contact:'Suresh Patel',    email:'suresh@rrg.com',     phone:'+91 94000 XXXXX',vertical:'HORECA',       source:'Website',   status:'Negotiation',value:'₹85 L',   assigned:'Amit Jhingan', date:'15 Feb 2025',score:78},
-    {id:'LD-005',name:'Goa Hospitality Ventures',contact:'Alicia Fernandes',email:'alicia@goahv.com',   phone:'+91 93770 XXXXX',vertical:'Hospitality', source:'Event',     status:'Proposal',  value:'₹2.1 Cr',  assigned:'Arun Manikonda',date:'10 Feb 2025',score:74},
-    {id:'LD-006',name:'Mumbai RE Fund',          contact:'Arjun Kapoor',    email:'arjun@mumbairef.com',phone:'+91 98201 XXXXX',vertical:'Real Estate',  source:'Cold Call', status:'Overdue',   value:'₹60 L',    assigned:'Pavan Manikonda',date:'01 Feb 2025',score:55},
-    {id:'LD-007',name:'Tata Hotels Advisory',    contact:'Neha Singh',      email:'neha@tata.com',      phone:'+91 91230 XXXXX',vertical:'Hospitality', source:'Referral',  status:'New',       value:'₹6.2 Cr',  assigned:'Unassigned',  date:'05 Mar 2025',score:70},
-    {id:'LD-008',name:'Delhi NCR Retail Park',   contact:'Mohit Batra',     email:'mohit@dncrrp.com',   phone:'+91 89000 XXXXX',vertical:'Real Estate',  source:'Website',   status:'New',       value:'₹9.5 Cr',  assigned:'Unassigned',  date:'04 Mar 2025',score:68},
+    {id:'LD-001',name:'Heritage Hotels Ltd',     contact:'Ravi Sharma',     email:'ravi@heritage.co',   phone:'+91 98100 XXXXX',vertical:'Hospitality', source:'Website',   status:'Qualified', value:'₹4.5 Cr',  assigned:'Amit Jhingan', date:'01 Mar 2026',score:82},
+    {id:'LD-002',name:'NCR Entertainment Pvt',   contact:'Priya Mehta',     email:'priya@ncrvent.com',  phone:'+91 99990 XXXXX',vertical:'Entertainment',source:'Referral',  status:'Proposal',  value:'₹18 Cr',   assigned:'Arun Manikonda',date:'25 Feb 2026',score:91},
+    {id:'LD-003',name:'Desi Brands Pvt Ltd',     contact:'Vivek Agarwal',   email:'vivek@desibrands.in',phone:'+91 97110 XXXXX',vertical:'Retail',      source:'LinkedIn',   status:'Enquiry',   value:'₹1.2 Cr',  assigned:'Pavan Manikonda',date:'22 Feb 2026',score:65},
+    {id:'LD-004',name:'Rajasthan Resort Group',  contact:'Suresh Patel',    email:'suresh@rrg.com',     phone:'+91 94000 XXXXX',vertical:'HORECA',       source:'Website',   status:'Negotiation',value:'₹85 L',   assigned:'Amit Jhingan', date:'15 Feb 2026',score:78},
+    {id:'LD-005',name:'Goa Hospitality Ventures',contact:'Alicia Fernandes',email:'alicia@goahv.com',   phone:'+91 93770 XXXXX',vertical:'Hospitality', source:'Event',     status:'Proposal',  value:'₹2.1 Cr',  assigned:'Arun Manikonda',date:'10 Feb 2026',score:74},
+    {id:'LD-006',name:'Mumbai RE Fund',          contact:'Arjun Kapoor',    email:'arjun@mumbairef.com',phone:'+91 98201 XXXXX',vertical:'Real Estate',  source:'Cold Call', status:'Overdue',   value:'₹60 L',    assigned:'Pavan Manikonda',date:'01 Feb 2026',score:55},
+    {id:'LD-007',name:'Tata Hotels Advisory',    contact:'Neha Singh',      email:'neha@tata.com',      phone:'+91 91230 XXXXX',vertical:'Hospitality', source:'Referral',  status:'New',       value:'₹6.2 Cr',  assigned:'Unassigned',  date:'05 Mar 2026',score:70},
+    {id:'LD-008',name:'Delhi NCR Retail Park',   contact:'Mohit Batra',     email:'mohit@dncrrp.com',   phone:'+91 89000 XXXXX',vertical:'Real Estate',  source:'Website',   status:'New',       value:'₹9.5 Cr',  assigned:'Unassigned',  date:'04 Mar 2026',score:68},
   ]
   const statusColor: Record<string,string> = {New:'#2563eb',Enquiry:'#d97706',Qualified:'#7c3aed',Proposal:'#B8960C',Negotiation:'#dc2626',Overdue:'#dc2626',Won:'#16a34a',Lost:'#94a3b8'}
   const body = `
@@ -377,10 +377,10 @@ app.get('/leads', (c) => {
 // ── QUOTE BUILDER ─────────────────────────────────────────────────────────────
 app.get('/quotes', (c) => {
   const quotes = [
-    {id:'QT-2025-001',client:'Heritage Hotels Ltd',    vertical:'Hospitality', title:'Pre-Opening PMC Services',    base:3800000,gst:684000,total:4484000,valid:'31 Mar 2025',status:'Accepted', version:'v2'},
-    {id:'QT-2025-002',client:'NCR Entertainment Pvt', vertical:'Entertainment',title:'Feasibility Study & Advisory',  base:1500000,gst:270000,total:1770000,valid:'15 Mar 2025',status:'Pending',  version:'v1'},
-    {id:'QT-2025-003',client:'Rajasthan Resort Group',vertical:'HORECA',       title:'HORECA Supply — 200 Rooms',     base:7200000,gst:1296000,total:8496000,valid:'20 Mar 2025',status:'Draft',    version:'v1'},
-    {id:'QT-2025-004',client:'Goa Hospitality Ventures',vertical:'Hospitality',title:'Luxury Resort Feasibility',     base:1800000,gst:324000,total:2124000,valid:'30 Mar 2025',status:'Pending',  version:'v2'},
+    {id:'QT-2026-001',client:'Heritage Hotels Ltd',    vertical:'Hospitality', title:'Pre-Opening PMC Services',    base:3800000,gst:684000,total:4484000,valid:'31 Mar 2026',status:'Accepted', version:'v2'},
+    {id:'QT-2026-002',client:'NCR Entertainment Pvt', vertical:'Entertainment',title:'Feasibility Study & Advisory',  base:1500000,gst:270000,total:1770000,valid:'15 Mar 2026',status:'Pending',  version:'v1'},
+    {id:'QT-2026-003',client:'Rajasthan Resort Group',vertical:'HORECA',       title:'HORECA Supply — 200 Rooms',     base:7200000,gst:1296000,total:8496000,valid:'20 Mar 2026',status:'Draft',    version:'v1'},
+    {id:'QT-2026-004',client:'Goa Hospitality Ventures',vertical:'Hospitality',title:'Luxury Resort Feasibility',     base:1800000,gst:324000,total:2124000,valid:'30 Mar 2026',status:'Pending',  version:'v2'},
     {id:'QT-2025-005',client:'Mumbai RE Fund',         vertical:'Real Estate',  title:'Advisory Retainer FY 2025-26', base:500000, gst:90000, total:590000, valid:'01 Apr 2025',status:'Draft',    version:'v1'},
     {id:'QT-2025-006',client:'Desi Brands Pvt Ltd',    vertical:'Retail',       title:'15-City Retail Expansion PMC', base:1000000,gst:180000,total:1180000,valid:'10 Apr 2025',status:'Sent',     version:'v1'},
   ]
@@ -533,10 +533,10 @@ app.get('/quotes', (c) => {
           <table style="width:100%;border-collapse:collapse;font-size:.78rem;">
             <thead><tr style="background:#f8f9fa;">${['Quote','Signatory','Sent','Deadline','Status'].map(h=>`<th style="padding:.6rem 1rem;text-align:left;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;border-bottom:1px solid var(--border);">${h}</th>`).join('')}</tr></thead>
             <tbody>${[
-              {qt:'QT-2025-001',sig:'Rajiv Arora, Heritage Hotels',sent:'22 Feb 2025',dl:'28 Feb 2025',s:'Signed'},
-              {qt:'QT-2025-002',sig:'Meera Rajan, NCR Entertainment',sent:'25 Feb 2025',dl:'05 Mar 2025',s:'Viewed'},
-              {qt:'QT-2025-004',sig:'Sunita Bhatt, Goa Ventures',sent:'27 Feb 2025',dl:'10 Mar 2025',s:'Sent'},
-              {qt:'QT-2025-006',sig:'Rajeev Pillai, Desi Brands',sent:'01 Mar 2025',dl:'12 Mar 2025',s:'Sent'},
+              {qt:'QT-2026-001',sig:'Rajiv Arora, Heritage Hotels',sent:'22 Feb 2026',dl:'28 Feb 2026',s:'Signed'},
+              {qt:'QT-2026-002',sig:'Meera Rajan, NCR Entertainment',sent:'25 Feb 2026',dl:'05 Mar 2026',s:'Viewed'},
+              {qt:'QT-2026-004',sig:'Sunita Bhatt, Goa Ventures',sent:'27 Feb 2026',dl:'10 Mar 2026',s:'Sent'},
+              {qt:'QT-2026-006',sig:'Rajeev Pillai, Desi Brands',sent:'01 Mar 2026',dl:'12 Mar 2026',s:'Sent'},
             ].map(r=>`<tr style="border-bottom:1px solid var(--border);"><td style="padding:.55rem 1rem;font-weight:700;color:var(--gold);font-size:.72rem;">${r.qt}</td><td style="padding:.55rem 1rem;font-size:.75rem;">${r.sig}</td><td style="padding:.55rem 1rem;color:var(--ink-muted);">${r.sent}</td><td style="padding:.55rem 1rem;color:var(--ink-muted);">${r.dl}</td><td style="padding:.55rem 1rem;"><span style="font-size:.68rem;background:${r.s==='Signed'?'#dcfce7':r.s==='Viewed'?'#fef3c7':'#eff6ff'};color:${r.s==='Signed'?'#166534':r.s==='Viewed'?'#92400e':'#1e40af'};padding:2px 7px;">${r.s}</span></td></tr>`).join('')}
             </tbody>
           </table>
@@ -558,8 +558,8 @@ app.get('/quotes', (c) => {
         <table style="width:100%;border-collapse:collapse;font-size:.78rem;">
           <thead><tr style="background:#f8f9fa;">${['Version','Date','Changed By','Total Value','Key Changes','Actions'].map(h=>`<th style="padding:.6rem 1rem;text-align:left;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;border-bottom:1px solid var(--border);">${h}</th>`).join('')}</tr></thead>
           <tbody>${[
-            {ver:'v2',dt:'22 Feb 2025',by:'Arun Manikonda',val:'\u20b944.8L',note:'PMC scope expanded; 5% discount applied',curr:true},
-            {ver:'v1',dt:'15 Feb 2025',by:'Pavan Manikonda',val:'\u20b938.0L',note:'Initial quote — basic PMC scope',curr:false},
+            {ver:'v2',dt:'22 Feb 2026',by:'Arun Manikonda',val:'\u20b944.8L',note:'PMC scope expanded; 5% discount applied',curr:true},
+            {ver:'v1',dt:'15 Feb 2026',by:'Pavan Manikonda',val:'\u20b938.0L',note:'Initial quote — basic PMC scope',curr:false},
           ].map(r=>`<tr style="border-bottom:1px solid var(--border);${r.curr?'background:#fffdf5;':''}"><td style="padding:.55rem 1rem;"><span style="font-weight:700;color:var(--gold);">${r.ver}</span>${r.curr?' <span style="font-size:.6rem;background:#B8960C22;color:#B8960C;padding:1px 5px;">Current</span>':''}</td><td style="padding:.55rem 1rem;color:var(--ink-muted);">${r.dt}</td><td style="padding:.55rem 1rem;">${r.by}</td><td style="padding:.55rem 1rem;font-weight:600;">${r.val}</td><td style="padding:.55rem 1rem;font-size:.75rem;color:var(--ink-muted);">${r.note}</td><td style="padding:.55rem 1rem;display:flex;gap:.3rem;"><button onclick="igToast('${r.ver} PDF downloaded','success')" style="background:none;border:1px solid var(--border);padding:.22rem .5rem;font-size:.62rem;cursor:pointer;color:var(--ink-muted);" title="Download"><i class="fas fa-download"></i></button>${!r.curr?'<button onclick="igToast(\'Version diff report generated\',\'info\')" style="background:none;border:1px solid var(--border);padding:.22rem .5rem;font-size:.62rem;cursor:pointer;color:#7c3aed;" title="Diff"><i class="fas fa-exchange-alt"></i></button>':''}</td></tr>`).join('')}
           </tbody>
         </table>
@@ -682,8 +682,8 @@ app.get('/pipeline', (c) => {
 // ── ENGAGEMENTS ───────────────────────────────────────────────────────────────
 app.get('/engagements', (c) => {
   const engagements = [
-    {id:'ENG-001',client:'Demo Client Corp',   title:'Advisory Retainer 2025',       vertical:'Real Estate',  start:'01 Jan 2025',end:'31 Dec 2025',value:'₹6.0 Cr',status:'Active',   progress:25,pm:'Amit Jhingan'},
-    {id:'ENG-002',client:'Rajasthan Hotels',   title:'Hotel Pre-Opening PMC',         vertical:'Hospitality',  start:'15 Feb 2025',end:'14 Feb 2026',value:'₹45 L',  status:'Active',   progress:45,pm:'Arun Manikonda'},
+    {id:'ENG-001',client:'Demo Client Corp',   title:'Advisory Retainer 2026',       vertical:'Real Estate',  start:'01 Jan 2026',end:'31 Dec 2026',value:'₹6.0 Cr',status:'Active',   progress:25,pm:'Amit Jhingan'},
+    {id:'ENG-002',client:'Rajasthan Hotels',   title:'Hotel Pre-Opening PMC',         vertical:'Hospitality',  start:'15 Feb 2026',end:'14 Feb 2027',value:'₹45 L',  status:'Active',   progress:45,pm:'Arun Manikonda'},
     {id:'ENG-003',client:'Entertainment Vent.',title:'Entertainment Feasibility',     vertical:'Entertainment',start:'01 Mar 2025',end:'31 Aug 2025',value:'₹4.5 Cr',status:'Active',   progress:20,pm:'Arun Manikonda'},
     {id:'ENG-004',client:'Mumbai Mall Corp',   title:'Retail Leasing Mandate',        vertical:'Real Estate',  start:'01 Dec 2024',end:'30 Nov 2025',value:'₹2.1 Cr',status:'Active',   progress:75,pm:'Amit Jhingan'},
     {id:'ENG-005',client:'EY India',           title:'Advisory Retainer (Concluded)', vertical:'Advisory',     start:'01 Apr 2024',end:'31 Mar 2025',value:'₹3.5 Cr',status:'Completed',progress:100,pm:'Pavan Manikonda'},

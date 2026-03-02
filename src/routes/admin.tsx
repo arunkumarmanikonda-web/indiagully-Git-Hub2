@@ -49,9 +49,9 @@ function adminShell(pageTitle: string, active: string, body: string) {
     { id:'security',     icon:'shield-alt',      label:'Security Audit', g:'Platform', badge:'!' },
   ]
   const adminAlerts = [
-    {msg:'INV-2025-002 overdue — ₹1.8L from Demo Client',type:'danger',time:'2h ago'},
+    {msg:'INV-2026-002 overdue — ₹1.8L from Demo Client',type:'danger',time:'2h ago'},
     {msg:'New leave request from Amit Jhingan — Casual Leave',type:'warn',time:'3h ago'},
-    {msg:'GSTR-1 due on 11 Mar 2025 — 13 days remaining',type:'warn',time:'1d ago'},
+    {msg:'GSTR-1 due on 11 Mar 2026 — 9 days remaining',type:'warn',time:'1d ago'},
     {msg:'EY Retainer contract expiring in 30 days',type:'danger',time:'2d ago'},
     {msg:'Failed login attempt from 185.x.x.x (3 attempts)',type:'danger',time:'3d ago'},
   ]
@@ -270,7 +270,7 @@ app.get('/dashboard', (c) => {
     <i class="fas fa-exclamation-triangle" style="color:#d97706;font-size:.85rem;flex-shrink:0;"></i>
     <div style="flex:1;">
       <span style="font-size:.82rem;font-weight:600;color:#92400e;">3 items require your attention: </span>
-      <span style="font-size:.82rem;color:#78350f;">1 overdue invoice (INV-2025-002 · ₹1.8L) · Annual Accounts Filing due 31 Mar 2025 · EY Advisory Retainer expiring in 2 days</span>
+      <span style="font-size:.82rem;color:#78350f;">1 overdue invoice (INV-2026-002 · ₹1.8L) · Annual Accounts Filing due 31 Mar 2026 · EY Advisory Retainer expiring in 30 days</span>
     </div>
     <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;color:#92400e;font-size:.85rem;flex-shrink:0;"><i class="fas fa-times"></i></button>
   </div>
@@ -327,13 +327,13 @@ app.get('/dashboard', (c) => {
       <div style="background:#fff;border:1px solid var(--border);">
         ${[
           {time:'09:15 AM', user:'superadmin', action:'Logged in to Admin Console',              mod:'Auth',    ok:true},
-          {time:'09:12 AM', user:'akm',        action:'Approved INV-2025-001 (₹2.5L)',           mod:'Finance', ok:true},
+          {time:'09:12 AM', user:'akm',        action:'Approved INV-2026-001 (₹2.5L)',           mod:'Finance', ok:true},
           {time:'08:55 AM', user:'pavan',      action:'Edited Home Page hero content',            mod:'CMS',     ok:true},
           {time:'Yesterday',user:'Unknown',    action:'2 Failed login attempts blocked',          mod:'Auth',    ok:false},
           {time:'Yesterday',user:'demo',       action:'Client portal login',                      mod:'Auth',    ok:true},
-          {time:'2d ago',   user:'akm',        action:'New mandate: Entertainment ₹4,500 Cr',    mod:'Listings',ok:true},
-          {time:'2d ago',   user:'pavan',      action:'Board pack uploaded for BM-2025-03',       mod:'Govern.', ok:true},
-          {time:'3d ago',   user:'emp',        action:'Leave application LV-2025-101 submitted',  mod:'HR',      ok:true},
+          {time:'2d ago',   user:'akm',        action:'New mandate: Entertainment ₹4,500 Cr added', mod:'Listings',ok:true},
+          {time:'2d ago',   user:'pavan',      action:'Board pack uploaded for BM-2026-03',       mod:'Govern.', ok:true},
+          {time:'3d ago',   user:'emp',        action:'Leave application LV-2026-101 submitted',  mod:'HR',      ok:true},
         ].map(r=>`
         <div style="padding:.625rem 1rem;border-bottom:1px solid var(--border);display:flex;gap:.625rem;align-items:flex-start;${!r.ok?'background:#fef2f2;':''}">
           <div style="width:6px;height:6px;border-radius:50%;background:${r.ok?'#16a34a':'#dc2626'};flex-shrink:0;margin-top:.35rem;"></div>
@@ -358,12 +358,12 @@ app.get('/dashboard', (c) => {
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);">
       ${[
-        {icon:'calendar-times', color:'#dc2626', label:'Annual Accounts Filing', sub:'Due 31 Mar 2025 · AOC-4', urgency:'Urgent'},
-        {icon:'file-invoice-dollar', color:'#d97706', label:'INV-2025-002 Overdue', sub:'₹1.8L · Demo Client · 28 Feb due', urgency:'Overdue'},
-        {icon:'file-contract',  color:'#d97706', label:'EY Advisory Retainer', sub:'Expiring 31 Mar 2025 · Renew now', urgency:'Expiring'},
-        {icon:'gavel',          color:'#1E1E1E', label:'Board Meeting BM-2025-03', sub:'Scheduled 15 Mar 2025 · 11:00 AM', urgency:'Scheduled'},
-        {icon:'percent',        color:'#2563eb', label:'GSTR-3B Filing', sub:'Due 20 Mar 2025 · ₹2.1L payable', urgency:'Due Soon'},
-        {icon:'users',          color:'#16a34a', label:'March Payroll Run', sub:'Process by 28 Mar 2025 · 3 employees', urgency:'Upcoming'},
+        {icon:'calendar-times', color:'#dc2626', label:'Annual Accounts Filing', sub:'Due 31 Mar 2026 · AOC-4 / MGT-7', urgency:'Urgent'},
+        {icon:'file-invoice-dollar', color:'#d97706', label:'INV-2026-002 Overdue', sub:'₹1.8L · Demo Client · 28 Feb due', urgency:'Overdue'},
+        {icon:'file-contract',  color:'#d97706', label:'EY Advisory Retainer', sub:'Expiring 31 Mar 2026 · Renew now', urgency:'Expiring'},
+        {icon:'gavel',          color:'#1E1E1E', label:'Board Meeting BM-2026-03', sub:'Scheduled 15 Mar 2026 · 11:00 AM', urgency:'Scheduled'},
+        {icon:'percent',        color:'#2563eb', label:'GSTR-3B Filing', sub:'Due 20 Mar 2026 · ₹2.1L payable', urgency:'Due Soon'},
+        {icon:'users',          color:'#16a34a', label:'March Payroll Run', sub:'Process by 28 Mar 2026 · 3 employees', urgency:'Upcoming'},
       ].map(a=>`
       <div style="padding:1rem 1.25rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);">
         <div style="display:flex;align-items:center;gap:.625rem;margin-bottom:.5rem;">
@@ -415,18 +415,18 @@ app.get('/dashboard', (c) => {
 // ── CMS ───────────────────────────────────────────────────────────────────────
 app.get('/cms', (c) => {
   const pages = [
-    {page:'Home Page',     slug:'/',         lastEdit:'27 Feb 2025', editor:'pavan@indiagully.com', status:'Published'},
-    {page:'About Page',    slug:'/about',    lastEdit:'25 Feb 2025', editor:'akm@indiagully.com',   status:'Published'},
-    {page:'Services Page', slug:'/services', lastEdit:'20 Feb 2025', editor:'pavan@indiagully.com', status:'Published'},
-    {page:'HORECA Page',   slug:'/horeca',   lastEdit:'18 Feb 2025', editor:'pavan@indiagully.com', status:'Published'},
-    {page:'Listings Page', slug:'/listings', lastEdit:'26 Feb 2025', editor:'akm@indiagully.com',   status:'Published'},
-    {page:'Contact Page',  slug:'/contact',  lastEdit:'15 Feb 2025', editor:'pavan@indiagully.com', status:'Draft'},
+    {page:'Home Page',     slug:'/',         lastEdit:'02 Mar 2026', editor:'pavan@indiagully.com', status:'Published'},
+    {page:'About Page',    slug:'/about',    lastEdit:'02 Mar 2026', editor:'akm@indiagully.com',   status:'Published'},
+    {page:'Services Page', slug:'/services', lastEdit:'28 Feb 2026', editor:'pavan@indiagully.com', status:'Published'},
+    {page:'HORECA Page',   slug:'/horeca',   lastEdit:'27 Feb 2026', editor:'pavan@indiagully.com', status:'Published'},
+    {page:'Listings Page', slug:'/listings', lastEdit:'01 Mar 2026', editor:'akm@indiagully.com',   status:'Published'},
+    {page:'Contact Page',  slug:'/contact',  lastEdit:'20 Feb 2026', editor:'pavan@indiagully.com', status:'Published'},
   ]
   const approvals = [
-    {id:'APR-001',page:'Home Page',change:'Updated hero headline + CTA',submitted:'27 Feb 2025',by:'pavan@indiagully.com',status:'Pending'},
-    {id:'APR-002',page:'Services Page',change:'Added Debt & Special Situations section',submitted:'26 Feb 2025',by:'akm@indiagully.com',status:'Approved'},
-    {id:'APR-003',page:'Listings Page',change:'New mandate card — Tata Hotels',submitted:'25 Feb 2025',by:'pavan@indiagully.com',status:'Pending'},
-    {id:'APR-004',page:'HORECA Page',change:'SKU pricing update Q1 2025',submitted:'24 Feb 2025',by:'pavan@indiagully.com',status:'Rejected'},
+    {id:'APR-001',page:'Home Page',change:'Updated hero headline + CTA',submitted:'02 Mar 2026',by:'pavan@indiagully.com',status:'Pending'},
+    {id:'APR-002',page:'Services Page',change:'Added Debt & Special Situations section',submitted:'01 Mar 2026',by:'akm@indiagully.com',status:'Approved'},
+    {id:'APR-003',page:'Listings Page',change:'New mandate card — Pan-India Retail Portfolio',submitted:'28 Feb 2026',by:'pavan@indiagully.com',status:'Pending'},
+    {id:'APR-004',page:'HORECA Page',change:'SKU pricing update Q1 2026',submitted:'27 Feb 2026',by:'pavan@indiagully.com',status:'Rejected'},
   ]
   const templates = [
     {name:'Advisory Insight Article',desc:'Long-form thought leadership with hero image, key stats and CTA',icon:'newspaper',color:'#2563eb'},
@@ -789,7 +789,7 @@ app.get('/cms', (c) => {
         <div style="background:#f8fafc;border:1px solid var(--border);padding:.875rem;margin-bottom:.875rem;font-size:.72rem;font-family:monospace;color:var(--ink);">
           Sitemap: https://india-gully.pages.dev/sitemap.xml<br>
           Robots: https://india-gully.pages.dev/robots.txt<br>
-          Last generated: 28 Feb 2025 · 12 URLs indexed
+          Last generated: 02 Mar 2026 · 14 URLs indexed
         </div>
         <div style="display:flex;gap:.625rem;">
           <button onclick="igToast('Sitemap regenerated — 12 URLs indexed','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-sync-alt" style="margin-right:.35rem;"></i>Regenerate</button>
@@ -1136,14 +1136,14 @@ app.get('/cms', (c) => {
 // ── USERS ─────────────────────────────────────────────────────────────────────
 app.get('/users', (c) => {
   const users = [
-    {name:'Super Admin',    email:'superadmin@indiagully.com', role:'Super Admin', portal:'Admin',    login:'27 Feb 2025', active:true},
-    {name:'Arun Manikonda', email:'akm@indiagully.com',        role:'Director',    portal:'Board',    login:'26 Feb 2025', active:true},
-    {name:'Pavan Manikonda',email:'pavan@indiagully.com',      role:'Director',    portal:'Board',    login:'26 Feb 2025', active:true},
-    {name:'Amit Jhingan',   email:'amit.jhingan@indiagully.com',role:'KMP',        portal:'Board',    login:'25 Feb 2025', active:true},
-    {name:'Demo Client',    email:'demo@indiagully.com',       role:'Client',      portal:'Client',   login:'27 Feb 2025', active:true},
-    {name:'Demo Employee',  email:'emp@indiagully.com',        role:'Employee',    portal:'Employee', login:'24 Feb 2025', active:true},
-    {name:'Demo KMP',       email:'kmp@indiagully.com',        role:'KMP',         portal:'Board',    login:'20 Feb 2025', active:true},
-    {name:'Ex Employee',    email:'ex.emp@indiagully.com',     role:'Employee',    portal:'Employee', login:'01 Jan 2025', active:false},
+    {name:'Super Admin',    email:'superadmin@indiagully.com', role:'Super Admin', portal:'Admin',    login:'02 Mar 2026', active:true},
+    {name:'Arun Manikonda', email:'akm@indiagully.com',        role:'Director',    portal:'Board',    login:'02 Mar 2026', active:true},
+    {name:'Pavan Manikonda',email:'pavan@indiagully.com',      role:'Director',    portal:'Board',    login:'02 Mar 2026', active:true},
+    {name:'Amit Jhingan',   email:'amit.jhingan@indiagully.com',role:'KMP',        portal:'Board',    login:'01 Mar 2026', active:true},
+    {name:'Demo Client',    email:'demo@indiagully.com',       role:'Client',      portal:'Client',   login:'02 Mar 2026', active:true},
+    {name:'Demo Employee',  email:'emp@indiagully.com',        role:'Employee',    portal:'Employee', login:'01 Mar 2026', active:true},
+    {name:'Demo KMP',       email:'kmp@indiagully.com',        role:'KMP',         portal:'Board',    login:'28 Feb 2026', active:true},
+    {name:'Ex Employee',    email:'ex.emp@indiagully.com',     role:'Employee',    portal:'Employee', login:'01 Jan 2026', active:false},
   ]
   const body = `
   <!-- Stats -->
@@ -1162,7 +1162,7 @@ app.get('/users', (c) => {
       <div><label class="ig-label">Email Address</label><input type="email" id="new-user-email" class="ig-input" placeholder="user@indiagully.com"></div>
       <div><label class="ig-label">Role</label><select id="new-user-role" class="ig-input"><option>Client</option><option>Employee</option><option>KMP</option><option>Director</option><option>Admin</option></select></div>
       <div><label class="ig-label">Portal Access</label><select id="new-user-portal" class="ig-input"><option>Client</option><option>Employee</option><option>Board & KMP</option><option>Admin</option></select></div>
-      <div><label class="ig-label">Temporary Password</label><input type="text" class="ig-input" value="TempPass@2025!" readonly></div>
+      <div><label class="ig-label">Temporary Password</label><input type="text" class="ig-input" value="TempPass@2026!" readonly></div>
       <div><label class="ig-label">Force Password Reset?</label><select class="ig-input"><option>Yes — on first login</option><option>No</option></select></div>
     </div>
     <div style="display:flex;gap:.75rem;margin-top:1rem;">
@@ -1273,26 +1273,26 @@ app.get('/workflows', (c) => {
   const WF = [
     {id:'wf0', name:'Invoice Approval',    cat:'Finance',    icon:'file-invoice',   color:'#2563eb',
      steps:[{n:'Submit Invoice',role:'Submitter',sla:2,action:'Form submission'},{n:'Finance Review',role:'Finance Manager',sla:24,action:'Amount & GST check'},{n:'Director Approval',role:'Director',sla:48,action:'Digital signature required'},{n:'GST Filing',role:'Finance',sla:24,action:'Auto-file to GST portal'},{n:'Archive',role:'System',sla:1,action:'Auto-archive to R2'}],
-     trigger:'Invoice amount > ₹50,000 submitted', active:true, runs:24, lastRun:'28 Feb 2025', avgTime:'38h'},
+     trigger:'Invoice amount > ₹50,000 submitted', active:true, runs:24, lastRun:'02 Mar 2026', avgTime:'38h'},
     {id:'wf1', name:'Mandate Onboarding', cat:'Operations', icon:'handshake',       color:'#B8960C',
      steps:[{n:'Enquiry Received',role:'Sales',sla:2,action:'Log in CRM'},{n:'KYC Verification',role:'Compliance',sla:48,action:'PAN/Aadhar check'},{n:'NDA Execution',role:'Legal',sla:72,action:'DocuSign NDA'},{n:'Engagement Letter',role:'Director',sla:48,action:'EL approval & signing'},{n:'Activate Mandate',role:'System',sla:1,action:'Create portal & folders'}],
-     trigger:'New client enquiry form submitted', active:true, runs:8, lastRun:'25 Feb 2025', avgTime:'5d'},
+     trigger:'New client enquiry form submitted', active:true, runs:8, lastRun:'01 Mar 2026', avgTime:'5d'},
     {id:'wf2', name:'Leave Approval',     cat:'HR',         icon:'calendar-check',  color:'#16a34a',
      steps:[{n:'Employee Request',role:'Employee',sla:1,action:'Submit leave form'},{n:'Reporting Manager',role:'Manager',sla:24,action:'Approve/reject'},{n:'HR Confirmation',role:'HR',sla:4,action:'Update leave ledger'},{n:'Attendance Update',role:'System',sla:1,action:'Auto-update attendance records'}],
-     trigger:'Leave application submitted by employee', active:true, runs:12, lastRun:'05 Mar 2025', avgTime:'28h'},
+     trigger:'Leave application submitted by employee', active:true, runs:12, lastRun:'01 Mar 2026', avgTime:'28h'},
     {id:'wf3', name:'Contract Renewal',   cat:'Legal',      icon:'file-signature',  color:'#7c3aed',
      steps:[{n:'Auto Alert 30d',role:'System',sla:1,action:'Email to Director'},{n:'Legal Review',role:'Legal',sla:48,action:'Review terms & update'},{n:'Director Sign',role:'Director',sla:72,action:'DocuSign renewal'},{n:'Archive Old',role:'System',sla:1,action:'Archive expired contract'}],
-     trigger:'Contract expiry within 30 days', active:false, runs:3, lastRun:'15 Jan 2025', avgTime:'4d'},
+     trigger:'Contract expiry within 30 days', active:false, runs:3, lastRun:'15 Jan 2026', avgTime:'4d'},
     {id:'wf4', name:'Vendor Onboarding',  cat:'Finance',    icon:'store',           color:'#d97706',
      steps:[{n:'Vendor Request',role:'Finance',sla:4,action:'Submit vendor form'},{n:'Compliance Check',role:'Compliance',sla:48,action:'GSTIN & PAN verify'},{n:'Finance Approval',role:'CFO',sla:24,action:'Approve vendor terms'},{n:'Activate Vendor',role:'System',sla:1,action:'Create vendor in Vyapar'}],
-     trigger:'New vendor onboarding form submitted', active:true, runs:6, lastRun:'20 Feb 2025', avgTime:'3d'},
+     trigger:'New vendor onboarding form submitted', active:true, runs:6, lastRun:'28 Feb 2026', avgTime:'3d'},
     {id:'wf5', name:'Board Resolution',   cat:'Governance', icon:'gavel',           color:'#dc2626',
      steps:[{n:'Draft Resolution',role:'Director',sla:24,action:'Draft in portal'},{n:'Director Review',role:'All Directors',sla:48,action:'Comments & edits'},{n:'Vote',role:'Board',sla:72,action:'Digital vote'},{n:'File ROC',role:'CS',sla:48,action:'MGT-14 with ROC'}],
-     trigger:'Board meeting scheduled', active:true, runs:5, lastRun:'28 Feb 2025', avgTime:'6d'},
+     trigger:'Board meeting scheduled', active:true, runs:5, lastRun:'01 Mar 2026', avgTime:'6d'},
   ]
 
   const runHistory = [
-    {wf:'Invoice Approval',    id:'RUN-INV-047', started:'28 Feb 10:14', ended:'28 Feb 22:07', duration:'11h 53m', status:'Completed', triggered:'INV-2025-003 submitted'},
+    {wf:'Invoice Approval',    id:'RUN-INV-047', started:'02 Mar 10:14', ended:'02 Mar 22:07', duration:'11h 53m', status:'Completed', triggered:'INV-2025-003 submitted'},
     {wf:'Leave Approval',      id:'RUN-LV-012',  started:'05 Mar 09:30', ended:'05 Mar 12:45', duration:'3h 15m',  status:'Completed', triggered:'Amit Jhingan leave request'},
     {wf:'Mandate Onboarding',  id:'RUN-MND-008', started:'25 Feb 14:00', ended:null,           duration:'—',       status:'In Progress',triggered:'New HORECA client enquiry'},
     {wf:'Contract Renewal',    id:'RUN-CR-003',  started:'01 Mar 00:00', ended:'04 Mar 11:30', duration:'3d 11h',  status:'Completed', triggered:'EY Retainer expiry alert'},
@@ -1722,9 +1722,9 @@ app.get('/finance', (c) => {
       <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">New Invoice — <span id="inv-num-preview">INV-2025-004</span></h4>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
         <div><label class="ig-label">Client</label><select class="ig-input" id="inv-client"><option>Demo Client Corp</option><option>Rajasthan Hotels Pvt Ltd</option><option>Mumbai Mall Pvt Ltd</option><option>Entertainment Ventures Ltd</option></select></div>
-        <div><label class="ig-label">Invoice Date</label><input type="date" class="ig-input" id="inv-date" value="2025-02-28"></div>
-        <div><label class="ig-label">Due Date</label><input type="date" class="ig-input" id="inv-due" value="2025-03-30"></div>
-        <div style="grid-column:span 2"><label class="ig-label">Description of Services</label><input type="text" class="ig-input" id="inv-desc" placeholder="Advisory Retainer — Feb 2025"></div>
+        <div><label class="ig-label">Invoice Date</label><input type="date" class="ig-input" id="inv-date" value="2026-03-02"></div>
+        <div><label class="ig-label">Due Date</label><input type="date" class="ig-input" id="inv-due" value="2026-03-31"></div>
+        <div style="grid-column:span 2"><label class="ig-label">Description of Services</label><input type="text" class="ig-input" id="inv-desc" placeholder="Advisory Retainer — Mar 2026"></div>
         <div><label class="ig-label">SAC Code</label><input type="text" class="ig-input" id="inv-sac" value="998313" placeholder="SAC"></div>
         <div><label class="ig-label">Amount (excl. GST) ₹</label><input type="number" class="ig-input" placeholder="0" id="inv-amt" oninput="igInvCalc()"></div>
         <div><label class="ig-label">GST Type</label><select class="ig-input" id="inv-gst-type" onchange="igInvCalc()"><option value="18">GST @ 18% (CGST+SGST)</option><option value="12">GST @ 12%</option><option value="0">NIL GST</option></select></div>
@@ -1801,16 +1801,16 @@ app.get('/finance', (c) => {
     </div>
     <div style="display:grid;grid-template-columns:3fr 2fr;gap:1.5rem;">
       <div style="background:#fff;border:1px solid var(--border);">
-        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Expense Ledger — Feb 2025</h3></div>
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Expense Ledger — Feb 2026</h3></div>
         <table class="ig-tbl" id="exp-table">
           <thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Vendor</th><th>Amount</th></tr></thead>
           <tbody>
             ${[
-              {date:'27 Feb',cat:'Staff Payroll',    desc:'Salary — Feb 2025',          vendor:'—',                  amt:450000},
-              {date:'25 Feb',cat:'Rent & Facilities',desc:'Office Rent — Feb 2025',      vendor:'Phoenix Estates',    amt:85000},
+              {date:'27 Feb',cat:'Staff Payroll',    desc:'Salary — Feb 2026',          vendor:'—',                  amt:450000},
+              {date:'25 Feb',cat:'Rent & Facilities',desc:'Office Rent — Feb 2026',      vendor:'Phoenix Estates',    amt:85000},
               {date:'20 Feb',cat:'Technology',       desc:'Google Workspace + Zoom Pro', vendor:'Google / Zoom',      amt:12500},
               {date:'18 Feb',cat:'Travel',           desc:'Client meeting travel — Delhi',vendor:'Ola Business',      amt:8400},
-              {date:'15 Feb',cat:'Professional Fees',desc:'CA Retainer — Feb 2025',      vendor:'S.K. Associates',    amt:25000},
+              {date:'15 Feb',cat:'Professional Fees',desc:'CA Retainer — Feb 2026',      vendor:'S.K. Associates',    amt:25000},
               {date:'10 Feb',cat:'Marketing',        desc:'LinkedIn Campaign',           vendor:'LinkedIn Ads',       amt:18000},
               {date:'05 Feb',cat:'Miscellaneous',    desc:'Office supplies & stationery',vendor:'Amazon Business',    amt:6200},
             ].map(e=>`<tr>
@@ -1850,7 +1850,7 @@ app.get('/finance', (c) => {
       <div style="background:#fff;border:1px solid var(--border);">
         <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
           <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GSTR-3B — Feb 2025</h3>
-          <button onclick="igConfirm('File GSTR-3B for February 2025?',function(){ igToast('GSTR-3B filed. ARN: AA270225123456','success'); })" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File Now</button>
+          <button onclick="igConfirm('File GSTR-3B for February 2026?',function(){ igToast('GSTR-3B filed. ARN: AA270226123456','success'); })" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File Now</button>
         </div>
         <div style="padding:1.25rem;">
           ${[
@@ -1868,11 +1868,11 @@ app.get('/finance', (c) => {
         <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Filing Calendar</h3></div>
         <div style="padding:1.25rem;">
           ${[
-            {form:'GSTR-1',period:'Feb 2025',due:'11 Mar 2025',status:'Pending',cls:'b-g'},
-            {form:'GSTR-3B',period:'Feb 2025',due:'20 Mar 2025',status:'Pending',cls:'b-g'},
-            {form:'GSTR-1',period:'Jan 2025',due:'11 Feb 2025',status:'Filed',cls:'b-gr'},
-            {form:'GSTR-3B',period:'Jan 2025',due:'20 Feb 2025',status:'Filed',cls:'b-gr'},
-            {form:'GSTR-9',period:'FY 2023-24',due:'31 Dec 2024',status:'Filed',cls:'b-gr'},
+            {form:'GSTR-1',period:'Feb 2026',due:'11 Mar 2026',status:'Pending',cls:'b-g'},
+            {form:'GSTR-3B',period:'Feb 2026',due:'20 Mar 2026',status:'Pending',cls:'b-g'},
+            {form:'GSTR-1',period:'Jan 2026',due:'11 Feb 2026',status:'Filed',cls:'b-gr'},
+            {form:'GSTR-3B',period:'Jan 2026',due:'20 Feb 2026',status:'Filed',cls:'b-gr'},
+            {form:'GSTR-9',period:'FY 2024-25',due:'31 Dec 2025',status:'Filed',cls:'b-gr'},
           ].map(f=>`<div style="display:flex;justify-content:space-between;padding:.55rem 0;border-bottom:1px solid var(--border);align-items:center;">
             <div><div style="font-size:.82rem;font-weight:500;color:var(--ink);">${f.form} — ${f.period}</div><div style="font-size:.7rem;color:var(--ink-muted);">Due: ${f.due}</div></div>
             <span class="badge ${f.cls}">${f.status}</span>
@@ -1889,7 +1889,7 @@ app.get('/finance', (c) => {
       <div style="background:#fff;border:1px solid var(--border);">
         <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
           <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GSTR-3B — Feb 2025</h3>
-          <button onclick="igConfirm('File GSTR-3B for February 2025?',function(){ igToast('GSTR-3B filed. ARN: AA270225123456','success'); })" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File Now</button>
+          <button onclick="igConfirm('File GSTR-3B for February 2026?',function(){ igToast('GSTR-3B filed. ARN: AA270226123456','success'); })" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File Now</button>
         </div>
         <div style="padding:1.25rem;">
           ${[
@@ -1927,8 +1927,8 @@ app.get('/finance', (c) => {
           <div style="margin-top:1rem;border-top:1px solid var(--border);padding-top:1rem;">
             <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted);margin-bottom:.5rem;">Recent IRNs</div>
             ${[
-              {inv:'INV-2025-001',irn:'84d5...3e12',status:'Active', date:'14 Feb 2025'},
-              {inv:'INV-2025-002',irn:'c3a8...7f91',status:'Active', date:'28 Feb 2025'},
+              {inv:'INV-2026-001',irn:'84d5...3e12',status:'Active', date:'14 Feb 2026'},
+              {inv:'INV-2026-002',irn:'c3a8...7f91',status:'Active', date:'28 Feb 2026'},
             ].map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid var(--border);">
               <div><div style="font-size:.78rem;font-weight:500;">${r.inv}</div><code style="font-size:.65rem;color:#7c3aed;">${r.irn}</code></div>
               <div style="text-align:right;"><div style="font-size:.7rem;color:var(--ink-muted);">${r.date}</div><span class="badge b-gr" style="font-size:.58rem;">${r.status}</span></div>
@@ -1942,11 +1942,11 @@ app.get('/finance', (c) => {
       <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GST Filing Calendar</h3></div>
       <div style="padding:1.25rem;">
         ${[
-          {form:'GSTR-1',period:'Feb 2025',due:'11 Mar 2025',status:'Pending',cls:'b-g'},
-          {form:'GSTR-3B',period:'Feb 2025',due:'20 Mar 2025',status:'Pending',cls:'b-g'},
-          {form:'GSTR-1',period:'Jan 2025',due:'11 Feb 2025',status:'Filed',cls:'b-gr'},
-          {form:'GSTR-3B',period:'Jan 2025',due:'20 Feb 2025',status:'Filed',cls:'b-gr'},
-          {form:'GSTR-9',period:'FY 2023-24',due:'31 Dec 2024',status:'Filed',cls:'b-gr'},
+          {form:'GSTR-1',period:'Feb 2026',due:'11 Mar 2026',status:'Pending',cls:'b-g'},
+          {form:'GSTR-3B',period:'Feb 2026',due:'20 Mar 2026',status:'Pending',cls:'b-g'},
+          {form:'GSTR-1',period:'Jan 2026',due:'11 Feb 2026',status:'Filed',cls:'b-gr'},
+          {form:'GSTR-3B',period:'Jan 2026',due:'20 Feb 2026',status:'Filed',cls:'b-gr'},
+          {form:'GSTR-9',period:'FY 2024-25',due:'31 Dec 2025',status:'Filed',cls:'b-gr'},
         ].map(f=>`<div style="display:flex;justify-content:space-between;padding:.55rem 0;border-bottom:1px solid var(--border);align-items:center;">
           <div><div style="font-size:.82rem;font-weight:500;color:var(--ink);">${f.form} — ${f.period}</div><div style="font-size:.7rem;color:var(--ink-muted);">Due: ${f.due}</div></div>
           <div style="display:flex;gap:.5rem;align-items:center;">
@@ -1979,7 +1979,7 @@ app.get('/finance', (c) => {
         <tbody>
           ${[
             {date:'01 Feb', vch:'JV-001', narr:'Opening Balance',                   dr:0,       cr:0,       bal:771000},
-            {date:'05 Feb', vch:'INV-2025-001', narr:'Advisory Retainer — Jan 2025', dr:0,       cr:250160,  bal:1021160},
+            {date:'05 Feb', vch:'INV-2026-001', narr:'Advisory Retainer — Jan 2026', dr:0,       cr:250160,  bal:1021160},
             {date:'12 Feb', vch:'INV-2025-002', narr:'Hotel PMC — Phase 1',          dr:0,       cr:180000,  bal:1201160},
             {date:'18 Feb', vch:'RCP-001', narr:'Receipt — INV-2025-001 (Paid)',     dr:250160,  cr:0,       bal:951000},
             {date:'25 Feb', vch:'INV-2025-003', narr:'Entertainment Feasibility',    dr:0,       cr:320000,  bal:1271000},
@@ -2049,7 +2049,7 @@ app.get('/finance', (c) => {
             {date:'28 Feb', desc:'NEFT — Staff Payroll Feb 25',  bank:363400,  book:363400, type:'Outward',  matched:true},
             {date:'26 Feb', desc:'INV-2025-001 Receipt',          bank:250160,  book:250160, type:'Inward',   matched:true},
             {date:'25 Feb', desc:'Bank charges Q1',               bank:1200,    book:0,      type:'Outward',  matched:false},
-            {date:'24 Feb', desc:'Rent — Office Feb 2025',        bank:85000,   book:85000,  type:'Outward',  matched:true},
+            {date:'24 Feb', desc:'Rent — Office Feb 2026',        bank:85000,   book:85000,  type:'Outward',  matched:true},
             {date:'20 Feb', desc:'GST Payment GSTR-3B',           bank:29000,   book:0,      type:'Outward',  matched:false},
           ].map(r=>`<tr ${!r.matched?'style="background:#fffbeb;"':''}>
             <td style="font-size:.78rem;">${r.date}</td>
@@ -2198,7 +2198,7 @@ app.get('/finance', (c) => {
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.875rem;">
           <div><label class="ig-label">Transaction Type</label><select class="ig-input" style="font-size:.82rem;"><option>Outward — Supply</option><option>Inward — Supply</option><option>Job Work</option></select></div>
           <div><label class="ig-label">Document No.</label><input type="text" class="ig-input" placeholder="INV-2025-004" style="font-size:.82rem;"></div>
-          <div><label class="ig-label">Document Date</label><input type="date" class="ig-input" value="2025-03-05" style="font-size:.82rem;"></div>
+          <div><label class="ig-label">Document Date</label><input type="date" class="ig-input" value="2026-03-02" style="font-size:.82rem;"></div>
           <div><label class="ig-label">From GSTIN</label><input type="text" class="ig-input" value="07XXXXXX000XXX" style="font-size:.82rem;"></div>
           <div><label class="ig-label">To GSTIN / State</label><input type="text" class="ig-input" placeholder="27YYYYYY999ZZZ / Maharashtra" style="font-size:.82rem;"></div>
           <div><label class="ig-label">HSN Code</label><input type="text" class="ig-input" value="998313" style="font-size:.82rem;"></div>
@@ -2211,9 +2211,9 @@ app.get('/finance', (c) => {
       <!-- EWB Register -->
       <table class="ig-tbl"><thead><tr><th>EWB No.</th><th>Type</th><th>Document</th><th>From</th><th>To</th><th>Value</th><th>Valid Till</th><th>Status</th><th>Action</th></tr></thead><tbody>
         ${[
-          {ewb:'EWB-2025-1042',type:'Outward',doc:'INV-2025-003',from:'Delhi (07)',to:'Mumbai (27)', val:'₹4.2L', valid:'06 Mar 2025 17:00',s:'Active'},
-          {ewb:'EWB-2025-0998',type:'Inward', doc:'PO-2025-018', from:'Mumbai (27)',to:'Delhi (07)', val:'₹1.8L', valid:'02 Mar 2025 14:00',s:'Expired'},
-          {ewb:'EWB-2025-0887',type:'Outward',doc:'INV-2025-001',from:'Delhi (07)',to:'Jaipur (08)', val:'₹8.5L', valid:'25 Feb 2025 12:00',s:'Cancelled'},
+          {ewb:'EWB-2026-1042',type:'Outward',doc:'INV-2026-003',from:'Delhi (07)',to:'Mumbai (27)', val:'₹4.2L', valid:'06 Mar 2026 17:00',s:'Active'},
+          {ewb:'EWB-2026-0998',type:'Inward', doc:'PO-2026-018', from:'Mumbai (27)',to:'Delhi (07)', val:'₹1.8L', valid:'02 Mar 2026 14:00',s:'Expired'},
+          {ewb:'EWB-2026-0887',type:'Outward',doc:'INV-2025-001',from:'Delhi (07)',to:'Jaipur (08)', val:'₹8.5L', valid:'25 Feb 2026 12:00',s:'Cancelled'},
         ].map(e=>`<tr>
           <td style="font-size:.78rem;font-weight:600;color:var(--gold);">${e.ewb}</td>
           <td style="font-size:.72rem;">${e.type}</td>
@@ -2343,11 +2343,11 @@ app.get('/finance', (c) => {
       <!-- Period Closing Workflow -->
       <div style="background:#fff;border:1px solid var(--border);">
         <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Period Closing Workflow — Feb 2025</h3>
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Period Closing Workflow — Feb 2026</h3>
           <button onclick="igToast('Period closing initiated for February 2025','success')" style="background:var(--gold);color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">Initiate Close</button>
         </div>
         <div style="padding:1.25rem;">
-          <div class="ig-info" style="margin-bottom:1rem;"><i class="fas fa-lock"></i><div>Period close locks all entries for Feb 2025. All pending vouchers and reconciliations must be resolved first.</div></div>
+          <div class="ig-info" style="margin-bottom:1rem;"><i class="fas fa-lock"></i><div>Period close locks all entries for Feb 2026. All pending vouchers and reconciliations must be resolved first.</div></div>
           ${[
             {step:'01', task:'Reconcile all bank accounts',                   done:true,  resp:'Finance'},
             {step:'02', task:'Post all accrual journal entries',               done:true,  resp:'Finance'},
@@ -2408,7 +2408,7 @@ app.get('/finance', (c) => {
         <div style="font-size:.78rem;color:var(--ink-muted);">Dr Total: <strong>₹1,47,500</strong> &nbsp;|&nbsp; Cr Total: <strong>₹1,47,500</strong> &nbsp; <span style="color:#16a34a;font-weight:600;"><i class="fas fa-check"></i> Balanced</span></div>
         <div style="display:flex;gap:.5rem;">
           <button onclick="igToast('Journal entry saved as draft','info')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink);">Save Draft</button>
-          <button onclick="igToast('Journal entry VCH-2025-0147 posted successfully','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Post Entry</button>
+          <button onclick="igToast('Journal entry VCH-2026-0147 posted successfully','success')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Post Entry</button>
         </div>
       </div>
     </div>
@@ -2430,12 +2430,12 @@ app.get('/finance', (c) => {
       <div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.78rem;">
         <thead><tr style="background:#f8f9fa;">${['Deductor Name','TAN','Nature','Quarter','Tax Deducted (₹)','Date','Books Matched','Status'].map(h=>`<th style="padding:.6rem 1rem;text-align:left;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);font-weight:600;border-bottom:1px solid var(--border);">${h}</th>`).join('')}</tr></thead>
         <tbody>${[
-          {ded:'ICICI Bank Ltd',tan:'MUMI02345E',nat:'194A — Interest',q:'Q3',amt:'18,200',dt:'15 Jan 2025',ok:true},
-          {ded:'IndiGrid Infra Ltd',tan:'DEL07231F',nat:'194C — Contract',q:'Q3',amt:'45,000',dt:'07 Jan 2025',ok:true},
-          {ded:'EY Advisory Pvt Ltd',tan:'MUM14320C',nat:'194J — Professional',q:'Q3',amt:'1,12,500',dt:'21 Jan 2025',ok:false},
-          {ded:'HDFC Bank Ltd',tan:'MUMS09811H',nat:'194A — Interest',q:'Q3',amt:'6,350',dt:'18 Jan 2025',ok:true},
-          {ded:'Advance Tax — Self',tan:'—',nat:'Challan 280',q:'Q3',amt:'2,50,000',dt:'15 Dec 2024',ok:true},
-          {ded:'Vivacious Ent. (Payroll)',tan:'DEL01924G',nat:'192 — Salary',q:'Q3',amt:'8,13,750',dt:'07 Jan 2025',ok:false},
+          {ded:'ICICI Bank Ltd',tan:'MUMI02345E',nat:'194A — Interest',q:'Q3',amt:'18,200',dt:'15 Jan 2026',ok:true},
+          {ded:'IndiGrid Infra Ltd',tan:'DEL07231F',nat:'194C — Contract',q:'Q3',amt:'45,000',dt:'07 Jan 2026',ok:true},
+          {ded:'EY Advisory Pvt Ltd',tan:'MUM14320C',nat:'194J — Professional',q:'Q3',amt:'1,12,500',dt:'21 Jan 2026',ok:false},
+          {ded:'HDFC Bank Ltd',tan:'MUMS09811H',nat:'194A — Interest',q:'Q3',amt:'6,350',dt:'18 Jan 2026',ok:true},
+          {ded:'Advance Tax — Self',tan:'—',nat:'Challan 280',q:'Q3',amt:'2,50,000',dt:'15 Dec 2025',ok:true},
+          {ded:'Vivacious Ent. (Payroll)',tan:'DEL01924G',nat:'192 — Salary',q:'Q3',amt:'8,13,750',dt:'07 Jan 2026',ok:false},
         ].map(r=>`<tr style="border-bottom:1px solid var(--border);${!r.ok?'background:#fef2f2;':''}"><td style="padding:.55rem 1rem;">${r.ded}</td><td style="padding:.55rem 1rem;color:var(--ink-muted);">${r.tan}</td><td style="padding:.55rem 1rem;">${r.nat}</td><td style="padding:.55rem 1rem;text-align:center;">${r.q}</td><td style="padding:.55rem 1rem;text-align:right;font-weight:600;">₹${r.amt}</td><td style="padding:.55rem 1rem;color:var(--ink-muted);">${r.dt}</td><td style="padding:.55rem 1rem;text-align:center;">${r.ok?'<span style="color:#16a34a;"><i class="fas fa-check"></i></span>':'<span style="color:#dc2626;"><i class="fas fa-times"></i></span>'}</td><td style="padding:.55rem 1rem;">${r.ok?'<span style="font-size:.72rem;background:#dcfce7;color:#166534;padding:2px 7px;">Matched</span>':'<span style="font-size:.72rem;background:#fee2e2;color:#991b1b;padding:2px 7px;">Mismatch</span>'}</td></tr>`).join('')}
         </tbody>
       </table></div>
@@ -2610,17 +2610,17 @@ app.get('/finance', (c) => {
 
   // ── P&L Renderer ─────────────────────────────────────────────────────────
   var plData = {
-    'Feb 2025': {
+    'Feb 2026': {
       income: [{name:'Advisory Retainer',amt:650000},{name:'Hotel PMC',amt:350000},{name:'Mandate Fees',amt:240000}],
       cogs:   [{name:'Consultant Fees',  amt:180000},{name:'Research & Data',amt:45000}],
       opex:   [{name:'Staff Payroll',amt:450000},{name:'Rent',amt:85000},{name:'Travel',amt:28400},{name:'Technology',amt:12500},{name:'Prof. Fees',amt:25000},{name:'Marketing',amt:18000},{name:'Other',amt:6200}],
     },
-    'Jan 2025': {
+    'Jan 2026': {
       income: [{name:'Advisory Retainer',amt:620000},{name:'Hotel PMC',amt:280000},{name:'Consulting',amt:180000}],
       cogs:   [{name:'Consultant Fees',amt:155000},{name:'Research',amt:38000}],
       opex:   [{name:'Staff Payroll',amt:450000},{name:'Rent',amt:85000},{name:'Travel',amt:22000},{name:'Technology',amt:12500},{name:'Other',amt:14000}],
     },
-    'Dec 2024': {
+    'Dec 2025': {
       income: [{name:'Advisory Retainer',amt:580000},{name:'Entertainment Feasibility',amt:320000}],
       cogs:   [{name:'Consultant Fees',amt:140000}],
       opex:   [{name:'Staff Payroll',amt:450000},{name:'Rent',amt:85000},{name:'Other',amt:48000}],
@@ -2840,7 +2840,7 @@ app.get('/hr', (c) => {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
       <div style="background:#fff;border:1px solid var(--border);">
         <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Today's Attendance — 28 Feb 2025</h3>
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Today's Attendance — 02 Mar 2026</h3>
           <button onclick="igToast('Attendance report exported','success')" style="background:var(--ink);color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export</button>
         </div>
         <table class="ig-tbl">
@@ -2892,7 +2892,7 @@ app.get('/hr', (c) => {
         <div id="leave-req-list">
           <div style="padding:1.25rem;border-bottom:1px solid var(--border);">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;">
-              <div><div style="font-size:.875rem;font-weight:500;color:var(--ink);">Amit Jhingan</div><div style="font-size:.72rem;color:var(--ink-muted);margin-top:.1rem;">Casual Leave · 5 Mar – 7 Mar 2025 (3 days)</div></div>
+              <div><div style="font-size:.875rem;font-weight:500;color:var(--ink);">Amit Jhingan</div><div style="font-size:.72rem;color:var(--ink-muted);margin-top:.1rem;">Casual Leave · 5 Mar – 7 Mar 2026 (3 days)</div></div>
               <span id="lv-badge-1" class="badge b-g">Pending</span>
             </div>
             <div style="font-size:.78rem;color:var(--ink-muted);margin-bottom:.75rem;">Reason: Personal — attending family event in Chandigarh</div>
@@ -3158,8 +3158,8 @@ app.get('/hr', (c) => {
           <div style="padding:.875rem 1rem;border-bottom:1px solid var(--border);font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Declaration Status</div>
           <div style="padding:.875rem;">
             ${[
-              {e:'Arun Manikonda',   s:'Submitted', d:'10 Mar 2025', regime:'New'},
-              {e:'Amit Jhingan',     s:'Submitted', d:'08 Mar 2025', regime:'Old'},
+              {e:'Arun Manikonda',   s:'Submitted', d:'10 Mar 2026', regime:'New'},
+              {e:'Amit Jhingan',     s:'Submitted', d:'08 Mar 2026', regime:'Old'},
               {e:'Pavan Manikonda',  s:'Pending',   d:'—',           regime:'—'},
             ].map(e=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border);">
               <div>
@@ -3244,9 +3244,9 @@ app.get('/hr', (c) => {
       <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Active Onboardings</h3></div>
       <table class="ig-tbl"><thead><tr><th>Employee</th><th>Role</th><th>DOJ</th><th>Step</th><th>Progress</th><th>Days Left</th><th>Action</th></tr></thead><tbody>
         ${[
-          {name:'Rohan Sharma',   role:'Senior Analyst',    doj:'10 Mar 2025', step:'3/7', pct:43, days:21},
-          {name:'Priya Nair',     role:'Finance Executive',  doj:'01 Mar 2025', step:'6/7', pct:86, days:7},
-          {name:'Sumit Verma',    role:'HR Coordinator',    doj:'15 Mar 2025', step:'1/7', pct:14, days:26},
+          {name:'Rohan Sharma',   role:'Senior Analyst',    doj:'10 Mar 2026', step:'3/7', pct:43, days:21},
+          {name:'Priya Nair',     role:'Finance Executive',  doj:'01 Mar 2026', step:'6/7', pct:86, days:7},
+          {name:'Sumit Verma',    role:'HR Coordinator',    doj:'15 Mar 2026', step:'1/7', pct:14, days:26},
         ].map(e=>`<tr>
           <td style="font-size:.82rem;font-weight:500;">${e.name}</td>
           <td style="font-size:.75rem;">${e.role}</td>
@@ -3301,8 +3301,8 @@ app.get('/hr', (c) => {
         <div><label class="ig-label">Appraisal Type</label><select class="ig-input" style="font-size:.82rem;"><option>Annual Review</option><option>Mid-Year Review</option><option>Probation Completion</option><option>Promotion Review</option></select></div>
         <div><label class="ig-label">Review Period</label><select class="ig-input" style="font-size:.82rem;"><option>FY 2024-25 (Apr 24 – Mar 25)</option><option>H1 FY 2025-26</option></select></div>
         <div><label class="ig-label">Reviewer</label><select class="ig-input" style="font-size:.82rem;"><option>Arun Manikonda (CEO)</option><option>Pavan Manikonda (COO)</option></select></div>
-        <div><label class="ig-label">Self-Assessment Due</label><input type="date" class="ig-input" style="font-size:.82rem;" value="2025-03-31"></div>
-        <div><label class="ig-label">Review Meeting Date</label><input type="date" class="ig-input" style="font-size:.82rem;" value="2025-04-15"></div>
+        <div><label class="ig-label">Self-Assessment Due</label><input type="date" class="ig-input" style="font-size:.82rem;" value="2026-03-31"></div>
+        <div><label class="ig-label">Review Meeting Date</label><input type="date" class="ig-input" style="font-size:.82rem;" value="2026-04-15"></div>
       </div>
       <div><label class="ig-label">KRAs / Goals (one per line)</label><textarea class="ig-input" rows="4" placeholder="1. Deliver 3 new HORECA mandates&#10;2. Achieve ₹5Cr revenue in Q1&#10;3. Complete ISO 9001 documentation&#10;4. Train 2 junior advisors" style="font-size:.82rem;"></textarea></div>
       <div style="display:flex;gap:.75rem;margin-top:.875rem;">
@@ -3600,11 +3600,11 @@ app.get('/hr', (c) => {
 // ── GOVERNANCE (Phase 6 — voting engine, KYC, statutory registers, agenda builder) ─
 app.get('/governance', (c) => {
   const resolutions = [
-    {id:'RES-001', title:'Approval of Q4 FY2024-25 Financial Statements', type:'Ordinary', proposed:'Arun Manikonda', date:'15 Mar 2025', status:'Open',     votes:{yes:0,no:0,abstain:0,total:2}},
-    {id:'RES-002', title:'Appointment of Statutory Auditor for FY2025-26',  type:'Ordinary', proposed:'Pavan Manikonda',date:'15 Mar 2025', status:'Open',     votes:{yes:0,no:0,abstain:0,total:2}},
-    {id:'RES-003', title:'Approval of Employee ESOP Policy',                 type:'Special',  proposed:'Arun Manikonda', date:'28 Feb 2025', status:'Passed',   votes:{yes:2,no:0,abstain:0,total:2}},
-    {id:'RES-004', title:'Authorise MD to sign Advisory Agreement — EVL',    type:'Ordinary', proposed:'Pavan Manikonda',date:'20 Feb 2025', status:'Passed',   votes:{yes:2,no:0,abstain:0,total:2}},
-    {id:'RES-005', title:'Approval of Capital Expenditure Budget FY2025-26', type:'Ordinary', proposed:'Arun Manikonda', date:'31 Jan 2025', status:'Deferred', votes:{yes:1,no:0,abstain:1,total:2}},
+    {id:'RES-001', title:'Approval of Q3 FY2025-26 Financial Statements', type:'Ordinary', proposed:'Arun Manikonda', date:'15 Mar 2026', status:'Open',     votes:{yes:0,no:0,abstain:0,total:2}},
+    {id:'RES-002', title:'Appointment of Statutory Auditor for FY2026-27',  type:'Ordinary', proposed:'Pavan Manikonda',date:'15 Mar 2026', status:'Open',     votes:{yes:0,no:0,abstain:0,total:2}},
+    {id:'RES-003', title:'Approval of Employee ESOP Policy',                 type:'Special',  proposed:'Arun Manikonda', date:'28 Feb 2026', status:'Passed',   votes:{yes:2,no:0,abstain:0,total:2}},
+    {id:'RES-004', title:'Authorise MD to sign Advisory Agreement — EVL',    type:'Ordinary', proposed:'Pavan Manikonda',date:'20 Feb 2026', status:'Passed',   votes:{yes:2,no:0,abstain:0,total:2}},
+    {id:'RES-005', title:'Approval of Capital Expenditure Budget FY2026-27', type:'Ordinary', proposed:'Arun Manikonda', date:'31 Jan 2026', status:'Deferred', votes:{yes:1,no:0,abstain:1,total:2}},
   ]
   const directors = [
     {name:'Arun Manikonda',  din:'00000001', desig:'Managing Director',  kyc:'Verified', din_status:'Active', dob:'1980-04-15'},
@@ -3676,10 +3676,10 @@ app.get('/governance', (c) => {
       </div>
       <table class="ig-tbl"><thead><tr><th>Meeting No.</th><th>Type</th><th>Date</th><th>Venue</th><th>Directors</th><th>Resolutions</th><th>Minutes</th><th>Status</th></tr></thead><tbody>
         ${[
-          {no:'BM-03/2024-25',type:'Board Meeting', date:'15 Mar 2025',venue:'New Delhi (Hybrid)',    dirs:'2/2',res:2, min:'Pending',  cls:'b-g'},
-          {no:'BM-02/2024-25',type:'Board Meeting', date:'28 Feb 2025',venue:'New Delhi',            dirs:'2/2',res:3, min:'Signed',   cls:'b-gr'},
-          {no:'BM-01/2024-25',type:'Board Meeting', date:'15 Jan 2025',venue:'Video Conference',     dirs:'2/2',res:4, min:'Signed',   cls:'b-gr'},
-          {no:'EGM-01/2024',   type:'EGM',          date:'20 Dec 2024',venue:'New Delhi',            dirs:'2/2',res:2, min:'Signed',   cls:'b-gr'},
+          {no:'BM-03/2025-26',type:'Board Meeting', date:'15 Mar 2026',venue:'New Delhi (Hybrid)',    dirs:'2/2',res:2, min:'Pending',  cls:'b-g'},
+          {no:'BM-02/2025-26',type:'Board Meeting', date:'28 Feb 2026',venue:'New Delhi',            dirs:'2/2',res:3, min:'Signed',   cls:'b-gr'},
+          {no:'BM-01/2025-26',type:'Board Meeting', date:'15 Jan 2026',venue:'Video Conference',     dirs:'2/2',res:4, min:'Signed',   cls:'b-gr'},
+          {no:'EGM-01/2025',   type:'EGM',          date:'20 Dec 2025',venue:'New Delhi',            dirs:'2/2',res:2, min:'Signed',   cls:'b-gr'},
         ].map(m=>`<tr>
           <td style="font-weight:600;font-size:.78rem;color:var(--gold);">${m.no}</td>
           <td><span class="badge b-dk">${m.type}</span></td>
@@ -3817,15 +3817,15 @@ app.get('/governance', (c) => {
   <div id="gov-pane-3" style="display:none;">
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
       ${[
-        {name:'Register of Directors',     form:'MGT-7 Annex.',icon:'user-tie',    color:'#1E1E1E', entries:2, lastUpdated:'28 Feb 2025'},
-        {name:'Register of KMPs',          form:'§203',         icon:'star',       color:'#2563eb', entries:3, lastUpdated:'01 Jan 2025'},
+        {name:'Register of Directors',     form:'MGT-7 Annex.',icon:'user-tie',    color:'#1E1E1E', entries:2, lastUpdated:'02 Mar 2026'},
+        {name:'Register of KMPs',          form:'§203',         icon:'star',       color:'#2563eb', entries:3, lastUpdated:'01 Jan 2026'},
         {name:'Register of Members',       form:'MGT-1',        icon:'users',      color:'#16a34a', entries:2, lastUpdated:'01 Apr 2017'},
         {name:'Register of Charges',       form:'CHG-7',        icon:'link',       color:'#d97706', entries:0, lastUpdated:'—'},
-        {name:'Register of Contracts',     form:'MBP-4',        icon:'handshake',  color:'#7c3aed', entries:7, lastUpdated:'28 Feb 2025'},
-        {name:'Meeting Minutes Archive',   form:'§118',         icon:'book',       color:'#dc2626', entries:4, lastUpdated:'28 Feb 2025'},
+        {name:'Register of Contracts',     form:'MBP-4',        icon:'handshake',  color:'#7c3aed', entries:7, lastUpdated:'01 Mar 2026'},
+        {name:'Meeting Minutes Archive',   form:'§118',         icon:'book',       color:'#dc2626', entries:4, lastUpdated:'01 Mar 2026'},
         {name:'Share Transfer Register',   form:'SH-4',         icon:'exchange-alt',color:'#0d9488',entries:0, lastUpdated:'—'},
         {name:'Register of Investments',   form:'MBP-3',        icon:'chart-line', color:'#9f1239', entries:2, lastUpdated:'31 Mar 2024'},
-        {name:'Register of Related Parties',form:'AOC-2',       icon:'sitemap',    color:'#475569', entries:3, lastUpdated:'15 Jan 2025'},
+        {name:'Register of Related Parties',form:'AOC-2',       icon:'sitemap',    color:'#475569', entries:3, lastUpdated:'15 Jan 2026'},
       ].map(r=>`
       <div style="background:#fff;border:1px solid var(--border);">
         <div style="height:3px;background:${r.color};"></div>
@@ -3859,15 +3859,15 @@ app.get('/governance', (c) => {
       </div>
       <table class="ig-tbl"><thead><tr><th>Due Date</th><th>Filing / Event</th><th>Form</th><th>Responsible</th><th>Penalty</th><th>Status</th><th>Action</th></tr></thead><tbody>
         ${[
-          {date:'11 Mar 2025', event:'GSTR-1 — February 2025',         form:'GSTR-1',  resp:'Finance', pen:'₹200/day',  status:'Due',      cls:'b-g'},
-          {date:'15 Mar 2025', event:'Board Meeting — Q1 Review',       form:'§173',    resp:'Board',   pen:'₹5K–25K',  status:'Scheduled',cls:'b-gr'},
-          {date:'15 Mar 2025', event:'TDS Deposit — February 2025',     form:'Challan', resp:'Finance', pen:'1.5%/mo',   status:'Due',      cls:'b-g'},
-          {date:'20 Mar 2025', event:'GSTR-3B — February 2025',         form:'GSTR-3B', resp:'Finance', pen:'₹50/day',   status:'Upcoming', cls:'b-dk'},
-          {date:'31 Mar 2025', event:'Annual Accounts Filing',           form:'AOC-4',   resp:'CS/CFO',  pen:'₹1K/day',  status:'Upcoming', cls:'b-dk'},
-          {date:'30 Apr 2025', event:'Annual Return Filing',             form:'MGT-7A',  resp:'CS',      pen:'₹200/day', status:'Upcoming', cls:'b-dk'},
-          {date:'31 Mar 2025', event:'Income Tax Advance — Q4',          form:'Challan', resp:'CFO',     pen:'1%/mo',     status:'Upcoming', cls:'b-dk'},
-          {date:'15 Apr 2025', event:'PF ECR Upload — March 2025',       form:'ECR',     resp:'HR',      pen:'Min ₹5K',  status:'Upcoming', cls:'b-dk'},
-          {date:'30 Sep 2025', event:'Secretarial Audit',                 form:'MR-3',    resp:'CS',      pen:'₹1L+',     status:'Upcoming', cls:'b-dk'},
+          {date:'11 Mar 2026', event:'GSTR-1 — February 2026',         form:'GSTR-1',  resp:'Finance', pen:'₹200/day',  status:'Due',      cls:'b-g'},
+          {date:'15 Mar 2026', event:'Board Meeting — Q3 Review',       form:'§173',    resp:'Board',   pen:'₹5K–25K',  status:'Scheduled',cls:'b-gr'},
+          {date:'15 Mar 2026', event:'TDS Deposit — February 2026',     form:'Challan', resp:'Finance', pen:'1.5%/mo',   status:'Due',      cls:'b-g'},
+          {date:'20 Mar 2026', event:'GSTR-3B — February 2026',         form:'GSTR-3B', resp:'Finance', pen:'₹50/day',   status:'Upcoming', cls:'b-dk'},
+          {date:'31 Mar 2026', event:'Annual Accounts Filing',           form:'AOC-4',   resp:'CS/CFO',  pen:'₹1K/day',  status:'Upcoming', cls:'b-dk'},
+          {date:'30 Apr 2026', event:'Annual Return Filing',             form:'MGT-7A',  resp:'CS',      pen:'₹200/day', status:'Upcoming', cls:'b-dk'},
+          {date:'31 Mar 2026', event:'Income Tax Advance — Q4',          form:'Challan', resp:'CFO',     pen:'1%/mo',     status:'Upcoming', cls:'b-dk'},
+          {date:'15 Apr 2026', event:'PF ECR Upload — March 2026',       form:'ECR',     resp:'HR',      pen:'Min ₹5K',  status:'Upcoming', cls:'b-dk'},
+          {date:'30 Sep 2026', event:'Secretarial Audit',                 form:'MR-3',    resp:'CS',      pen:'₹1L+',     status:'Upcoming', cls:'b-dk'},
         ].map(r=>`<tr>
           <td style="font-size:.82rem;font-weight:500;white-space:nowrap;">${r.date}</td>
           <td style="font-size:.85rem;">${r.event}</td>
@@ -3896,9 +3896,9 @@ app.get('/governance', (c) => {
         <div style="padding:1.25rem;">
           <table class="ig-tbl"><thead><tr><th>Director / KMP</th><th>DSC Class</th><th>Issued By</th><th>Valid Till</th><th>Status</th><th>Action</th></tr></thead><tbody>
             ${[
-              {name:'Arun Manikonda',  class:'Class 3',  issuer:'eMudhra',     valid:'31 Dec 2025', s:'Active'},
-              {name:'Pavan Manikonda', class:'Class 3',  issuer:'Sify Trust',  valid:'15 Jun 2025', s:'Active'},
-              {name:'Amit Jhingan',    class:'Class 3',  issuer:'eMudhra',     valid:'20 Mar 2025', s:'Expiring'},
+              {name:'Arun Manikonda',  class:'Class 3',  issuer:'eMudhra',     valid:'31 Dec 2026', s:'Active'},
+              {name:'Pavan Manikonda', class:'Class 3',  issuer:'Sify Trust',  valid:'15 Jun 2026', s:'Active'},
+              {name:'Amit Jhingan',    class:'Class 3',  issuer:'eMudhra',     valid:'20 Mar 2026', s:'Expiring'},
             ].map(d=>`<tr>
               <td style="font-size:.82rem;font-weight:500;">${d.name}</td>
               <td style="font-size:.72rem;">${d.class}</td>
@@ -3917,7 +3917,7 @@ app.get('/governance', (c) => {
         <div style="padding:.875rem;">
           ${[
             {doc:'Board Resolution — Q4 Financials',   signers:['Arun Manikonda','Pavan Manikonda'],   due:'10 Mar 2025', signed:0},
-            {doc:'Advisory Agreement — EVL (MND-003)',  signers:['Arun Manikonda'],                     due:'12 Mar 2025', signed:1},
+            {doc:'Advisory Agreement — EVL (MND-003)',  signers:['Arun Manikonda'],                     due:'12 Mar 2026', signed:1},
             {doc:'Annual Return MGT-7 (FY 2024-25)',   signers:['Arun Manikonda','Pavan Manikonda'],   due:'30 Sep 2025', signed:0},
             {doc:'Financial Statements (AOC-4)',        signers:['Arun Manikonda','Pavan Manikonda'],   due:'30 Oct 2025', signed:0},
           ].map(d=>`<div style="border:1px solid var(--border);padding:.875rem;margin-bottom:.5rem;background:var(--parch-dk);">
@@ -3988,9 +3988,9 @@ app.get('/governance', (c) => {
         </div>
         <div style="padding:1.25rem;">
           ${[
-            {ref:'BM-NTC-003', date:'05 Mar 2025', issued:'26 Feb 2025', notice_days:7, signatories:'All Directors', s:'Issued', compliant:true},
-            {ref:'BM-NTC-002', date:'15 Feb 2025', issued:'07 Feb 2025', notice_days:8, signatories:'All Directors', s:'Archived', compliant:true},
-            {ref:'BM-NTC-001', date:'15 Jan 2025', issued:'08 Jan 2025', notice_days:7, signatories:'All Directors', s:'Archived', compliant:true},
+            {ref:'BM-NTC-003', date:'05 Mar 2026', issued:'26 Feb 2026', notice_days:7, signatories:'All Directors', s:'Issued', compliant:true},
+            {ref:'BM-NTC-002', date:'15 Feb 2026', issued:'07 Feb 2026', notice_days:8, signatories:'All Directors', s:'Archived', compliant:true},
+            {ref:'BM-NTC-001', date:'15 Jan 2026', issued:'08 Jan 2026', notice_days:7, signatories:'All Directors', s:'Archived', compliant:true},
           ].map(n=>`<div style="border:1px solid ${n.compliant?'#86efac':'#fca5a5'};padding:.875rem;margin-bottom:.625rem;background:${n.compliant?'#f0fdf4':'#fff5f5'};">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.3rem;">
               <div style="font-size:.78rem;font-weight:600;color:var(--gold);">${n.ref}</div>
@@ -4064,8 +4064,8 @@ app.get('/governance', (c) => {
           <div style="padding:1.25rem;display:flex;flex-direction:column;gap:.875rem;">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
               <div><label class="ig-label">Meeting Type</label><select id="mtg-type" class="ig-input" style="font-size:.82rem;"><option>Board Meeting</option><option>Audit Committee</option><option>Nomination &amp; Remuneration</option><option>Extraordinary General Meeting</option><option>Annual General Meeting</option></select></div>
-              <div><label class="ig-label">Meeting Number</label><input type="text" id="mtg-no" class="ig-input" value="BM-2025-04" style="font-size:.82rem;"></div>
-              <div><label class="ig-label">Date</label><input type="date" id="mtg-date" class="ig-input" value="2025-03-15" style="font-size:.82rem;"></div>
+              <div><label class="ig-label">Meeting Number</label><input type="text" id="mtg-no" class="ig-input" value="BM-2026-04" style="font-size:.82rem;"></div>
+              <div><label class="ig-label">Date</label><input type="date" id="mtg-date" class="ig-input" value="2026-03-15" style="font-size:.82rem;"></div>
               <div><label class="ig-label">Time</label><input type="time" id="mtg-time" class="ig-input" value="11:00" style="font-size:.82rem;"></div>
               <div style="grid-column:span 2;"><label class="ig-label">Venue / Mode</label><input type="text" id="mtg-venue" class="ig-input" value="Boardroom, 4th Floor, India Gully HQ, New Delhi &amp; Video Conference" style="font-size:.82rem;"></div>
               <div style="grid-column:span 2;"><label class="ig-label">Quorum Required</label><input type="text" id="mtg-quorum" class="ig-input" value="One-third of total directors or 2, whichever is higher (§174)" style="font-size:.82rem;"></div>
@@ -4099,10 +4099,10 @@ app.get('/governance', (c) => {
           </div>
           <div id="notice-preview" style="padding:1.25rem;font-size:.78rem;line-height:1.8;color:var(--ink);min-height:120px;background:#fffdf5;">
             <p style="text-align:center;font-weight:700;font-size:.88rem;margin-bottom:.75rem;">VIVACIOUS ENTERTAINMENT AND HOSPITALITY PVT. LTD.</p>
-            <p style="text-align:center;font-size:.72rem;color:var(--ink-muted);margin-bottom:1rem;">CIN: U74900DL2017PTC000000 | Regd. Office: New Delhi</p>
+            <p style="text-align:center;font-size:.72rem;color:var(--ink-muted);margin-bottom:1rem;">CIN: U74900DL2017PTC000000 | Regd. Office: New Delhi, India</p>
             <p style="font-size:.78rem;"><strong>Notice</strong> is hereby given that the <strong id="np-mtgno">4th Board Meeting</strong> of the Board of Directors will be held on <strong id="np-date">15 March 2025</strong> at <strong id="np-time">11:00 AM</strong> at <span id="np-venue">Boardroom, India Gully HQ</span> to transact the following business:</p>
             <div id="np-agenda-list" style="margin-top:.875rem;"></div>
-            <p style="margin-top:.875rem;font-size:.72rem;color:var(--ink-muted);">By Order of the Board<br><br>Company Secretary<br>Date: <span id="np-today">01 Mar 2025</span></p>
+            <p style="margin-top:.875rem;font-size:.72rem;color:var(--ink-muted);">By Order of the Board<br><br>Company Secretary<br>Date: <span id="np-today">02 Mar 2026</span></p>
           </div>
         </div>
         <!-- Resolution Drafts -->
@@ -4458,10 +4458,10 @@ app.get('/horeca', (c) => {
         <thead><tr><th>PO No.</th><th>Vendor</th><th>Items</th><th>PO Value</th><th>PO Date</th><th>Expected Delivery</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
           ${[
-            {po:'PO-2025-007',vendor:'Royal Linen & Textiles', items:3, val:336000, date:'15 Feb 2025',delivery:'18 Feb 2025',status:'Delivered',cls:'b-gr'},
-            {po:'PO-2025-006',vendor:'Premier Kitchen Supplies',items:2, val:170000, date:'10 Feb 2025',delivery:'15 Feb 2025',status:'Delivered',cls:'b-gr'},
-            {po:'PO-2025-005',vendor:'CleanPro Housekeeping',   items:4, val:75000,  date:'05 Feb 2025',delivery:'09 Feb 2025',status:'Delivered',cls:'b-gr'},
-            {po:'PO-2025-008',vendor:'Hotel Tech Systems',      items:2, val:456000, date:'01 Mar 2025',delivery:'15 Mar 2025',status:'Pending Approval',cls:'b-g'},
+            {po:'PO-2026-007',vendor:'Royal Linen & Textiles', items:3, val:336000, date:'15 Feb 2026',delivery:'18 Feb 2026',status:'Delivered',cls:'b-gr'},
+            {po:'PO-2026-006',vendor:'Premier Kitchen Supplies',items:2, val:170000, date:'10 Feb 2026',delivery:'15 Feb 2026',status:'Delivered',cls:'b-gr'},
+            {po:'PO-2026-005',vendor:'CleanPro Housekeeping',   items:4, val:75000,  date:'05 Feb 2026',delivery:'09 Feb 2026',status:'Delivered',cls:'b-gr'},
+            {po:'PO-2026-008',vendor:'Hotel Tech Systems',      items:2, val:456000, date:'01 Mar 2026',delivery:'15 Mar 2026',status:'Pending Approval',cls:'b-g'},
           ].map(p=>`<tr>
             <td style="font-weight:600;font-size:.78rem;color:var(--gold);">${p.po}</td>
             <td style="font-size:.82rem;">${p.vendor}</td>
@@ -4492,11 +4492,11 @@ app.get('/horeca', (c) => {
         <div style="padding:.875rem;">
           <table class="ig-tbl"><thead><tr><th>Customer</th><th>Type</th><th>Pricing Tier</th><th>Last Login</th><th>Orders</th><th>Status</th></tr></thead><tbody>
             ${[
-              {name:'Rajasthan Resort Group',  type:'Hotel Chain',   tier:'Premium (negotiated)',  last:'05 Mar 2025', orders:8, s:'Active'},
-              {name:'Goa Hospitality Ventures',type:'Resort',        tier:'Standard',              last:'03 Mar 2025', orders:3, s:'Active'},
-              {name:'Heritage Hotels Ltd.',    type:'Heritage Hotel',tier:'Preferred',             last:'28 Feb 2025', orders:5, s:'Active'},
-              {name:'NCR Entertainment Pvt',  type:'Venue',         tier:'Trial (30-day)',         last:'01 Mar 2025', orders:1, s:'Trial'},
-              {name:'Delhi NCR Retail Park',   type:'F&B Operator',  tier:'Standard',              last:'15 Jan 2025', orders:0, s:'Inactive'},
+              {name:'Rajasthan Resort Group',  type:'Hotel Chain',   tier:'Premium (negotiated)',  last:'05 Mar 2026', orders:8, s:'Active'},
+              {name:'Goa Hospitality Ventures',type:'Resort',        tier:'Standard',              last:'03 Mar 2026', orders:3, s:'Active'},
+              {name:'Heritage Hotels Ltd.',    type:'Heritage Hotel',tier:'Preferred',             last:'28 Feb 2026', orders:5, s:'Active'},
+              {name:'NCR Entertainment Pvt',  type:'Venue',         tier:'Trial (30-day)',         last:'01 Mar 2026', orders:1, s:'Trial'},
+              {name:'Delhi NCR Retail Park',   type:'F&B Operator',  tier:'Standard',              last:'15 Jan 2026', orders:0, s:'Inactive'},
             ].map(c=>`<tr>
               <td style="font-size:.82rem;font-weight:500;">${c.name}<div style="font-size:.65rem;color:var(--ink-muted);">${c.type}</div></td>
               <td style="font-size:.68rem;">${c.tier}</td>
@@ -4540,10 +4540,10 @@ app.get('/horeca', (c) => {
       <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Recent Portal Orders</h3></div>
       <table class="ig-tbl"><thead><tr><th>Order No.</th><th>Customer</th><th>Items</th><th>Value</th><th>Placed</th><th>Delivery</th><th>Status</th><th>Action</th></tr></thead><tbody>
         ${[
-          {oid:'PO-HRC-2025-018',cust:'Rajasthan Resort Group',   items:'Linen Bundle — 200 sets',         val:'₹8.4L', placed:'04 Mar 2025',del:'12 Mar 2025',s:'Processing'},
-          {oid:'PO-HRC-2025-017',cust:'Heritage Hotels Ltd.',     items:'Kitchen Equipment × 12 SKUs',      val:'₹3.2L', placed:'02 Mar 2025',del:'10 Mar 2025',s:'Shipped'},
-          {oid:'PO-HRC-2025-016',cust:'Goa Hospitality Ventures', items:'F&B Setup — Bar Package',          val:'₹1.8L', placed:'28 Feb 2025',del:'05 Mar 2025',s:'Delivered'},
-          {oid:'PO-HRC-2025-015',cust:'NCR Entertainment Pvt',   items:'Event Crockery — 500 covers',      val:'₹0.9L', placed:'25 Feb 2025',del:'02 Mar 2025',s:'Delivered'},
+          {oid:'PO-HRC-2026-018',cust:'Rajasthan Resort Group',   items:'Linen Bundle — 200 sets',         val:'₹8.4L', placed:'04 Mar 2026',del:'12 Mar 2026',s:'Processing'},
+          {oid:'PO-HRC-2026-017',cust:'Heritage Hotels Ltd.',     items:'Kitchen Equipment × 12 SKUs',      val:'₹3.2L', placed:'02 Mar 2026',del:'10 Mar 2026',s:'Shipped'},
+          {oid:'PO-HRC-2026-016',cust:'Goa Hospitality Ventures', items:'F&B Setup — Bar Package',          val:'₹1.8L', placed:'28 Feb 2026',del:'05 Mar 2026',s:'Delivered'},
+          {oid:'PO-HRC-2026-015',cust:'NCR Entertainment Pvt',   items:'Event Crockery — 500 covers',      val:'₹0.9L', placed:'25 Feb 2026',del:'02 Mar 2026',s:'Delivered'},
         ].map(o=>`<tr>
           <td style="font-size:.75rem;font-weight:600;color:var(--gold);">${o.oid}</td>
           <td style="font-size:.75rem;">${o.cust}</td>
@@ -4583,7 +4583,7 @@ app.get('/horeca', (c) => {
         <div id="new-grn-panel" class="ig-panel" style="margin:1.25rem;display:none;">
           <h4 style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.875rem;">Goods Receipt Note</h4>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
-            <div><label class="ig-label">Purchase Order Ref</label><select class="ig-input" style="font-size:.82rem;"><option>PO-2025-018 — Kitchen Equipment</option><option>PO-2025-019 — Linen Supply</option></select></div>
+            <div><label class="ig-label">Purchase Order Ref</label><select class="ig-input" style="font-size:.82rem;"><option>PO-2026-018 — Kitchen Equipment</option><option>PO-2026-019 — Linen Supply</option></select></div>
             <div><label class="ig-label">Receiving Warehouse</label><select class="ig-input" style="font-size:.82rem;"><option>New Delhi Central</option><option>Mumbai Satellite</option><option>Gurgaon Depot</option></select></div>
             <div><label class="ig-label">Delivery Challan No.</label><input type="text" class="ig-input" style="font-size:.82rem;" placeholder="DC/2025/xxxx"></div>
             <div><label class="ig-label">Receipt Date</label><input type="date" class="ig-input" style="font-size:.82rem;"></div>
@@ -4591,16 +4591,16 @@ app.get('/horeca', (c) => {
             <div><label class="ig-label">QC Status</label><select class="ig-input" style="font-size:.82rem;"><option>Pass</option><option>Partial Pass</option><option>Fail — Return</option></select></div>
           </div>
           <div style="display:flex;gap:.75rem;margin-top:.875rem;">
-            <button onclick="igToast('GRN-2025-013 created. Stock updated in New Delhi Central warehouse.','success');togglePanel('new-grn-panel')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Create GRN</button>
+            <button onclick="igToast('GRN-2026-013 created. Stock updated in New Delhi Central warehouse.','success');togglePanel('new-grn-panel')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;">Create GRN</button>
             <button onclick="togglePanel('new-grn-panel')" style="background:none;border:1px solid var(--border);padding:.45rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
           </div>
         </div>
         <table class="ig-tbl" style="font-size:.78rem;"><thead><tr><th>GRN No.</th><th>PO Ref</th><th>Warehouse</th><th>Items</th><th>QC</th><th>Date</th><th>Status</th></tr></thead><tbody>
           ${[
-            {grn:'GRN-013',po:'PO-018',wh:'Delhi Central', items:24, qc:'Pass',    date:'27 Feb 2025',cls:'b-gr'},
-            {grn:'GRN-012',po:'PO-017',wh:'Mumbai',        items:16, qc:'Pass',    date:'22 Feb 2025',cls:'b-gr'},
-            {grn:'GRN-011',po:'PO-015',wh:'Delhi Central', items:8,  qc:'Partial', date:'18 Feb 2025',cls:'b-g'},
-            {grn:'GRN-010',po:'PO-014',wh:'Gurgaon',       items:32, qc:'Pass',    date:'10 Feb 2025',cls:'b-gr'},
+            {grn:'GRN-013',po:'PO-018',wh:'Delhi Central', items:24, qc:'Pass',    date:'27 Feb 2026',cls:'b-gr'},
+            {grn:'GRN-012',po:'PO-017',wh:'Mumbai',        items:16, qc:'Pass',    date:'22 Feb 2026',cls:'b-gr'},
+            {grn:'GRN-011',po:'PO-015',wh:'Delhi Central', items:8,  qc:'Partial', date:'18 Feb 2026',cls:'b-g'},
+            {grn:'GRN-010',po:'PO-014',wh:'Gurgaon',       items:32, qc:'Pass',    date:'10 Feb 2026',cls:'b-gr'},
           ].map(g=>`<tr>
             <td style="font-weight:700;color:var(--gold);">${g.grn}</td>
             <td style="color:var(--ink-muted);">${g.po}</td>
@@ -4651,10 +4651,10 @@ app.get('/horeca', (c) => {
       </div>
       <table class="ig-tbl"><thead><tr><th>Shipment ID</th><th>PO Ref</th><th>Carrier</th><th>AWB / LR</th><th>Origin</th><th>Destination</th><th>ETA</th><th>Last Update</th><th>Status</th></tr></thead><tbody>
         ${[
-          {id:'SHP-028',po:'PO-020',carrier:'Blue Dart',   awb:'BD1234567890',origin:'Mumbai',     dest:'Delhi Central',  eta:'01 Mar 2025',upd:'28 Feb — Out for delivery',cls:'b-g',  s:'In Transit'},
-          {id:'SHP-027',po:'PO-019',carrier:'DTDC',        awb:'DT9876543210',origin:'Delhi',      dest:'Gurgaon Depot',  eta:'28 Feb 2025',upd:'28 Feb — Delivered',     cls:'b-gr', s:'Delivered'},
-          {id:'SHP-026',po:'PO-018',carrier:'DHL Express', awb:'DH4567890123',origin:'Hyderabad',  dest:'Mumbai',         eta:'05 Mar 2025',upd:'27 Feb — In transit',     cls:'b-dk', s:'Scheduled'},
-          {id:'SHP-025',po:'PO-017',carrier:'Gati',        awb:'GT7890123456',origin:'Delhi',      dest:'Delhi Central',  eta:'26 Feb 2025',upd:'26 Feb — Delivered',     cls:'b-gr', s:'Delivered'},
+          {id:'SHP-028',po:'PO-020',carrier:'Blue Dart',   awb:'BD1234567890',origin:'Mumbai',     dest:'Delhi Central',  eta:'01 Mar 2026',upd:'28 Feb — Out for delivery',cls:'b-g',  s:'In Transit'},
+          {id:'SHP-027',po:'PO-019',carrier:'DTDC',        awb:'DT9876543210',origin:'Delhi',      dest:'Gurgaon Depot',  eta:'28 Feb 2026',upd:'28 Feb — Delivered',     cls:'b-gr', s:'Delivered'},
+          {id:'SHP-026',po:'PO-018',carrier:'DHL Express', awb:'DH4567890123',origin:'Hyderabad',  dest:'Mumbai',         eta:'05 Mar 2026',upd:'27 Feb — In transit',     cls:'b-dk', s:'Scheduled'},
+          {id:'SHP-025',po:'PO-017',carrier:'Gati',        awb:'GT7890123456',origin:'Delhi',      dest:'Delhi Central',  eta:'26 Feb 2026',upd:'26 Feb — Delivered',     cls:'b-gr', s:'Delivered'},
         ].map(s=>`<tr>
           <td style="font-weight:700;font-size:.78rem;color:var(--gold);">${s.id}</td>
           <td style="font-size:.75rem;color:var(--ink-muted);">${s.po}</td>
@@ -4728,11 +4728,11 @@ app.get('/horeca', (c) => {
 app.get('/contracts', (c) => {
   const contracts = [
     {id:'AGR-001', name:'Advisory Agreement FY2025',       party:'Demo Client Corp',  type:'Advisory',    start:'01 Jan 2025',expiry:'31 Dec 2025',status:'Active',   cls:'b-gr',signed:true},
-    {id:'PMC-001', name:'Hotel PMC Agreement',              party:'Rajasthan Hotels',  type:'PMC',         start:'15 Feb 2025',expiry:'14 Feb 2026',status:'Active',   cls:'b-gr',signed:true},
-    {id:'MND-001', name:'Retail Leasing Mandate',           party:'Mumbai Mall Pvt.', type:'Mandate',     start:'01 Dec 2024',expiry:'30 Nov 2025',status:'Active',   cls:'b-gr',signed:true},
-    {id:'RET-001', name:'EY Advisory Retainer',             party:'Ernst & Young',    type:'Retainer',    start:'01 Apr 2024',expiry:'31 Mar 2025',status:'Expiring', cls:'b-g', signed:true},
-    {id:'MOU-001', name:'CBRE Co-Advisory MOU',             party:'CBRE India',       type:'MOU',         start:'01 Jan 2025',expiry:'31 Dec 2025',status:'Active',   cls:'b-gr',signed:true},
-    {id:'NDA-001', name:'NDA — Entertainment Project',      party:'Confidential',     type:'NDA',         start:'01 Feb 2025',expiry:'01 Feb 2026',status:'Active',   cls:'b-gr',signed:false},
+    {id:'PMC-001', name:'Hotel PMC Agreement',              party:'Rajasthan Hotels',  type:'PMC',         start:'15 Feb 2026',expiry:'14 Feb 2027',status:'Active',   cls:'b-gr',signed:true},
+    {id:'MND-001', name:'Retail Leasing Mandate',           party:'Mumbai Mall Pvt.', type:'Mandate',     start:'01 Dec 2025',expiry:'30 Nov 2026',status:'Active',   cls:'b-gr',signed:true},
+    {id:'RET-001', name:'EY Advisory Retainer',             party:'Ernst & Young',    type:'Retainer',    start:'01 Apr 2025',expiry:'31 Mar 2026',status:'Expiring', cls:'b-g', signed:true},
+    {id:'MOU-001', name:'CBRE Co-Advisory MOU',             party:'CBRE India',       type:'MOU',         start:'01 Jan 2026',expiry:'31 Dec 2026',status:'Active',   cls:'b-gr',signed:true},
+    {id:'NDA-001', name:'NDA — Entertainment Project',      party:'Confidential',     type:'NDA',         start:'01 Feb 2026',expiry:'01 Feb 2027',status:'Active',   cls:'b-gr',signed:false},
     {id:'DRF-001', name:'New Client Advisory Agreement',    party:'TBD',              type:'Advisory',    start:'—',          expiry:'—',           status:'Draft',    cls:'b-dk',signed:false},
   ]
   const templates = ['Advisory Services Agreement','Hotel Management Pre-Opening Contract','Retail Leasing Mandate','Non-Disclosure Agreement (NDA)','Memorandum of Understanding (MOU)','Engagement Letter']
@@ -4842,7 +4842,7 @@ app.get('/contracts', (c) => {
           <i class="fas fa-file-contract" style="color:#fff;font-size:.85rem;"></i>
         </div>
         <div style="font-weight:600;font-size:.875rem;color:var(--ink);margin-bottom:.4rem;">${t}</div>
-        <div style="font-size:.72rem;color:var(--ink-muted);margin-bottom:.875rem;">Standard India Gully template · Last updated Jan 2025</div>
+        <div style="font-size:.72rem;color:var(--ink-muted);margin-bottom:.875rem;">Standard India Gully template · Last updated Jan 2026</div>
         <div style="display:flex;gap:.5rem;">
           <button onclick="igToast('${t} — opening in editor','success')" style="background:#4f46e5;color:#fff;border:none;padding:.35rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;flex:1;"><i class="fas fa-edit" style="margin-right:.3rem;"></i>Edit</button>
           <button onclick="igToast('${t} template downloaded','success')" style="background:none;border:1px solid var(--border);padding:.35rem .75rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);"><i class="fas fa-download"></i></button>
@@ -4892,12 +4892,12 @@ app.get('/contracts', (c) => {
       </div>
       <table class="ig-tbl"><thead><tr><th>Contract</th><th>Party</th><th>Type</th><th>Expiry</th><th>Days Left</th><th>Auto-Renew</th><th>Status</th><th>Action</th></tr></thead><tbody id="contracts-tbody">
         ${[
-          {id:'CTR-001',name:'Advisory Retainer — Heritage Hotels',   party:'Heritage Hotels Ltd',         type:'Retainer',  exp:'31 Mar 2025', days:25,  auto:false, s:'Expiring Soon'},
-          {id:'CTR-002',name:'NDA — Goa Hospitality Ventures',        party:'Goa Hospitality Ventures',    type:'NDA',       exp:'10 Mar 2025', days:4,   auto:false, s:'Critical'},
+          {id:'CTR-001',name:'Advisory Retainer — Heritage Hotels',   party:'Heritage Hotels Ltd',         type:'Retainer',  exp:'31 Mar 2026', days:25,  auto:false, s:'Expiring Soon'},
+          {id:'CTR-002',name:'NDA — Goa Hospitality Ventures',        party:'Goa Hospitality Ventures',    type:'NDA',       exp:'10 Mar 2026', days:4,   auto:false, s:'Critical'},
           {id:'CTR-003',name:'Mandate Agreement — Entertainment City',party:'NCR Entertainment Pvt Ltd',  type:'Mandate',   exp:'30 Jun 2025', days:117, auto:true,  s:'Active'},
           {id:'CTR-004',name:'Vendor Agreement — Office Supplies',     party:'ABC Suppliers Ltd',          type:'Vendor',    exp:'31 Dec 2025', days:300, auto:true,  s:'Active'},
           {id:'CTR-005',name:'Lease — Registered Office',              party:'City Properties Ltd',        type:'Lease',     exp:'31 Aug 2025', days:178, auto:false, s:'Active'},
-          {id:'CTR-006',name:'Advisory Agreement — Mumbai RE Fund',    party:'Mumbai Real Estate Fund',    type:'Advisory',  exp:'28 Feb 2025', days:-1,  auto:false, s:'Expired'},
+          {id:'CTR-006',name:'Advisory Agreement — Mumbai RE Fund',    party:'Mumbai Real Estate Fund',    type:'Advisory',  exp:'28 Feb 2026', days:-1,  auto:false, s:'Expired'},
         ].map(c=>`<tr>
           <td style="font-size:.75rem;font-weight:600;color:var(--gold);">${c.id}</td>
           <td style="font-size:.78rem;">${c.name}<div style="font-size:.65rem;color:var(--ink-muted);">${c.party}</div></td>
@@ -4955,10 +4955,10 @@ app.get('/contracts', (c) => {
           <div>
             <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);margin-bottom:.625rem;">Versions</div>
             ${[
-              {v:'v3.0', date:'05 Mar 2025', author:'Arun Manikonda', note:'Fees revised upward — ₹4.5L',    active:true},
-              {v:'v2.1', date:'15 Feb 2025', author:'Pavan Manikonda',note:'Termination clause amended',      active:false},
+              {v:'v3.0', date:'05 Mar 2026', author:'Arun Manikonda', note:'Fees revised upward — ₹4.5L',    active:true},
+              {v:'v2.1', date:'15 Feb 2026', author:'Pavan Manikonda',note:'Termination clause amended',      active:false},
               {v:'v2.0', date:'01 Feb 2025', author:'Amit Jhingan',   note:'Scope extended to Q3 FY 2025', active:false},
-              {v:'v1.0', date:'01 Jan 2025', author:'Arun Manikonda', note:'Initial contract execution',    active:false},
+              {v:'v1.0', date:'01 Jan 2026', author:'Arun Manikonda', note:'Initial contract execution',    active:false},
             ].map(v=>`<div onclick="igToast('Loading diff for ${v.v}','info')" style="padding:.625rem .75rem;border:1px solid ${v.active?'var(--gold)':'var(--border)'};background:${v.active?'#fffbeb':'#fff'};margin-bottom:.3rem;cursor:pointer;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.15rem;">
                 <span style="font-size:.78rem;font-weight:700;color:${v.active?'var(--gold)':'var(--ink)'};">${v.v}</span>
@@ -5468,8 +5468,8 @@ app.get('/reports', (c) => {
     </div>
     <table class="ig-tbl"><thead><tr><th>Report Name</th><th>Frequency</th><th>Recipients</th><th>Format</th><th>Last Sent</th><th>Status</th><th>Action</th></tr></thead><tbody>
       ${[
-        {name:'Monthly P&L',           freq:'1st of month', to:'superadmin, directors',  fmt:'PDF',  last:'01 Feb 2025', on:true},
-        {name:'Weekly Pipeline',       freq:'Every Monday', to:'superadmin',             fmt:'Email',last:'24 Feb 2025', on:true},
+        {name:'Monthly P&L',           freq:'1st of month', to:'superadmin, directors',  fmt:'PDF',  last:'01 Feb 2026', on:true},
+        {name:'Weekly Pipeline',       freq:'Every Monday', to:'superadmin',             fmt:'Email',last:'24 Feb 2026', on:true},
         {name:'GST Filing Reminder',   freq:'8th of month', to:'finance@indiagully.com', fmt:'Email',last:'08 Feb 2025', on:true},
         {name:'HR Attendance Summary', freq:'Last day/month',to:'hr@indiagully.com',      fmt:'Excel',last:'28 Feb 2025', on:false},
       ].map(r=>`<tr>
@@ -10246,7 +10246,7 @@ app.get('/compliance', (c) => {
 app.get('/audit-log', (c) => {
   const logs = [
     {ts:'2026-03-02 09:15:22', user:'superadmin@indiagully.com', action:'Platform v2026.50 deployed',       mod:'Platform', ip:'103.21.x.x', ok:true,  risk:'Low'},
-    {ts:'2026-03-02 09:12:01', user:'superadmin@indiagully.com', action:'PLATFORM_ENV set to demo',         mod:'Config',   ip:'103.21.x.x', ok:true,  risk:'Low'},
+    {ts:'2026-03-02 09:12:01', user:'superadmin@indiagully.com', action:'PLATFORM_ENV set to production',    mod:'Config',   ip:'103.21.x.x', ok:true,  risk:'Low'},
     {ts:'2026-03-01 22:14:53', user:'demo@indiagully.com',       action:'Client Portal Login',              mod:'Auth',     ip:'115.99.x.x', ok:true,  risk:'Low'},
     {ts:'2026-03-01 18:42:15', user:'Unknown',                   action:'Failed Login — 3 attempts',        mod:'Auth',     ip:'185.220.x.x',ok:false, risk:'High'},
     {ts:'2026-03-01 16:30:00', user:'superadmin@indiagully.com', action:'ZZ-Round v2026.50 committed',      mod:'Platform', ip:'49.36.x.x',  ok:true,  risk:'Low'},

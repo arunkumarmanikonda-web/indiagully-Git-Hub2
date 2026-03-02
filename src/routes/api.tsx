@@ -950,7 +950,7 @@ app.get('/health', (c) => c.json({
     xss_protection:   'safeHtml() entity-encoding on all dynamic HTML (F2 ✓)',
     abac:             'requireSession()/requireRole() on all /api/* groups (F1 ✓)',
     dpdp_banner:      'DPDP consent overlay on portal + admin entry points (F5 ✓)',
-    demo_mode:        'PLATFORM_ENV=demo/staging enables fixed TOTP pins for demo accounts (G1/G2 ✓)',
+    production_mode:  'PLATFORM_ENV=production — all TOTP pins disabled, live credentials required (G1/G2 ✓)',
     lockout_recovery: 'POST /api/auth/unlock (admin-only) + GET /api/auth/lockout-status (G3 ✓)',
     nda_gate:         'Mandate detail pages gated by NDA acceptance modal (G4 ✓)',
     form_validation:  'Client-side phone/email validation + honeypot on public forms (G5 ✓)',

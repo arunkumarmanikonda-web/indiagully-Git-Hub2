@@ -417,7 +417,7 @@ const FOOTER = `
              decoding="async">
       </div>
       <p style="font-size:.8rem;color:rgba(255,255,255,.65);line-height:1.8;max-width:300px;margin-bottom:1.25rem;">India's premier multi-vertical advisory firm. Strategy, transactions and enablement across Real Estate, Retail, Hospitality, Entertainment and HORECA.</p>
-      <p style="font-size:.68rem;color:rgba(255,255,255,.45);line-height:1.7;">Vivacious Entertainment and Hospitality Pvt. Ltd.<br>New Delhi · CIN: U74900DL2017PTC000000</p>
+      <p style="font-size:.68rem;color:rgba(255,255,255,.45);line-height:1.7;">Vivacious Entertainment and Hospitality Pvt. Ltd.<br>New Delhi, India</p>
     </div>
 
     <!-- Advisory -->
@@ -458,12 +458,12 @@ const FOOTER = `
   <div style="border-top:1px solid rgba(255,255,255,.05);">
     <div class="wrap" style="padding-top:.9rem;padding-bottom:.9rem;display:flex;flex-direction:column;gap:.5rem;align-items:center;justify-content:space-between;">
       <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;width:100%;gap:.75rem;">
-        <p style="font-size:.68rem;color:rgba(255,255,255,.5);">© 2024 Vivacious Entertainment and Hospitality Pvt. Ltd. All rights reserved. India Gully™ is a registered brand.</p>
+        <p style="font-size:.68rem;color:rgba(255,255,255,.5);">© 2025 Vivacious Entertainment and Hospitality Pvt. Ltd. All rights reserved. India Gully™ is a registered brand.</p>
         <div style="display:flex;gap:1.25rem;font-size:.68rem;color:rgba(255,255,255,.5);align-items:center;">
           <a href="/legal/privacy"    onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'" style="transition:color .2s;">Privacy Policy</a>
           <a href="/legal/terms"      onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'" style="transition:color .2s;">Terms of Use</a>
           <a href="/legal/disclaimer" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'" style="transition:color .2s;">Disclaimer</a>
-          <span style="color:rgba(255,255,255,.4);">GSTIN: 07XXXXXX000XXX</span>
+          <span style="color:rgba(255,255,255,.4);">New Delhi, India</span>
           <button onclick="igStartTour && igStartTour()" aria-label="Start guided tour"
                   style="background:none;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.55);padding:.2rem .6rem;font-size:.62rem;cursor:pointer;transition:color .2s;"
                   onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.55)'">

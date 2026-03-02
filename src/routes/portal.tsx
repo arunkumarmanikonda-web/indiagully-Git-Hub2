@@ -522,11 +522,11 @@ app.get('/client/mandates', (c) => {
     </div>
     <div style="display:flex;flex-direction:column;gap:1rem;">
       ${[
-        { id:'MND-001', name:'Retail Leasing — Mumbai',      sector:'Real Estate',   value:'₹2,100 Cr', advisor:'Amit Jhingan',    start:'01 Jan 2025', status:'Active',      cls:'b-gr', progress:75,
+        { id:'MND-001', name:'Retail Leasing — Mumbai',      sector:'Real Estate',   value:'₹2,100 Cr', advisor:'Amit Jhingan',    start:'01 Jan 2026', status:'Active',      cls:'b-gr', progress:75,
           milestones:[{done:true,label:'Engagement Signed'},{done:true,label:'Site Survey'},{done:true,label:'Shortlisting'},{done:false,label:'LOI Exchange'},{done:false,label:'Execution'}] },
-        { id:'MND-002', name:'Hotel Pre-Opening PMC',         sector:'Hospitality',   value:'₹45 Cr',    advisor:'Arun Manikonda', start:'15 Feb 2025', status:'In Progress', cls:'b-g',  progress:45,
+        { id:'MND-002', name:'Hotel Pre-Opening PMC',         sector:'Hospitality',   value:'₹45 Cr',    advisor:'Arun Manikonda', start:'15 Feb 2026', status:'In Progress', cls:'b-g',  progress:45,
           milestones:[{done:true,label:'Scope Finalised'},{done:true,label:'Team Deployed'},{done:false,label:'Pre-opening Check'},{done:false,label:'Staff Training'},{done:false,label:'Soft Opening'}] },
-        { id:'MND-003', name:'Entertainment Feasibility',     sector:'Entertainment', value:'₹4,500 Cr', advisor:'Arun Manikonda', start:'01 Mar 2025', status:'Review',      cls:'b-bl', progress:20,
+        { id:'MND-003', name:'Entertainment Feasibility',     sector:'Entertainment', value:'₹4,500 Cr', advisor:'Arun Manikonda', start:'01 Mar 2026', status:'Review',      cls:'b-bl', progress:20,
           milestones:[{done:true,label:'NDA Executed'},{done:false,label:'Site Visits'},{done:false,label:'Feasibility Study'},{done:false,label:'Report'},{done:false,label:'Activation'}] },
       ].map((m,mi) => `
       <div style="background:#fff;border:1px solid var(--border);">
@@ -594,10 +594,10 @@ app.get('/client/proposals', (c) => {
         <thead><tr><th>Document</th><th>Type</th><th>Date Sent</th><th>Valid Until</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
           ${[
-            { doc:'Advisory Proposal — Q1 2025',     type:'Proposal',           sent:'01 Jan 2025', valid:'31 Mar 2025', status:'Accepted',     cls:'b-gr', canSign:false },
-            { doc:'Hotel PMC Engagement Letter',      type:'Engagement Letter',  sent:'10 Feb 2025', valid:'10 Mar 2025', status:'Signed',       cls:'b-gr', canSign:false },
-            { doc:'Entertainment Feasibility Scope',  type:'Scope Letter',       sent:'20 Feb 2025', valid:'20 Mar 2025', status:'Pending Sign', cls:'b-g',  canSign:true  },
-            { doc:'Revised Fee Proposal — FY 2026',   type:'Proposal',           sent:'25 Feb 2025', valid:'25 Mar 2025', status:'Under Review', cls:'b-bl', canSign:false },
+            { doc:'Advisory Proposal — Q1 2025',     type:'Proposal',           sent:'01 Jan 2026', valid:'31 Mar 2026', status:'Accepted',     cls:'b-gr', canSign:false },
+            { doc:'Hotel PMC Engagement Letter',      type:'Engagement Letter',  sent:'10 Feb 2026', valid:'10 Mar 2026', status:'Signed',       cls:'b-gr', canSign:false },
+            { doc:'Entertainment Feasibility Scope',  type:'Scope Letter',       sent:'20 Feb 2026', valid:'20 Mar 2026', status:'Pending Sign', cls:'b-g',  canSign:true  },
+            { doc:'Revised Fee Proposal — FY 2026',   type:'Proposal',           sent:'25 Feb 2026', valid:'25 Mar 2026', status:'Under Review', cls:'b-bl', canSign:false },
           ].map((p,pi) => `
           <tr>
             <td style="font-weight:500;">${p.doc}</td>
@@ -654,9 +654,9 @@ app.get('/client/invoices', (c) => {
         <thead><tr><th>Invoice #</th><th>Description</th><th>Amount</th><th>GST (18%)</th><th>Total</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
           ${[
-            { inv:'INV-2025-001', desc:'Advisory Retainer — Jan 2025',   base:212000, gst:38160, total:250160, due:'15 Feb 2025', status:'Paid',    cls:'b-gr' },
-            { inv:'INV-2025-002', desc:'Hotel PMC — Phase 1',             base:152542, gst:27458, total:180000, due:'28 Feb 2025', status:'Overdue', cls:'b-re' },
-            { inv:'INV-2025-003', desc:'Entertainment Feasibility Study', base:271186, gst:48814, total:320000, due:'31 Mar 2025', status:'Draft',   cls:'b-dk' },
+            { inv:'INV-2026-001', desc:'Advisory Retainer — Jan 2026',   base:212000, gst:38160, total:250160, due:'15 Feb 2026', status:'Paid',    cls:'b-gr' },
+            { inv:'INV-2026-002', desc:'Hotel PMC — Phase 1',             base:152542, gst:27458, total:180000, due:'28 Feb 2026', status:'Overdue', cls:'b-re' },
+            { inv:'INV-2026-003', desc:'Entertainment Feasibility Study', base:271186, gst:48814, total:320000, due:'31 Mar 2026', status:'Draft',   cls:'b-dk' },
           ].map(r => `
           <tr>
             <td style="font-weight:600;font-size:.82rem;color:var(--gold);">${r.inv}</td>
@@ -888,10 +888,10 @@ app.get('/client/documents', (c) => {
         <thead><tr><th>Document Name</th><th>Type</th><th>Shared By</th><th>Date</th><th>Size</th><th>Action</th></tr></thead>
         <tbody>
           ${[
-            { name:'Advisory Agreement FY2025.pdf',      type:'Contract',   by:'Arun Manikonda', date:'01 Jan 2025', size:'1.2 MB'  },
-            { name:'Hotel PMC Scope Letter.pdf',          type:'Letter',     by:'Arun Manikonda', date:'10 Feb 2025', size:'0.8 MB'  },
-            { name:'Market Research Report Q4 2024.pdf', type:'Report',     by:'India Gully',    date:'15 Jan 2025', size:'4.5 MB'  },
-            { name:'INV-2025-001 with GST.pdf',          type:'Invoice',    by:'Finance Team',   date:'15 Jan 2025', size:'0.3 MB'  },
+            { name:'Advisory Agreement FY2026.pdf',      type:'Contract',   by:'Arun Manikonda', date:'01 Jan 2026', size:'1.2 MB'  },
+            { name:'Hotel PMC Scope Letter.pdf',          type:'Letter',     by:'Arun Manikonda', date:'10 Feb 2026', size:'0.8 MB'  },
+            { name:'Market Research Report Q4 2025.pdf', type:'Report',     by:'India Gully',    date:'15 Jan 2026', size:'4.5 MB'  },
+            { name:'INV-2026-001 with GST.pdf',          type:'Invoice',    by:'Finance Team',   date:'15 Jan 2026', size:'0.3 MB'  },
           ].map(d => `
           <tr>
             <td style="font-weight:500;font-size:.85rem;"><i class="fas fa-file-pdf" style="color:#dc2626;margin-right:.4rem;font-size:.7rem;"></i>${d.name}</td>
@@ -956,7 +956,7 @@ app.get('/client/messages', (c) => {
             <div style="width:30px;height:30px;background:#B8960C;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',Georgia,serif;color:#fff;font-size:.75rem;flex-shrink:0;">A</div>
             <div style="background:var(--parch-dk);padding:.75rem 1rem;max-width:75%;">
               <p style="font-size:.85rem;color:var(--ink);line-height:1.6;">Good morning! Please review the updated Q1 2025 proposal I've shared in your Documents section. Looking forward to your feedback.</p>
-              <div style="display:flex;align-items:center;gap:.35rem;margin-top:.2rem;"><span style="font-size:.68rem;color:var(--ink-muted);">10:30 AM · 27 Feb 2025</span></div>
+              <div style="display:flex;align-items:center;gap:.35rem;margin-top:.2rem;"><span style="font-size:.68rem;color:var(--ink-muted);">10:30 AM · 02 Mar 2026</span></div>
             </div>
           </div>
           <div style="display:flex;gap:.75rem;flex-direction:row-reverse;">
@@ -964,7 +964,7 @@ app.get('/client/messages', (c) => {
             <div style="background:var(--ink);padding:.75rem 1rem;max-width:75%;">
               <p style="font-size:.85rem;color:#fff;line-height:1.6;">Thank you, I will review it today and share my comments by EOD.</p>
               <div style="display:flex;align-items:center;gap:.35rem;justify-content:flex-end;margin-top:.2rem;">
-                <span style="font-size:.68rem;color:rgba(255,255,255,.4);">11:15 AM · 27 Feb 2025</span>
+                <span style="font-size:.68rem;color:rgba(255,255,255,.4);">11:15 AM · 02 Mar 2026</span>
                 <span title="Read" style="font-size:.62rem;color:#60a5fa;">✓✓</span>
               </div>
             </div>
@@ -1027,7 +1027,7 @@ app.get('/client/profile', (c) => {
         <p style="font-size:.78rem;color:var(--ink-muted);margin-bottom:1rem;">Client Account</p>
         <span class="badge b-gr">Active</span>
         <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border);">
-          <p style="font-size:.72rem;color:var(--ink-muted);">Member since: Jan 2025</p>
+          <p style="font-size:.72rem;color:var(--ink-muted);">Member since: Jan 2026</p>
           <p style="font-size:.72rem;color:var(--ink-muted);margin-top:.25rem;">Client ID: IG-CL-0001</p>
         </div>
       </div>
@@ -1175,9 +1175,9 @@ app.get('/employee/dashboard', (c) => {
         <a href="/portal/employee/policies" style="font-size:.72rem;color:var(--gold);">View All →</a>
       </div>
       ${[
-        { date:'27 Feb 2025', title:'Q1 2025 Performance Reviews — Schedule Released',     type:'HR' },
-        { date:'20 Feb 2025', title:'Office Closure — Holi 2025 (14th March)',             type:'Holiday' },
-        { date:'15 Feb 2025', title:'Updated Travel & Expense Reimbursement Policy',       type:'Policy' },
+        { date:'27 Feb 2026', title:'Q1 2026 Performance Reviews — Schedule Released',     type:'HR' },
+        { date:'20 Feb 2026', title:'Office Closure — Holi 2026 (14th March)',             type:'Holiday' },
+        { date:'15 Feb 2026', title:'Updated Travel & Expense Reimbursement Policy',       type:'Policy' },
       ].map(n => `
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;gap:1rem;align-items:flex-start;">
         <span style="font-size:.68rem;color:var(--ink-muted);white-space:nowrap;min-width:90px;">${n.date}</span>
@@ -1230,7 +1230,7 @@ app.get('/employee/attendance', (c) => {
       </div>
       <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:.35rem;text-align:center;">
         ${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<div style="font-size:.65rem;font-weight:700;color:var(--ink-muted);padding:.25rem 0;">${d}</div>`).join('')}
-        ${/* Feb 2025 starts on Saturday = offset 5 */ ''.split('').fill('').concat(Array.from({length:5})).map(()=>`<div></div>`).join('')}
+        ${/* Feb 2026 starts on Sunday = offset 0 */ ''.split('').fill('').concat(Array.from({length:5})).map(()=>`<div></div>`).join('')}
         ${Array.from({length:28},(_,i)=>{
           const d=i+1;
           const day=(i+5)%7; // 0=Mon
@@ -1241,7 +1241,7 @@ app.get('/employee/attendance', (c) => {
           const bg = status==='wknd'?'#f3f4f6':status==='absent'?'#fef2f2':status==='late'?'#fffbeb':'#f0fdf4';
           const border = status==='wknd'?'#e5e7eb':status==='absent'?'#fca5a5':status==='late'?'#fcd34d':'#86efac';
           const tc = status==='wknd'?'#9ca3af':status==='absent'?'#dc2626':status==='late'?'#d97706':'#15803d';
-          return `<div style="padding:.4rem .1rem;background:${bg};border:1px solid ${border};cursor:pointer;" title="${d} Feb — ${status==='wknd'?'Weekend':status==='absent'?'Absent':status==='late'?'Late Arrival':'Present'}" onclick="igToast('${d} Feb 2025 — ${status==='wknd'?'Weekend/Holiday':status==='absent'?'Absent':status==='late'?'Late Arrival (after 9:30 AM)':'Present'}','${status==='absent'?'warn':'info'}')"><div style="font-size:.75rem;font-weight:600;color:${tc};">${d}</div>${!isWknd?`<div style="font-size:.58rem;color:${tc};margin-top:.1rem;">${status==='absent'?'ABS':status==='late'?'LATE':'PRE'}</div>`:''}</div>`;
+          return `<div style="padding:.4rem .1rem;background:${bg};border:1px solid ${border};cursor:pointer;" title="${d} Feb — ${status==='wknd'?'Weekend':status==='absent'?'Absent':status==='late'?'Late Arrival':'Present'}" onclick="igToast('${d} Feb 2026 — ${status==='wknd'?'Weekend/Holiday':status==='absent'?'Absent':status==='late'?'Late Arrival (after 9:30 AM)':'Present'}','${status==='absent'?'warn':'info'}')"><div style="font-size:.75rem;font-weight:600;color:${tc};">${d}</div>${!isWknd?`<div style="font-size:.58rem;color:${tc};margin-top:.1rem;">${status==='absent'?'ABS':status==='late'?'LATE':'PRE'}</div>`:''}</div>`;
         }).join('')}
       </div>
     </div>
@@ -1406,9 +1406,9 @@ app.get('/employee/leave', (c) => {
           <thead><tr><th>Dates</th><th>Type</th><th>Days</th><th>Status</th></tr></thead>
           <tbody>
             ${[
-              { dates:'10–12 Jan 2025', type:'Casual',  days:'3', status:'Approved',  cls:'b-gr' },
-              { dates:'25 Jan 2025',    type:'Sick',    days:'1', status:'Approved',  cls:'b-gr' },
-              { dates:'14 Mar 2025',    type:'Optional',days:'1', status:'Approved',  cls:'b-gr' },
+              { dates:'10–12 Jan 2026', type:'Casual',  days:'3', status:'Approved',  cls:'b-gr' },
+              { dates:'25 Jan 2026',    type:'Sick',    days:'1', status:'Approved',  cls:'b-gr' },
+              { dates:'14 Mar 2026',    type:'Optional',days:'1', status:'Approved',  cls:'b-gr' },
             ].map(r => `
             <tr>
               <td style="font-size:.8rem;">${r.dates}</td>
@@ -1647,14 +1647,14 @@ app.get('/employee/policies', (c) => {
   const body = `
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;">
       ${[
-        { name:'Employee Handbook 2025',               category:'HR',       updated:'01 Jan 2025', icon:'book-open' },
-        { name:'Code of Conduct Policy',               category:'Compliance', updated:'01 Jan 2025', icon:'gavel'    },
-        { name:'Travel & Expense Policy',              category:'Finance',  updated:'15 Feb 2025', icon:'plane'    },
-        { name:'Leave Policy',                         category:'HR',       updated:'01 Jan 2025', icon:'calendar' },
-        { name:'IT & Data Security Policy',            category:'IT',       updated:'01 Jan 2025', icon:'shield-alt' },
-        { name:'Anti-Harassment & POSH Policy',        category:'Compliance', updated:'01 Jan 2025', icon:'users'   },
-        { name:'Performance Review Process',           category:'HR',       updated:'27 Feb 2025', icon:'chart-bar' },
-        { name:'Grievance Redressal Policy',           category:'HR',       updated:'01 Jan 2025', icon:'comments' },
+        { name:'Employee Handbook 2026',               category:'HR',       updated:'01 Jan 2026', icon:'book-open' },
+        { name:'Code of Conduct Policy',               category:'Compliance', updated:'01 Jan 2026', icon:'gavel'    },
+        { name:'Travel & Expense Policy',              category:'Finance',  updated:'15 Feb 2026', icon:'plane'    },
+        { name:'Leave Policy',                         category:'HR',       updated:'01 Jan 2026', icon:'calendar' },
+        { name:'IT & Data Security Policy',            category:'IT',       updated:'01 Jan 2026', icon:'shield-alt' },
+        { name:'Anti-Harassment & POSH Policy',        category:'Compliance', updated:'01 Jan 2026', icon:'users'   },
+        { name:'Performance Review Process',           category:'HR',       updated:'27 Feb 2026', icon:'chart-bar' },
+        { name:'Grievance Redressal Policy',           category:'HR',       updated:'01 Jan 2026', icon:'comments' },
       ].map(p => `
       <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;display:flex;align-items:center;gap:1rem;">
         <div style="width:40px;height:40px;background:#1A3A6B;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -1759,7 +1759,7 @@ function boardShell(pageTitle: string, active: string, body: string) {
     { id:'compliance', icon:'shield-alt',     label:'Compliance'      },
   ]
   const notifs = [
-    {msg:'Board Meeting Q1 Review — 15 Mar 2025 confirmed',type:'info',  time:'1h ago'},
+    {msg:'Board Meeting Q3 Review — 15 Mar 2026 confirmed',type:'info',  time:'1h ago'},
     {msg:'Resolution BM-2025-003 — Vote closes in 2 days', type:'warn',  time:'3h ago'},
     {msg:'GSTR-1 due 11 Mar — Finance team notified',      type:'warn',  time:'1d ago'},
     {msg:'DIN renewal reminder — Arun Manikonda expiry',   type:'danger', time:'2d ago'},
@@ -1860,8 +1860,8 @@ app.get('/board/dashboard', (c) => {
         <a href="/portal/board/compliance" style="font-size:.72rem;color:var(--gold);">Full Calendar →</a>
       </div>
       ${[
-        { date:'15 Mar 2025', event:'Board Meeting — Q1 Review',           status:'Scheduled', cls:'b-gr' },
-        { date:'31 Mar 2025', event:'Annual Accounts Filing (Form AOC-4)', status:'Due',       cls:'b-g'  },
+        { date:'15 Mar 2026', event:'Board Meeting — Q3 Review',           status:'Scheduled', cls:'b-gr' },
+        { date:'31 Mar 2026', event:'Annual Accounts Filing (Form AOC-4)', status:'Due',       cls:'b-g'  },
         { date:'30 Jun 2025', event:'Annual Return Filing (Form MGT-7)',   status:'Upcoming',  cls:'b-dk' },
         { date:'30 Sep 2025', event:'Secretarial Audit (Form MR-3)',       status:'Upcoming',  cls:'b-dk' },
       ].map(n => `
@@ -1885,9 +1885,9 @@ app.get('/board/meetings', (c) => {
         <thead><tr><th>Meeting No.</th><th>Type</th><th>Date & Time</th><th>Venue</th><th>Quorum</th><th>Minutes</th><th>Status</th></tr></thead>
         <tbody>
           ${[
-            { no:'BM-2025-03', type:'Board Meeting',   date:'15 Mar 2025 · 11:00 AM', venue:'Registered Office, New Delhi', quorum:'2/2',   minutes:'Pending',   cls:'b-g'  },
-            { no:'BM-2025-02', type:'Board Meeting',   date:'15 Jan 2025 · 11:00 AM', venue:'Registered Office, New Delhi', quorum:'2/2',   minutes:'Approved',  cls:'b-gr' },
-            { no:'BM-2025-01', type:'EGM',             date:'05 Jan 2025 · 10:00 AM', venue:'Video Conference',             quorum:'2/2',   minutes:'Approved',  cls:'b-gr' },
+            { no:'BM-2026-03', type:'Board Meeting',   date:'15 Mar 2026 · 11:00 AM', venue:'Registered Office, New Delhi', quorum:'2/2',   minutes:'Pending',   cls:'b-g'  },
+            { no:'BM-2026-02', type:'Board Meeting',   date:'15 Jan 2026 · 11:00 AM', venue:'Registered Office, New Delhi', quorum:'2/2',   minutes:'Approved',  cls:'b-gr' },
+            { no:'BM-2026-01', type:'EGM',             date:'05 Jan 2026 · 10:00 AM', venue:'Video Conference',             quorum:'2/2',   minutes:'Approved',  cls:'b-gr' },
             { no:'BM-2024-04', type:'Board Meeting',   date:'15 Oct 2024 · 11:00 AM', venue:'Registered Office, New Delhi', quorum:'2/2',   minutes:'Approved',  cls:'b-gr' },
           ].map(m => `
           <tr>
@@ -1930,12 +1930,12 @@ app.get('/board/voting', (c) => {
         {
           res:'RES-2025-003', title:'Approval of Q1 2025 Financial Statements',
           desc:'Board resolution to approve standalone and consolidated financial statements for the quarter ended 31 December 2024.',
-          date:'15 Mar 2025', type:'Ordinary Resolution',
+          date:'15 Mar 2026', type:'Ordinary Resolution',
         },
         {
           res:'RES-2025-004', title:'Re-appointment of M/s Pipara & Co. as Statutory Auditors',
           desc:'Board resolution to recommend re-appointment of Pipara & Co. as statutory auditors for FY 2025-26 to the shareholders.',
-          date:'15 Mar 2025', type:'Special Resolution',
+          date:'15 Mar 2026', type:'Special Resolution',
         },
       ].map((r,i) => `
       <div id="res-card-${i}" style="background:#fff;border:1px solid #fde68a;">
@@ -1965,8 +1965,8 @@ app.get('/board/voting', (c) => {
           <thead><tr><th>Resolution #</th><th>Title</th><th>Date</th><th>Type</th><th>Result</th></tr></thead>
           <tbody id="passed-res-tbody">
             ${[
-              { res:'RES-2025-001', title:'Approval of Audited Accounts FY 2024', date:'05 Jan 2025', type:'Ordinary', result:'Passed Unanimously' },
-              { res:'RES-2025-002', title:'Board Fee Revision for FY 2025',        date:'15 Jan 2025', type:'Ordinary', result:'Passed Unanimously' },
+              { res:'RES-2026-001', title:'Approval of Q3 Financials FY 2025-26', date:'05 Jan 2026', type:'Ordinary', result:'Passed Unanimously' },
+              { res:'RES-2026-002', title:'Board Fee Revision for FY 2026',        date:'15 Jan 2026', type:'Ordinary', result:'Passed Unanimously' },
               { res:'RES-2024-012', title:'Appointment of Company Secretary',      date:'15 Oct 2024', type:'Ordinary', result:'Passed Unanimously' },
             ].map(r => `
             <tr>
@@ -2011,17 +2011,17 @@ app.get('/board/registers', (c) => {
   const body = `
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:1.5rem;">
       ${[
-        { name:'Register of Directors (MGT-7)',        desc:'Names, DINs, shareholding, appointments & resignations',           entries:2,  updated:'15 Jan 2025',
+        { name:'Register of Directors (MGT-7)',        desc:'Names, DINs, shareholding, appointments & resignations',           entries:2,  updated:'15 Jan 2026',
           data:[{col:'Name',v:'Arun Manikonda'},{col:'DIN',v:'XXXXXXXX'},{col:'Designation',v:'Managing Director'},{col:'Date of Appointment',v:'01 Apr 2017'},{col:'Shareholding',v:'50%'}] },
-        { name:'Register of KMPs',                     desc:'KMP details, appointment dates, remuneration',                     entries:3,  updated:'15 Jan 2025',
+        { name:'Register of KMPs',                     desc:'KMP details, appointment dates, remuneration',                     entries:3,  updated:'15 Jan 2026',
           data:[{col:'Name',v:'Pavan Manikonda'},{col:'Designation',v:'Executive Director'},{col:'Date of Appointment',v:'01 Apr 2017'},{col:'Remuneration (FY2025)',v:'₹1,50,000 p.m.'}] },
-        { name:'Register of Members',                  desc:'Shareholder names, addresses, shareholding pattern',               entries:2,  updated:'05 Jan 2025',
+        { name:'Register of Members',                  desc:'Shareholder names, addresses, shareholding pattern',               entries:2,  updated:'05 Jan 2026',
           data:[{col:'Shareholder 1',v:'Arun Manikonda — 50%'},{col:'Shareholder 2',v:'Pavan Manikonda — 50%'},{col:'Total Paid-up Capital',v:'₹1,00,000'},{col:'Face Value',v:'₹10 per share'}] },
-        { name:'Register of Charges (CHG-7)',          desc:'All charges created, modified or satisfied',                       entries:0,  updated:'01 Jan 2025',
+        { name:'Register of Charges (CHG-7)',          desc:'All charges created, modified or satisfied',                       entries:0,  updated:'01 Jan 2026',
           data:[{col:'Status',v:'No charges registered'},{col:'Lenders',v:'Nil'},{col:'Secured Assets',v:'Nil'}] },
-        { name:'Register of Contracts (AOC-2)',        desc:'Related party transactions requiring board approval',              entries:4,  updated:'15 Feb 2025',
+        { name:'Register of Contracts (AOC-2)',        desc:'Related party transactions requiring board approval',              entries:4,  updated:'15 Feb 2026',
           data:[{col:'Transaction 1',v:'Directors Remuneration FY2025'},{col:'Transaction 2',v:'Inter-company loan (if any)'},{col:'Transaction 3',v:'Premises lease agreement'},{col:'Approval Status',v:'Board Approved'}] },
-        { name:'Register of Investments',              desc:'All investments made by the company',                              entries:0,  updated:'01 Jan 2025',
+        { name:'Register of Investments',              desc:'All investments made by the company',                              entries:0,  updated:'01 Jan 2026',
           data:[{col:'Status',v:'No investments as of date'},{col:'Subsidiaries',v:'Nil'},{col:'Associates',v:'Nil'}] },
       ].map((reg,ri) => `
       <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;">
@@ -2057,7 +2057,7 @@ app.get('/board/packs', (c) => {
         <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Board Meeting Packs & Minutes</h3>
       </div>
       ${[
-        { meeting:'BM-2025-03 — March Board Meeting',  date:'15 Mar 2025', status:'Upcoming', cls:'b-g',
+        { meeting:'BM-2026-03 — March Board Meeting',  date:'15 Mar 2026', status:'Upcoming', cls:'b-g',
           files:[
             {name:'Board Meeting Notice.pdf',           type:'Notice',      size:'0.3 MB'},
             {name:'Q1 2025 Financial Statements.pdf',   type:'Finance',     size:'2.1 MB'},
