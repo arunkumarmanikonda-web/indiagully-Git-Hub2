@@ -130,6 +130,16 @@ a{color:inherit;text-decoration:none}
 .n-par:hover .n-drop{opacity:1;visibility:visible;transform:translateY(0)}
 .n-di{display:flex;align-items:center;gap:.75rem;padding:.65rem 1.1rem;font-size:.775rem;color:rgba(255,255,255,.72);transition:color .15s,background .15s}
 .n-di:hover{color:#fff;background:rgba(255,255,255,.04)}
+/* nav layout — no Tailwind CDN dependency; controls are hidden/shown via native CSS only */
+#nav-desktop-links,#nav-desktop-right{display:none}
+#mobileBtn{display:flex}
+#mobileMenu{display:none}
+@media(min-width:1024px){
+  #nav-desktop-links{display:flex;align-items:center;gap:.15rem}
+  #nav-desktop-right{display:flex;align-items:center;gap:.75rem}
+  #mobileBtn{display:none}
+  #mobileMenu{display:none!important}
+}
 
 /* ── HERO CAROUSEL ──────────────────────────── */
 .car{position:relative;overflow:hidden;height:100vh;min-height:600px;max-height:960px}
@@ -315,7 +325,7 @@ const NAV = `
     </a>
 
     <!-- DESKTOP NAV -->
-    <div class="hidden lg:flex items-center" style="gap:.15rem;">
+    <div id="nav-desktop-links" style="gap:.15rem;">
       <a href="/"         class="n-lk">Home</a>
       <a href="/about"    class="n-lk">About</a>
       <div class="relative n-par" style="position:relative;">
@@ -336,7 +346,7 @@ const NAV = `
     </div>
 
     <!-- RIGHT -->
-    <div class="hidden lg:flex items-center" style="gap:.75rem;">
+    <div id="nav-desktop-right" style="gap:.75rem;">
       <!-- Dark Mode Toggle -->
       <button id="dark-toggle" onclick="igToggleDark()" aria-label="Toggle dark mode"
               style="color:rgba(255,255,255,.6);background:none;border:1px solid rgba(255,255,255,.15);padding:.38rem .6rem;cursor:pointer;font-size:.75rem;transition:color .2s;"
@@ -366,13 +376,13 @@ const NAV = `
     </div>
 
     <!-- HAMBURGER -->
-    <button id="mobileBtn" class="lg:hidden" style="color:#fff;padding:.5rem;background:none;border:none;cursor:pointer;">
+    <button id="mobileBtn" style="color:#fff;padding:.5rem;background:none;border:none;cursor:pointer;">
       <i class="fas fa-bars" style="font-size:1.1rem;"></i>
     </button>
   </div>
 
   <!-- MOBILE MENU -->
-  <div id="mobileMenu" class="hidden lg:hidden" style="background:rgba(8,8,8,.98);border-top:1px solid rgba(255,255,255,.06);">
+  <div id="mobileMenu" style="display:none;background:rgba(8,8,8,.98);border-top:1px solid rgba(255,255,255,.06);">
     <div style="padding:1rem 1.25rem;display:flex;flex-direction:column;gap:.15rem;">
       <a href="/"         style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Home</a>
       <a href="/about"    style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">About</a>
@@ -482,7 +492,7 @@ const SCRIPTS = (_nonce?: string) => `
   /* MOBILE MENU */
   var mb = document.getElementById('mobileBtn');
   var mm = document.getElementById('mobileMenu');
-  if(mb && mm) mb.addEventListener('click', function(){ mm.classList.toggle('hidden'); });
+  if(mb && mm) mb.addEventListener('click', function(){ mm.style.display = mm.style.display === 'block' ? 'none' : 'block'; });
 
   /* HERO CAROUSEL */
   var track = document.querySelector('.car-track');
