@@ -1333,3 +1333,32 @@ Operator Actions:
 - JJO2: Fix IDOR in /api/invoices/:id - ownership check missing (High, 2h)
 - JJO3: Right-size 6 EC2 instances + apply S3 lifecycle policy (Rs1.1L/month savings) (Medium, 2h)
 - JJO4: Disable 12 stale accounts, eliminate 5 shared creds, enforce MFA for 8 users (High, 3h)
+
+---
+
+## KK-Round v2026.35 — Sales & Revenue Operations Intelligence
+
+| Metric | Value |
+|---|---|
+| Version | 2026.35 |
+| Routes | 300 (+6 from JJ-Round) |
+| Security Score | 100/100 |
+| Open Findings | 0 |
+| Build Size | 2,178.97 kB (314 modules) |
+| Git Tag | v2026.35-kk-round |
+| Commit | d02be05 |
+| Preview URL | https://98337974.india-gully.pages.dev |
+
+### Endpoints (all return 401 unauthenticated)
+- **KK1** GET `/api/sales/pipeline-analytics` — 64 deals, ₹28.4L pipeline, ₹11.36L weighted, 34.2% win rate, 2 stale-deal alerts
+- **KK2** GET `/api/sales/revenue-leakage` — ₹2.84L leakage (3.2% ARR), 6 categories (uninvoiced, discount abuse, churned licences, late invoices, pricing mismatch, free-trial), ₹1.97L recoverable
+- **KK3** GET `/api/sales/quota-attainment` — Q4 FY26: ₹42L quota, 87% attained; Ananya #1 at 114%; Vikram at 21.1% (PIP)
+- **KK4** GET `/api/crm/deal-velocity` — Avg score 72.4, 11 accelerating, 9 stalling; Enterprise avg 62d vs SMB 18d
+- **KK5** GET `/api/dpdp/sales-data-compliance` — 91% score; CRM retention non-compliant (§8(7)), PII in deal notes (§6)
+- **KK6** GET `/api/compliance/pricing-governance` — 18 active discounts, 3 breaches, CPQ hard-cap enforcement needed, 88% compliance
+
+### Operator Actions
+- **KKO1**: Purge CRM contacts older than 3 years per DPDP §8(7) — ~840 stale records (High, 3h)
+- **KKO2**: Enforce CPQ hard discount cap: reps >10%, VP >20%, CEO >25% (High, 2h)
+- **KKO3**: Recover ₹1.97L revenue leakage — fix uninvoiced overage (₹86K) and deactivate churned licences (₹48K) (High, 4h)
+- **KKO4**: Sign DPAs with HubSpot and Apollo.io; redact PAN/Aadhaar from 6 CRM deal notes per DPDP §6 (High, 2h)
