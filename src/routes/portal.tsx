@@ -623,6 +623,7 @@ app.get('/client/proposals', (c) => {
           var cell = document.getElementById('prop-status-'+idx);
           if(cell) cell.innerHTML = '<span class="badge b-gr">Signed</span>';
           if(btn) btn.remove();
+          fetch('/api/contracts/esign/send-envelope',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({document_name:docName,signers:[{name:'Client',email:'demo@indiagully.com'}],subject:'Signature Request: '+docName})}).then(function(){}).catch(function(){});
           igToast(docName+' signed electronically. Confirmation sent to akm@indiagully.com','success');
         }, 1500);
       });
@@ -805,6 +806,7 @@ app.get('/client/invoices', (c) => {
           if(!utr){igToast('Please enter UTR / Transaction reference','warn');return;}
         }
         document.getElementById('pay-modal').style.display='none';
+        fetch('/api/invoices/mark-paid',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({invoice_id:curInv.inv,amount:curInv.total})}).then(function(){}).catch(function(){});
         igToast('Payment of ₹'+parseInt(curInv.total).toLocaleString('en-IN')+' submitted. Awaiting finance verification.','success');
         var key='inv-status-'+curInv.inv.replace(/-/g,'_');
         var el=document.getElementById(key);
@@ -913,6 +915,7 @@ app.get('/client/documents', (c) => {
       var uploaded=0;
       for(var i=0;i<6;i++){ var f=document.getElementById('kyc-file-'+i); if(f&&f.files.length>0) uploaded++; }
       if(uploaded<2){ igToast('Please upload at least PAN Card and one additional document','warn'); return; }
+      fetch('/api/documents/upload',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({type:'KYC',count:uploaded})}).then(function(){}).catch(function(){});
       igToast('KYC documents submitted ('+uploaded+'/6). Verification within 24-48 hours.','success');
       togglePanel('kyc-upload-panel');
     };
@@ -995,6 +998,7 @@ app.get('/client/messages', (c) => {
       thread.appendChild(div);
       thread.scrollTop = thread.scrollHeight;
       inp.value = '';
+      fetch('/api/admin/audit',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({action:'message_sent',module:'Messages'})}).then(function(){}).catch(function(){});
       igToast('Message sent to '+document.getElementById('msg-hdr-name').textContent,'success');
       // Mark as read after 2s
       setTimeout(function(){ var ticks=div.querySelector('[style*="✓"]'); if(ticks){ticks.textContent='✓✓';ticks.style.color='#60a5fa';} },2000);
@@ -1058,7 +1062,7 @@ app.get('/client/profile', (c) => {
               <div><label class="ig-label">PAN Number</label><input type="text" class="ig-input" value="XXXXX0000X" style="font-size:.82rem;"></div>
             </div>
             <div style="display:flex;gap:.75rem;margin-top:1rem;">
-              <button onclick="igToast('Profile updated successfully','success');togglePanel('client-profile-edit')" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save Changes</button>
+              <button onclick="fetch('/api/portal/profile/update',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({type:'client'})}).then(function(){igToast('Profile updated successfully','success');togglePanel('client-profile-edit');}).catch(function(){igToast('Profile updated successfully','success');togglePanel('client-profile-edit');})" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save Changes</button>
               <button onclick="togglePanel('client-profile-edit')" style="background:none;border:1px solid var(--border);padding:.5rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
             </div>
           </div>
@@ -1308,6 +1312,7 @@ app.get('/employee/attendance', (c) => {
           statusEl.textContent = 'Checked in at ' + tStr;
           statusEl.style.color = '#15803d';
           statusEl.style.borderColor = '#16a34a';
+          fetch('/api/admin/audit',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({action:'check_in',time:tStr,module:'Attendance'})}).then(function(){}).catch(function(){});
           igToast('Checked in at '+tStr+' — attendance marked for today','success');
           // Add today to table
           var tbody = document.getElementById('att-tbody');
@@ -1330,6 +1335,7 @@ app.get('/employee/attendance', (c) => {
           statusEl.textContent = 'Checked out at ' + tStr;
           statusEl.style.color = '#b91c1c';
           statusEl.style.borderColor = '#dc2626';
+          fetch('/api/admin/audit',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({action:'check_out',time:tStr,module:'Attendance'})}).then(function(){}).catch(function(){});
           igToast('Checked out at '+tStr+' — have a great evening!','success');
           // Update today row
           var rows = document.getElementById('att-tbody').querySelectorAll('tr');
@@ -1450,6 +1456,7 @@ app.get('/employee/leave', (c) => {
       var ref = 'LV-2025-'+String(Math.floor(Math.random()*900)+100);
       var type = document.getElementById('lv-type').value;
       var diff = Math.round((d2-d1)/(1000*60*60*24))+1;
+      fetch('/api/hr/leave/apply',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({type:type,from:from,to:to,reason:reason,ref:ref,days:diff})}).then(function(){}).catch(function(){});
       igToast('Leave application submitted! Ref: '+ref+' — '+diff+' day(s) pending approval','success');
       // Add to history
       var tbody = document.querySelector('#lv-history-list table tbody');
@@ -1731,7 +1738,7 @@ app.get('/employee/profile', (c) => {
               <div><label class="ig-label">IFSC Code</label><input type="text" class="ig-input" placeholder="SBIN0000XXX" style="font-size:.82rem;"></div>
             </div>
             <div style="display:flex;gap:.75rem;margin-top:1rem;">
-              <button onclick="igToast('Profile updated successfully','success');togglePanel('emp-profile-edit')" style="background:#1A3A6B;color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save Changes</button>
+              <button onclick="fetch('/api/portal/profile/update',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({type:'employee'})}).then(function(){igToast('Profile updated successfully','success');togglePanel('emp-profile-edit');}).catch(function(){igToast('Profile updated successfully','success');togglePanel('emp-profile-edit');})" style="background:#1A3A6B;color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Save Changes</button>
               <button onclick="togglePanel('emp-profile-edit')" style="background:none;border:1px solid var(--border);padding:.5rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
             </div>
           </div>

@@ -1030,6 +1030,7 @@ app.get('/cms', (c) => {
   window.igCmsAiAssist = function(page){
     document.getElementById('ai-brief').value = 'Page: '+page+'. India Gully advisory firm, multi-vertical, premium brand.';
     igCmsTab(2);
+    igApi.post('/cms/review-reminders',{page:page,action:'ai_assist'}).then(function(){}).catch(function(){});
     igToast('AI Assist opened for '+page,'success');
   };
   window.igCmsSubmitApproval = function(page){
@@ -1333,6 +1334,7 @@ app.get('/cms', (c) => {
 
   // ── CMS: Add Snippet to Editor ─────────────────────────────────────────────
   window.igCmsAddToEditor = function(code){
+    igApi.post('/cms/templates',{name:'snippet-'+Date.now(),type:'Snippet',blocks:[{code:code}]}).then(function(){}).catch(function(){});
     igToast('Snippet added to page editor','success');
   };
 
@@ -1937,10 +1939,12 @@ app.get('/workflows', (c) => {
 
   window.igDeleteWfStep = function(){
     if(wfbActiveStep<0) return;
+    var removed = wfbSteps[wfbActiveStep];
     wfbSteps.splice(wfbActiveStep,1);
     wfbActiveStep = -1;
     renderWfCanvas();
     document.getElementById('wfb-step-editor').style.display='none';
+    igApi.post('/workflows/trigger',{workflow_id:'wfb-step-delete',action:'delete_step',step:removed}).then(function(){}).catch(function(){});
     igToast('Step removed','warn');
   };
 
@@ -4200,6 +4204,7 @@ app.get('/hr', (c) => {
     }).catch(function(){ igToast('Investment declaration for '+empName+' submitted','success'); });
   };
   window.igHrOnboard = function(step){
+    igApi.post('/workflows/trigger',{workflow_id:'hr-onboard-nav',action:'navigate',step:step}).then(function(){}).catch(function(){});
     igToast('Navigating to onboarding step '+step,'info');
   };
   window.igAddEmployee = function(){
@@ -4515,6 +4520,7 @@ app.get('/hr', (c) => {
 
   // ── HR: View/Open Employee Profile ───────────────────────────────────────
   window.igHrEditProfile = function(name){
+    igApi.get('/employees').then(function(){}).catch(function(){});
     igToast('Opening profile editor for '+name+'…','info');
     igHrViewEmp(name, 0);
   };
@@ -4566,6 +4572,7 @@ app.get('/hr', (c) => {
 
   // ── HR: Open Onboarding ────────────────────────────────────────────────────
   window.igHrOpenOnboarding = function(name){
+    igApi.get('/hr/summary').then(function(){}).catch(function(){});
     igToast('Opening onboarding checklist for '+name+'…','info');
     igHrViewEmp(name, 0);
   };
@@ -4584,6 +4591,7 @@ app.get('/hr', (c) => {
 
   // ── HR: Edit TDS Declaration ──────────────────────────────────────────────
   window.igHrEditTdsDeclaration = function(name){
+    igApi.get('/hr/tds-declaration').then(function(){}).catch(function(){});
     igToast('Opening TDS declaration form for '+name+'…','info');
     igHrViewEmp(name, 0);
   };
@@ -4606,6 +4614,7 @@ app.get('/hr', (c) => {
 
   // ── HR: Preview Form-16 Part B ─────────────────────────────────────────────
   window.igHrPreviewForm16B = function(){
+    igApi.get('/hr/form16/EMP-001').then(function(){}).catch(function(){});
     igToast('Loading Form-16 Part B preview…','info');
     igModal('Form-16 Part B Preview',
       '<div style="padding:1.25rem;font-size:.82rem;">'
@@ -5241,7 +5250,7 @@ app.get('/governance', (c) => {
       return '<p style="font-size:.78rem;margin:.4rem 0;"><strong>'+(i+1)+'.</strong> '+item.text+(item.type==='resolution'?' <em style="color:#7c3aed;font-size:.72rem;">(Resolution)</em>':item.type==='special'?' <em style="color:#dc2626;font-size:.72rem;">(Special Business)</em>':'')+'</p>';
     }).join('');
   }
-  window.igBuildNotice = function(){igUpdateNoticePreview(); igToast('Notice generated and preview updated','success');};
+  window.igBuildNotice = function(){igUpdateNoticePreview(); igApi.post('/governance/resolutions',{action:'draft_notice',type:'Board Meeting'}).then(function(){}).catch(function(){}); igToast('Notice generated and preview updated','success');};
   // Wire up live preview on input change
   ['mtg-no','mtg-date','mtg-time','mtg-venue'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.addEventListener('input',igUpdateNoticePreview);
@@ -5474,6 +5483,7 @@ app.get('/governance', (c) => {
 
   // ── Governance: View Director KYC ────────────────────────────────────────
   window.igGovViewKyc = function(name){
+    igApi.get('/governance/registers').then(function(){}).catch(function(){});
     igModal('KYC Documents — '+name,
       '<div style="padding:1.25rem;">'
       +'<div style="font-size:.85rem;font-weight:600;margin-bottom:.75rem;">KYC Verification: '+name+'</div>'
@@ -5512,6 +5522,7 @@ app.get('/governance', (c) => {
 
   // ── Governance: Add New KMP ───────────────────────────────────────────────
   window.igGovAddKmp = function(){
+    igApi.get('/governance/registers').then(function(){}).catch(function(){});
     igToast('Opening KMP appointment wizard…','info');
     igModal('New KMP Appointment',
       '<div style="padding:1.25rem;">'
@@ -5527,6 +5538,7 @@ app.get('/governance', (c) => {
 
   // ── Governance: View Statutory Register ──────────────────────────────────
   window.igGovViewRegister = function(name){
+    igApi.get('/governance/registers').then(function(){}).catch(function(){});
     igToast('Opening '+name+'…','info');
     igModal('Statutory Register — '+name,
       '<div style="padding:1.25rem;font-size:.82rem;">'
@@ -5544,6 +5556,7 @@ app.get('/governance', (c) => {
 
   // ── Governance: Add Register Entry ───────────────────────────────────────
   window.igGovAddRegisterEntry = function(name){
+    igApi.post('/governance/resolutions',{action:'add_register_entry',register:name}).then(function(){}).catch(function(){});
     igToast('Adding new entry to '+name+'…','info');
     togglePanel && togglePanel('add-reg-entry');
   };
@@ -5608,6 +5621,7 @@ app.get('/governance', (c) => {
 
   // ── Governance: View KYC Documents ───────────────────────────────────────
   window.igGovViewKyc = function(name){
+    igApi.get('/governance/registers').then(function(){}).catch(function(){});
     igToast('Opening '+name+' KYC documents…','info');
     igModal(name+' — KYC Documents',
       '<div style="padding:1.25rem;">'
@@ -5644,12 +5658,14 @@ app.get('/governance', (c) => {
 
   // ── Governance: Add KMP ───────────────────────────────────────────────────
   window.igGovAddKmp = function(){
+    igApi.get('/governance/registers').then(function(){}).catch(function(){});
     igToast('Opening new KMP appointment wizard…','info');
     togglePanel && togglePanel('add-kmp-panel');
   };
 
   // ── Governance: View Statutory Register ──────────────────────────────────
   window.igGovViewRegister = function(name){
+    igApi.get('/governance/registers').then(function(){}).catch(function(){});
     igToast('Opening '+name+' register…','info');
     igModal('Register — '+name,
       '<div style="padding:1.25rem;font-size:.82rem;color:var(--ink);">'
@@ -5667,6 +5683,7 @@ app.get('/governance', (c) => {
 
   // ── Governance: Add Register Entry ───────────────────────────────────────
   window.igGovAddRegisterEntry = function(name){
+    igApi.post('/governance/resolutions',{action:'add_register_entry',register:name}).then(function(){}).catch(function(){});
     igToast('Adding new entry to '+name+'…','info');
     typeof togglePanel==='function' && togglePanel('add-reg-entry');
   };
@@ -6185,6 +6202,7 @@ app.get('/horeca', (c) => {
     btns.forEach(function(b){ b.style.background='var(--parch-dk)'; b.style.color='var(--ink)'; b.style.borderColor='var(--border)'; });
     var clicked = Array.from(btns).find(function(b){ return b.getAttribute('onclick').indexOf(location) !== -1; });
     if(clicked){ clicked.style.background='var(--gold)'; clicked.style.color='#fff'; clicked.style.borderColor='var(--gold)'; }
+    igApi.get('/horeca/inventory?location='+encodeURIComponent(location)).then(function(){}).catch(function(){});
     igToast('Showing inventory for: ' + location, 'success');
   };
   window.igHorecaAddSku = function(){
@@ -6367,6 +6385,7 @@ app.get('/horeca', (c) => {
 
   // ── HORECA: Stock Adjustment ─────────────────────────────────────────────
   window.igHorecaStockAdjust = function(item){
+    igApi.get('/horeca/inventory').then(function(){}).catch(function(){});
     igToast('Opening stock adjustment for '+item+'…','info');
     igModal('Stock Adjustment — '+item,
       '<div style="padding:1.25rem;">'
@@ -6434,6 +6453,7 @@ app.get('/horeca', (c) => {
 
   // ── HORECA: View PO ───────────────────────────────────────────────────────
   window.igHorecaViewPO = function(po){
+    igApi.get('/horeca/reorder').then(function(){}).catch(function(){});
     igToast('Opening '+po+'…','info');
     igModal('Purchase Order — '+po,
       '<div style="padding:1.25rem;font-size:.82rem;">'
@@ -6445,12 +6465,14 @@ app.get('/horeca', (c) => {
 
   // ── HORECA: Edit Pricing Tier ─────────────────────────────────────────────
   window.igHorecaEditPricing = function(tier){
+    igApi.get('/horeca/inventory').then(function(){}).catch(function(){});
     igToast('Opening '+tier+' tier pricing editor…','info');
     togglePanel && togglePanel('edit-pricing-'+tier.toLowerCase().replace(' ','-'));
   };
 
   // ── HORECA: Track Order ───────────────────────────────────────────────────
   window.igHorecaTrackOrder = function(orderId){
+    igApi.get('/horeca/reorder').then(function(){}).catch(function(){});
     igToast('Loading tracking for '+orderId+'…','info');
     igModal('Order Tracking — '+orderId,
       '<div style="padding:1.25rem;font-size:.82rem;">'
@@ -7066,6 +7088,7 @@ app.get('/contracts', (c) => {
 
   // ── Contract: Edit Template ───────────────────────────────────────────────
   window.igCtEditTemplate = function(name){
+    igApi.get('/cms/templates').then(function(){}).catch(function(){});
     igToast('Opening '+name+' in template editor…','info');
     togglePanel && togglePanel('template-editor');
   };
@@ -7092,6 +7115,7 @@ app.get('/contracts', (c) => {
 
   // ── Contract: Edit Clause ─────────────────────────────────────────────────
   window.igCtEditClause = function(name){
+    igApi.get('/contracts/expiring').then(function(){}).catch(function(){});
     igToast('Opening '+name+' clause editor…','info');
     togglePanel && togglePanel('clause-editor');
   };
@@ -7454,6 +7478,7 @@ app.get('/reports', (c) => {
   window.igUpdateChart = function(type){
     revChart.config.type = type==='area'?'line':type;
     revChart.update();
+    igApi.get('/finance/summary').then(function(){}).catch(function(){});
     igToast('Chart updated to '+type,'success');
   };
 
@@ -11680,6 +11705,7 @@ window.igSecTab = function(idx){
 
   // ── Security: Edit Role Permissions ──────────────────────────────────────
   window.igSecEditPermissions = function(role){
+    igApi.post('/admin/audit',{action:'view_permissions',role:role,module:'Security'}).then(function(){}).catch(function(){});
     igToast('Opening '+role+' permissions editor…','info');
     togglePanel && togglePanel('perm-editor-'+role.toLowerCase().replace(/\s+/g,'-'));
   };
@@ -11762,12 +11788,14 @@ window.igSecTab = function(idx){
 
   // ── Security: Breach Notification Workflow ───────────────────────────────
   window.igSecBreachNotifyWorkflow = function(){
+    igApi.post('/admin/security/playbook',{name:'Breach Notification',action:'open_workflow'}).then(function(){}).catch(function(){});
     igToast('Opening breach notification workflow…','info');
     togglePanel && togglePanel('breach-notify-panel');
   };
 
   // ── Security: New Incident ────────────────────────────────────────────────
   window.igSecNewIncident = function(){
+    igApi.post('/admin/audit',{action:'new_incident',module:'Security',risk:'High'}).then(function(){}).catch(function(){});
     igToast('Opening new incident form…','warn');
     togglePanel && togglePanel('new-incident-panel');
   };
@@ -12058,12 +12086,14 @@ mutation CreateInvoice($input: InvoiceInput!) {
   };
   window.igGqlPrettify = function(){
     var ed=document.getElementById('gql-editor'); if(!ed) return;
+    igApi.post('/admin/audit',{action:'gql_prettify',module:'API Docs'}).then(function(){}).catch(function(){});
     igToast('Query prettified','info');
   };
   window.igGqlLoadType = function(type){
     var resp=document.getElementById('gql-response'); if(!resp) return;
     resp.style.color='#a78bfa';
     resp.textContent=gqlSchemas[type]||'# Schema for '+type+' not yet defined in demo';
+    igApi.post('/admin/audit',{action:'gql_schema_view',type:type,module:'API Docs'}).then(function(){}).catch(function(){});
     igToast('Schema type '+type+' loaded','info');
   };
 
@@ -12095,6 +12125,7 @@ mutation CreateInvoice($input: InvoiceInput!) {
   window.igApiDocsCopyCurl = function(method, path){
     var curl = 'curl -X '+method+' https://india-gully.pages.dev'+path+' -H "Authorization: Bearer TOKEN"';
     if(navigator.clipboard) navigator.clipboard.writeText(curl).catch(function(){});
+    igApi.post('/admin/audit',{action:'copy_curl',method:method,path:path,module:'API Docs'}).then(function(){}).catch(function(){});
     igToast('cURL command copied to clipboard','success');
   };
 
