@@ -144,9 +144,9 @@ export const RETAIL_BRANDS = [
 
 // Transaction Advisory partners
 export const ADVISORY_PARTNERS = [
-  { name: 'Ernst & Young',   abbr: 'EY',        logo: '/static/partners/ey.png',              color: '#FFE600', textColor: '#2E2E2E', sub: 'Transaction Advisory & Assurance',  logoBg: '#fff' },
+  { name: 'Ernst & Young',   abbr: 'EY',        logo: '/static/partners/ey.jpg',              color: '#FFE600', textColor: '#2E2E2E', sub: 'Transaction Advisory & Assurance',  logoBg: '#fff' },
   { name: 'CBRE',            abbr: 'CBRE',       logo: '/static/partners/cbre.png',            color: '#006A4D', textColor: '#fff',    sub: 'Real Estate & Capital Markets',     logoBg: '#fff' },
-  { name: 'ANAROCK',         abbr: 'ANAROCK',    logo: '/static/partners/anarock.png',         color: '#E4003A', textColor: '#fff',    sub: 'Property Consultants',              logoBg: '#fff' },
+  { name: 'ANAROCK',         abbr: 'ANAROCK',    logo: '/static/partners/anarock.jpg',         color: '#E4003A', textColor: '#fff',    sub: 'Property Consultants',              logoBg: '#fff' },
   { name: 'Pipara & Co LLP', abbr: 'PIPARA',     logo: '/static/partners/pipara-co.png',       color: '#1A5276', textColor: '#fff',    sub: 'Chartered Accountants',             logoBg: '#fff' },
   { name: 'Resurgent India', abbr: 'RESURGENT',  logo: '/static/partners/resurgent-india.png', color: '#F4A900', textColor: '#1e3a5f', sub: 'Investment Banking',                logoBg: '#fff' },
 ]
