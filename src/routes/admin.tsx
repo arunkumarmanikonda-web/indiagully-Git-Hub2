@@ -6679,7 +6679,7 @@ app.get('/contracts', (c) => {
         ${[
           {id:'CTR-001',name:'Advisory Retainer — Heritage Hotels',   party:'Heritage Hotels Ltd',         type:'Retainer',  exp:'31 Mar 2026', days:25,  auto:false, s:'Expiring Soon'},
           {id:'CTR-002',name:'NDA — Goa Hospitality Ventures',        party:'Goa Hospitality Ventures',    type:'NDA',       exp:'10 Mar 2026', days:4,   auto:false, s:'Critical'},
-          {id:'CTR-003',name:'Mandate Agreement — Entertainment City',party:'NCR Entertainment Pvt Ltd',  type:'Mandate',   exp:'30 Jun 2025', days:117, auto:true,  s:'Active'},
+          {id:'CTR-003',name:'Mandate Agreement — Entertainment City',party:'Entertainment City Limited',  type:'Mandate',   exp:'30 Jun 2025', days:117, auto:true,  s:'Active'},
           {id:'CTR-004',name:'Vendor Agreement — Office Supplies',     party:'ABC Suppliers Ltd',          type:'Vendor',    exp:'31 Dec 2025', days:300, auto:true,  s:'Active'},
           {id:'CTR-005',name:'Lease — Registered Office',              party:'City Properties Ltd',        type:'Lease',     exp:'31 Aug 2025', days:178, auto:false, s:'Active'},
           {id:'CTR-006',name:'Advisory Agreement — Mumbai RE Fund',    party:'Mumbai Real Estate Fund',    type:'Advisory',  exp:'28 Feb 2026', days:-1,  auto:false, s:'Expired'},

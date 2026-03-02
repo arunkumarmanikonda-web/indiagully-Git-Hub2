@@ -53,7 +53,7 @@ const SERVICES = [
     items: ['Concept development & master planning','Entertainment operator identification','Financial feasibility & business plan','Technology & AV systems advisory','Attraction design & programming','Revenue mix & yield optimisation','Integrated destination planning','Project management & commissioning'],
     highlights: [
       { v:'₹4,500 Cr', l:'Integrated Entertainment Destination, Maharashtra. Phase 1 approved' },
-      { v:'₹1,200 Cr+', l:'Entertainment City, Noida NCR, co-advised with Bhutani Group' },
+      { v:'₹1,200 Cr+', l:'Entertainment City, Noida NCR, co-advised with Entertainment City Limited' },
     ],
     partners: [] as string[],
   },

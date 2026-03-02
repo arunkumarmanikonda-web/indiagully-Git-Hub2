@@ -335,7 +335,7 @@ export const LISTINGS = [
   {
     id: 'entertainment-ncr-bhutani',
     title: 'Entertainment City — Delhi NCR',
-    subtitle: '1.5 Mn sq ft GLA · Bhutani Group · Noida',
+    subtitle: '1.5 Mn sq ft GLA · Entertainment City Limited · Noida',
     location: 'Noida, Delhi NCR',
     locationShort: 'Noida, NCR',
     sector: 'Entertainment',
@@ -345,8 +345,8 @@ export const LISTINGS = [
     status: 'Co-Advisory · Exclusive',
     statusType: 'active',
     mandateType: 'Co-Advisory (Exclusive)',
-    desc: '1.5 Mn sq ft entertainment city in Noida NCR co-advised with Bhutani Group. High-footfall location adjacent to upcoming metro corridor. Largest entertainment-led mixed-use in NCR.',
-    longDesc: `India Gully co-advises with the Bhutani Group on this landmark 1.5 million square foot entertainment city in Noida, Delhi NCR — positioned as the region's largest entertainment-led mixed-use development.\n\nThe site sits adjacent to an upcoming metro corridor, giving it exceptional connectivity to Delhi NCR's 22 million+ population catchment. The development integrates indoor and outdoor entertainment, a multiplex, F&B destination, branded hotels and a curated retail component.\n\nInvestment is sought from entertainment-sector operators, international attraction brands, hospitality companies and co-development PE capital. The Bhutani Group brings a blue-chip real estate developer pedigree and strong balance sheet to the partnership.`,
+    desc: '1.5 Mn sq ft entertainment city in Noida NCR co-advised with Entertainment City Limited. High-footfall location adjacent to upcoming metro corridor. Largest entertainment-led mixed-use in NCR.',
+    longDesc: `India Gully co-advises with Entertainment City Limited on this landmark 1.5 million square foot entertainment city in Noida, Delhi NCR, positioned as the region's largest entertainment-led mixed-use development.\n\nThe site sits adjacent to an upcoming metro corridor, giving it exceptional connectivity to Delhi NCR's 22 million+ population catchment. The development integrates indoor and outdoor entertainment, a multiplex, F&B destination, branded hotels and a curated retail component.\n\nInvestment is sought from entertainment-sector operators, international attraction brands, hospitality companies and co-development PE capital. Entertainment City Limited brings a strong developer pedigree and balance sheet to the partnership.`,
     images: [
       'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200&q=80',
       'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&q=80',
@@ -356,7 +356,7 @@ export const LISTINGS = [
     specs: {
       'GLA': '1.5 Million sq ft',
       'Location': 'Noida, Delhi NCR',
-      'Project Partner': 'Bhutani Group',
+      'Project Partner': 'Entertainment City Limited',
       'Investment Scale': '₹1,200 Crore+ (USD ~144 Mn+)',
       'Components': 'Entertainment + Multiplex + Hotel + Retail',
       'Connectivity': 'Adjacent to Upcoming Metro Corridor',
@@ -365,11 +365,11 @@ export const LISTINGS = [
     },
     highlights: [
       { icon: 'building', value: '1.5 Mn', label: 'Sq Ft GLA' },
-      { icon: 'handshake', value: 'Bhutani', label: 'Group Partner' },
+      { icon: 'handshake', value: 'ECL', label: 'Project Partner' },
       { icon: 'subway', value: 'Metro', label: 'Adjacent Corridor' },
       { icon: 'users', value: '22 Mn+', label: 'NCR Catchment' },
     ],
-    tags: ['Entertainment City', 'Delhi NCR', 'Bhutani Group', 'Mixed-Use', 'Metro Connectivity'],
+    tags: ['Entertainment City', 'Delhi NCR', 'Entertainment City Limited', 'Mixed-Use', 'Metro Connectivity'],
     highlight: true,
     contact: 'amit.jhingan@indiagully.com',
     contactName: 'Amit Jhingan',
