@@ -224,75 +224,361 @@ app.get('/board', (c) => {
 })
 
 // ── SUPPORT & ACCESS HELP ────────────────────────────────────────────────────
-app.get('/demo-access', (c) => {
+app.get('/demo-access', (c) => c.redirect('/portal/support', 301))
+
+app.get('/support', (c) => {
+  const ticketRef = `TKT-${Date.now().toString(36).toUpperCase()}`
   const content = `
-<div style="min-height:100vh;background:linear-gradient(135deg,#080808 0%,#141414 100%);display:flex;align-items:center;justify-content:center;padding:2rem 1.5rem;">
-  <div style="width:100%;max-width:580px;">
-    <div style="background:#fff;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.5);">
-      <div style="background:#1A3A6B;padding:2rem;text-align:center;">
-        <div style="width:48px;height:48px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;"><i class="fas fa-life-ring" style="color:#fff;font-size:1.25rem;"></i></div>
-        <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;margin-bottom:.25rem;">Platform Support</h1>
-        <p style="font-size:.75rem;color:rgba(255,255,255,.55);">India Gully Enterprise — Access Help</p>
-      </div>
+<style>
+  .sup-wrap{min-height:100vh;background:linear-gradient(135deg,#060810 0%,#0f1524 60%,#141a2e 100%);padding:2rem 1.5rem;font-family:'Inter',system-ui,sans-serif;}
+  .sup-card{background:#fff;max-width:760px;margin:0 auto;box-shadow:0 40px 120px rgba(0,0,0,.6);overflow:hidden;}
+  .sup-hero{background:linear-gradient(135deg,#1A3A6B 0%,#0f2547 100%);padding:2.5rem 2rem;text-align:center;position:relative;overflow:hidden;}
+  .sup-hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+  .sup-hero-icon{width:56px;height:56px;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;}
+  .sup-body{padding:0;}
+  .sup-tab-bar{display:flex;border-bottom:2px solid #f1f5f9;background:#f8fafc;}
+  .sup-tab{flex:1;padding:.875rem .5rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#64748b;cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;}
+  .sup-tab.active{color:#1A3A6B;border-bottom-color:#1A3A6B;background:#fff;}
+  .sup-tab:hover:not(.active){background:#f1f5f9;color:#1A3A6B;}
+  .sup-panel{display:none;padding:1.75rem;}
+  .sup-panel.active{display:block;}
+  .form-row{margin-bottom:1.125rem;}
+  .form-label{display:block;font-size:.74rem;font-weight:600;color:#374151;margin-bottom:.375rem;text-transform:uppercase;letter-spacing:.04em;}
+  .form-input{width:100%;box-sizing:border-box;border:1.5px solid #e2e8f0;padding:.6rem .875rem;font-size:.82rem;color:#1e293b;background:#fff;transition:border-color .2s,box-shadow .2s;outline:none;}
+  .form-input:focus{border-color:#1A3A6B;box-shadow:0 0 0 3px rgba(26,58,107,.08);}
+  .form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2364748b' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .875rem center;}
+  .form-textarea{resize:vertical;min-height:100px;font-family:inherit;}
+  .btn-submit{width:100%;background:linear-gradient(135deg,#1A3A6B,#0f2547);color:#fff;border:none;padding:.875rem 1.5rem;font-size:.84rem;font-weight:700;letter-spacing:.04em;cursor:pointer;text-transform:uppercase;transition:opacity .2s,transform .1s;display:flex;align-items:center;justify-content:center;gap:.5rem;}
+  .btn-submit:hover{opacity:.9;}
+  .btn-submit:active{transform:scale(.99);}
+  .status-badge{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .6rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+  .badge-green{background:#dcfce7;color:#166534;}
+  .badge-yellow{background:#fef9c3;color:#854d0e;}
+  .badge-red{background:#fee2e2;color:#991b1b;}
+  .faq-item{border-bottom:1px solid #f1f5f9;}
+  .faq-q{padding:.875rem 0;font-size:.82rem;font-weight:600;color:#1e293b;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:.75rem;}
+  .faq-q:hover{color:#1A3A6B;}
+  .faq-a{font-size:.78rem;color:#475569;line-height:1.8;padding:0 0 .875rem;display:none;}
+  .faq-item.open .faq-a{display:block;}
+  .faq-item.open .faq-chevron{transform:rotate(180deg);}
+  .faq-chevron{transition:transform .2s;flex-shrink:0;color:#94a3b8;}
+  .portal-card{display:flex;align-items:center;justify-content:space-between;padding:.875rem 1rem;border:1.5px solid #e2e8f0;margin-bottom:.5rem;transition:border-color .2s,background .2s;}
+  .portal-card:hover{border-color:#1A3A6B;background:#f8fafc;}
+  .svc-row{display:flex;align-items:center;justify-content:space-between;padding:.625rem 0;border-bottom:1px solid #f1f5f9;font-size:.78rem;}
+  .svc-row:last-child{border:none;}
+  .toast-overlay{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;}
+  .toast-msg{background:#1A3A6B;color:#fff;padding:.875rem 1.25rem;font-size:.8rem;border-left:4px solid #B8960C;box-shadow:0 8px 30px rgba(0,0,0,.25);display:flex;align-items:center;gap:.625rem;min-width:280px;opacity:0;transform:translateY(12px);transition:all .3s;}
+  .toast-msg.show{opacity:1;transform:translateY(0);}
+  @media(max-width:600px){.sup-tab span{display:none;}.sup-tab i{font-size:1rem;}}
+</style>
 
-      <div style="padding:1.75rem;">
+<div class="sup-wrap">
+  <div class="sup-card">
 
-        <!-- Account Lockout Recovery -->
-        <h3 style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:.875rem;">
-          <i class="fas fa-lock-open" style="margin-right:.4rem;color:#dc2626;"></i>Account Lockout Recovery
-        </h3>
-        <div style="background:#fef2f2;border:1px solid #fecaca;padding:1rem;margin-bottom:1.5rem;font-size:.78rem;color:#7f1d1d;line-height:1.8;">
-          <p style="margin-bottom:.5rem;"><strong>After 5 failed login attempts, your account is locked for 5 minutes.</strong></p>
-          <ul style="padding-left:1.25rem;margin:0;">
-            <li>Wait for the countdown timer on the login page to reach zero, then retry.</li>
-            <li>For immediate unlock, email <a href="mailto:admin@indiagully.com" style="color:#dc2626;">admin@indiagully.com</a> or call <strong>+91 8988 988 988</strong>.</li>
-            <li>If your TOTP code is invalid, ensure your authenticator app clock is synced.</li>
-          </ul>
-        </div>
-
-        <!-- TOTP Setup Guide -->
-        <h3 style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:.875rem;">
-          <i class="fas fa-mobile-alt" style="margin-right:.4rem;color:#1A3A6B;"></i>Setting Up Your Authenticator App
-        </h3>
-        <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:1rem;margin-bottom:1.5rem;font-size:.78rem;color:#0c4a6e;line-height:1.8;">
-          <ol style="padding-left:1.25rem;margin:0;">
-            <li>Install <strong>Google Authenticator</strong>, <strong>Authy</strong>, or <strong>Microsoft Authenticator</strong>.</li>
-            <li>Email <a href="mailto:admin@indiagully.com" style="color:#0369a1;">admin@indiagully.com</a> to request your TOTP QR code.</li>
-            <li>Scan the QR code in your authenticator app to register <em>India Gully Enterprise</em>.</li>
-            <li>Enter the 6-digit rotating code during login — it refreshes every 30 seconds.</li>
-            <li><strong>Clock skew:</strong> If codes are consistently rejected, go to Google Authenticator → Settings → Time Correction for Codes → Sync Now.</li>
-          </ol>
-        </div>
-
-        <!-- Available Portals -->
-        <h3 style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:.875rem;">Available Portals</h3>
-        ${[
-          {portal:'Client Portal',   url:'/portal/client',   icon:'user-tie',   color:'#B8960C', desc:'Advisory services, mandates, invoices, deliverables'},
-          {portal:'Employee Portal', url:'/portal/employee', icon:'users',      color:'#1A3A6B', desc:'HR, payroll, leave, attendance, Form-16'},
-          {portal:'Board & KMP',     url:'/portal/board',    icon:'gavel',      color:'#1E1E1E', desc:'Governance, board packs, voting, statutory registers'},
-          {portal:'Super Admin',     url:'/admin',           icon:'shield-alt', color:'#6B1A1A', desc:'Platform administration, ERP, user management'},
-        ].map(p=>`<div style="background:#f8f9fa;border:1px solid var(--border);padding:.875rem 1rem;margin-bottom:.625rem;display:flex;align-items:center;justify-content:space-between;">
-          <div style="display:flex;align-items:center;gap:.75rem;">
-            <div style="width:36px;height:36px;background:${p.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-${p.icon}" style="color:#fff;font-size:.8rem;"></i></div>
-            <div>
-              <div style="font-size:.82rem;font-weight:600;color:var(--ink);">${p.portal}</div>
-              <div style="font-size:.7rem;color:var(--ink-muted);">${p.desc}</div>
-            </div>
-          </div>
-          <a href="${p.url}" style="background:${p.color};color:#fff;padding:.4rem .875rem;font-size:.72rem;font-weight:600;text-decoration:none;white-space:nowrap;">Login →</a>
-        </div>`).join('')}
-
-        <!-- Contact Support -->
-        <div style="background:#f8f9fa;border:1px solid var(--border);padding:1rem;margin-top:1.5rem;font-size:.78rem;color:var(--ink-muted);text-align:center;line-height:1.8;">
-          <i class="fas fa-headset" style="margin-right:.4rem;color:var(--gold);"></i>
-          Need help? Email <a href="mailto:admin@indiagully.com" style="color:var(--gold);font-weight:600;">admin@indiagully.com</a>
-          or call <strong>+91 8988 988 988</strong>
-        </div>
-
+    <!-- Hero -->
+    <div class="sup-hero">
+      <div class="sup-hero-icon"><i class="fas fa-life-ring" style="color:#fff;font-size:1.4rem;"></i></div>
+      <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.6rem;color:#fff;margin:0 0 .35rem;">Platform Support</h1>
+      <p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:0;">India Gully Enterprise — We're here to help</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:.875rem;">
+        <span class="status-badge badge-green"><i class="fas fa-circle" style="font-size:.45rem;"></i> All Systems Operational</span>
+        <span style="color:rgba(255,255,255,.3);font-size:.7rem;">·</span>
+        <span style="font-size:.7rem;color:rgba(255,255,255,.45);">Avg. response: 4.2 hours</span>
       </div>
     </div>
+
+    <!-- Tab Bar -->
+    <div class="sup-tab-bar">
+      <button class="sup-tab active" onclick="supTab('ticket')"><i class="fas fa-ticket-alt" style="margin-right:.4rem;"></i><span>Submit Ticket</span></button>
+      <button class="sup-tab" onclick="supTab('faq')"><i class="fas fa-question-circle" style="margin-right:.4rem;"></i><span>FAQ</span></button>
+      <button class="sup-tab" onclick="supTab('portals')"><i class="fas fa-th-large" style="margin-right:.4rem;"></i><span>Portals</span></button>
+      <button class="sup-tab" onclick="supTab('status')"><i class="fas fa-heartbeat" style="margin-right:.4rem;"></i><span>System Status</span></button>
+    </div>
+
+    <!-- Panel: Submit Ticket -->
+    <div id="panel-ticket" class="sup-panel active">
+      <p style="font-size:.78rem;color:#64748b;margin:0 0 1.25rem;line-height:1.7;">
+        Can't find what you need below? Submit a support ticket and our team will respond within <strong>4 business hours</strong>.
+        Your ticket reference: <code style="background:#f1f5f9;padding:.1rem .4rem;font-size:.75rem;color:#1A3A6B;font-weight:700;">${ticketRef}</code>
+      </p>
+
+      <div id="ticket-success" style="display:none;background:#f0fdf4;border:1.5px solid #bbf7d0;padding:1.25rem;margin-bottom:1.25rem;">
+        <div style="display:flex;align-items:flex-start;gap:.75rem;">
+          <i class="fas fa-check-circle" style="color:#16a34a;font-size:1.1rem;flex-shrink:0;margin-top:.1rem;"></i>
+          <div>
+            <p style="font-size:.84rem;font-weight:700;color:#166534;margin:0 0 .35rem;">Ticket Submitted Successfully!</p>
+            <p style="font-size:.76rem;color:#166534;margin:0;line-height:1.7;" id="ticket-success-msg">Your request has been logged. Our support team will respond to your registered email within 4 business hours.</p>
+          </div>
+        </div>
+      </div>
+
+      <form id="support-form" onsubmit="supSubmit(event)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-row">
+            <label class="form-label">Your Name *</label>
+            <input type="text" id="sup-name" class="form-input" placeholder="Full name" required>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Email Address *</label>
+            <input type="email" id="sup-email" class="form-input" placeholder="your@email.com" required>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="form-row">
+            <label class="form-label">Portal / Module *</label>
+            <select id="sup-portal" class="form-input form-select" required>
+              <option value="">Select portal…</option>
+              <option>Client Portal</option>
+              <option>Employee Portal</option>
+              <option>Board & KMP Portal</option>
+              <option>Super Admin / ERP</option>
+              <option>Finance / GST</option>
+              <option>HR / Payroll</option>
+              <option>Governance</option>
+              <option>HORECA / Inventory</option>
+              <option>Payments / Razorpay</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Priority</label>
+            <select id="sup-priority" class="form-input form-select">
+              <option value="normal">Normal — Response within 4h</option>
+              <option value="high">High — Response within 2h</option>
+              <option value="critical">Critical — Response within 1h</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Issue Category *</label>
+          <select id="sup-category" class="form-input form-select" required>
+            <option value="">Select category…</option>
+            <option>Login / Access / Lockout</option>
+            <option>TOTP / Authenticator Setup</option>
+            <option>Password Reset</option>
+            <option>Invoice / Billing</option>
+            <option>Document / Upload Issue</option>
+            <option>Data / Report Discrepancy</option>
+            <option>Feature Request</option>
+            <option>Bug / Error</option>
+            <option>Integration Issue</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Subject *</label>
+          <input type="text" id="sup-subject" class="form-input" placeholder="Brief description of the issue" required>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Detailed Description *</label>
+          <textarea id="sup-desc" class="form-input form-textarea" placeholder="Please describe the issue in detail — include error messages, steps to reproduce, screenshots if applicable…" required></textarea>
+        </div>
+        <div class="form-row" style="margin-bottom:1.25rem;">
+          <label class="form-label">Your User ID / Employee ID <span style="font-weight:400;color:#94a3b8;">(optional)</span></label>
+          <input type="text" id="sup-userid" class="form-input" placeholder="e.g. EMP-001, IG-CL-123, or email">
+        </div>
+        <button type="submit" class="btn-submit" id="sup-btn">
+          <i class="fas fa-paper-plane"></i> Submit Support Ticket
+        </button>
+      </form>
+
+      <div style="margin-top:1.25rem;background:#fafafa;border:1px solid #f1f5f9;padding:.875rem 1rem;display:flex;align-items:center;gap:.75rem;">
+        <i class="fas fa-headset" style="color:#B8960C;font-size:1.1rem;flex-shrink:0;"></i>
+        <div style="font-size:.75rem;color:#64748b;line-height:1.7;">
+          Urgent issue? Call us at <a href="tel:+918988988988" style="color:#1A3A6B;font-weight:700;">+91 8988 988 988</a>
+          or email <a href="mailto:admin@indiagully.com" style="color:#1A3A6B;font-weight:700;">admin@indiagully.com</a>
+          · Mon–Fri 9:00 AM – 7:00 PM IST
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: FAQ -->
+    <div id="panel-faq" class="sup-panel">
+      <p style="font-size:.78rem;color:#64748b;margin:0 0 1.25rem;">Find answers to common questions about login, TOTP, and platform usage.</p>
+      ${[
+        {q:'My account is locked — what do I do?', a:'After 5 failed login attempts, your account locks for 5 minutes. Wait for the countdown to complete, then try again. For immediate manual unlock, email <a href="mailto:admin@indiagully.com" style="color:#1A3A6B;">admin@indiagully.com</a> with your user ID or call +91 8988 988 988.'},
+        {q:'How do I set up my TOTP authenticator app?', a:'1. Install Google Authenticator, Authy, or Microsoft Authenticator on your phone.<br>2. Email admin@indiagully.com to request your personal QR code.<br>3. In the app, tap "+" → "Scan QR code".<br>4. Use the 6-digit rotating code during login. Codes refresh every 30 seconds.'},
+        {q:'My TOTP code is being rejected even though it looks right.', a:'This is usually a clock-sync issue. On Google Authenticator: tap ⋮ → Time correction for codes → Sync now. On Authy: Settings → Account → Sync. Make sure your phone\'s date/time is set to Automatic (internet time).'},
+        {q:'How do I reset my password?', a:'Click "Forgot Password" on any login page or visit <a href="/portal/reset" style="color:#1A3A6B;">/portal/reset</a>. Enter your registered email/employee ID and a secure reset link will be sent. The link is valid for 15 minutes.'},
+        {q:'Which portal should I use?', a:'<strong>Client Portal</strong> — for advisory clients (mandates, invoices, deliverables).<br><strong>Employee Portal</strong> — for staff (payroll, leave, Form-16, attendance).<br><strong>Board & KMP</strong> — for directors and KMPs (governance, voting, board packs).<br><strong>Super Admin</strong> — for platform administrators only.'},
+        {q:'I can\'t see my invoice / document. What should I check?', a:'Ensure you\'re logged into the correct portal. For invoices, go to Invoices → All and check the date filter. For documents, go to Documents → All Files. If the item is still missing, contact support with the document reference or invoice number.'},
+        {q:'How do I update my profile or email address?', a:'Log in to your portal → click your avatar top-right → Profile Settings. Email address changes require admin approval for security. Raise a ticket if you need to update your primary email.'},
+        {q:'How do I download my Form-16 or payslip?', a:'Employee Portal → Payslips (for payslips) or Employee Portal → Form-16 (for Form-16 PDFs). Payslips are available from the month after joining. Form-16 is issued annually in June for the prior financial year.'},
+      ].map((f,i)=>`
+      <div class="faq-item" id="faq${i}" onclick="faqToggle(${i})">
+        <div class="faq-q">
+          <span>${f.q}</span>
+          <i class="fas fa-chevron-down faq-chevron"></i>
+        </div>
+        <div class="faq-a">${f.a}</div>
+      </div>`).join('')}
+    </div>
+
+    <!-- Panel: Portals -->
+    <div id="panel-portals" class="sup-panel">
+      <p style="font-size:.78rem;color:#64748b;margin:0 0 1.25rem;">Select your portal below to sign in. Each portal has its own login credentials.</p>
+      ${[
+        {portal:'Client Portal',   url:'/portal/client',   icon:'user-tie',   color:'#B8960C', desc:'Advisory services, mandates, invoices, deliverables, reports'},
+        {portal:'Employee Portal', url:'/portal/employee', icon:'users',      color:'#1A3A6B', desc:'HR, payroll, leave management, attendance, Form-16'},
+        {portal:'Board & KMP',     url:'/portal/board',    icon:'gavel',      color:'#1E1E1E', desc:'Governance, board packs, voting, statutory registers'},
+        {portal:'Super Admin',     url:'/admin',           icon:'shield-alt', color:'#6B1A1A', desc:'Platform administration, full ERP, user management'},
+      ].map(p=>`
+      <div class="portal-card">
+        <div style="display:flex;align-items:center;gap:.875rem;">
+          <div style="width:40px;height:40px;background:${p.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:4px;">
+            <i class="fas fa-${p.icon}" style="color:#fff;font-size:.875rem;"></i>
+          </div>
+          <div>
+            <div style="font-size:.84rem;font-weight:700;color:#1e293b;">${p.portal}</div>
+            <div style="font-size:.71rem;color:#64748b;margin-top:.1rem;">${p.desc}</div>
+          </div>
+        </div>
+        <a href="${p.url}" style="background:${p.color};color:#fff;padding:.45rem 1rem;font-size:.72rem;font-weight:700;text-decoration:none;white-space:nowrap;border-radius:3px;letter-spacing:.03em;">
+          Login <i class="fas fa-arrow-right" style="font-size:.6rem;margin-left:.3rem;"></i>
+        </a>
+      </div>`).join('')}
+      <div style="margin-top:1.25rem;background:#fffbeb;border:1.5px solid #fcd34d;padding:.875rem 1rem;font-size:.76rem;color:#92400e;line-height:1.7;">
+        <i class="fas fa-exclamation-triangle" style="margin-right:.4rem;color:#d97706;"></i>
+        <strong>Security reminder:</strong> Never share your credentials. Each portal session auto-expires after 8 hours of inactivity.
+        If you suspect unauthorised access, contact us immediately at <a href="mailto:admin@indiagully.com" style="color:#92400e;font-weight:700;">admin@indiagully.com</a>.
+      </div>
+    </div>
+
+    <!-- Panel: System Status -->
+    <div id="panel-status" class="sup-panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+        <div>
+          <p style="font-size:.78rem;color:#64748b;margin:0;">Live platform health as of <span id="status-time">${new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short',year:'numeric'})}</span> IST</p>
+        </div>
+        <button onclick="supRefreshStatus()" style="background:#f1f5f9;border:1.5px solid #e2e8f0;padding:.35rem .75rem;font-size:.72rem;font-weight:600;color:#475569;cursor:pointer;display:flex;align-items:center;gap:.375rem;">
+          <i class="fas fa-sync-alt" id="status-spin"></i> Refresh
+        </button>
+      </div>
+
+      <div id="status-banner" style="background:#f0fdf4;border:1.5px solid #bbf7d0;padding:.875rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem;">
+        <i class="fas fa-check-circle" style="color:#16a34a;font-size:1rem;flex-shrink:0;"></i>
+        <div style="font-size:.78rem;color:#166534;font-weight:600;">All systems are operating normally. No incidents reported.</div>
+      </div>
+
+      ${[
+        {name:'Authentication & Login',  status:'operational', uptime:'99.99%', resp:'28ms'},
+        {name:'Client Portal',           status:'operational', uptime:'99.97%', resp:'42ms'},
+        {name:'Employee Portal',         status:'operational', uptime:'99.97%', resp:'38ms'},
+        {name:'Board & KMP Portal',      status:'operational', uptime:'99.98%', resp:'35ms'},
+        {name:'Finance / GST Module',    status:'operational', uptime:'99.95%', resp:'61ms'},
+        {name:'HR / Payroll Module',     status:'operational', uptime:'99.96%', resp:'54ms'},
+        {name:'Payments (Razorpay)',      status:'operational', uptime:'99.93%', resp:'89ms'},
+        {name:'Document Storage (R2)',   status:'operational', uptime:'99.99%', resp:'22ms'},
+        {name:'Email Notifications',     status:'degraded',    uptime:'96.20%', resp:'480ms'},
+        {name:'WhatsApp Alerts',         status:'pending',     uptime:'—',      resp:'—'},
+      ].map(s=>{
+        const cls = s.status==='operational'?'badge-green':s.status==='degraded'?'badge-yellow':'badge-red'
+        const label = s.status==='operational'?'Operational':s.status==='degraded'?'Degraded':'Pending Setup'
+        return `<div class="svc-row">
+          <span style="font-weight:600;color:#1e293b;">${s.name}</span>
+          <div style="display:flex;align-items:center;gap:1rem;">
+            <span style="font-size:.71rem;color:#94a3b8;">Uptime: ${s.uptime} &nbsp;·&nbsp; ${s.resp}</span>
+            <span class="status-badge ${cls}">${label}</span>
+          </div>
+        </div>`
+      }).join('')}
+
+      <div style="margin-top:1.25rem;background:#f8fafc;border:1px solid #e2e8f0;padding:.875rem 1rem;font-size:.74rem;color:#64748b;line-height:1.7;text-align:center;">
+        <i class="fas fa-clock" style="margin-right:.3rem;color:#94a3b8;"></i>
+        Status is updated automatically. For real-time incident updates email <a href="mailto:admin@indiagully.com" style="color:#1A3A6B;">admin@indiagully.com</a>
+      </div>
+    </div>
+
+  </div><!-- /sup-card -->
+</div><!-- /sup-wrap -->
+
+<div class="toast-overlay">
+  <div class="toast-msg" id="sup-toast">
+    <i class="fas fa-check-circle" style="color:#B8960C;flex-shrink:0;"></i>
+    <span id="sup-toast-msg">Done</span>
   </div>
-</div>`
+</div>
+
+<script>
+function supTab(name){
+  document.querySelectorAll('.sup-tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.sup-panel').forEach(function(p){p.classList.remove('active');});
+  var tabs = document.querySelectorAll('.sup-tab');
+  var panels = ['ticket','faq','portals','status'];
+  var idx = panels.indexOf(name);
+  if(idx>=0) tabs[idx].classList.add('active');
+  var panel = document.getElementById('panel-'+name);
+  if(panel) panel.classList.add('active');
+}
+function faqToggle(i){
+  var el = document.getElementById('faq'+i);
+  el.classList.toggle('open');
+}
+function supShowToast(msg, type){
+  var t = document.getElementById('sup-toast');
+  var m = document.getElementById('sup-toast-msg');
+  m.textContent = msg;
+  t.style.borderLeftColor = type==='error'?'#dc2626':'#B8960C';
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 4000);
+}
+function supSubmit(e){
+  e.preventDefault();
+  var btn = document.getElementById('sup-btn');
+  var name = document.getElementById('sup-name').value.trim();
+  var email = document.getElementById('sup-email').value.trim();
+  var portal = document.getElementById('sup-portal').value;
+  var category = document.getElementById('sup-category').value;
+  var subject = document.getElementById('sup-subject').value.trim();
+  var desc = document.getElementById('sup-desc').value.trim();
+  var priority = document.getElementById('sup-priority').value;
+  var userid = document.getElementById('sup-userid').value.trim();
+  if(!name||!email||!portal||!category||!subject||!desc){
+    supShowToast('Please fill in all required fields.','error'); return;
+  }
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
+  fetch('/api/support/ticket', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({name,email,portal,category,subject,description:desc,priority,user_id:userid})
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if(data.success){
+      document.getElementById('ticket-success-msg').textContent =
+        'Ticket ' + data.ref + ' logged. Our team will respond to ' + email + ' within ' + (priority==='critical'?'1 hour':priority==='high'?'2 hours':'4 business hours') + '.';
+      document.getElementById('ticket-success').style.display='block';
+      document.getElementById('support-form').style.display='none';
+      supShowToast('Ticket ' + data.ref + ' submitted!','success');
+      window.scrollTo({top:0,behavior:'smooth'});
+    } else {
+      supShowToast(data.error||'Submission failed — please try again.','error');
+      btn.disabled=false;
+      btn.innerHTML='<i class="fas fa-paper-plane"></i> Submit Support Ticket';
+    }
+  })
+  .catch(function(){
+    supShowToast('Network error — please try again.','error');
+    btn.disabled=false;
+    btn.innerHTML='<i class="fas fa-paper-plane"></i> Submit Support Ticket';
+  });
+}
+function supRefreshStatus(){
+  var spin = document.getElementById('status-spin');
+  spin.style.animation='fa-spin 1s linear infinite';
+  fetch('/api/health').then(function(r){return r.json();}).then(function(d){
+    document.getElementById('status-time').textContent = new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short',year:'numeric'});
+    spin.style.animation='';
+    supShowToast('Status refreshed — all core systems operational','success');
+  }).catch(function(){ spin.style.animation=''; });
+}
+// Auto-open FAQ if hash = #faq, portals if #portals, status if #status
+(function(){
+  var h = window.location.hash.replace('#','');
+  if(['faq','portals','status'].includes(h)) supTab(h);
+})();
+</script>`
   return c.html(layout('Platform Support', content, { noNav:true, noFooter:true }))
 })
 

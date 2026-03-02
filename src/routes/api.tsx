@@ -13959,4 +13959,119 @@ app.post('/portal/mandates/request', requireSession(), async (c) => {
   } catch { return c.json({ success: false, error: 'Mandate request failed' }, 500) }
 })
 
+// ── SUPPORT TICKET (public — no session required) ─────────────────────────────
+app.post('/support/ticket', async (c) => {
+  try {
+    const body = await c.req.json() as {
+      name?: string; email?: string; portal?: string; category?: string
+      subject?: string; description?: string; priority?: string; user_id?: string
+    }
+    const { name, email, portal, category, subject, description, priority = 'normal', user_id } = body
+    // Basic validation
+    if (!name || !email || !portal || !category || !subject || !description) {
+      return c.json({ success: false, error: 'Missing required fields: name, email, portal, category, subject, description' }, 400)
+    }
+    const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRx.test(email)) {
+      return c.json({ success: false, error: 'Invalid email address' }, 400)
+    }
+    const validPriorities = ['normal','high','critical']
+    const safePriority = validPriorities.includes(priority) ? priority : 'normal'
+    const ref = `TKT-${Date.now().toString(36).toUpperCase()}`
+    const slaHours = safePriority === 'critical' ? 1 : safePriority === 'high' ? 2 : 4
+    const createdAt = new Date().toISOString()
+    const respondBy = new Date(Date.now() + slaHours * 3600000).toISOString()
+
+    // Store in KV if available
+    const env = c.env as Bindings
+    if (env?.IG_AUDIT_KV) {
+      await env.IG_AUDIT_KV.put(
+        `support:ticket:${ref}`,
+        JSON.stringify({ ref, name, email, portal, category, subject, description, priority: safePriority, user_id: user_id || null, status: 'open', created_at: createdAt, respond_by: respondBy }),
+        { expirationTtl: 60 * 60 * 24 * 90 } // 90 days
+      )
+    }
+
+    // Log to audit trail
+    if (env?.IG_AUDIT_KV) {
+      await env.IG_AUDIT_KV.put(
+        `audit:support:${Date.now()}`,
+        JSON.stringify({ action: 'support_ticket_created', ref, email, portal, category, priority: safePriority, created_at: createdAt }),
+        { expirationTtl: 60 * 60 * 24 * 365 }
+      )
+    }
+
+    // Optionally notify via SendGrid
+    const sgKey = (env as unknown as Record<string,string>)?.SENDGRID_API_KEY
+    if (sgKey) {
+      const html = `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
+        <div style="background:#1A3A6B;padding:1.5rem;text-align:center;">
+          <h2 style="color:#fff;margin:0;font-size:1.2rem;">Support Ticket Received</h2>
+          <p style="color:rgba(255,255,255,.6);font-size:.8rem;margin:.35rem 0 0;">India Gully Enterprise Platform</p>
+        </div>
+        <div style="padding:1.5rem;background:#fff;border:1px solid #e2e8f0;">
+          <p style="font-size:.9rem;color:#1e293b;">Hi <strong>${name}</strong>,</p>
+          <p style="font-size:.85rem;color:#475569;">Your support ticket has been received. Our team will respond within <strong>${slaHours} hour${slaHours>1?'s':''}</strong>.</p>
+          <table style="width:100%;border-collapse:collapse;font-size:.82rem;margin:1rem 0;">
+            <tr><td style="padding:.5rem;background:#f8fafc;font-weight:600;color:#374151;width:35%;">Ticket Reference</td><td style="padding:.5rem;border-bottom:1px solid #f1f5f9;color:#1A3A6B;font-weight:700;">${ref}</td></tr>
+            <tr><td style="padding:.5rem;background:#f8fafc;font-weight:600;color:#374151;">Portal / Module</td><td style="padding:.5rem;border-bottom:1px solid #f1f5f9;">${portal}</td></tr>
+            <tr><td style="padding:.5rem;background:#f8fafc;font-weight:600;color:#374151;">Category</td><td style="padding:.5rem;border-bottom:1px solid #f1f5f9;">${category}</td></tr>
+            <tr><td style="padding:.5rem;background:#f8fafc;font-weight:600;color:#374151;">Subject</td><td style="padding:.5rem;border-bottom:1px solid #f1f5f9;">${subject}</td></tr>
+            <tr><td style="padding:.5rem;background:#f8fafc;font-weight:600;color:#374151;">Priority</td><td style="padding:.5rem;">${safePriority.toUpperCase()}</td></tr>
+          </table>
+          <div style="background:#fef9c3;border:1px solid #fcd34d;padding:.875rem;font-size:.8rem;color:#78350f;margin-top:1rem;">
+            <strong>Respond by:</strong> ${new Date(respondBy).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',dateStyle:'medium',timeStyle:'short'})} IST
+          </div>
+          <hr style="border:none;border-top:1px solid #f1f5f9;margin:1.25rem 0;">
+          <p style="font-size:.78rem;color:#94a3b8;">For urgent help call <strong>+91 8988 988 988</strong> · Mon–Fri 9:00 AM–7:00 PM IST</p>
+        </div>
+      </div>`
+      // Send acknowledgement to user
+      fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${sgKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          personalizations: [{ to: [{ email, name }] }],
+          from: { email: 'noreply@indiagully.com', name: 'India Gully Support' },
+          subject: `[${ref}] Support Ticket: ${subject}`,
+          content: [{ type: 'text/html', value: html }]
+        })
+      }).catch(() => {/* silent fail — ticket is already stored */})
+    }
+
+    return c.json({
+      success: true,
+      ref,
+      status: 'open',
+      priority: safePriority,
+      sla_hours: slaHours,
+      respond_by: respondBy,
+      created_at: createdAt,
+      email_sent: !!sgKey,
+      message: `Ticket ${ref} created. Expected response within ${slaHours} hour${slaHours>1?'s':''}.`
+    })
+  } catch (err) {
+    return c.json({ success: false, error: 'Failed to create support ticket', detail: String(err) }, 500)
+  }
+})
+
+// Support Ticket Status (public — lookup by ref)
+app.get('/support/ticket/:ref', async (c) => {
+  try {
+    const ref = c.req.param('ref').toUpperCase()
+    const env = c.env as Bindings
+    if (env?.IG_AUDIT_KV) {
+      const data = await env.IG_AUDIT_KV.get(`support:ticket:${ref}`)
+      if (data) {
+        const ticket = JSON.parse(data)
+        // Redact description for privacy; show summary
+        return c.json({ success: true, ref: ticket.ref, status: ticket.status, priority: ticket.priority,
+          portal: ticket.portal, category: ticket.category, subject: ticket.subject,
+          created_at: ticket.created_at, respond_by: ticket.respond_by })
+      }
+    }
+    return c.json({ success: false, error: 'Ticket not found or expired' }, 404)
+  } catch { return c.json({ success: false, error: 'Lookup failed' }, 500) }
+})
+
 export default app
