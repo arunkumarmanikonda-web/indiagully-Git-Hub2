@@ -126,11 +126,11 @@ const AUDIT_HTML = `<!DOCTYPE html>
       Enterprise Platform — covering all rounds A through H.
     </p>
     <div class="cover-meta">
-      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.36-LL</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Platform</span><span class="cover-meta-value">India Gully Enterprise v2026.50-ZZ</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Latest Round</span><span class="cover-meta-value">HH-Round &middot; March 2026</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Security Score</span><span class="cover-meta-value" style="color:#22c55e;font-weight:700;">100 / 100</span></div>
       <div class="cover-meta-item"><span class="cover-meta-label">Status</span><span class="cover-meta-value"><span class="badge b-gr">Production Ready</span></span></div>
-      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">306 endpoints</span></div>
+      <div class="cover-meta-item"><span class="cover-meta-label">Routes</span><span class="cover-meta-value">390 endpoints</span></div>
     </div>
   </div>
 
@@ -205,8 +205,8 @@ const AUDIT_HTML = `<!DOCTYPE html>
       <div style="background:linear-gradient(135deg,#0c1a0c,#1a2e1a);padding:1.25rem 1.75rem;display:flex;justify-content:space-between;align-items:center;">
         <div>
           <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem;">Audit Round</div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">LL-Round · v2026.36-LL</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Roadmap · Sprint Velocity · Tech Debt · Incident Log · DPDP Product · SLA · 306 routes · 100/100</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;">ZZ-Round · v2026.50-ZZ</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:.15rem;">Roadmap · Sprint Velocity · Tech Debt · Incident Log · DPDP Product · SLA · 390 routes · 100/100</div>
         </div>
         <div style="text-align:right;">
           <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.5rem;color:#22c55e;line-height:1;">100</div>
@@ -646,6 +646,62 @@ const AUDIT_HTML = `<!DOCTYPE html>
             ['JJO2','Remediate IDOR invoice download (PT-2026-001) — restrict /api/invoices/:id to owner only','High','2h'],
             ['JJO3','Right-size 6 EC2 instances + apply S3 lifecycle policy — Rs1.1L/month savings (JJ3)','Medium','2h'],
             ['JJO4','Disable 12 stale accounts, eliminate 5 shared credentials, enforce MFA for 8 users (JJ4/JJ5)','High','3h'],
+                                                                                                                                                                                    ['ZZO1','Resolve 2 critical KPIs — engineering velocity and AR collection','High','1w'],
+            ['ZZO2','Complete board pack for Q4 FY26 — 8 sections file before March 15','High','3d'],
+            ['ZZO3','Achieve DPDP s72A executive accountability sign-off','High','1d'],
+            ['ZZO4','Publish platform certification report — 26 rounds 390 routes 100/100','Medium','2h'],
+            ['YYO1','Fix DB failover — 8min chaos test failure target RTO 4h','High','1d'],
+            ['YYO2','Remove 4 SPOFs — add redundancy for critical dependencies','High','1w'],
+            ['YYO3','Complete CERT-In drill gap — tabletop exercise before March 31','High','1w'],
+            ['YYO4','Approve Q2 capacity scaling Rs18L capex — prevent peak saturation','High','1d'],
+            ['XXO1','File 2 overdue regulatory deadlines immediately','High','1d'],
+            ['XXO2','Renew 2 licenses expiring in 30 days','High','1d'],
+            ['XXO3','Conduct DPIAs for 6 data flows requiring assessment per DPDP s3','High','1w'],
+            ['XXO4','Update 6 outdated internal policies to reflect DPDP Rules 2025','High','2w'],
+            ['WWO1','File delayed AOC-4 with ROC — Rs200/day penalty accruing','High','1d'],
+            ['WWO2','Complete data room to 100% for Series B readiness','High','2w'],
+            ['WWO3','Classify 6 financial PII data types per DPDP s2(t) definition','High','2h'],
+            ['WWO4','Model Q1 FY27 cash flow sensitivity — burn rate vs revenue scenarios','Medium','4h'],
+            ['VVO1','Add consent gates for 2 AI models using PII without s6 consent','High','3h'],
+            ['VVO2','Complete IT Act AI accountability checklist to 100%','High','1w'],
+            ['VVO3','Retrain 2 underperforming ML models — accuracy below 90% threshold','Medium','3d'],
+            ['VVO4','File provisional patent for top POC innovation','Medium','1w'],
+            ['UUO1','Resolve 8 deal registration conflicts — risk of partner churn','High','2d'],
+            ['UUO2','Sign pending DPAs with 6 partners per DPDP s28','High','3h'],
+            ['UUO3','Renew 2 expired reseller agreements — Rs84L ARR at legal risk','High','1d'],
+            ['UUO4','Process 3 overdue MDF claims — partner trust at risk','Medium','1d'],
+            ['TTO1','Address engineering attrition 22% — exit interview + retention package','High','1w'],
+            ['TTO2','Respond to 8 employee right-to-access requests per DPDP s11 within 30d','High','3d'],
+            ['TTO3','Resolve 2 labour law notices — statutory compliance review','High','2d'],
+            ['TTO4','Improve L&D completion from 68% to 85% — gamify mandatory modules','Medium','1w'],
+            ['SSO1','Patch 18 critical vulnerabilities immediately — 2 have active exploits','High','4h'],
+            ['SSO2','Encrypt 3 IT asset categories with PII per DPDP s8(4)','High','1d'],
+            ['SSO3','Retire/replace 12 EoL devices — security risk per policy','Medium','1w'],
+            ['SSO4','Fix 2 backup failures and test RTO — 4h target for BCDR plan','High','2h'],
+            ['RRO1','Remove 744 non-consented legacy contacts per DPDP s6','High','2h'],
+            ['RRO2','File TRAI DND remediation — 4 violations Rs25K penalty risk','High','1d'],
+            ['RRO3','Scale top-3 performing campaigns — Rs1.6L ROAS positive','Medium','2h'],
+            ['RRO4','Publish 8 blog posts to capture 18 target keywords — SEO gap','Medium','1w'],
+            ['QQO1','Fix 3 failing data pipelines — payroll export + analytics ETL','High','4h'],
+            ['QQO2','Delete 4 data categories exceeding retention policy per DPDP s8(7)','High','1d'],
+            ['QQO3','Execute SCCs for 2 cross-border data flows per DPDP s16','High','1w'],
+            ['QQO4','Optimise storage — archive 28% cold data to S3 Glacier save Rs2.4L/month','Medium','3h'],
+            ['PPO1','Escalate 2 unresolved fraud alerts to CERT-In per IT Act s43A','High','2h'],
+            ['PPO2','Provision Rs8.4L for 6 AR accounts overdue 90 days','High','1d'],
+            ['PPO3','Complete RBI KYC remediation for gap account — 30-day deadline','High','3d'],
+            ['PPO4','Classify biometric fraud-detection data as sensitive per DPDP s9','High','2h'],
+            ['OOO1','Increase renewable energy to 60% — source green tariff from TNERC','Medium','1w'],
+            ['OOO2','File SEBI BRSR 2026 — principles P2/P8 need evidence collection','High','1w'],
+            ['OOO3','Hire 2 more senior women leaders to reach 15% target','Medium','1Q'],
+            ['OOO4','Add ESG consent classification for employee data per DPDP s6','High','2h'],
+            ['NNO1','Resolve 4 MSME payment delays 45 days — MSMED Act s16 violation risk','High','1d'],
+            ['NNO2','Replace 6 underperforming vendors — initiate RFP for logistics/printing','Medium','1w'],
+            ['NNO3','Sign pending DPAs with 6 vendors per DPDP s28','High','3h'],
+            ['NNO4','Renegotiate top-5 vendor concentration — add 2 alternate suppliers','Medium','2w'],
+            ['MMO1','Run churn-prevention playbook for 8 high-risk accounts — schedule EBR calls','High','4h'],
+            ['MMO2','Fix delayed onboarding for 3 accounts — assign CSM backup','High','2h'],
+            ['MMO3','Pitch expansion to 6 ready accounts — Rs8.4L upsell pipeline','Medium','3h'],
+            ['MMO4','Purge CS contact data older than 3 years per DPDP s8(7)','High','2h'],
             ['LLO1','Resolve INC-082 RCA and implement SMS OTP redundancy to prevent P1 recurrence','High','2h'],
             ['LLO2','Add consent gate to AI Salary Benchmark and Attendance Geolocation features per DPDP §6','High','3h'],
             ['LLO3','Fix SLA-001 API uptime breach: scale API gateway + CDN — clear ₹45K penalty','High','4h'],

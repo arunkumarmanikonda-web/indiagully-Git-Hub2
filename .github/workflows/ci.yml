@@ -1165,7 +1165,7 @@ jobs:
           import urllib.request, json
           d = json.loads(urllib.request.urlopen('http://localhost:3000/api/health').read())
           assert d.get('version','') >= '2026.34', f'version too old: {d.get(\"version\")}'
-          assert d.get('routes_count',0) >= 306, f'routes too few: {d.get(\"routes_count\")}'
+          assert d.get('routes_count',0) >= 390, f'routes too few: {d.get(\"routes_count\")}'
           assert 'dd_round' in str(d.get('security',{})), 'dd_round block missing'
           assert len(d.get('dd_round_fixes',[])) >= 6, 'dd_round_fixes < 6'
           assert d.get('open_findings_count',0) == 0, 'open findings detected'
@@ -1209,7 +1209,7 @@ jobs:
           import urllib.request, json
           d = json.loads(urllib.request.urlopen('http://localhost:3000/api/health').read())
           assert d.get('version','') >= '2026.34', f'version too old: {d.get(\"version\")}'
-          assert d.get('routes_count',0) >= 306, f'routes too few: {d.get(\"routes_count\")}'
+          assert d.get('routes_count',0) >= 390, f'routes too few: {d.get(\"routes_count\")}'
           assert 'ee_round' in str(d.get('security',{})), 'ee_round block missing'
           assert len(d.get('ee_round_fixes',[])) >= 6, 'ee_round_fixes < 6'
           assert d.get('open_findings_count',0) == 0, 'open findings detected'
@@ -1253,7 +1253,7 @@ jobs:
           import urllib.request, json
           d = json.loads(urllib.request.urlopen('http://localhost:3000/api/health').read())
           assert d.get('version','') >= '2026.34', f'version too old: {d.get(\"version\")}'
-          assert d.get('routes_count',0) >= 306, f'routes too few: {d.get(\"routes_count\")}'
+          assert d.get('routes_count',0) >= 390, f'routes too few: {d.get(\"routes_count\")}'
           assert 'ff_round' in str(d.get('security',{})), 'ff_round block missing'
           assert len(d.get('ff_round_fixes',[])) >= 6, 'ff_round_fixes < 6'
           assert d.get('open_findings_count',0) == 0, 'open findings detected'
@@ -1297,7 +1297,7 @@ jobs:
           import urllib.request, json
           d = json.loads(urllib.request.urlopen('http://localhost:3000/api/health').read())
           assert d.get('version','') >= '2026.34', f'version too old: {d.get(\"version\")}'
-          assert d.get('routes_count',0) >= 306, f'routes too few: {d.get(\"routes_count\")}'
+          assert d.get('routes_count',0) >= 390, f'routes too few: {d.get(\"routes_count\")}'
           assert 'gg_round' in str(d.get('security',{})), 'gg_round block missing'
           assert len(d.get('gg_round_fixes',[])) >= 6, 'gg_round_fixes < 6'
           print(f'GG-Round gate PASSED - v{d[\"version\"]} {d[\"routes_count\"]} routes')
@@ -1332,8 +1332,8 @@ jobs:
         run: |
           curl -sf http://localhost:3000/api/health | python3 -c "
           import sys,json; d=json.load(sys.stdin)
-          assert d['version'] >= '2026.36', f'version {d[\"version\"]}'
-          assert d['routes_count'] >= 306, f'routes {d[\"routes_count\"]}'
+          assert d['version'] >= '2026.50', f'version {d[\"version\"]}'
+          assert d['routes_count'] >= 390, f'routes {d[\"routes_count\"]}'
           assert 'hh_round' in d.get('security',{}), 'hh_round missing'
           assert len(d.get('hh_round_fixes',[])) >= 6, 'hh_round_fixes < 6'
           assert d.get('open_findings_count',1) == 0, 'findings > 0'
@@ -1369,8 +1369,8 @@ jobs:
         run: |
           curl -sf http://localhost:3000/api/health | python3 -c "
           import sys,json; d=json.load(sys.stdin)
-          assert d['version'] >= '2026.36', f'version {d["version"]}'
-          assert d['routes_count'] >= 306, f'routes {d["routes_count"]}'
+          assert d['version'] >= '2026.50', f'version {d["version"]}'
+          assert d['routes_count'] >= 390, f'routes {d["routes_count"]}'
           assert 'ii_round' in d.get('security',{}), 'ii_round missing'
           assert len(d.get('ii_round_fixes',[])) >= 6, 'ii_round_fixes < 6'
           assert d.get('open_findings_count',1) == 0, 'findings > 0'
@@ -1406,8 +1406,8 @@ jobs:
         run: |
           curl -sf http://localhost:3000/api/health | python3 -c "
           import sys,json; d=json.load(sys.stdin)
-          assert d['version'] >= '2026.36', f'version {d["version"]}'
-          assert d['routes_count'] >= 306, f'routes {d["routes_count"]}'
+          assert d['version'] >= '2026.50', f'version {d["version"]}'
+          assert d['routes_count'] >= 390, f'routes {d["routes_count"]}'
           assert 'jj_round' in d.get('security',{}), 'jj_round missing'
           assert len(d.get('jj_round_fixes',[])) >= 6, 'jj_round_fixes < 6'
           assert d.get('open_findings_count',1) == 0, 'findings > 0'
@@ -1440,8 +1440,8 @@ jobs:
         run: |
           curl -s ${{ needs.deploy.outputs.url }}/api/health | python3 -c "
           import sys,json; d=json.load(sys.stdin)
-          assert d['version'] >= '2026.36', f'version {d[\"version\"]}'
-          assert d['routes_count'] >= 306, f'routes {d[\"routes_count\"]}'
+          assert d['version'] >= '2026.50', f'version {d[\"version\"]}'
+          assert d['routes_count'] >= 390, f'routes {d[\"routes_count\"]}'
           assert 'kk_round' in d.get('security',{}), 'kk_round missing'
           assert len(d.get('kk_round_fixes',[])) >= 6, 'kk_round_fixes < 6'
           assert d.get('open_findings_count',1) == 0, 'findings > 0'
@@ -1489,8 +1489,8 @@ jobs:
         run: |
           curl -s ${{ needs.deploy.outputs.url }}/api/health | python3 -c "
           import sys,json; d=json.load(sys.stdin)
-          assert d['version'] >= '2026.36'
-          assert d['routes_count'] >= 306
+          assert d['version'] >= '2026.50'
+          assert d['routes_count'] >= 390
           assert 'll_round' in d.get('security',{})
           assert len(d.get('ll_round_fixes',[])) >= 6
           assert d.get('open_findings_count',1) == 0
@@ -1499,6 +1499,36 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: {name: ll-round-test-results, path: playwright-report/}
+
+  playwright-mm-zz-rounds:
+    name: "MM-ZZ Rounds Playwright Tests (v2026.50)"
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '20'}
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test tests/mm-zz-rounds.spec.ts --reporter=list
+        env: {BASE_URL: "${{ needs.deploy.outputs.url }}"}
+      - name: ZZ final health gate
+        run: |
+          curl -s ${{ needs.deploy.outputs.url }}/api/health | python3 -c "
+          import sys,json; d=json.load(sys.stdin)
+          assert d['version'] >= '2026.50', f'version {d[\"version\"]}'
+          assert d['routes_count'] >= 390, f'routes {d[\"routes_count\"]}'
+          sec = d.get('security',{})
+          for rnd in ['mm_round','nn_round','oo_round','pp_round','qq_round','rr_round','ss_round','tt_round','uu_round','vv_round','ww_round','xx_round','yy_round','zz_round']:
+            assert rnd in sec, f'{rnd} missing from security'
+          assert len(d.get('zz_round_fixes',[])) >= 6, 'zz_round_fixes < 6'
+          assert len(d.get('mm_round_fixes',[])) >= 6, 'mm_round_fixes < 6'
+          assert d.get('open_findings_count',1) == 0, 'open findings != 0'
+          print('ZZ-Final health gate passed — all 26 double-letter rounds complete')
+          "
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: mm-zz-test-results, path: playwright-report/}
 
   d1-migrate:
     name: D1 Production Migration

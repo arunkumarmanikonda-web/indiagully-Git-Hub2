@@ -6755,6 +6755,230 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       </div>
     </div>
 
+
+    <!-- ── MM-Round: Customer Success Intelligence (v2026.37) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-circle" style="color:#059669;margin-right:.5rem;font-size:.6rem;"></i>MM-Round — Customer Success Intelligence (v2026.37)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">36 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igCustomerHealthScore()" style="background:none;border:1px solid #059669;color:#059669;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-heartbeat" style="margin-right:.3rem;"></i>MM1: Customer Health</button>
+        <button onclick="igChurnPrediction()" style="background:none;border:1px solid #059669;color:#059669;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-exclamation-circle" style="margin-right:.3rem;"></i>MM2: Churn Risk</button>
+        <button onclick="igOnboardingTracker()" style="background:none;border:1px solid #059669;color:#059669;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-user-check" style="margin-right:.3rem;"></i>MM3: Onboarding</button>
+        <button onclick="igExpansionRevenue()" style="background:none;border:1px solid #059669;color:#059669;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-arrow-up" style="margin-right:.3rem;"></i>MM4: Expansion Rev</button>
+        <button onclick="igCsDataAudit()" style="background:none;border:1px solid #059669;color:#059669;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>MM5: DPDP CS</button>
+        <button onclick="igSupportSla()" style="background:none;border:1px solid #059669;color:#059669;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-headset" style="margin-right:.3rem;"></i>MM6: Support SLA</button>
+      </div>
+    </div>
+
+    <!-- ── NN-Round: Procurement & Supply Chain Intelligence (v2026.38) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-circle" style="color:#d97706;margin-right:.5rem;font-size:.6rem;"></i>NN-Round — Procurement & Supply Chain Intelligence (v2026.38)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">36 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igVendorScorecard()" style="background:none;border:1px solid #d97706;color:#d97706;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-truck" style="margin-right:.3rem;"></i>NN1: Vendor Score</button>
+        <button onclick="igPoTracker()" style="background:none;border:1px solid #d97706;color:#d97706;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-file-invoice" style="margin-right:.3rem;"></i>NN2: PO Tracker</button>
+        <button onclick="igSpendAnalysis()" style="background:none;border:1px solid #d97706;color:#d97706;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-chart-pie" style="margin-right:.3rem;"></i>NN3: Spend Analysis</button>
+        <button onclick="igContractRenewal()" style="background:none;border:1px solid #d97706;color:#d97706;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-redo" style="margin-right:.3rem;"></i>NN4: Renewals</button>
+        <button onclick="igVendorDataCompliance()" style="background:none;border:1px solid #d97706;color:#d97706;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>NN5: DPDP Vendor</button>
+        <button onclick="igMsmePayments()" style="background:none;border:1px solid #d97706;color:#d97706;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-rupee-sign" style="margin-right:.3rem;"></i>NN6: MSME Pay</button>
+      </div>
+    </div>
+
+    <!-- ── OO-Round: ESG & Sustainability Intelligence (v2026.39) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-circle" style="color:#16a34a;margin-right:.5rem;font-size:.6rem;"></i>OO-Round — ESG & Sustainability Intelligence (v2026.39)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">36 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igCarbonFootprint()" style="background:none;border:1px solid #16a34a;color:#16a34a;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-leaf" style="margin-right:.3rem;"></i>OO1: Carbon</button>
+        <button onclick="igDiversityMetrics()" style="background:none;border:1px solid #16a34a;color:#16a34a;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-users" style="margin-right:.3rem;"></i>OO2: Diversity</button>
+        <button onclick="igEnergyConsumption()" style="background:none;border:1px solid #16a34a;color:#16a34a;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-bolt" style="margin-right:.3rem;"></i>OO3: Energy</button>
+        <button onclick="igSocialImpact()" style="background:none;border:1px solid #16a34a;color:#16a34a;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-hand-holding-heart" style="margin-right:.3rem;"></i>OO4: Social Impact</button>
+        <button onclick="igEsgDataGovernance()" style="background:none;border:1px solid #16a34a;color:#16a34a;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>OO5: DPDP ESG</button>
+        <button onclick="igSebiBrsr()" style="background:none;border:1px solid #16a34a;color:#16a34a;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-balance-scale" style="margin-right:.3rem;"></i>OO6: SEBI BRSR</button>
+      </div>
+    </div>
+
+    <!-- ── PP-Round: Risk & Fraud Intelligence (v2026.40) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-circle" style="color:#dc2626;margin-right:.5rem;font-size:.6rem;"></i>PP-Round — Risk & Fraud Intelligence (v2026.40)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">36 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igFraudAlerts()" style="background:none;border:1px solid #dc2626;color:#dc2626;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-exclamation-triangle" style="margin-right:.3rem;"></i>PP1: Fraud Alerts</button>
+        <button onclick="igTransactionAnomalies()" style="background:none;border:1px solid #dc2626;color:#dc2626;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-random" style="margin-right:.3rem;"></i>PP2: Anomalies</button>
+        <button onclick="igOperationalRisk()" style="background:none;border:1px solid #dc2626;color:#dc2626;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-virus" style="margin-right:.3rem;"></i>PP3: Op Risk</button>
+        <button onclick="igCreditExposure()" style="background:none;border:1px solid #dc2626;color:#dc2626;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-credit-card" style="margin-right:.3rem;"></i>PP4: Credit Exp</button>
+        <button onclick="igFraudDataHandling()" style="background:none;border:1px solid #dc2626;color:#dc2626;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>PP5: DPDP Fraud</button>
+        <button onclick="igRbiReporting()" style="background:none;border:1px solid #dc2626;color:#dc2626;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-university" style="margin-right:.3rem;"></i>PP6: RBI Report</button>
+      </div>
+    </div>
+
+    <!-- ── QQ-Round: Data Platform Intelligence (v2026.41) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-circle" style="color:#7c3aed;margin-right:.5rem;font-size:.6rem;"></i>QQ-Round — Data Platform Intelligence (v2026.41)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">36 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igPipelineHealth()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-stream" style="margin-right:.3rem;"></i>QQ1: Pipelines</button>
+        <button onclick="igDataQuality()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-check-circle" style="margin-right:.3rem;"></i>QQ2: Data Quality</button>
+        <button onclick="igStorageAnalytics()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-database" style="margin-right:.3rem;"></i>QQ3: Storage</button>
+        <button onclick="igApiUsageMetrics()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-chart-bar" style="margin-right:.3rem;"></i>QQ4: API Usage</button>
+        <button onclick="igDataRetention()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>QQ5: DPDP Retention</button>
+        <button onclick="igDataLocalisation()" style="background:none;border:1px solid #7c3aed;color:#7c3aed;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-globe-asia" style="margin-right:.3rem;"></i>QQ6: Data Local</button>
+      </div>
+    </div>
+
+    <!-- ── RR-Round: Marketing Intelligence (v2026.42) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-circle" style="color:#0369a1;margin-right:.5rem;font-size:.6rem;"></i>RR-Round — Marketing Intelligence (v2026.42)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">36 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igCampaignPerformance()" style="background:none;border:1px solid #0369a1;color:#0369a1;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-bullhorn" style="margin-right:.3rem;"></i>RR1: Campaigns</button>
+        <button onclick="igLeadFunnel()" style="background:none;border:1px solid #0369a1;color:#0369a1;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-funnel-dollar" style="margin-right:.3rem;"></i>RR2: Lead Funnel</button>
+        <button onclick="igContentAnalytics()" style="background:none;border:1px solid #0369a1;color:#0369a1;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-newspaper" style="margin-right:.3rem;"></i>RR3: Content</button>
+        <button onclick="igSeoMetrics()" style="background:none;border:1px solid #0369a1;color:#0369a1;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-search" style="margin-right:.3rem;"></i>RR4: SEO</button>
+        <button onclick="igMarketingConsent()" style="background:none;border:1px solid #0369a1;color:#0369a1;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>RR5: DPDP Mktg</button>
+        <button onclick="igSpamCompliance()" style="background:none;border:1px solid #0369a1;color:#0369a1;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-ban" style="margin-right:.3rem;"></i>RR6: SPAM/TRAI</button>
+      </div>
+    </div>
+
+    <!-- ── SS-Round: IT Operations Intelligence (v2026.43) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-circle" style="color:#b45309;margin-right:.5rem;font-size:.6rem;"></i>SS-Round — IT Operations Intelligence (v2026.43)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">36 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igAssetInventory()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-laptop" style="margin-right:.3rem;"></i>SS1: Assets</button>
+        <button onclick="igPatchCompliance()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-tools" style="margin-right:.3rem;"></i>SS2: Patches</button>
+        <button onclick="igBackupStatus()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-save" style="margin-right:.3rem;"></i>SS3: Backups</button>
+        <button onclick="igNetworkMonitoring()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-network-wired" style="margin-right:.3rem;"></i>SS4: Network</button>
+        <button onclick="igItAssetData()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>SS5: DPDP IT</button>
+        <button onclick="igIso20000()" style="background:none;border:1px solid #b45309;color:#b45309;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-certificate" style="margin-right:.3rem;"></i>SS6: ISO 20000</button>
+      </div>
+    </div>
+
+    <!-- ── TT-Round: Talent & Workforce Intelligence (v2026.44) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-circle" style="color:#0f766e;margin-right:.5rem;font-size:.6rem;"></i>TT-Round — Talent & Workforce Intelligence (v2026.44)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">36 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igAttritionAnalytics()" style="background:none;border:1px solid #0f766e;color:#0f766e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-user-minus" style="margin-right:.3rem;"></i>TT1: Attrition</button>
+        <button onclick="igHiringFunnel()" style="background:none;border:1px solid #0f766e;color:#0f766e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-user-plus" style="margin-right:.3rem;"></i>TT2: Hiring</button>
+        <button onclick="igPerformanceDistribution()" style="background:none;border:1px solid #0f766e;color:#0f766e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-chart-bar" style="margin-right:.3rem;"></i>TT3: Performance</button>
+        <button onclick="igLearningDevelopment()" style="background:none;border:1px solid #0f766e;color:#0f766e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-graduation-cap" style="margin-right:.3rem;"></i>TT4: L&D</button>
+        <button onclick="igEmployeeDataRights()" style="background:none;border:1px solid #0f766e;color:#0f766e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>TT5: DPDP Emp</button>
+        <button onclick="igLabourLawDashboard2()" style="background:none;border:1px solid #0f766e;color:#0f766e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-gavel" style="margin-right:.3rem;"></i>TT6: Labour Law</button>
+      </div>
+    </div>
+
+    <!-- ── UU-Round: Partner & Channel Intelligence (v2026.45) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-circle" style="color:#9333ea;margin-right:.5rem;font-size:.6rem;"></i>UU-Round — Partner & Channel Intelligence (v2026.45)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">36 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igChannelPerformance()" style="background:none;border:1px solid #9333ea;color:#9333ea;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-handshake" style="margin-right:.3rem;"></i>UU1: Channels</button>
+        <button onclick="igDealRegistration()" style="background:none;border:1px solid #9333ea;color:#9333ea;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-clipboard-check" style="margin-right:.3rem;"></i>UU2: Deal Reg</button>
+        <button onclick="igPartnerHealth()" style="background:none;border:1px solid #9333ea;color:#9333ea;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-heartbeat" style="margin-right:.3rem;"></i>UU3: Partner NPS</button>
+        <button onclick="igMdfUtilisation()" style="background:none;border:1px solid #9333ea;color:#9333ea;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-money-bill-wave" style="margin-right:.3rem;"></i>UU4: MDF Fund</button>
+        <button onclick="igPartnerDataSharing()" style="background:none;border:1px solid #9333ea;color:#9333ea;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>UU5: DPDP Partner</button>
+        <button onclick="igResellerCompliance()" style="background:none;border:1px solid #9333ea;color:#9333ea;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-store" style="margin-right:.3rem;"></i>UU6: Reseller</button>
+      </div>
+    </div>
+
+    <!-- ── VV-Round: Innovation & R&D Intelligence (v2026.46) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-circle" style="color:#0e7490;margin-right:.5rem;font-size:.6rem;"></i>VV-Round — Innovation & R&D Intelligence (v2026.46)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">36 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igIdeaPipeline()" style="background:none;border:1px solid #0e7490;color:#0e7490;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-lightbulb" style="margin-right:.3rem;"></i>VV1: Ideas</button>
+        <button onclick="igRdSpend()" style="background:none;border:1px solid #0e7490;color:#0e7490;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-flask" style="margin-right:.3rem;"></i>VV2: R&D Spend</button>
+        <button onclick="igAiMlMetrics()" style="background:none;border:1px solid #0e7490;color:#0e7490;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-robot" style="margin-right:.3rem;"></i>VV3: AI/ML</button>
+        <button onclick="igPatentPipeline()" style="background:none;border:1px solid #0e7490;color:#0e7490;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-trademark" style="margin-right:.3rem;"></i>VV4: Patents</button>
+        <button onclick="igAiDataGovernance()" style="background:none;border:1px solid #0e7490;color:#0e7490;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>VV5: DPDP AI</button>
+        <button onclick="igItActAi()" style="background:none;border:1px solid #0e7490;color:#0e7490;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-balance-scale" style="margin-right:.3rem;"></i>VV6: IT Act AI</button>
+      </div>
+    </div>
+
+    <!-- ── WW-Round: Financial Planning Intelligence (v2026.47) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-circle" style="color:#92400e;margin-right:.5rem;font-size:.6rem;"></i>WW-Round — Financial Planning Intelligence (v2026.47)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">36 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igBudgetForecast()" style="background:none;border:1px solid #92400e;color:#92400e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-chart-line" style="margin-right:.3rem;"></i>WW1: Budget Fcst</button>
+        <button onclick="igCashFlowProjection()" style="background:none;border:1px solid #92400e;color:#92400e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-water" style="margin-right:.3rem;"></i>WW2: Cash Flow</button>
+        <button onclick="igUnitEconomics()" style="background:none;border:1px solid #92400e;color:#92400e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-calculator" style="margin-right:.3rem;"></i>WW3: Unit Econ</button>
+        <button onclick="igFundraisingReadiness()" style="background:none;border:1px solid #92400e;color:#92400e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-hand-holding-usd" style="margin-right:.3rem;"></i>WW4: Fundraising</button>
+        <button onclick="igFinancialDataClassification()" style="background:none;border:1px solid #92400e;color:#92400e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>WW5: DPDP FP&A</button>
+        <button onclick="igRocFilings()" style="background:none;border:1px solid #92400e;color:#92400e;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-file-alt" style="margin-right:.3rem;"></i>WW6: ROC Filings</button>
+      </div>
+    </div>
+
+    <!-- ── XX-Round: Regulatory & Policy Intelligence (v2026.48) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-circle" style="color:#7e22ce;margin-right:.5rem;font-size:.6rem;"></i>XX-Round — Regulatory & Policy Intelligence (v2026.48)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">36 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igComplianceCalendar()" style="background:none;border:1px solid #7e22ce;color:#7e22ce;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-calendar-check" style="margin-right:.3rem;"></i>XX1: Cal Deadlines</button>
+        <button onclick="igPolicyTracker()" style="background:none;border:1px solid #7e22ce;color:#7e22ce;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-book" style="margin-right:.3rem;"></i>XX2: Policies</button>
+        <button onclick="igLicenseRegistry()" style="background:none;border:1px solid #7e22ce;color:#7e22ce;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-id-card" style="margin-right:.3rem;"></i>XX3: Licenses</button>
+        <button onclick="igRegulatoryChange()" style="background:none;border:1px solid #7e22ce;color:#7e22ce;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-gavel" style="margin-right:.3rem;"></i>XX4: Reg Changes</button>
+        <button onclick="igRegulatoryDataFlows()" style="background:none;border:1px solid #7e22ce;color:#7e22ce;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>XX5: DPDP Flows</button>
+        <button onclick="igLegalEntityHealth()" style="background:none;border:1px solid #7e22ce;color:#7e22ce;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-building" style="margin-right:.3rem;"></i>XX6: Entity Health</button>
+      </div>
+    </div>
+
+    <!-- ── YY-Round: Platform Resilience Intelligence (v2026.49) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-circle" style="color:#334155;margin-right:.5rem;font-size:.6rem;"></i>YY-Round — Platform Resilience Intelligence (v2026.49)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">36 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igDrReadiness()" style="background:none;border:1px solid #334155;color:#334155;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-server" style="margin-right:.3rem;"></i>YY1: DR Readiness</button>
+        <button onclick="igChaosEngineering()" style="background:none;border:1px solid #334155;color:#334155;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-random" style="margin-right:.3rem;"></i>YY2: Chaos Eng</button>
+        <button onclick="igCapacityPlanning()" style="background:none;border:1px solid #334155;color:#334155;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-tachometer-alt" style="margin-right:.3rem;"></i>YY3: Capacity</button>
+        <button onclick="igDependencyMap()" style="background:none;border:1px solid #334155;color:#334155;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-project-diagram" style="margin-right:.3rem;"></i>YY4: Dependencies</button>
+        <button onclick="igResilienceDataProtection()" style="background:none;border:1px solid #334155;color:#334155;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>YY5: DPDP Resil</button>
+        <button onclick="igCertInResilience()" style="background:none;border:1px solid #334155;color:#334155;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-certificate" style="margin-right:.3rem;"></i>YY6: CERT-In</button>
+      </div>
+    </div>
+
+    <!-- ── ZZ-Round: Executive Command Intelligence (v2026.50) ── -->
+    <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;">
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;"><i class="fas fa-circle" style="color:#B8960C;margin-right:.5rem;font-size:.6rem;"></i>ZZ-Round — Executive Command Intelligence (v2026.50)</h3>
+        <span style="font-size:.7rem;color:var(--ink-muted);">36 routes · 100/100</span>
+      </div>
+      <div style="padding:.875rem 1.25rem;display:flex;flex-wrap:wrap;gap:.5rem;">
+        <button onclick="igKpiDashboard()" style="background:none;border:1px solid #B8960C;color:#B8960C;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-tachometer-alt" style="margin-right:.3rem;"></i>ZZ1: KPI Dash</button>
+        <button onclick="igBoardPack()" style="background:none;border:1px solid #B8960C;color:#B8960C;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-briefcase" style="margin-right:.3rem;"></i>ZZ2: Board Pack</button>
+        <button onclick="igInvestorMetrics()" style="background:none;border:1px solid #B8960C;color:#B8960C;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-chart-line" style="margin-right:.3rem;"></i>ZZ3: Investors</button>
+        <button onclick="igStrategicInitiatives()" style="background:none;border:1px solid #B8960C;color:#B8960C;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-chess" style="margin-right:.3rem;"></i>ZZ4: Strategy</button>
+        <button onclick="igExecutiveReporting()" style="background:none;border:1px solid #B8960C;color:#B8960C;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-alt" style="margin-right:.3rem;"></i>ZZ5: DPDP Exec</button>
+        <button onclick="igPlatformCertification()" style="background:none;border:1px solid #B8960C;color:#B8960C;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;"><i class="fas fa-award" style="margin-right:.3rem;"></i>ZZ6: ZZ Cert</button>
+      </div>
+    </div>
     <!-- ── Gold Certification Live Progress (W-Round) ── -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.25rem;" id="gold-cert-widget">
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
@@ -8849,6 +9073,441 @@ window.igSlaCompliance = function() {
     var rows=d.slas.map(function(sl){var c=sl.status==='Red'?'#991b1b':sl.status==='Amber'?'#92400e':'#166534';return '<tr><td>'+sl.id+'</td><td style="font-size:.68rem;">'+sl.metric+'</td><td>'+sl.target_pct+'%</td><td>'+sl.actual_pct+'%</td><td style="color:'+c+';">'+sl.status+'</td></tr>';}).join('');
     igModal('LL6: SLA Compliance — v2026.36','<b>Total SLAs:</b> '+s.total_slas+' | <b>Green:</b> '+s.green+' | <b>Amber:</b> '+s.amber+' | <b>Red:</b> '+s.red+' | <b>Compliance:</b> '+s.compliance_pct+'% | <b>Penalty:</b> ₹'+Number(s.penalty_triggered_inr).toLocaleString('en-IN')+'<br/><table style="width:100%;font-size:.72rem;border-collapse:collapse;margin-top:.5rem;"><tr style="background:#0891b2;color:#fff;"><th>ID</th><th>Metric</th><th>Target</th><th>Actual</th><th>Status</th></tr>'+rows+'</table>');
   }).catch(function(){igModal('LL6: SLA Compliance','Session expired')});
+};
+
+// -- MM-Round JS handlers --
+window.igCustomerHealthScore = function() {
+  fetch('/api/cs/health-score').then(function(r){return r.json()}).then(function(d){
+    igModal('MM1: Customer Health — v2026.37', '<b>Round:</b> MM | <b>Endpoint:</b> MM1 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('MM1: Customer Health','Session expired — log in as Super Admin')});
+};
+window.igChurnPrediction = function() {
+  fetch('/api/cs/churn-prediction').then(function(r){return r.json()}).then(function(d){
+    igModal('MM2: Churn Risk — v2026.37', '<b>Round:</b> MM | <b>Endpoint:</b> MM2 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('MM2: Churn Risk','Session expired — log in as Super Admin')});
+};
+window.igOnboardingTracker = function() {
+  fetch('/api/cs/onboarding-tracker').then(function(r){return r.json()}).then(function(d){
+    igModal('MM3: Onboarding — v2026.37', '<b>Round:</b> MM | <b>Endpoint:</b> MM3 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('MM3: Onboarding','Session expired — log in as Super Admin')});
+};
+window.igExpansionRevenue = function() {
+  fetch('/api/cs/expansion-revenue').then(function(r){return r.json()}).then(function(d){
+    igModal('MM4: Expansion Rev — v2026.37', '<b>Round:</b> MM | <b>Endpoint:</b> MM4 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('MM4: Expansion Rev','Session expired — log in as Super Admin')});
+};
+window.igCsDataAudit = function() {
+  fetch('/api/dpdp/cs-data-audit').then(function(r){return r.json()}).then(function(d){
+    igModal('MM5: DPDP CS — v2026.37', '<b>Round:</b> MM | <b>Endpoint:</b> MM5 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('MM5: DPDP CS','Session expired — log in as Super Admin')});
+};
+window.igSupportSla = function() {
+  fetch('/api/compliance/support-sla').then(function(r){return r.json()}).then(function(d){
+    igModal('MM6: Support SLA — v2026.37', '<b>Round:</b> MM | <b>Endpoint:</b> MM6 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('MM6: Support SLA','Session expired — log in as Super Admin')});
+};
+// -- NN-Round JS handlers --
+window.igVendorScorecard = function() {
+  fetch('/api/procurement/vendor-scorecard').then(function(r){return r.json()}).then(function(d){
+    igModal('NN1: Vendor Score — v2026.38', '<b>Round:</b> NN | <b>Endpoint:</b> NN1 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('NN1: Vendor Score','Session expired — log in as Super Admin')});
+};
+window.igPoTracker = function() {
+  fetch('/api/procurement/po-tracker').then(function(r){return r.json()}).then(function(d){
+    igModal('NN2: PO Tracker — v2026.38', '<b>Round:</b> NN | <b>Endpoint:</b> NN2 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('NN2: PO Tracker','Session expired — log in as Super Admin')});
+};
+window.igSpendAnalysis = function() {
+  fetch('/api/procurement/spend-analysis').then(function(r){return r.json()}).then(function(d){
+    igModal('NN3: Spend Analysis — v2026.38', '<b>Round:</b> NN | <b>Endpoint:</b> NN3 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('NN3: Spend Analysis','Session expired — log in as Super Admin')});
+};
+window.igContractRenewal = function() {
+  fetch('/api/procurement/contract-renewal').then(function(r){return r.json()}).then(function(d){
+    igModal('NN4: Renewals — v2026.38', '<b>Round:</b> NN | <b>Endpoint:</b> NN4 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('NN4: Renewals','Session expired — log in as Super Admin')});
+};
+window.igVendorDataCompliance = function() {
+  fetch('/api/procurement/vendor-data-compliance').then(function(r){return r.json()}).then(function(d){
+    igModal('NN5: DPDP Vendor — v2026.38', '<b>Round:</b> NN | <b>Endpoint:</b> NN5 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('NN5: DPDP Vendor','Session expired — log in as Super Admin')});
+};
+window.igMsmePayments = function() {
+  fetch('/api/compliance/msme-payments').then(function(r){return r.json()}).then(function(d){
+    igModal('NN6: MSME Pay — v2026.38', '<b>Round:</b> NN | <b>Endpoint:</b> NN6 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('NN6: MSME Pay','Session expired — log in as Super Admin')});
+};
+// -- OO-Round JS handlers --
+window.igCarbonFootprint = function() {
+  fetch('/api/esg/carbon-footprint').then(function(r){return r.json()}).then(function(d){
+    igModal('OO1: Carbon — v2026.39', '<b>Round:</b> OO | <b>Endpoint:</b> OO1 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('OO1: Carbon','Session expired — log in as Super Admin')});
+};
+window.igDiversityMetrics = function() {
+  fetch('/api/esg/diversity-metrics').then(function(r){return r.json()}).then(function(d){
+    igModal('OO2: Diversity — v2026.39', '<b>Round:</b> OO | <b>Endpoint:</b> OO2 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('OO2: Diversity','Session expired — log in as Super Admin')});
+};
+window.igEnergyConsumption = function() {
+  fetch('/api/esg/energy-consumption').then(function(r){return r.json()}).then(function(d){
+    igModal('OO3: Energy — v2026.39', '<b>Round:</b> OO | <b>Endpoint:</b> OO3 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('OO3: Energy','Session expired — log in as Super Admin')});
+};
+window.igSocialImpact = function() {
+  fetch('/api/esg/social-impact').then(function(r){return r.json()}).then(function(d){
+    igModal('OO4: Social Impact — v2026.39', '<b>Round:</b> OO | <b>Endpoint:</b> OO4 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('OO4: Social Impact','Session expired — log in as Super Admin')});
+};
+window.igEsgDataGovernance = function() {
+  fetch('/api/dpdp/esg-data-governance').then(function(r){return r.json()}).then(function(d){
+    igModal('OO5: DPDP ESG — v2026.39', '<b>Round:</b> OO | <b>Endpoint:</b> OO5 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('OO5: DPDP ESG','Session expired — log in as Super Admin')});
+};
+window.igSebiBrsr = function() {
+  fetch('/api/compliance/sebi-brsr').then(function(r){return r.json()}).then(function(d){
+    igModal('OO6: SEBI BRSR — v2026.39', '<b>Round:</b> OO | <b>Endpoint:</b> OO6 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('OO6: SEBI BRSR','Session expired — log in as Super Admin')});
+};
+// -- PP-Round JS handlers --
+window.igFraudAlerts = function() {
+  fetch('/api/risk/fraud-alerts').then(function(r){return r.json()}).then(function(d){
+    igModal('PP1: Fraud Alerts — v2026.40', '<b>Round:</b> PP | <b>Endpoint:</b> PP1 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('PP1: Fraud Alerts','Session expired — log in as Super Admin')});
+};
+window.igTransactionAnomalies = function() {
+  fetch('/api/risk/transaction-anomalies').then(function(r){return r.json()}).then(function(d){
+    igModal('PP2: Anomalies — v2026.40', '<b>Round:</b> PP | <b>Endpoint:</b> PP2 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('PP2: Anomalies','Session expired — log in as Super Admin')});
+};
+window.igOperationalRisk = function() {
+  fetch('/api/risk/operational-risk').then(function(r){return r.json()}).then(function(d){
+    igModal('PP3: Op Risk — v2026.40', '<b>Round:</b> PP | <b>Endpoint:</b> PP3 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('PP3: Op Risk','Session expired — log in as Super Admin')});
+};
+window.igCreditExposure = function() {
+  fetch('/api/risk/credit-exposure').then(function(r){return r.json()}).then(function(d){
+    igModal('PP4: Credit Exp — v2026.40', '<b>Round:</b> PP | <b>Endpoint:</b> PP4 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('PP4: Credit Exp','Session expired — log in as Super Admin')});
+};
+window.igFraudDataHandling = function() {
+  fetch('/api/dpdp/fraud-data-handling').then(function(r){return r.json()}).then(function(d){
+    igModal('PP5: DPDP Fraud — v2026.40', '<b>Round:</b> PP | <b>Endpoint:</b> PP5 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('PP5: DPDP Fraud','Session expired — log in as Super Admin')});
+};
+window.igRbiReporting = function() {
+  fetch('/api/compliance/rbi-reporting').then(function(r){return r.json()}).then(function(d){
+    igModal('PP6: RBI Report — v2026.40', '<b>Round:</b> PP | <b>Endpoint:</b> PP6 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('PP6: RBI Report','Session expired — log in as Super Admin')});
+};
+// -- QQ-Round JS handlers --
+window.igPipelineHealth = function() {
+  fetch('/api/data/pipeline-health').then(function(r){return r.json()}).then(function(d){
+    igModal('QQ1: Pipelines — v2026.41', '<b>Round:</b> QQ | <b>Endpoint:</b> QQ1 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('QQ1: Pipelines','Session expired — log in as Super Admin')});
+};
+window.igDataQuality = function() {
+  fetch('/api/data/data-quality').then(function(r){return r.json()}).then(function(d){
+    igModal('QQ2: Data Quality — v2026.41', '<b>Round:</b> QQ | <b>Endpoint:</b> QQ2 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('QQ2: Data Quality','Session expired — log in as Super Admin')});
+};
+window.igStorageAnalytics = function() {
+  fetch('/api/data/storage-analytics').then(function(r){return r.json()}).then(function(d){
+    igModal('QQ3: Storage — v2026.41', '<b>Round:</b> QQ | <b>Endpoint:</b> QQ3 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('QQ3: Storage','Session expired — log in as Super Admin')});
+};
+window.igApiUsageMetrics = function() {
+  fetch('/api/data/api-usage-metrics').then(function(r){return r.json()}).then(function(d){
+    igModal('QQ4: API Usage — v2026.41', '<b>Round:</b> QQ | <b>Endpoint:</b> QQ4 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('QQ4: API Usage','Session expired — log in as Super Admin')});
+};
+window.igDataRetention = function() {
+  fetch('/api/dpdp/data-retention').then(function(r){return r.json()}).then(function(d){
+    igModal('QQ5: DPDP Retention — v2026.41', '<b>Round:</b> QQ | <b>Endpoint:</b> QQ5 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('QQ5: DPDP Retention','Session expired — log in as Super Admin')});
+};
+window.igDataLocalisation = function() {
+  fetch('/api/compliance/data-localisation').then(function(r){return r.json()}).then(function(d){
+    igModal('QQ6: Data Local — v2026.41', '<b>Round:</b> QQ | <b>Endpoint:</b> QQ6 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('QQ6: Data Local','Session expired — log in as Super Admin')});
+};
+// -- RR-Round JS handlers --
+window.igCampaignPerformance = function() {
+  fetch('/api/marketing/campaign-performance').then(function(r){return r.json()}).then(function(d){
+    igModal('RR1: Campaigns — v2026.42', '<b>Round:</b> RR | <b>Endpoint:</b> RR1 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('RR1: Campaigns','Session expired — log in as Super Admin')});
+};
+window.igLeadFunnel = function() {
+  fetch('/api/marketing/lead-funnel').then(function(r){return r.json()}).then(function(d){
+    igModal('RR2: Lead Funnel — v2026.42', '<b>Round:</b> RR | <b>Endpoint:</b> RR2 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('RR2: Lead Funnel','Session expired — log in as Super Admin')});
+};
+window.igContentAnalytics = function() {
+  fetch('/api/marketing/content-analytics').then(function(r){return r.json()}).then(function(d){
+    igModal('RR3: Content — v2026.42', '<b>Round:</b> RR | <b>Endpoint:</b> RR3 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('RR3: Content','Session expired — log in as Super Admin')});
+};
+window.igSeoMetrics = function() {
+  fetch('/api/marketing/seo-metrics').then(function(r){return r.json()}).then(function(d){
+    igModal('RR4: SEO — v2026.42', '<b>Round:</b> RR | <b>Endpoint:</b> RR4 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('RR4: SEO','Session expired — log in as Super Admin')});
+};
+window.igMarketingConsent = function() {
+  fetch('/api/dpdp/marketing-consent').then(function(r){return r.json()}).then(function(d){
+    igModal('RR5: DPDP Mktg — v2026.42', '<b>Round:</b> RR | <b>Endpoint:</b> RR5 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('RR5: DPDP Mktg','Session expired — log in as Super Admin')});
+};
+window.igSpamCompliance = function() {
+  fetch('/api/compliance/spam-compliance').then(function(r){return r.json()}).then(function(d){
+    igModal('RR6: SPAM/TRAI — v2026.42', '<b>Round:</b> RR | <b>Endpoint:</b> RR6 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('RR6: SPAM/TRAI','Session expired — log in as Super Admin')});
+};
+// -- SS-Round JS handlers --
+window.igAssetInventory = function() {
+  fetch('/api/itops/asset-inventory').then(function(r){return r.json()}).then(function(d){
+    igModal('SS1: Assets — v2026.43', '<b>Round:</b> SS | <b>Endpoint:</b> SS1 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('SS1: Assets','Session expired — log in as Super Admin')});
+};
+window.igPatchCompliance = function() {
+  fetch('/api/itops/patch-compliance').then(function(r){return r.json()}).then(function(d){
+    igModal('SS2: Patches — v2026.43', '<b>Round:</b> SS | <b>Endpoint:</b> SS2 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('SS2: Patches','Session expired — log in as Super Admin')});
+};
+window.igBackupStatus = function() {
+  fetch('/api/itops/backup-status').then(function(r){return r.json()}).then(function(d){
+    igModal('SS3: Backups — v2026.43', '<b>Round:</b> SS | <b>Endpoint:</b> SS3 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('SS3: Backups','Session expired — log in as Super Admin')});
+};
+window.igNetworkMonitoring = function() {
+  fetch('/api/itops/network-monitoring').then(function(r){return r.json()}).then(function(d){
+    igModal('SS4: Network — v2026.43', '<b>Round:</b> SS | <b>Endpoint:</b> SS4 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('SS4: Network','Session expired — log in as Super Admin')});
+};
+window.igItAssetData = function() {
+  fetch('/api/dpdp/it-asset-data').then(function(r){return r.json()}).then(function(d){
+    igModal('SS5: DPDP IT — v2026.43', '<b>Round:</b> SS | <b>Endpoint:</b> SS5 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('SS5: DPDP IT','Session expired — log in as Super Admin')});
+};
+window.igIso20000 = function() {
+  fetch('/api/compliance/iso20000').then(function(r){return r.json()}).then(function(d){
+    igModal('SS6: ISO 20000 — v2026.43', '<b>Round:</b> SS | <b>Endpoint:</b> SS6 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('SS6: ISO 20000','Session expired — log in as Super Admin')});
+};
+// -- TT-Round JS handlers --
+window.igAttritionAnalytics = function() {
+  fetch('/api/hr/attrition-analytics').then(function(r){return r.json()}).then(function(d){
+    igModal('TT1: Attrition — v2026.44', '<b>Round:</b> TT | <b>Endpoint:</b> TT1 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('TT1: Attrition','Session expired — log in as Super Admin')});
+};
+window.igHiringFunnel = function() {
+  fetch('/api/hr/hiring-funnel').then(function(r){return r.json()}).then(function(d){
+    igModal('TT2: Hiring — v2026.44', '<b>Round:</b> TT | <b>Endpoint:</b> TT2 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('TT2: Hiring','Session expired — log in as Super Admin')});
+};
+window.igPerformanceDistribution = function() {
+  fetch('/api/hr/performance-distribution').then(function(r){return r.json()}).then(function(d){
+    igModal('TT3: Performance — v2026.44', '<b>Round:</b> TT | <b>Endpoint:</b> TT3 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('TT3: Performance','Session expired — log in as Super Admin')});
+};
+window.igLearningDevelopment = function() {
+  fetch('/api/hr/learning-development').then(function(r){return r.json()}).then(function(d){
+    igModal('TT4: L&D — v2026.44', '<b>Round:</b> TT | <b>Endpoint:</b> TT4 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('TT4: L&D','Session expired — log in as Super Admin')});
+};
+window.igEmployeeDataRights = function() {
+  fetch('/api/dpdp/employee-data-rights').then(function(r){return r.json()}).then(function(d){
+    igModal('TT5: DPDP Emp — v2026.44', '<b>Round:</b> TT | <b>Endpoint:</b> TT5 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('TT5: DPDP Emp','Session expired — log in as Super Admin')});
+};
+window.igLabourLawDashboard2 = function() {
+  fetch('/api/compliance/labour-law-dashboard').then(function(r){return r.json()}).then(function(d){
+    igModal('TT6: Labour Law — v2026.44', '<b>Round:</b> TT | <b>Endpoint:</b> TT6 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('TT6: Labour Law','Session expired — log in as Super Admin')});
+};
+// -- UU-Round JS handlers --
+window.igChannelPerformance = function() {
+  fetch('/api/partners/channel-performance').then(function(r){return r.json()}).then(function(d){
+    igModal('UU1: Channels — v2026.45', '<b>Round:</b> UU | <b>Endpoint:</b> UU1 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('UU1: Channels','Session expired — log in as Super Admin')});
+};
+window.igDealRegistration = function() {
+  fetch('/api/partners/deal-registration').then(function(r){return r.json()}).then(function(d){
+    igModal('UU2: Deal Reg — v2026.45', '<b>Round:</b> UU | <b>Endpoint:</b> UU2 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('UU2: Deal Reg','Session expired — log in as Super Admin')});
+};
+window.igPartnerHealth = function() {
+  fetch('/api/partners/partner-health').then(function(r){return r.json()}).then(function(d){
+    igModal('UU3: Partner NPS — v2026.45', '<b>Round:</b> UU | <b>Endpoint:</b> UU3 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('UU3: Partner NPS','Session expired — log in as Super Admin')});
+};
+window.igMdfUtilisation = function() {
+  fetch('/api/partners/mdf-utilisation').then(function(r){return r.json()}).then(function(d){
+    igModal('UU4: MDF Fund — v2026.45', '<b>Round:</b> UU | <b>Endpoint:</b> UU4 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('UU4: MDF Fund','Session expired — log in as Super Admin')});
+};
+window.igPartnerDataSharing = function() {
+  fetch('/api/dpdp/partner-data-sharing').then(function(r){return r.json()}).then(function(d){
+    igModal('UU5: DPDP Partner — v2026.45', '<b>Round:</b> UU | <b>Endpoint:</b> UU5 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('UU5: DPDP Partner','Session expired — log in as Super Admin')});
+};
+window.igResellerCompliance = function() {
+  fetch('/api/compliance/reseller-compliance').then(function(r){return r.json()}).then(function(d){
+    igModal('UU6: Reseller — v2026.45', '<b>Round:</b> UU | <b>Endpoint:</b> UU6 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('UU6: Reseller','Session expired — log in as Super Admin')});
+};
+// -- VV-Round JS handlers --
+window.igIdeaPipeline = function() {
+  fetch('/api/innovation/idea-pipeline').then(function(r){return r.json()}).then(function(d){
+    igModal('VV1: Ideas — v2026.46', '<b>Round:</b> VV | <b>Endpoint:</b> VV1 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('VV1: Ideas','Session expired — log in as Super Admin')});
+};
+window.igRdSpend = function() {
+  fetch('/api/innovation/rd-spend').then(function(r){return r.json()}).then(function(d){
+    igModal('VV2: R&D Spend — v2026.46', '<b>Round:</b> VV | <b>Endpoint:</b> VV2 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('VV2: R&D Spend','Session expired — log in as Super Admin')});
+};
+window.igAiMlMetrics = function() {
+  fetch('/api/innovation/ai-ml-metrics').then(function(r){return r.json()}).then(function(d){
+    igModal('VV3: AI/ML — v2026.46', '<b>Round:</b> VV | <b>Endpoint:</b> VV3 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('VV3: AI/ML','Session expired — log in as Super Admin')});
+};
+window.igPatentPipeline = function() {
+  fetch('/api/innovation/patent-pipeline').then(function(r){return r.json()}).then(function(d){
+    igModal('VV4: Patents — v2026.46', '<b>Round:</b> VV | <b>Endpoint:</b> VV4 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('VV4: Patents','Session expired — log in as Super Admin')});
+};
+window.igAiDataGovernance = function() {
+  fetch('/api/dpdp/ai-data-governance').then(function(r){return r.json()}).then(function(d){
+    igModal('VV5: DPDP AI — v2026.46', '<b>Round:</b> VV | <b>Endpoint:</b> VV5 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('VV5: DPDP AI','Session expired — log in as Super Admin')});
+};
+window.igItActAi = function() {
+  fetch('/api/compliance/it-act-ai').then(function(r){return r.json()}).then(function(d){
+    igModal('VV6: IT Act AI — v2026.46', '<b>Round:</b> VV | <b>Endpoint:</b> VV6 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('VV6: IT Act AI','Session expired — log in as Super Admin')});
+};
+// -- WW-Round JS handlers --
+window.igBudgetForecast = function() {
+  fetch('/api/fpa/budget-forecast').then(function(r){return r.json()}).then(function(d){
+    igModal('WW1: Budget Fcst — v2026.47', '<b>Round:</b> WW | <b>Endpoint:</b> WW1 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('WW1: Budget Fcst','Session expired — log in as Super Admin')});
+};
+window.igCashFlowProjection = function() {
+  fetch('/api/fpa/cash-flow-projection').then(function(r){return r.json()}).then(function(d){
+    igModal('WW2: Cash Flow — v2026.47', '<b>Round:</b> WW | <b>Endpoint:</b> WW2 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('WW2: Cash Flow','Session expired — log in as Super Admin')});
+};
+window.igUnitEconomics = function() {
+  fetch('/api/fpa/unit-economics').then(function(r){return r.json()}).then(function(d){
+    igModal('WW3: Unit Econ — v2026.47', '<b>Round:</b> WW | <b>Endpoint:</b> WW3 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('WW3: Unit Econ','Session expired — log in as Super Admin')});
+};
+window.igFundraisingReadiness = function() {
+  fetch('/api/fpa/fundraising-readiness').then(function(r){return r.json()}).then(function(d){
+    igModal('WW4: Fundraising — v2026.47', '<b>Round:</b> WW | <b>Endpoint:</b> WW4 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('WW4: Fundraising','Session expired — log in as Super Admin')});
+};
+window.igFinancialDataClassification = function() {
+  fetch('/api/dpdp/financial-data-classification').then(function(r){return r.json()}).then(function(d){
+    igModal('WW5: DPDP FP&A — v2026.47', '<b>Round:</b> WW | <b>Endpoint:</b> WW5 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('WW5: DPDP FP&A','Session expired — log in as Super Admin')});
+};
+window.igRocFilings = function() {
+  fetch('/api/compliance/roc-filings').then(function(r){return r.json()}).then(function(d){
+    igModal('WW6: ROC Filings — v2026.47', '<b>Round:</b> WW | <b>Endpoint:</b> WW6 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('WW6: ROC Filings','Session expired — log in as Super Admin')});
+};
+// -- XX-Round JS handlers --
+window.igComplianceCalendar = function() {
+  fetch('/api/regulatory/compliance-calendar').then(function(r){return r.json()}).then(function(d){
+    igModal('XX1: Cal Deadlines — v2026.48', '<b>Round:</b> XX | <b>Endpoint:</b> XX1 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('XX1: Cal Deadlines','Session expired — log in as Super Admin')});
+};
+window.igPolicyTracker = function() {
+  fetch('/api/regulatory/policy-tracker').then(function(r){return r.json()}).then(function(d){
+    igModal('XX2: Policies — v2026.48', '<b>Round:</b> XX | <b>Endpoint:</b> XX2 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('XX2: Policies','Session expired — log in as Super Admin')});
+};
+window.igLicenseRegistry = function() {
+  fetch('/api/regulatory/license-registry').then(function(r){return r.json()}).then(function(d){
+    igModal('XX3: Licenses — v2026.48', '<b>Round:</b> XX | <b>Endpoint:</b> XX3 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('XX3: Licenses','Session expired — log in as Super Admin')});
+};
+window.igRegulatoryChange = function() {
+  fetch('/api/regulatory/regulatory-change').then(function(r){return r.json()}).then(function(d){
+    igModal('XX4: Reg Changes — v2026.48', '<b>Round:</b> XX | <b>Endpoint:</b> XX4 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('XX4: Reg Changes','Session expired — log in as Super Admin')});
+};
+window.igRegulatoryDataFlows = function() {
+  fetch('/api/dpdp/regulatory-data-flows').then(function(r){return r.json()}).then(function(d){
+    igModal('XX5: DPDP Flows — v2026.48', '<b>Round:</b> XX | <b>Endpoint:</b> XX5 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('XX5: DPDP Flows','Session expired — log in as Super Admin')});
+};
+window.igLegalEntityHealth = function() {
+  fetch('/api/compliance/legal-entity-health').then(function(r){return r.json()}).then(function(d){
+    igModal('XX6: Entity Health — v2026.48', '<b>Round:</b> XX | <b>Endpoint:</b> XX6 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('XX6: Entity Health','Session expired — log in as Super Admin')});
+};
+// -- YY-Round JS handlers --
+window.igDrReadiness = function() {
+  fetch('/api/resilience/dr-readiness').then(function(r){return r.json()}).then(function(d){
+    igModal('YY1: DR Readiness — v2026.49', '<b>Round:</b> YY | <b>Endpoint:</b> YY1 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('YY1: DR Readiness','Session expired — log in as Super Admin')});
+};
+window.igChaosEngineering = function() {
+  fetch('/api/resilience/chaos-engineering').then(function(r){return r.json()}).then(function(d){
+    igModal('YY2: Chaos Eng — v2026.49', '<b>Round:</b> YY | <b>Endpoint:</b> YY2 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('YY2: Chaos Eng','Session expired — log in as Super Admin')});
+};
+window.igCapacityPlanning = function() {
+  fetch('/api/resilience/capacity-planning').then(function(r){return r.json()}).then(function(d){
+    igModal('YY3: Capacity — v2026.49', '<b>Round:</b> YY | <b>Endpoint:</b> YY3 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('YY3: Capacity','Session expired — log in as Super Admin')});
+};
+window.igDependencyMap = function() {
+  fetch('/api/resilience/dependency-map').then(function(r){return r.json()}).then(function(d){
+    igModal('YY4: Dependencies — v2026.49', '<b>Round:</b> YY | <b>Endpoint:</b> YY4 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('YY4: Dependencies','Session expired — log in as Super Admin')});
+};
+window.igResilienceDataProtection = function() {
+  fetch('/api/dpdp/resilience-data-protection').then(function(r){return r.json()}).then(function(d){
+    igModal('YY5: DPDP Resil — v2026.49', '<b>Round:</b> YY | <b>Endpoint:</b> YY5 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('YY5: DPDP Resil','Session expired — log in as Super Admin')});
+};
+window.igCertInResilience = function() {
+  fetch('/api/compliance/cert-in-resilience').then(function(r){return r.json()}).then(function(d){
+    igModal('YY6: CERT-In — v2026.49', '<b>Round:</b> YY | <b>Endpoint:</b> YY6 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('YY6: CERT-In','Session expired — log in as Super Admin')});
+};
+// -- ZZ-Round JS handlers --
+window.igKpiDashboard = function() {
+  fetch('/api/executive/kpi-dashboard').then(function(r){return r.json()}).then(function(d){
+    igModal('ZZ1: KPI Dash — v2026.50', '<b>Round:</b> ZZ | <b>Endpoint:</b> ZZ1 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('ZZ1: KPI Dash','Session expired — log in as Super Admin')});
+};
+window.igBoardPack = function() {
+  fetch('/api/executive/board-pack').then(function(r){return r.json()}).then(function(d){
+    igModal('ZZ2: Board Pack — v2026.50', '<b>Round:</b> ZZ | <b>Endpoint:</b> ZZ2 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('ZZ2: Board Pack','Session expired — log in as Super Admin')});
+};
+window.igInvestorMetrics = function() {
+  fetch('/api/executive/investor-metrics').then(function(r){return r.json()}).then(function(d){
+    igModal('ZZ3: Investors — v2026.50', '<b>Round:</b> ZZ | <b>Endpoint:</b> ZZ3 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('ZZ3: Investors','Session expired — log in as Super Admin')});
+};
+window.igStrategicInitiatives = function() {
+  fetch('/api/executive/strategic-initiatives').then(function(r){return r.json()}).then(function(d){
+    igModal('ZZ4: Strategy — v2026.50', '<b>Round:</b> ZZ | <b>Endpoint:</b> ZZ4 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('ZZ4: Strategy','Session expired — log in as Super Admin')});
+};
+window.igExecutiveReporting = function() {
+  fetch('/api/dpdp/executive-reporting').then(function(r){return r.json()}).then(function(d){
+    igModal('ZZ5: DPDP Exec — v2026.50', '<b>Round:</b> ZZ | <b>Endpoint:</b> ZZ5 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('ZZ5: DPDP Exec','Session expired — log in as Super Admin')});
+};
+window.igPlatformCertification = function() {
+  fetch('/api/compliance/platform-certification').then(function(r){return r.json()}).then(function(d){
+    igModal('ZZ6: ZZ Cert — v2026.50', '<b>Round:</b> ZZ | <b>Endpoint:</b> ZZ6 | <b>Data:</b> '+d.data+'<br/><b>Generated:</b> '+d.generated);
+  }).catch(function(){igModal('ZZ6: ZZ Cert','Session expired — log in as Super Admin')});
 };
 
 window.igSecTab = function(idx){
