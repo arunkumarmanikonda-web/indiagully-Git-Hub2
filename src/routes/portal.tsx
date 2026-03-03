@@ -138,6 +138,7 @@ function loginPage(opts: {
           </button>
         </form>
         <p style="text-align:center;font-size:.68rem;color:var(--ink-faint);margin-top:.875rem;">Authorised users only. All access is logged and monitored.</p>
+<script>
 (function(){
   var portal='${opts.portal}';
   /* ── CSRF token ── */
@@ -1827,7 +1828,7 @@ app.get('/employee/payslips', (c) => {
       </table>
     </div>
     <!-- Payslip Detail Modal -->
-    <div id="payslip-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:none;align-items:center;justify-content:center;">
+    <div id="payslip-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;">
       <div style="background:#fff;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;border-top:4px solid var(--gold);">
         <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
           <div>

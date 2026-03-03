@@ -255,7 +255,7 @@ select.ig-input{cursor:pointer}
 textarea.ig-input{resize:vertical;min-height:130px}
 
 /* ── SIDEBAR ────────────────────────────────── */
-.sb-lk{display:flex;align-items:center;gap:.75rem;padding:.6rem .875rem;font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);border-radius:3px;transition:all .18s;cursor:pointer}
+.sb-lk{display:flex;align-items:center;gap:.75rem;padding:.6rem .875rem;font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);border-radius:3px;transition:all .18s;cursor:pointer;text-decoration:none;}
 .sb-lk:hover{color:#fff;background:rgba(255,255,255,.05)}
 .sb-lk.on{color:var(--gold);background:rgba(184,150,12,.11)}
 .sb-sec{font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.45);padding:.5rem .875rem;margin-top:.75rem}

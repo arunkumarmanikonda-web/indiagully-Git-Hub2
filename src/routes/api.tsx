@@ -14074,4 +14074,43 @@ app.get('/support/ticket/:ref', async (c) => {
   } catch { return c.json({ success: false, error: 'Lookup failed' }, 500) }
 })
 
+// ── PORTAL: Invoice Mark Paid ─────────────────────────────────────────────────
+// Called by the Client Portal payment modal to record payment intent.
+// Stores an audit entry in KV and returns acknowledgement.
+app.post('/invoices/mark-paid', async (c) => {
+  try {
+    const { invoice_id, amount, method } = await c.req.json() as { invoice_id?: string; amount?: unknown; method?: string }
+    if (!invoice_id) return c.json({ success: false, error: 'invoice_id required' }, 400)
+    const ref = `PAY-${Date.now().toString(36).toUpperCase()}`
+    const env = c.env as Bindings
+    const entry = { ref, invoice_id, amount, method: method || 'portal', status: 'Under Review', submitted_at: new Date().toISOString() }
+    if (env?.IG_AUDIT_KV) {
+      await env.IG_AUDIT_KV.put(`payment:${ref}`, JSON.stringify(entry), { expirationTtl: 86400 * 90 })
+    }
+    return c.json({ success: true, ref, invoice_id, status: 'Under Review', message: `Payment of ₹${amount} for ${invoice_id} submitted. Finance team will verify within 2 business days.` })
+  } catch (err) {
+    return c.json({ success: false, error: 'Payment submission failed', detail: String(err) }, 500)
+  }
+})
+
+// ── PORTAL: Admin Audit Log ───────────────────────────────────────────────────
+// Lightweight fire-and-forget audit logger called by portal pages for actions
+// such as check_in, check_out, message_sent, etc.
+app.post('/admin/audit', async (c) => {
+  try {
+    const body = await c.req.json() as Record<string, unknown>
+    const { action, module, time } = body
+    const ref = `AUD-${Date.now().toString(36).toUpperCase()}`
+    const env = c.env as Bindings
+    const entry = { ref, action, module, time: time || new Date().toISOString(), logged_at: new Date().toISOString() }
+    if (env?.IG_AUDIT_KV) {
+      await env.IG_AUDIT_KV.put(`audit:${ref}`, JSON.stringify(entry), { expirationTtl: 86400 * 30 })
+    }
+    return c.json({ success: true, ref, action, module })
+  } catch {
+    // Never block the user for audit failures
+    return c.json({ success: true, ref: 'AUD-SILENT' })
+  }
+})
+
 export default app
