@@ -159,7 +159,7 @@ a{color:inherit;text-decoration:none}
 /* ── NAVIGATION ─────────────────────────────── */
 #mainNav{height:var(--nav-h);position:fixed;top:0;left:0;right:0;z-index:200;transition:background .35s,box-shadow .35s}
 #mainNav.nav-solid{background:rgba(12,12,12,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 1px 0 rgba(255,255,255,.05)}
-#mainNav.nav-clear{background:transparent}
+#mainNav.nav-clear{background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,transparent 100%)}
 .nav-sp{height:var(--nav-h)}
 .n-lk{font-size:.775rem;font-weight:500;letter-spacing:.05em;color:rgba(255,255,255,.68);padding:.45rem .8rem;transition:color .2s}
 .n-lk:hover,.n-lk.on{color:#fff}
@@ -386,18 +386,18 @@ const NAV = `
     <div id="nav-desktop-right" style="gap:.75rem;">
       <!-- Dark Mode Toggle -->
       <button id="dark-toggle" onclick="igToggleDark()" aria-label="Toggle dark mode"
-              style="color:rgba(255,255,255,.6);background:none;border:1px solid rgba(255,255,255,.15);padding:.38rem .6rem;cursor:pointer;font-size:.75rem;transition:color .2s;"
+              style="color:rgba(255,255,255,.6);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);padding:.38rem .6rem;cursor:pointer;font-size:.75rem;transition:color .2s;"
               title="Toggle dark mode" data-tip="Dark mode">
         <i id="dark-icon" class="fas fa-moon"></i>
       </button>
       <!-- Hindi / English Toggle -->
       <button id="lang-toggle" onclick="igToggleLang()" aria-label="Switch language between English and Hindi"
-              style="color:rgba(255,255,255,.6);background:none;border:1px solid rgba(255,255,255,.15);padding:.38rem .6rem;cursor:pointer;font-size:.72rem;font-weight:600;transition:color .2s;letter-spacing:.04em;"
+              style="color:rgba(255,255,255,.6);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);padding:.38rem .6rem;cursor:pointer;font-size:.72rem;font-weight:600;transition:color .2s;letter-spacing:.04em;"
               title="Switch to Hindi / English" data-tip="भाषा / Language">
         <span id="lang-label">हिंदी</span>
       </button>
       <div class="relative n-par" style="position:relative;">
-        <button class="n-lk" style="display:flex;align-items:center;gap:.5rem;border:1px solid rgba(255,255,255,.15);padding:.42rem .9rem;">
+        <button class="n-lk" style="display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);padding:.42rem .9rem;">
           <i class="fas fa-lock" style="font-size:.55rem;color:var(--gold);"></i>Portals
           <i class="fas fa-chevron-down" style="font-size:.48rem;opacity:.4;"></i>
         </button>
