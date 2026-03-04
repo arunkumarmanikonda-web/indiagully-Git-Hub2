@@ -2119,7 +2119,7 @@ app.get('/finance', (c) => {
   <!-- Tab 1: P&L Statement -->
   <div id="fin-pane-1" style="display:none;">
     <div style="display:flex;gap:.75rem;margin-bottom:1rem;align-items:center;">
-      <select class="ig-input" id="pl-month" onchange="igRenderPL()" style="font-size:.82rem;max-width:180px;"><option value="Feb 2025" selected>February 2025</option><option value="Jan 2025">January 2025</option><option value="Dec 2024">December 2024</option><option value="FY 2024-25">Full Year FY 2024-25</option></select>
+      <select class="ig-input" id="pl-month" onchange="igRenderPL()" style="font-size:.82rem;max-width:180px;"><option value="Feb 2026" selected>February 2026</option><option value="Jan 2026">January 2026</option><option value="Dec 2025">December 2025</option><option value="FY 2025-26">Full Year FY 2025-26</option><option value="FY 2024-25">Full Year FY 2024-25</option></select>
       <button onclick="igFinExportPL('pdf')" style="background:var(--ink);color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;"><i class="fas fa-download" style="margin-right:.3rem;"></i>Export PDF</button>
       <button onclick="igFinExportPL('excel')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.72rem;font-weight:500;cursor:pointer;color:var(--ink);"><i class="fas fa-file-excel" style="margin-right:.3rem;color:#16a34a;"></i>Excel</button>
     </div>
@@ -2618,7 +2618,7 @@ app.get('/finance', (c) => {
       <div style="background:#fff;border:1px solid var(--border);">
         <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Year-End Closing & Consolidation</h3></div>
         <div style="padding:1.25rem;">
-          <div class="ig-warn" style="margin-bottom:1rem;"><i class="fas fa-exclamation-triangle"></i><div>FY 2024-25 closing due by 31 March 2025. 7 tasks pending.</div></div>
+          <div class="ig-warn" style="margin-bottom:1rem;"><i class="fas fa-exclamation-triangle"></i><div>FY 2025-26 closing due by 31 March 2026. 7 tasks pending.</div></div>
           <div style="display:flex;flex-direction:column;gap:.5rem;">
             ${[
               {task:'Close all income accounts to P&L',          pct:100, s:'Done'},
@@ -5567,6 +5567,7 @@ app.get('/governance', (c) => {
       }).catch(function(){ igToast('DIR-3 KYC submitted for '+name+' — SRN generated','success'); });
     });
   };
+  window.igGovSubmitDir3 = window.igGovDir3Kyc;
 
   // ── Governance: View KMP KYC ─────────────────────────────────────────────
   window.igGovViewKmpKyc = function(name){
