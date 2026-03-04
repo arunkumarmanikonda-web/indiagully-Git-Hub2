@@ -678,6 +678,13 @@ const SCRIPTS = (_nonce?: string) => `
     igToast(msg || ('Downloading '+filename+' …'), 'success');
   };
 
+  /* ── SIGN OUT ─────────────────────────────────────────────────────────── */
+  window.igSignOut = function(portal){
+    fetch('/api/auth/logout',{method:'POST',credentials:'include'})
+      .catch(function(){})
+      .finally(function(){ location.href='/portal/'+(portal||''); });
+  };
+
   /* ── VIEW PDF SIMULATION ──────────────────────────────────────────────── */
   window.igViewPDF = function(filename, msg){
     igToast(msg || ('Opening '+filename+' in viewer …'), 'success');

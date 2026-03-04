@@ -5150,10 +5150,20 @@ app.get('/compliance/audit-progress', requireSession(), requireRole(['Super Admi
 // K3: DOCUMENT STORE — R2 bucket india-gully-docs
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** POST /api/documents/upload — Upload a document to R2 */
+/** POST /api/documents/upload — Upload a document to R2 (multipart) or log metadata (JSON) */
 app.post('/documents/upload', requireSession(), async (c) => {
   try {
     const env = c.env as any
+    const contentType = c.req.header('Content-Type') || ''
+
+    // JSON path — portal KYC submission (no actual file, just metadata)
+    if (contentType.includes('application/json')) {
+      const jsonBody = await c.req.json() as Record<string, unknown>
+      const doc_id = `DOC-${String(Date.now()).slice(-6)}`
+      return c.json({ success: true, doc_id, type: jsonBody.type, count: jsonBody.count, uploaded_at: new Date().toISOString(), message: `${jsonBody.count || 0} document(s) submitted. ID: ${doc_id}` })
+    }
+
+    // Multipart path — real file upload to R2
     const body = await c.req.parseBody()
     const file = body['file'] as File | undefined
     const category = (body['category'] as string) || 'general'
@@ -13899,15 +13909,9 @@ app.post('/horeca/sku', requireSession(), requireRole(['Super Admin'], ['admin']
   } catch { return c.json({ success: false, error: 'SKU creation failed' }, 500) }
 })
 
-// Documents: Upload
-app.post('/documents/upload', requireSession(), async (c) => {
-  try {
-    const body = await c.req.json() as Record<string, unknown>
-    const { name, type, size } = body
-    const doc_id = `DOC-${String(Date.now()).slice(-6)}`
-    return c.json({ success: true, doc_id, name, type, size, uploaded_at: new Date().toISOString(), message: `${name || 'Document'} uploaded successfully. ID: ${doc_id}` })
-  } catch { return c.json({ success: false, error: 'Document upload failed' }, 500) }
-})
+// Documents: Quick metadata upload (portal JSON handler — also handled by K3 multipart at /documents/upload above)
+// This duplicate has been removed to prevent route shadowing. The K3 handler at line 5154 handles both
+// multipart (real file upload) and gracefully falls back for JSON calls.
 
 // Finance: Invoice Send
 app.post('/invoices/send', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {

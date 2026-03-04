@@ -195,7 +195,7 @@ function loginPage(opts: {
 
 // ── LOGIN PAGES ───────────────────────────────────────────────────────────────
 app.get('/client', (c) => {
-  const error = c.req.query('error') || ''
+  const error = c.req.query('error') || c.req.query('timeout') === '1' ? (c.req.query('error') || 'Your session has expired due to inactivity. Please log in again.') : ''
   return c.html(layout('Client Portal', loginPage({
     portal:'client', title:'Client Portal', subtitle:'Advisory Services Platform',
     accentColor:'#B8960C', icon:'user-tie',
@@ -205,7 +205,7 @@ app.get('/client', (c) => {
 })
 
 app.get('/employee', (c) => {
-  const error = c.req.query('error') || ''
+  const error = c.req.query('error') || c.req.query('timeout') === '1' ? (c.req.query('error') || 'Your session has expired due to inactivity. Please log in again.') : ''
   return c.html(layout('Employee Portal', loginPage({
     portal:'employee', title:'Employee Portal', subtitle:'HR & Operations Platform',
     accentColor:'#1A3A6B', icon:'users',
@@ -215,7 +215,7 @@ app.get('/employee', (c) => {
 })
 
 app.get('/board', (c) => {
-  const error = c.req.query('error') || ''
+  const error = c.req.query('error') || c.req.query('timeout') === '1' ? (c.req.query('error') || 'Your session has expired due to inactivity. Please log in again.') : ''
   return c.html(layout('Board & KMP Portal', loginPage({
     portal:'board', title:'Board & KMP Portal', subtitle:'Governance & Compliance Platform',
     accentColor:'#1E1E1E', icon:'gavel',
@@ -606,7 +606,7 @@ app.get('/reset', (c) => {
       </div>` : ''}
       <div style="padding:2rem;">
         ${!sent ? `
-        <form id="reset-form" method="GET" action="/portal/reset" style="display:flex;flex-direction:column;gap:1rem;">
+        <form id="reset-form" method="POST" action="/api/auth/reset/request" style="display:flex;flex-direction:column;gap:1rem;">
           <input type="hidden" name="portal" value="${portal}">
           <input type="hidden" name="csrf_r" id="csrf-reset" value="">
           <div>
@@ -681,7 +681,7 @@ function clientShell(pageTitle: string, active: string, body: string) {
       </a>`).join('')}
     </nav>
     <div style="padding:.75rem;border-top:1px solid rgba(255,255,255,.07);">
-      <a href="/portal" class="sb-lk" style="color:#ef4444 !important;"><i class="fas fa-sign-out-alt" style="width:16px;font-size:.75rem;text-align:center;"></i>Sign Out</a>
+      <a href="#" onclick="igSignOut('client');return false;" class="sb-lk" style="color:#ef4444 !important;"><i class="fas fa-sign-out-alt" style="width:16px;font-size:.75rem;text-align:center;"></i>Sign Out</a>
     </div>
   </aside>
   <main style="flex:1;overflow-y:auto;display:flex;flex-direction:column;">
@@ -739,6 +739,9 @@ document.addEventListener('click',function(e){
   var panel=document.getElementById('notif-panel');
   if(panel&&!panel.contains(e.target)&&!btn.contains(e.target)) panel.style.display='none';
 });
+window.igSignOut=function(portal){
+  fetch('/api/auth/logout',{method:'POST',credentials:'include'}).catch(function(){}).finally(function(){location.href='/portal/'+(portal||'');});
+};
 </script>`
 }
 
@@ -1086,9 +1089,14 @@ app.get('/client/invoices', (c) => {
         var m=document.getElementById('pay-modal');m.style.display='flex';m.style.alignItems='center';m.style.justifyContent='center';
       };
       window.igConfirmPayment = function(){
-        var activePanel = document.querySelector('[id^="pay-panel-"]:not([style*="display:none"])');
-        var panelId = activePanel ? activePanel.id : 'pay-panel-rz';
-        if(panelId==='pay-panel-neft'){
+        // Find the active panel: not hidden (display is '' or 'block', not 'none')
+        var panels = ['rz','upi','neft','chq'];
+        var activeMethod = 'rz';
+        for(var pi=0; pi<panels.length; pi++){
+          var pel = document.getElementById('pay-panel-'+panels[pi]);
+          if(pel && pel.style.display !== 'none'){ activeMethod = panels[pi]; break; }
+        }
+        if(activeMethod==='neft'){
           var utr=document.getElementById('pay-utr').value.trim();
           if(!utr){igToast('Please enter UTR / Transaction reference','warn');return;}
         }
@@ -1216,11 +1224,11 @@ app.get('/client/messages', (c) => {
       <div style="background:#fff;border:1px solid var(--border);overflow-y:auto;">
         <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);font-size:.82rem;font-weight:600;color:var(--ink);">Conversations</div>
         ${[
-          { name:'Arun Manikonda', role:'Managing Director', msg:'Please review the updated proposal...', time:'10:30 AM', unread:1, color:'#B8960C', id:'conv-akm' },
-          { name:'Amit Jhingan',   role:'President, Real Estate', msg:'Site visit confirmed for Thursday...', time:'Yesterday', unread:0, color:'#4f46e5', id:'conv-aj' },
-          { name:'Finance Team',   role:'Billing & Accounts', msg:'Invoice INV-2025-002 is due...', time:'2 days ago', unread:0, color:'#16a34a', id:'conv-fin' },
+          { name:'Arun Manikonda', role:'Managing Director', email:'akm@indiagully.com',    msg:'Please review the updated proposal...', time:'10:30 AM', unread:1, color:'#B8960C', id:'conv-akm' },
+          { name:'Amit Jhingan',   role:'President, Real Estate', email:'amit.jhingan@indiagully.com', msg:'Site visit confirmed for Thursday...', time:'Yesterday', unread:0, color:'#4f46e5', id:'conv-aj' },
+          { name:'Finance Team',   role:'Billing & Accounts', email:'finance@indiagully.com', msg:'Invoice INV-2025-002 is due...', time:'2 days ago', unread:0, color:'#16a34a', id:'conv-fin' },
         ].map(c => `
-        <div id="${c.id}" onclick="igSwitchConv(this,'${c.name}','${c.color}')" style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);cursor:pointer;display:flex;gap:.75rem;${c.id==='conv-akm'?'background:var(--parch-dk);':''}" onmouseover="if(this.style.background!=='var(--parch-dk)')this.style.background='var(--parch-dk)'" onmouseout="if(this.id!==document.getElementById('msg-active-conv').value)this.style.background=''">
+        <div id="${c.id}" onclick="igSwitchConv(this,'${c.name}','${c.color}','${c.role}','${c.email}')" style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);cursor:pointer;display:flex;gap:.75rem;${c.id==='conv-akm'?'background:var(--parch-dk);':''}" onmouseover="if(this.style.background!=='var(--parch-dk)')this.style.background='var(--parch-dk)'" onmouseout="if(this.id!==document.getElementById('msg-active-conv').value)this.style.background=''">
           <div style="width:36px;height:36px;background:${c.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Serif Display',Georgia,serif;color:#fff;font-size:.8rem;">${c.name[0]}</div>
           <div style="flex:1;min-width:0;">
             <div style="display:flex;justify-content:space-between;margin-bottom:.15rem;">
@@ -1238,7 +1246,7 @@ app.get('/client/messages', (c) => {
           <div id="msg-hdr-avatar" style="width:36px;height:36px;background:#B8960C;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',Georgia,serif;color:#fff;">A</div>
           <div>
             <div id="msg-hdr-name" style="font-size:.875rem;font-weight:600;color:var(--ink);">Arun Manikonda</div>
-            <div style="font-size:.72rem;color:var(--ink-muted);">Managing Director · akm@indiagully.com</div>
+            <div id="msg-hdr-sub" style="font-size:.72rem;color:var(--ink-muted);">Managing Director · akm@indiagully.com</div>
           </div>
         </div>
         <div id="msg-thread" style="flex:1;padding:1.25rem;overflow-y:auto;display:flex;flex-direction:column;gap:1rem;">
@@ -1293,7 +1301,7 @@ app.get('/client/messages', (c) => {
       var badge = document.getElementById('badge-'+document.getElementById('msg-active-conv').value);
       if(badge) badge.remove();
     }
-    function igSwitchConv(el, name, color){
+    function igSwitchConv(el, name, color, role, email){
       // Update active state
       document.querySelectorAll('[id^="conv-"]').forEach(function(c){ c.style.background=''; });
       el.style.background = 'var(--parch-dk)';
@@ -1301,6 +1309,9 @@ app.get('/client/messages', (c) => {
       document.getElementById('msg-hdr-name').textContent = name;
       document.getElementById('msg-hdr-avatar').textContent = name[0];
       document.getElementById('msg-hdr-avatar').style.background = color;
+      // Update subtitle (role · email)
+      var sub = document.getElementById('msg-hdr-sub');
+      if(sub) sub.textContent = (role||'') + (email ? ' · ' + email : '');
       // Remove unread badge
       var badge = document.getElementById('badge-'+el.id);
       if(badge) badge.remove();
@@ -1397,7 +1408,7 @@ function empShell(pageTitle: string, active: string, body: string) {
       </a>`).join('')}
     </nav>
     <div style="padding:.75rem;border-top:1px solid rgba(255,255,255,.1);">
-      <a href="/portal" class="sb-lk" style="color:#ef4444 !important;"><i class="fas fa-sign-out-alt" style="width:16px;font-size:.75rem;text-align:center;"></i>Sign Out</a>
+      <a href="#" onclick="igSignOut('employee');return false;" class="sb-lk" style="color:#ef4444 !important;"><i class="fas fa-sign-out-alt" style="width:16px;font-size:.75rem;text-align:center;"></i>Sign Out</a>
     </div>
   </aside>
   <main style="flex:1;overflow-y:auto;display:flex;flex-direction:column;">
@@ -1437,6 +1448,8 @@ function empShell(pageTitle: string, active: string, body: string) {
 <script>
 function toggleEmpNotif(){var p=document.getElementById('emp-notif-panel');p.style.display=p.style.display==='none'?'block':'none';}
 document.addEventListener('click',function(e){var btn=document.getElementById('emp-notif-btn');var panel=document.getElementById('emp-notif-panel');if(panel&&!panel.contains(e.target)&&btn&&!btn.contains(e.target))panel.style.display='none';});
+window.igSignOut=window.igSignOut||function(portal){fetch('/api/auth/logout',{method:'POST',credentials:'include'}).catch(function(){}).finally(function(){location.href='/portal/'+(portal||'');});};
+
 </script>`
 }
 
@@ -1447,7 +1460,7 @@ app.get('/employee/dashboard', (c) => {
         { label:'Leave Balance',     value:'12',  sub:'Days available',   icon:'umbrella-beach',  color:'#1A3A6B' },
         { label:'Attendance MTD',    value:'96%', sub:'Present this month', icon:'calendar-check', color:'#16a34a' },
         { label:'Pending Approvals', value:'1',   sub:'Leave pending',    icon:'clock',           color:'#d97706' },
-        { label:'Payroll Month',     value:'Feb', sub:'2025, Processed', icon:'money-check-alt', color:'#7c3aed' },
+        { label:'Payroll Month',     value:'Feb', sub:'2026, Processed', icon:'money-check-alt', color:'#7c3aed' },
       ].map(s => `
       <div class="am">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;">
@@ -1511,7 +1524,7 @@ app.get('/employee/attendance', (c) => {
     <!-- Calendar heatmap -->
     <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;margin-bottom:1.5rem;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">February 2025, Calendar View</h3>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">February 2026, Calendar View</h3>
         <div style="display:flex;gap:.5rem;align-items:center;font-size:.68rem;color:var(--ink-muted);">
           <span style="width:12px;height:12px;background:#16a34a;display:inline-block;"></span>Present
           <span style="width:12px;height:12px;background:#dc2626;display:inline-block;margin-left:.5rem;"></span>Absent
@@ -1521,10 +1534,10 @@ app.get('/employee/attendance', (c) => {
       </div>
       <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:.35rem;text-align:center;">
         ${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<div style="font-size:.65rem;font-weight:700;color:var(--ink-muted);padding:.25rem 0;">${d}</div>`).join('')}
-        ${/* Feb 2026 starts on Sunday = offset 0 */ ''.split('').fill('').concat(Array.from({length:5})).map(()=>`<div></div>`).join('')}
+        ${/* Feb 2026 starts on Sunday — in Mon-indexed week (Mon=0, Sun=6) that's offset 6 */ Array.from({length:6}).map(()=>`<div></div>`).join('')}
         ${Array.from({length:28},(_,i)=>{
           const d=i+1;
-          const day=(i+5)%7; // 0=Mon
+          const day=(i+6)%7; // Feb 1 2026 = Sunday, Mon-indexed: offset 6, so day=(i+6)%7; 0=Mon,6=Sun
           const isWknd=day>=5;
           const status = isWknd ? 'wknd' :
             [3,10,17].includes(d) ? 'late' :
@@ -1539,7 +1552,7 @@ app.get('/employee/attendance', (c) => {
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
       <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
         <div>
-          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">February 2025 Attendance Log</h3>
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">February 2026 Attendance Log</h3>
           <div id="att-clock" style="font-size:.75rem;color:var(--ink-muted);margin-top:.15rem;"></div>
         </div>
         <div style="display:flex;gap:.5rem;align-items:center;">
@@ -1670,11 +1683,11 @@ app.get('/employee/leave', (c) => {
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
             <div>
               <label class="ig-label">From Date</label>
-              <input type="date" id="lv-from" class="ig-input" onchange="igCalcDays()">
+              <input type="date" id="lv-from" class="ig-input" onchange="igCalcDays()" min="">
             </div>
             <div>
               <label class="ig-label">To Date</label>
-              <input type="date" id="lv-to" class="ig-input" onchange="igCalcDays()">
+              <input type="date" id="lv-to" class="ig-input" onchange="igCalcDays()" min="">
             </div>
           </div>
           <div id="lv-days-display" style="display:none;background:#f0fdf4;border:1px solid #86efac;padding:.6rem .875rem;font-size:.82rem;color:#15803d;font-weight:600;"></div>
@@ -1715,6 +1728,14 @@ app.get('/employee/leave', (c) => {
       </div>
     </div>
     <script>
+    // Set min date for leave date pickers to today
+    (function(){
+      var today = new Date().toISOString().split('T')[0];
+      var fromEl = document.getElementById('lv-from');
+      var toEl = document.getElementById('lv-to');
+      if(fromEl) fromEl.min = today;
+      if(toEl) toEl.min = today;
+    })();
     function igCalcDays(){
       var from = document.getElementById('lv-from').value;
       var to   = document.getElementById('lv-to').value;
@@ -1772,7 +1793,7 @@ app.get('/employee/payslips', (c) => {
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
       ${[
         {label:'Gross CTC (Annual)',value:'₹15,00,000',color:'var(--ink)'},
-        {label:'Net Pay (Feb)',value:'₹1,04,000',color:'var(--gold)'},
+        {label:'Net Pay (Feb)',value:'₹1,08,800',color:'var(--gold)'},
         {label:'YTD TDS Paid',value:'₹85,000',color:'#dc2626'},
         {label:'PF Contribution',value:'₹18,000/mo',color:'#2563eb'},
       ].map(s=>`<div class="am"><div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.6rem;color:${s.color};">${s.value}</div></div>`).join('')}
@@ -1803,12 +1824,12 @@ app.get('/employee/payslips', (c) => {
         <thead><tr><th>Month</th><th>Gross</th><th>PF</th><th>PT</th><th>TDS</th><th>Net Pay</th><th>Days</th><th>Status</th><th>Action</th></tr></thead>
         <tbody>
           ${[
-            {month:'February 2025',gross:125000,pf:15000,pt:200,tds:8500,net:101300,days:20,cls:'b-gr'},
-            {month:'January 2025', gross:125000,pf:15000,pt:200,tds:8500,net:101300,days:21,cls:'b-gr'},
-            {month:'December 2024',gross:125000,pf:15000,pt:200,tds:8500,net:101300,days:22,cls:'b-gr'},
-            {month:'November 2024',gross:125000,pf:15000,pt:200,tds:8500,net:101300,days:19,cls:'b-gr'},
-            {month:'October 2024', gross:125000,pf:15000,pt:200,tds:8500,net:101300,days:23,cls:'b-gr'},
-            {month:'September 2024',gross:125000,pf:15000,pt:200,tds:8500,net:101300,days:22,cls:'b-gr'},
+            {month:'February 2026',gross:125000,pf:15000,pt:200,tds:8500,net:108800,days:20,cls:'b-gr'},
+            {month:'January 2026', gross:125000,pf:15000,pt:200,tds:8500,net:108800,days:21,cls:'b-gr'},
+            {month:'December 2025',gross:125000,pf:15000,pt:200,tds:8500,net:108800,days:22,cls:'b-gr'},
+            {month:'November 2025',gross:125000,pf:15000,pt:200,tds:8500,net:108800,days:19,cls:'b-gr'},
+            {month:'October 2025', gross:125000,pf:15000,pt:200,tds:8500,net:108800,days:23,cls:'b-gr'},
+            {month:'September 2025',gross:125000,pf:15000,pt:200,tds:8500,net:108800,days:22,cls:'b-gr'},
           ].map(p => `
           <tr>
             <td style="font-weight:500;font-size:.85rem;">${p.month}</td>
@@ -1958,7 +1979,7 @@ app.get('/employee/policies', (c) => {
           <div style="font-weight:500;font-size:.875rem;color:var(--ink);">${p.name}</div>
           <div style="font-size:.72rem;color:var(--ink-muted);margin-top:.15rem;">Updated: ${p.updated} · <span class="badge b-dk" style="font-size:.6rem;">${p.category}</span></div>
         </div>
-        <button onclick="igToast('Opening: '+this.closest('[style]').querySelector('div div:first-child').textContent,'success')" style="font-size:.72rem;color:var(--gold);white-space:nowrap;background:none;border:none;cursor:pointer;padding:0;"><i class='fas fa-eye'></i> View</button>
+        <button onclick="igToast('Opening: ${p.name}','success')" style="font-size:.72rem;color:var(--gold);white-space:nowrap;background:none;border:none;cursor:pointer;padding:0;"><i class='fas fa-eye'></i> View</button>
       </div>`).join('')}
     </div>`
   return c.html(layout('Policies', empShell('Company Policies', 'policies', body), { noNav:true, noFooter:true }))
@@ -2043,7 +2064,7 @@ function boardShell(pageTitle: string, active: string, body: string) {
   const nav = [
     { id:'dashboard',  icon:'tachometer-alt', label:'Dashboard'       },
     { id:'meetings',   icon:'gavel',          label:'Board Meetings'  },
-    { id:'voting',     icon:'vote-yea',       label:'Voting'          },
+    { id:'voting',     icon:'check-square',   label:'Voting'          },
     { id:'registers',  icon:'book',           label:'Statutory Reg.'  },
     { id:'packs',      icon:'file-alt',       label:'Board Packs'     },
     { id:'finance',    icon:'chart-bar',      label:'Finance Reports' },
@@ -2074,7 +2095,7 @@ function boardShell(pageTitle: string, active: string, body: string) {
       </a>`).join('')}
     </nav>
     <div style="padding:.75rem;border-top:1px solid rgba(255,255,255,.07);">
-      <a href="/portal" class="sb-lk" style="color:#ef4444 !important;"><i class="fas fa-sign-out-alt" style="width:16px;font-size:.75rem;text-align:center;"></i>Sign Out</a>
+      <a href="#" onclick="igSignOut('board');return false;" class="sb-lk" style="color:#ef4444 !important;"><i class="fas fa-sign-out-alt" style="width:16px;font-size:.75rem;text-align:center;"></i>Sign Out</a>
     </div>
   </aside>
   <main style="flex:1;overflow-y:auto;display:flex;flex-direction:column;">
@@ -2125,6 +2146,7 @@ function boardShell(pageTitle: string, active: string, body: string) {
 <script>
 function toggleBrdNotif(){var p=document.getElementById('brd-notif-panel');p.style.display=p.style.display==='none'?'block':'none';}
 document.addEventListener('click',function(e){var btn=document.getElementById('brd-notif-btn');var panel=document.getElementById('brd-notif-panel');if(panel&&!panel.contains(e.target)&&btn&&!btn.contains(e.target))panel.style.display='none';});
+window.igSignOut=window.igSignOut||function(portal){fetch('/api/auth/logout',{method:'POST',credentials:'include'}).catch(function(){}).finally(function(){location.href='/portal/'+(portal||'');});};
 </script>`
 }
 
@@ -2132,7 +2154,7 @@ app.get('/board/dashboard', (c) => {
   const body = `
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem;">
       ${[
-        { label:'Next Board Meeting', value:'Mar 15', sub:'2025, Scheduled',    icon:'calendar',    color:'#1E1E1E' },
+        { label:'Next Board Meeting', value:'Mar 15', sub:'2026, Scheduled',    icon:'calendar',    color:'#1E1E1E' },
         { label:'Pending Resolutions',value:'2',      sub:'For director approval', icon:'vote-yea',  color:'#d97706' },
         { label:'Open Compliance',    value:'0',      sub:'All filings current',  icon:'check-circle', color:'#16a34a' },
         { label:'DIN Status',         value:'Active', sub:'All directors valid',  icon:'id-card',     color:'#2563eb' },
@@ -2358,14 +2380,14 @@ app.get('/board/packs', (c) => {
             {name:'Proposed Resolutions RES-003.pdf',   type:'Resolution',  size:'0.4 MB'},
             {name:'Management Discussion & Analysis.pdf',type:'Report',     size:'1.5 MB'},
           ]},
-        { meeting:'BM-2025-02, January Board Meeting', date:'15 Jan 2025', status:'Final', cls:'b-gr',
+        { meeting:'BM-2026-02, January Board Meeting', date:'15 Jan 2026', status:'Final', cls:'b-gr',
           files:[
             {name:'Board Meeting Minutes. Approved.pdf', type:'Minutes',   size:'0.8 MB'},
             {name:'FY2025 Q2 Financial Statements.pdf',   type:'Finance',   size:'1.9 MB'},
             {name:'Auditor Report Q2.pdf',                type:'Audit',     size:'1.2 MB'},
             {name:'Director Attendance Register.pdf',     type:'Register',  size:'0.2 MB'},
           ]},
-        { meeting:'BM-2025-01, January EGM',           date:'05 Jan 2025', status:'Final', cls:'b-gr',
+        { meeting:'BM-2026-01, January EGM',           date:'05 Jan 2026', status:'Final', cls:'b-gr',
           files:[
             {name:'EGM Notice & Agenda.pdf',              type:'Notice',    size:'0.3 MB'},
             {name:'Proxy Form.pdf',                       type:'Form',      size:'0.1 MB'},
