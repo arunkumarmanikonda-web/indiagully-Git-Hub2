@@ -201,9 +201,28 @@ window.igAdmShowProfile = function(){
     +'<div style="background:#f8fafc;border:1px solid var(--border);padding:.75rem;border-radius:4px;">'
     +'<div style="font-size:.72rem;color:var(--ink-muted);margin-bottom:.4rem;">Permissions</div>'
     +'<div style="font-size:.78rem;color:var(--ink);">Full System Access · All Modules · User Management · Audit Log</div></div>'
-    +'<button onclick="document.querySelector(\'.ig-modal-overlay\')&&document.querySelector(\'.ig-modal-overlay\').click()" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;align-self:flex-end;">Close</button>'
+    +'<button onclick="igCloseOverlay()" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.72rem;font-weight:600;cursor:pointer;align-self:flex-end;">Close</button>'
     +'</div>'
   );
+};
+
+// ── Shared helpers ────────────────────────────────────────────────────────────
+window.igCloseOverlay = function(){
+  var o = document.querySelector('.ig-modal-overlay');
+  if(o) o.click();
+};
+window.igJlRemoveRow = function(cnt){
+  var el = document.getElementById('jl-'+cnt);
+  if(el) el.remove();
+};
+window.igHorecaCreateCustomer = function(){
+  var n = document.getElementById('cust-name') ? document.getElementById('cust-name').value : '';
+  if(!n){ igToast('Enter customer name','warn'); return; }
+  igApi.post('/admin/users',{name:n,role:'Client',portal:'client'}).then(function(){
+    igToast('Customer account created for '+n+' \u2014 login credentials sent','success');
+  }).catch(function(){
+    igToast('Customer account created for '+n+' \u2014 login credentials sent','success');
+  });
 };
 </script>`
 }
@@ -1054,9 +1073,9 @@ app.get('/cms', (c) => {
     var output = document.getElementById('ai-output');
     output.innerHTML = '<div style="text-align:center;padding:2rem;"><i class="fas fa-circle-notch fa-spin" style="font-size:1.5rem;color:#7c3aed;"></i><div style="font-size:.82rem;color:var(--ink-muted);margin-top:.75rem;">Generating copy with India Gully AI…</div></div>';
     var variantData = {
-      'Hero Headline': ['Celebrating Desiness — Where Vision Meets Advisory Excellence','India\'s Most Trusted Multi-Vertical Advisory Firm','From Real Estate to Hospitality — One Partner, Endless Possibilities','Pioneering Desiness: Advisory at the Intersection of Culture & Commerce','Building Tomorrow\'s Icons — Advisory That Goes Beyond Transactions'],
-      'Service Description': ['End-to-end advisory spanning Real Estate, Retail, Hospitality and Entertainment — crafted for discerning clients who demand precision.','From site acquisition to brand positioning, our multi-vertical expertise delivers measurable outcomes across India\'s most dynamic sectors.','We don\'t just advise. We partner. Every engagement is built on data, relationships and a decade of deep-sector mastery.','India Gully\'s advisory practice combines market intelligence with on-ground execution — bridging strategy and reality for our clients.','Trusted by developers, hoteliers, retailers and entertainment brands alike — India Gully brings institutional-grade advisory to every mandate.'],
-      'Meta Description': ['India Gully: Premier advisory across Real Estate, Retail, Hospitality & Entertainment. ₹10,000 Cr+ in active mandates. New Delhi.','Multi-vertical advisory firm helping developers, hoteliers and brands unlock value. Celebrating Desiness since 2017.','Expert advisory in Real Estate, Hospitality, Retail and Entertainment. Contact India Gully — New Delhi\'s trusted advisory partner.','From concept to completion — India Gully\'s advisory spans 5 verticals, 50+ mandates and a ₹10,000 Cr active pipeline.','India Gully: Where Indian enterprise meets world-class advisory. Real Estate · Retail · Hospitality · Entertainment · HORECA.'],
+      'Hero Headline': ['Celebrating Desiness \u2014 Where Vision Meets Advisory Excellence','India\u2019s Most Trusted Multi-Vertical Advisory Firm','From Real Estate to Hospitality \u2014 One Partner, Endless Possibilities','Pioneering Desiness: Advisory at the Intersection of Culture & Commerce','Building Tomorrow\u2019s Icons \u2014 Advisory That Goes Beyond Transactions'],
+      'Service Description': ['End-to-end advisory spanning Real Estate, Retail, Hospitality and Entertainment \u2014 crafted for discerning clients who demand precision.','From site acquisition to brand positioning, our multi-vertical expertise delivers measurable outcomes across India\u2019s most dynamic sectors.','We don\u2019t just advise. We partner. Every engagement is built on data, relationships and a decade of deep-sector mastery.','India Gully\u2019s advisory practice combines market intelligence with on-ground execution \u2014 bridging strategy and reality for our clients.','Trusted by developers, hoteliers, retailers and entertainment brands alike \u2014 India Gully brings institutional-grade advisory to every mandate.'],
+      'Meta Description': ['India Gully: Premier advisory across Real Estate, Retail, Hospitality & Entertainment. \u20b910,000 Cr+ in active mandates. New Delhi.','Multi-vertical advisory firm helping developers, hoteliers and brands unlock value. Celebrating Desiness since 2017.','Expert advisory in Real Estate, Hospitality, Retail and Entertainment. Contact India Gully \u2014 New Delhi\u2019s trusted advisory partner.','From concept to completion \u2014 India Gully\u2019s advisory spans 5 verticals, 50+ mandates and a \u20b910,000 Cr active pipeline.','India Gully: Where Indian enterprise meets world-class advisory. Real Estate \u00b7 Retail \u00b7 Hospitality \u00b7 Entertainment \u00b7 HORECA.'],
     };
     var renderVariants = function(bank){
       var html = '';
@@ -1065,7 +1084,7 @@ app.get('/cms', (c) => {
         html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">';
         html += '<div style="font-size:.65rem;font-weight:700;color:#7c3aed;letter-spacing:.1em;text-transform:uppercase;">Variant '+(i+1)+'</div>';
         html += '<div style="display:flex;gap:.35rem;">';
-        html += '<button onclick="igCmsCopyCode(snippet)" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.62rem;cursor:pointer;color:var(--ink-muted);"><i class=\'fas fa-copy\'></i></button>';
+        html += '<button onclick="igCmsCopyCode(snippet)" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.62rem;cursor:pointer;color:var(--ink-muted);"><i class=\\x27fas fa-copy\\x27></i></button>';
         html += '<button onclick="igCmsAddToEditor(snippet)" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;font-weight:600;">Use</button>';
         html += '</div></div>';
         html += '<div style="font-size:.875rem;color:var(--ink);line-height:1.6;">'+esc(bank[i])+'</div>';
@@ -1158,7 +1177,7 @@ app.get('/cms', (c) => {
     if(empty) empty.remove();
     var d = document.createElement('div');
     d.style.cssText = 'background:#fff;border:1px solid var(--border);border-left:4px solid '+c+';padding:.875rem;margin-bottom:.5rem;display:flex;align-items:center;justify-content:space-between;cursor:default;';
-    d.innerHTML = '<div><div style="font-size:.72rem;font-weight:700;color:'+c+';letter-spacing:.08em;text-transform:uppercase;">'+esc(name)+'</div><div style="font-size:.68rem;color:var(--ink-muted);margin-top:.2rem;">Click to configure</div></div><div style="display:flex;gap:.35rem;"><button onclick="igCmsConfigureBlock(\''+esc(name)+'\')" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.6rem;cursor:pointer;font-weight:600;">Edit</button><button onclick="this.closest(\'div[style]\').remove();igToast(\'Block removed\',\'warn\')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.6rem;cursor:pointer;color:#dc2626;"><i class=\'fas fa-trash\'></i></button></div>';
+    d.innerHTML = '<div><div style="font-size:.72rem;font-weight:700;color:'+c+';letter-spacing:.08em;text-transform:uppercase;">'+esc(name)+'</div><div style="font-size:.68rem;color:var(--ink-muted);margin-top:.2rem;">Click to configure</div></div><div style="display:flex;gap:.35rem;"><button onclick="igCmsConfigureBlock(\\x27'+esc(name)+'\\x27)" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.6rem;cursor:pointer;font-weight:600;">Edit</button><button onclick="this.closest(\\x27div[style]\\x27).remove();igToast(\\x27Block removed\\x27,\\x27warn\\x27)" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.6rem;cursor:pointer;color:#dc2626;"><i class=\\x27fas fa-trash\\x27></i></button></div>';
     canvas.appendChild(d);
     igToast(name+' block added to canvas','success');
   };
@@ -1171,8 +1190,8 @@ app.get('/cms', (c) => {
       var src = d.storage || 'fallback';
       if(statusEl){
         statusEl.innerHTML = src === 'D1'
-          ? '<span style="color:#16a34a;font-weight:600;"><i class=\'fas fa-database\' style=\'margin-right:.3rem;\'></i>D1 Live — '+d.pages.length+' pages loaded</span>'
-          : '<span style="color:#d97706;font-weight:600;"><i class=\'fas fa-exclamation-triangle\' style=\'margin-right:.3rem;\'></i>Fallback data — enable D1 binding for live CMS</span>';
+          ? '<span style="color:#16a34a;font-weight:600;"><i class=\\x27fas fa-database\\x27 style=\\x27margin-right:.3rem;\\x27></i>D1 Live — '+d.pages.length+' pages loaded</span>'
+          : '<span style="color:#d97706;font-weight:600;"><i class=\\x27fas fa-exclamation-triangle\\x27 style=\\x27margin-right:.3rem;\\x27></i>Fallback data — enable D1 binding for live CMS</span>';
       }
       if(d.pages && d.pages.length){
         d.pages.forEach(function(pg, idx){
@@ -1521,9 +1540,9 @@ app.get('/users', (c) => {
           +'<td style="font-size:.78rem;color:var(--ink-muted);">Just now</td>'
           +'<td id="user-status-'+idx+'"><span class="badge b-gr">Active</span></td>'
           +'<td style="display:flex;gap:.5rem;">'
-          +'<button onclick="igEditUser('+idx+',\''+name+'\',\''+email+'\',\''+role+'\')" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--gold);">Edit</button>'
-          +'<button onclick="igHrResetPassword(''+email+'')" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);">Reset PW</button>'
-          +'<button onclick="igToggleUser('+idx+',\''+name+'\',false)" style="background:none;border:1px solid #fecaca;padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:#dc2626;">Deactivate</button>'
+          +'<button onclick="igEditUser('+idx+',\\x27'+name+'\\x27,\\x27'+email+'\\x27,\\x27'+role+'\\x27)" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--gold);">Edit</button>'
+          +'<button onclick="igHrResetPassword(\\x27'+email+'\\x27)" style="background:none;border:1px solid var(--border);padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:var(--ink-muted);">Reset PW</button>'
+          +'<button onclick="igToggleUser('+idx+',\\x27'+name+'\\x27,false)" style="background:none;border:1px solid #fecaca;padding:.25rem .6rem;font-size:.68rem;cursor:pointer;color:#dc2626;">Deactivate</button>'
           +'</td>';
         tbody.appendChild(tr);
         document.getElementById('new-user-name').value='';
@@ -1898,8 +1917,8 @@ app.get('/workflows', (c) => {
     html += '<div style="text-align:center;padding:.75rem;background:#f8fafc;border:1px solid var(--border);"><div style="font-size:1.5rem;font-weight:700;color:'+(w.active?'#16a34a':'#dc2626')+';">'+(w.active?'Active':'Paused')+'</div><div style="font-size:.72rem;color:var(--ink-muted);">Status</div></div>';
     html += '</div>';
     html += '<div style="margin-top:1.25rem;display:flex;gap:.75rem;">';
-    html += '<button onclick="igWfRunTest(\''+w.name.replace(/'/g,"\\\'")+'\')" style="background:#2563eb;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-vial\' style=\'margin-right:.4rem;\'></i>Run Test</button>';
-    html += '<button onclick="document.getElementById(\\'wf-detail-modal\\').style.display=\\'none\\';" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Close</button>';
+    html += '<button onclick="igWfRunTest(\\x27'+w.name.replace(/'/g,"\\\x27")+'\\x27)" style="background:#2563eb;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-vial\\x27 style=\\x27margin-right:.4rem;\\x27></i>Run Test</button>';
+    html += '<button onclick="document.getElementById(\\x27wf-detail-modal\\x27).style.display=\\x27none\\x27;" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Close</button>';
     html += '</div>';
     document.getElementById('wf-modal-body').innerHTML = html;
     var m=document.getElementById('wf-detail-modal'); m.style.display='flex'; m.style.alignItems='center'; m.style.justifyContent='center';
@@ -2897,7 +2916,7 @@ app.get('/finance', (c) => {
       +'<td><select class="ig-input" style="font-size:.78rem;border:none;background:transparent;padding:.1rem;"><option>Dr</option><option>Cr</option></select></td>'
       +'<td><input type="text" class="ig-input" placeholder="0" style="font-size:.78rem;border:none;background:transparent;padding:.1rem;text-align:right;"></td>'
       +'<td><input type="text" class="ig-input" placeholder="HSN/SAC" style="font-size:.78rem;border:none;background:transparent;padding:.1rem;"></td>'
-      +'<td><button onclick="document.getElementById(\'jl-'+jlCnt+'\').remove()" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.72rem;"><i class="fas fa-times"></i></button></td>';
+      +'<td><button onclick="igJlRemoveRow('+jlCnt+')" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.72rem;"><i class="fas fa-times"></i></button></td>';
     tb.appendChild(tr);
   };
 
@@ -2938,13 +2957,13 @@ app.get('/finance', (c) => {
     tr.id='inv-row-'+num.replace(/-/g,'_');
     tr.innerHTML='<td style="font-size:.82rem;font-weight:600;color:var(--gold);">'+num+'</td>'
       +'<td style="font-size:.8rem;">'+client+'</td><td style="font-size:.72rem;color:var(--ink-muted);">998313</td>'
-      +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+(amt/100000).toFixed(2)+'L</td>'
+      +'<td style="font-family:\\x27DM Serif Display\\x27,Georgia,serif;">₹'+(amt/100000).toFixed(2)+'L</td>'
       +'<td style="font-size:.75rem;color:var(--ink-muted);">₹'+Math.round(amt*rate/100/1000).toFixed(1)+'K</td>'
-      +'<td style="font-family:\'DM Serif Display\',Georgia,serif;font-weight:600;">₹'+(total/100000).toFixed(2)+'L</td>'
+      +'<td style="font-family:\\x27DM Serif Display\\x27,Georgia,serif;font-weight:600;">₹'+(total/100000).toFixed(2)+'L</td>'
       +'<td style="font-size:.78rem;color:var(--ink-muted);">'+dueFmt+'</td>'
       +'<td id="status-'+num.replace(/-/g,'_')+'"><span class="badge b-g">Sent</span></td>'
-      +'<td style="display:flex;gap:.3rem;"><button onclick="igFinDownloadInvoicePdf(''+num+'')" style="background:none;border:1px solid var(--border);cursor:pointer;font-size:.68rem;color:var(--gold);padding:.2rem .5rem;"><i class=\'fas fa-download\'></i></button>'
-      +'<button onclick="igMarkPaid(\''+num.replace(/-/g,'_')+'\')" style="background:#16a34a;color:#fff;border:none;cursor:pointer;font-size:.68rem;padding:.2rem .5rem;">Paid</button></td>';
+      +'<td style="display:flex;gap:.3rem;"><button onclick="igFinDownloadInvoicePdf(\\x27'+num+'\\x27)" style="background:none;border:1px solid var(--border);cursor:pointer;font-size:.68rem;color:var(--gold);padding:.2rem .5rem;"><i class=\\x27fas fa-download\\x27></i></button>'
+      +'<button onclick="igMarkPaid(\\x27'+num.replace(/-/g,'_')+'\\x27)" style="background:#16a34a;color:#fff;border:none;cursor:pointer;font-size:.68rem;padding:.2rem .5rem;">Paid</button></td>';
     tbody.insertBefore(tr,tbody.firstChild);
     igToast(num+' created & emailed to '+client,'success');
     togglePanel('new-inv-panel');
@@ -3008,13 +3027,13 @@ app.get('/finance', (c) => {
       var c = colorOverride || (amt<0?'#dc2626':'var(--ink)');
       return '<tr style="border-bottom:1px solid var(--border);">'
         +'<td style="padding:.5rem .875rem;font-size:.82rem;'+(bold?'font-weight:700;':'')+(indent?'padding-left:1.5rem;color:var(--ink-muted);':'')+'">'+name+'</td>'
-        +'<td style="padding:.5rem .875rem;text-align:right;font-family:\'DM Serif Display\',Georgia,serif;font-size:.85rem;color:'+c+';'+(bold?'font-weight:700;':'')+'">'+fmt(Math.abs(amt))+'</td>'
+        +'<td style="padding:.5rem .875rem;text-align:right;font-family:\\x27DM Serif Display\\x27,Georgia,serif;font-size:.85rem;color:'+c+';'+(bold?'font-weight:700;':'')+'">'+fmt(Math.abs(amt))+'</td>'
         +'<td style="padding:.5rem .875rem;text-align:right;font-size:.75rem;color:var(--ink-muted);">'+pct(amt,totalIncome)+'</td>'
         +'</tr>';
     };
     var html = '<div style="background:#fff;border:1px solid var(--border);">'
       +'<div style="padding:1rem 1.25rem;border-bottom:2px solid var(--gold);display:flex;justify-content:space-between;">'
-      +'<div style="font-family:\'DM Serif Display\',Georgia,serif;font-size:1rem;color:var(--ink);">Profit & Loss — '+period+'</div>'
+      +'<div style="font-family:\\x27DM Serif Display\\x27,Georgia,serif;font-size:1rem;color:var(--ink);">Profit & Loss — '+period+'</div>'
       +'<div style="font-size:.72rem;color:var(--ink-muted);">India Gully · GSTIN 07AABCV1234F1Z5</div>'
       +'</div>'
       +'<table style="width:100%;border-collapse:collapse;">'
@@ -3022,15 +3041,15 @@ app.get('/finance', (c) => {
       +'<tbody>'
       +'<tr style="background:#fafafa;"><td colspan="3" style="padding:.4rem .875rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);">INCOME</td></tr>'
       +d.income.map(r=>row(r.name,r.amt,false,true)).join('')
-      +'<tr style="background:#f0fdf4;"><td style="padding:.5rem .875rem;font-size:.82rem;font-weight:700;">Total Revenue</td><td style="padding:.5rem .875rem;text-align:right;font-family:\'DM Serif Display\',Georgia,serif;font-size:.95rem;font-weight:700;color:#15803d;">'+fmt(totalIncome)+'</td><td style="padding:.5rem .875rem;text-align:right;font-size:.75rem;color:var(--ink-muted);">100%</td></tr>'
+      +'<tr style="background:#f0fdf4;"><td style="padding:.5rem .875rem;font-size:.82rem;font-weight:700;">Total Revenue</td><td style="padding:.5rem .875rem;text-align:right;font-family:\\x27DM Serif Display\\x27,Georgia,serif;font-size:.95rem;font-weight:700;color:#15803d;">'+fmt(totalIncome)+'</td><td style="padding:.5rem .875rem;text-align:right;font-size:.75rem;color:var(--ink-muted);">100%</td></tr>'
       +'<tr style="background:#fafafa;"><td colspan="3" style="padding:.4rem .875rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#2563eb;">COST OF SERVICES</td></tr>'
       +d.cogs.map(r=>row(r.name,-r.amt,false,true,'#2563eb')).join('')
-      +'<tr style="background:#eff6ff;"><td style="padding:.5rem .875rem;font-size:.82rem;font-weight:700;">Gross Profit</td><td style="padding:.5rem .875rem;text-align:right;font-family:\'DM Serif Display\',Georgia,serif;font-size:.95rem;font-weight:700;color:#1d4ed8;">'+fmt(grossProfit)+'</td><td style="padding:.5rem .875rem;text-align:right;font-size:.75rem;color:var(--ink-muted);">'+pct(grossProfit,totalIncome)+'</td></tr>'
+      +'<tr style="background:#eff6ff;"><td style="padding:.5rem .875rem;font-size:.82rem;font-weight:700;">Gross Profit</td><td style="padding:.5rem .875rem;text-align:right;font-family:\\x27DM Serif Display\\x27,Georgia,serif;font-size:.95rem;font-weight:700;color:#1d4ed8;">'+fmt(grossProfit)+'</td><td style="padding:.5rem .875rem;text-align:right;font-size:.75rem;color:var(--ink-muted);">'+pct(grossProfit,totalIncome)+'</td></tr>'
       +'<tr style="background:#fafafa;"><td colspan="3" style="padding:.4rem .875rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7c3aed;">OPERATING EXPENSES</td></tr>'
       +d.opex.map(r=>row(r.name,-r.amt,false,true,'#7c3aed')).join('')
-      +'<tr style="background:#fdf4ff;"><td style="padding:.5rem .875rem;font-size:.82rem;font-weight:700;">EBITDA</td><td style="padding:.5rem .875rem;text-align:right;font-family:\'DM Serif Display\',Georgia,serif;font-size:.95rem;font-weight:700;color:'+(ebitda>=0?'#6d28d9':'#dc2626')+';">'+fmt(Math.abs(ebitda))+(ebitda<0?' (Loss)':'')+'</td><td style="padding:.5rem .875rem;text-align:right;font-size:.75rem;color:var(--ink-muted);">'+pct(ebitda,totalIncome)+'</td></tr>'
+      +'<tr style="background:#fdf4ff;"><td style="padding:.5rem .875rem;font-size:.82rem;font-weight:700;">EBITDA</td><td style="padding:.5rem .875rem;text-align:right;font-family:\\x27DM Serif Display\\x27,Georgia,serif;font-size:.95rem;font-weight:700;color:'+(ebitda>=0?'#6d28d9':'#dc2626')+';">'+fmt(Math.abs(ebitda))+(ebitda<0?' (Loss)':'')+'</td><td style="padding:.5rem .875rem;text-align:right;font-size:.75rem;color:var(--ink-muted);">'+pct(ebitda,totalIncome)+'</td></tr>'
       +row('Income Tax (25% of EBITDA)',-tax,false,true,'#dc2626')
-      +'<tr style="background:var(--ink);"><td style="padding:.75rem .875rem;font-size:.875rem;font-weight:700;color:#fff;">Net Profit After Tax</td><td style="padding:.75rem .875rem;text-align:right;font-family:\'DM Serif Display\',Georgia,serif;font-size:1.1rem;font-weight:700;color:var(--gold);">'+(netProfit>=0?'':'(Loss) ')+fmt(Math.abs(netProfit))+'</td><td style="padding:.75rem .875rem;text-align:right;font-size:.75rem;color:rgba(255,255,255,.6);">'+pct(netProfit,totalIncome)+'</td></tr>'
+      +'<tr style="background:var(--ink);"><td style="padding:.75rem .875rem;font-size:.875rem;font-weight:700;color:#fff;">Net Profit After Tax</td><td style="padding:.75rem .875rem;text-align:right;font-family:\\x27DM Serif Display\\x27,Georgia,serif;font-size:1.1rem;font-weight:700;color:var(--gold);">'+(netProfit>=0?'':'(Loss) ')+fmt(Math.abs(netProfit))+'</td><td style="padding:.75rem .875rem;text-align:right;font-size:.75rem;color:rgba(255,255,255,.6);">'+pct(netProfit,totalIncome)+'</td></tr>'
       +'</tbody></table></div>';
     document.getElementById('pl-table-container').innerHTML = html;
   };
@@ -3050,7 +3069,7 @@ app.get('/finance', (c) => {
       +'<td><span class="badge b-dk" style="font-size:.6rem;">'+cat+'</span></td>'
       +'<td style="font-size:.82rem;">'+desc+'</td>'
       +'<td style="font-size:.75rem;color:var(--ink-muted);">'+vendor+'</td>'
-      +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+amt.toLocaleString('en-IN')+'</td>';
+      +'<td style="font-family:\\x27DM Serif Display\\x27,Georgia,serif;">₹'+amt.toLocaleString('en-IN')+'</td>';
     tbody.insertBefore(tr,tbody.firstChild);
     igApi.post('/finance/expenses',{amount:amt,description:desc,category:cat,vendor:vendor,date:date}).then(function(){}).catch(function(){});
     igToast('Expense recorded: '+cat+' — ₹'+amt.toLocaleString('en-IN'),'success');
@@ -3088,9 +3107,9 @@ app.get('/finance', (c) => {
       tbody.innerHTML+='<tr><td style="font-size:.78rem;font-weight:600;">'+esc(inv.id)+'</td>'
         +'<td style="font-size:.78rem;">'+esc(inv.client)+'</td>'
         +'<td style="font-size:.78rem;">'+esc(inv.date)+'</td>'
-        +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+inv.amount.toLocaleString('en-IN')+'</td>'
+        +'<td style="font-family:\\x27DM Serif Display\\x27,Georgia,serif;">₹'+inv.amount.toLocaleString('en-IN')+'</td>'
         +'<td><span style="font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:'+statusCol+';border:1px solid '+statusCol+'20;padding:.15rem .5rem;">'+esc(inv.status)+'</span></td>'
-        +'<td><button onclick="igFinViewInv(''+esc(inv.id)+'')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button></td>'
+        +'<td><button onclick="igFinViewInv(\\x27'+esc(inv.id)+'\\x27)" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button></td>'
         +'</tr>';
     });
   });
@@ -3150,7 +3169,7 @@ app.get('/finance', (c) => {
     igModal('Invoice — '+num,
       '<div style="padding:1.25rem;background:#f8fafc;border:1px solid var(--border);margin-bottom:1rem;">'
       +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">'
-      +'<div><div style="font-family:\'DM Serif Display\',Georgia,serif;font-size:1.25rem;color:var(--ink);">Tax Invoice</div>'
+      +'<div><div style="font-family:\\x27DM Serif Display\\x27,Georgia,serif;font-size:1.25rem;color:var(--ink);">Tax Invoice</div>'
       +'<div style="font-size:.75rem;color:var(--ink-muted);">India Gully Advisory Services Pvt Ltd</div>'
       +'<div style="font-size:.68rem;color:var(--ink-muted);">GSTIN: 07AABCV1234F1Z5</div></div>'
       +'<div style="text-align:right;"><div style="font-size:.82rem;font-weight:700;color:var(--gold);">'+num+'</div>'
@@ -3164,8 +3183,8 @@ app.get('/finance', (c) => {
       +'<td style="padding:.5rem;text-align:right;font-weight:700;color:var(--gold);">₹3,20,000</td></tr></tbody>'
       +'</table></div>'
       +'<div style="display:flex;gap:.75rem;">'
-      +'<button onclick="igFinDownloadInvoicePdf(\''+num+'\')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-download\' style=\'margin-right:.35rem;\'></i>Download PDF</button>'
-      +'<button onclick="igFinSendInvoiceToClient(\''+num+'\')" style="background:#2563eb;color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-paper-plane\' style=\'margin-right:.35rem;\'></i>Send to Client</button>'
+      +'<button onclick="igFinDownloadInvoicePdf(\\x27'+num+'\\x27)" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-download\\x27 style=\\x27margin-right:.35rem;\\x27></i>Download PDF</button>'
+      +'<button onclick="igFinSendInvoiceToClient(\\x27'+num+'\\x27)" style="background:#2563eb;color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-paper-plane\\x27 style=\\x27margin-right:.35rem;\\x27></i>Send to Client</button>'
       +'</div>'
     );
   };
@@ -4305,9 +4324,9 @@ app.get('/hr', (c) => {
         +'<td><span class="badge b-dk">'+esc(dept)+'</span></td>'
         +'<td style="font-size:.72rem;color:var(--ink-muted);">'+esc(email)+'</td>'
         +'<td style="font-size:.75rem;color:var(--ink-muted);">'+new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+'</td>'
-        +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+(parseInt(ctc)||0)/100000+'L</td>'
+        +'<td style="font-family:\\x27DM Serif Display\\x27,Georgia,serif;">₹'+(parseInt(ctc)||0)/100000+'L</td>'
         +'<td><span class="badge b-gr">Active</span></td>'
-        +'<td><button onclick="igHrGenPayslipRow(e.name)" style="background:none;border:1px solid var(--border);padding:.25rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class=\'fas fa-file-invoice\'></i></button></td>';
+        +'<td><button onclick="igHrGenPayslipRow(e.name)" style="background:none;border:1px solid var(--border);padding:.25rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class=\\x27fas fa-file-invoice\\x27></i></button></td>';
       tbody.insertBefore(tr,tbody.firstChild);
       igToast((r&&r.message)||'Employee '+name+' onboarded. Portal credentials emailed.','success');
     });
@@ -4377,7 +4396,7 @@ app.get('/hr', (c) => {
         +'<td style="font-size:.75rem;">'+e.id+'</td>'
         +'<td style="font-size:.75rem;">₹'+e.ctc.toLocaleString('en-IN')+'</td>'
         +'<td><span class="badge b-gr" style="font-size:.6rem;">Active</span></td>'
-        +'<td><button onclick="igHrViewEmp(\''+e.name+'\',\''+e.designation+'\',\'₹'+e.ctc.toLocaleString('en-IN')+'\')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">View</button></td>'
+        +'<td><button onclick="igHrViewEmp(\\x27'+e.name+'\\x27,\\x27'+e.designation+'\\x27,\\x27₹'+e.ctc.toLocaleString('en-IN')+'\\x27)" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);">View</button></td>'
         +'</tr>';
     });
   });
@@ -5323,7 +5342,7 @@ app.get('/governance', (c) => {
     list.innerHTML=agendaItems.map(function(item,i){
       var bg=item.type==='resolution'?'#ede9fe':item.type==='special'?'#fff0f0':'#f0f9ff';
       var badge=item.type==='resolution'?'<span style="font-size:.6rem;background:#7c3aed;color:#fff;padding:1px 5px;">Resolution</span>':item.type==='special'?'<span style="font-size:.6rem;background:#dc2626;color:#fff;padding:1px 5px;">Special</span>':'<span style="font-size:.6rem;background:#1A3A6B;color:#fff;padding:1px 5px;">Routine</span>';
-      return '<div style="display:flex;align-items:center;gap:.5rem;background:'+bg+';padding:.5rem .75rem;border:1px solid rgba(0,0,0,.07);"><span style="font-size:.75rem;font-weight:700;color:var(--gold);width:18px;flex-shrink:0;">'+(i+1)+'.</span>'+badge+'<input type="text" value="'+esc(item.text)+'" onchange="agendaItems['+i+'].text=this.value;igUpdateNoticePreview()" class="ig-input" style="flex:1;font-size:.78rem;border:none;background:transparent;padding:.1rem;"><button onclick="agendaItems.splice('+i+',1);igRenderAgendaBuilder();igUpdateNoticePreview();igToast(\'Item removed\',\'warn\')" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.72rem;flex-shrink:0;"><i class="fas fa-times"></i></button></div>'
+      return '<div style="display:flex;align-items:center;gap:.5rem;background:'+bg+';padding:.5rem .75rem;border:1px solid rgba(0,0,0,.07);"><span style="font-size:.75rem;font-weight:700;color:var(--gold);width:18px;flex-shrink:0;">'+(i+1)+'.</span>'+badge+'<input type="text" value="'+esc(item.text)+'" onchange="agendaItems['+i+'].text=this.value;igUpdateNoticePreview()" class="ig-input" style="flex:1;font-size:.78rem;border:none;background:transparent;padding:.1rem;"><button onclick="agendaItems.splice('+i+',1);igRenderAgendaBuilder();igUpdateNoticePreview();igToast(\\x27Item removed\\x27,\\x27warn\\x27)" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.72rem;flex-shrink:0;"><i class="fas fa-times"></i></button></div>'
     }).join('');
     igUpdateNoticePreview();
   }
@@ -5360,7 +5379,7 @@ app.get('/governance', (c) => {
     var div=document.createElement('div');
     div.style='display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;background:var(--parch-dk);border:1px solid var(--border);padding:.5rem .75rem;';
     div.id='agenda-item-'+agItemCnt;
-    div.innerHTML='<span style="font-size:.75rem;font-weight:700;color:var(--gold);width:18px;flex-shrink:0;">'+agItemCnt+'.</span><input type="text" value="" class="ig-input" placeholder="New agenda item..." style="flex:1;font-size:.78rem;border:none;background:transparent;padding:.1rem;"><button onclick="this.parentElement.remove();igToast(\'Item removed\',\'warn\')" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.72rem;flex-shrink:0;"><i class="fas fa-times"></i></button>';
+    div.innerHTML='<span style="font-size:.75rem;font-weight:700;color:var(--gold);width:18px;flex-shrink:0;">'+agItemCnt+'.</span><input type="text" value="" class="ig-input" placeholder="New agenda item..." style="flex:1;font-size:.78rem;border:none;background:transparent;padding:.1rem;"><button onclick="this.parentElement.remove();igToast(\\x27Item removed\\x27,\\x27warn\\x27)" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.72rem;flex-shrink:0;"><i class="fas fa-times"></i></button>';
     document.getElementById('agenda-items').appendChild(div);
     div.querySelector('input').focus();
   };
@@ -5381,7 +5400,7 @@ app.get('/governance', (c) => {
         +'<td style="font-size:.72rem;">'+r.type+'</td>'
         +'<td style="font-size:.72rem;">'+r.date+'</td>'
         +'<td><span style="font-size:.62rem;font-weight:700;color:'+statusCol+';border:1px solid '+statusCol+'20;padding:.1rem .4rem;">'+r.status+'</span></td>'
-        +'<td><button onclick="igDownloadDoc(''+r.id+'','pdf')" style="background:none;border:1px solid var(--border);padding:.2rem .4rem;font-size:.62rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button></td>'
+        +'<td><button onclick="igDownloadDoc(\\x27'+r.id+'\\x27,\\x27pdf\\x27)" style="background:none;border:1px solid var(--border);padding:.2rem .4rem;font-size:.62rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button></td>'
         +'</tr>';
     });
   });
@@ -5407,7 +5426,7 @@ app.get('/governance', (c) => {
       +'<select id="dsc-class" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;"><option>Class 3 — Signing</option><option>Class 2 — Encryption</option></select></div>'
       +'<div><label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b;display:block;margin-bottom:.35rem;">Certifying Authority</label>'
       +'<select id="dsc-ca" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;"><option>eMudhra</option><option>Sify Trust</option><option>(n)Code Solutions</option><option>CDAC</option></select></div>'
-      +'<button onclick="var p=document.getElementById(\'dsc-person\').value;var cl=document.getElementById(\'dsc-class\').value;var ca=document.getElementById(\'dsc-ca\').value;igApi.post(\'/governance/resolutions\',{action:\'dsc_enroll\',person:p,dsc_class:cl,ca:ca}).then(function(){igToast(\'DSC enrollment initiated for \'+p+\' — CA contact will be shared\',\'success\');}).catch(function(){igToast(\'DSC enrollment initiated for \'+p+\' — CA contact will be shared\',\'success\');});" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Initiate Enrollment</button>'
+      +'<button onclick="var p=document.getElementById(\\x27dsc-person\\x27).value;var cl=document.getElementById(\\x27dsc-class\\x27).value;var ca=document.getElementById(\\x27dsc-ca\\x27).value;igApi.post(\\x27/governance/resolutions\\x27,{action:\\x27dsc_enroll\\x27,person:p,dsc_class:cl,ca:ca}).then(function(){igToast(\\x27DSC enrollment initiated for \\x27+p+\\x27 — CA contact will be shared\\x27,\\x27success\\x27);}).catch(function(){igToast(\\x27DSC enrollment initiated for \\x27+p+\\x27 — CA contact will be shared\\x27,\\x27success\\x27);});" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Initiate Enrollment</button>'
       +'</div>'
     );
   };
@@ -5425,7 +5444,7 @@ app.get('/governance', (c) => {
       +'<div style="font-size:.75rem;color:#64748b;">Meeting: '+meetingNo+' · Date: '+date+'</div>'
       +'<div><label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b;display:block;margin-bottom:.35rem;">Minutes Content</label>'
       +'<textarea id="minutes-content" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;min-height:140px;resize:vertical;" placeholder="Enter meeting minutes, resolutions passed, attendees, discussions..."></textarea></div>'
-      +'<button onclick="var c=document.getElementById(\'minutes-content\').value;if(!c){igToast(\'Enter minutes content\',\'warn\');return;}igApi.post(\'/governance/resolutions\',{action:\'save_minutes\',meeting_no:\''+meetingNo+'\',content:c}).then(function(){igToast(\''+meetingNo+' minutes saved and pending CS review\',\'success\');}).catch(function(){igToast(\''+meetingNo+' minutes saved and pending CS review\',\'success\');});" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Save Minutes</button>'
+      +'<button onclick="var c=document.getElementById(\\x27minutes-content\\x27).value;if(!c){igToast(\\x27Enter minutes content\\x27,\\x27warn\\x27);return;}igApi.post(\\x27/governance/resolutions\\x27,{action:\\x27save_minutes\\x27,meeting_no:\\x27'+meetingNo+'\\x27,content:c}).then(function(){igToast(\\x27'+meetingNo+' minutes saved and pending CS review\\x27,\\x27success\\x27);}).catch(function(){igToast(\\x27'+meetingNo+' minutes saved and pending CS review\\x27,\\x27success\\x27);});" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Save Minutes</button>'
       +'</div>'
     );
   };
@@ -5460,7 +5479,7 @@ app.get('/governance', (c) => {
       +'<input type="datetime-local" id="notice-datetime" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;"></div>'
       +'<div><label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b;display:block;margin-bottom:.35rem;">Venue</label>'
       +'<input type="text" id="notice-venue" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;" placeholder="Registered Office / Virtual"></div>'
-      +'<button onclick="var d=document.getElementById(\'notice-datetime\').value;var v=document.getElementById(\'notice-venue\').value;if(!d){igToast(\'Select date and time\',\'warn\');return;}igApi.post(\'/governance/resolutions\',{action:\'draft_notice\',type:\''+type+'\',date:d,venue:v}).then(function(){igToast(\''+type+' notice drafted — sent to Company Secretary for review\',\'success\');}).catch(function(){igToast(\''+type+' notice drafted — sent to Company Secretary for review\',\'success\');});" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Draft & Send for Review</button>'
+      +'<button onclick="var d=document.getElementById(\\x27notice-datetime\\x27).value;var v=document.getElementById(\\x27notice-venue\\x27).value;if(!d){igToast(\\x27Select date and time\\x27,\\x27warn\\x27);return;}igApi.post(\\x27/governance/resolutions\\x27,{action:\\x27draft_notice\\x27,type:\\x27'+type+'\\x27,date:d,venue:v}).then(function(){igToast(\\x27'+type+' notice drafted — sent to Company Secretary for review\\x27,\\x27success\\x27);}).catch(function(){igToast(\\x27'+type+' notice drafted — sent to Company Secretary for review\\x27,\\x27success\\x27);});" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Draft & Send for Review</button>'
       +'</div>'
     );
   };
@@ -6250,7 +6269,7 @@ app.get('/horeca', (c) => {
       +'<input type="email" id="cust-email" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;" placeholder="procurement@hotel.com"></div>'
       +'<div><label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b;display:block;margin-bottom:.35rem;">Property Type</label>'
       +'<select id="cust-type" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;"><option>5-Star Hotel</option><option>4-Star Hotel</option><option>Restaurant Chain</option><option>Café / QSR</option><option>Resort</option></select></div>'
-      +'<button onclick="var n=document.getElementById(\'cust-name\').value;if(!n){igToast(\'Enter customer name\',\'warn\');return;}igApi.post(\'/admin/users\',{name:n,role:\'Client\',portal:\'client\'}).then(function(r){igToast(\'Customer account created for \'+n+\' — login credentials sent\',\'success\');}).catch(function(){igToast(\'Customer account created for \'+n+\' — login credentials sent\',\'success\');});" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Create Account</button>'
+      +'<button onclick="igHorecaCreateCustomer()" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Create Account</button>'
       +'</div>'
     );
   };
@@ -6316,7 +6335,7 @@ app.get('/horeca', (c) => {
         +'<td style="font-size:.75rem;color:var(--ink-muted);">'+r.reorder+'</td>'
         +'<td style="font-size:.82rem;">₹'+r.price.toLocaleString('en-IN')+'</td>'
         +'<td><span style="background:'+(low?'#fef2f2':'#f0fdf4')+';color:'+(low?'#dc2626':'#16a34a')+';padding:.15rem .4rem;font-size:.62rem;font-weight:600;">'+(low?'⚠ Low Stock':'✓ In Stock')+'</span></td>'
-        +'<td><button onclick="igHorecaReorder(\''+r.sku+'\',\''+r.name+'\','+r.reorder+')" style="background:'+(color||'#0d9488')+';color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;">Reorder</button></td>'
+        +'<td><button onclick="igHorecaReorder(\\x27'+r.sku+'\\x27,\\x27'+r.name+'\\x27,'+r.reorder+')" style="background:'+(color||'#0d9488')+';color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;">Reorder</button></td>'
         +'</tr>';
     }).join('');
     igModal(cat+' — SKU Catalogue',
@@ -7005,9 +7024,9 @@ app.get('/contracts', (c) => {
       +'<div style="font-size:.9rem;font-weight:600;color:'+(status==='Expiring'?'#d97706':'#111')+';">'+expiry+'</div></div>'
       +'</div>'
       +'<div style="display:flex;gap:.75rem;margin-top:.5rem;">'
-      +'<button onclick="igDownloadContract(\''+id+'\',\''+name+'\')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-download\' style=\'margin-right:.35rem;\'></i>Download PDF</button>'
-      +(status==='Expiring'?'<button onclick="igCtRenewContract(id)" style="background:#d97706;color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-sync\' style=\'margin-right:.35rem;\'></i>Renew</button>':'')
-      +'<button onclick="igSendForSign(\''+id+'\',\''+name+'\')" style="background:#7c3aed;color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-pen\' style=\'margin-right:.35rem;\'></i>Send for E-Sign</button>'
+      +'<button onclick="igDownloadContract(\\x27'+id+'\\x27,\\x27'+name+'\\x27)" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-download\\x27 style=\\x27margin-right:.35rem;\\x27></i>Download PDF</button>'
+      +(status==='Expiring'?'<button onclick="igCtRenewContract(id)" style="background:#d97706;color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-sync\\x27 style=\\x27margin-right:.35rem;\\x27></i>Renew</button>':'')
+      +'<button onclick="igSendForSign(\\x27'+id+'\\x27,\\x27'+name+'\\x27)" style="background:#7c3aed;color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-pen\\x27 style=\\x27margin-right:.35rem;\\x27></i>Send for E-Sign</button>'
       +'</div>'
     );
   };
@@ -7596,8 +7615,8 @@ app.get('/reports', (c) => {
           +(d&&d.profit?'<div style="padding:.75rem;background:#fff;border:1px solid var(--border);"><div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-bottom:.2rem;">Net Profit</div><div style="font-size:1.1rem;font-weight:700;color:#2563eb;">'+d.profit.margin_pct+'% margin</div></div>':'')
           +'</div></div>'
           +'<div style="display:flex;gap:.75rem;margin-top:.5rem;">'
-          +'<button onclick="igGenerateReport(name,\'pdf\')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-download\' style=\'margin-right:.35rem;\'></i>Download PDF</button>'
-          +'<button onclick="igEmailReport(name)" style="background:#2563eb;color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-envelope\' style=\'margin-right:.35rem;\'></i>Email Report</button>'
+          +'<button onclick="igGenerateReport(name,\\x27pdf\\x27)" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-download\\x27 style=\\x27margin-right:.35rem;\\x27></i>Download PDF</button>'
+          +'<button onclick="igEmailReport(name)" style="background:#2563eb;color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-envelope\\x27 style=\\x27margin-right:.35rem;\\x27></i>Email Report</button>'
           +'</div>'
         );
       },800);
@@ -9360,9 +9379,9 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
     igToast('Generating DPDP v2 compliance report…','info');
     igApi.get('/dpdp/dpo/dashboard').then(function(d){
       var s = d.summary||{};
-      var txt = 'India Gully — DPDP v2 Compliance Report\n'+'Generated: '+new Date().toISOString()+'\n\n'
-        +'Active Consents: '+(s.active_consents||0)+'\nOpen Requests: '+(s.open_requests||0)+'\nOverdue: '+(s.overdue_requests||0)+'\nUnread Alerts: '+(s.unread_alerts||0)+'\n\n'
-        +'Storage: '+d.storage+'\nDPO Email: dpo@indiagully.com\nLegal Basis: DPDP Act 2023\n';
+      var txt = 'India Gully — DPDP v2 Compliance Report\\n'+'Generated: '+new Date().toISOString()+'\\n\\n'
+        +'Active Consents: '+(s.active_consents||0)+'\\nOpen Requests: '+(s.open_requests||0)+'\\nOverdue: '+(s.overdue_requests||0)+'\\nUnread Alerts: '+(s.unread_alerts||0)+'\\n\\n'
+        +'Storage: '+d.storage+'\\nDPO Email: dpo@indiagully.com\\nLegal Basis: DPDP Act 2023\\n';
       var blob = new Blob([txt],{type:'text/plain'});
       var a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='dpdp-v2-report-'+Date.now()+'.txt'; a.click();
       igToast('DPDP report downloaded','success');
@@ -9374,9 +9393,9 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
     igApi.post('/payments/live-test',{}).then(function(d){
       var mode = d.key_mode||'unknown';
       var ok   = d.success;
-      var msg  = 'N2 Razorpay Dry-Run\nKey mode: '+mode+'\n'+(ok?'✅ Order ID: '+d.razorpay_order_id:'❌ '+d.n2_status);
+      var msg  = 'N2 Razorpay Dry-Run\\nKey mode: '+mode+'\\n'+(ok?'\u2705 Order ID: '+d.razorpay_order_id:'\u274c '+d.n2_status);
       igToast(ok?'Razorpay API reachable in '+mode+' mode':'Razorpay: '+(d.api_error||d.message||'check configuration'), ok?'success':'warning');
-      if(window.igModal) igModal('N2: Razorpay Dry-Run',msg.replace(/\n/g,'<br>'));
+      if(window.igModal) igModal('N2: Razorpay Dry-Run',msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Razorpay test error: '+e,'error'); });
   };
 
@@ -9384,10 +9403,10 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
     igToast('Loading N4: WebAuthn devices…','info');
     igApi.get('/auth/webauthn/devices').then(function(d){
       var cnt = d.credential_count||0;
-      var devs = (d.devices||[]).map(function(v){ return v.vendor+' ('+v.registered_at+')'; }).join('\n') || 'No devices registered';
-      var msg  = 'N4 WebAuthn Devices\nCount: '+cnt+'\n'+devs+'\n\n'+d.n4_status;
+      var devs = (d.devices||[]).map(function(v){ return v.vendor+' ('+v.registered_at+')'; }).join('\\n') || 'No devices registered';
+      var msg  = 'N4 WebAuthn Devices\\nCount: '+cnt+'\\n'+devs+'\\n\\n'+d.n4_status;
       igToast(cnt>0?cnt+' passkey(s) registered':'No passkeys — register at /portal/client', cnt>0?'success':'warning');
-      if(window.igModal) igModal('N4: WebAuthn Devices',msg.replace(/\n/g,'<br>'));
+      if(window.igModal) igModal('N4: WebAuthn Devices',msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('WebAuthn status error: '+e,'error'); });
   };
 
@@ -9578,24 +9597,24 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
     igToast('Loading S1: Live Config…','info');
     igApi.get('/admin/live-config').then(function(d){
       var s = d.summary||{};
-      var msg = 'S1 Live Config\n'+d.s1_status+
-        '\nTotal configs: '+s.total+
-        '\nGreen: '+s.green+' | Warning: '+s.warning+' | Error: '+s.error+
-        '\nHealth: '+s.health_pct+'%\nVersion: '+d.platform_version;
+      var msg = 'S1 Live Config\\n'+d.s1_status+
+        '\\nTotal configs: '+s.total+
+        '\\nGreen: '+s.green+' | Warning: '+s.warning+' | Error: '+s.error+
+        '\\nHealth: '+s.health_pct+'%\\nVersion: '+d.platform_version;
       igToast(s.error===0?'All configs green ✅':'Config issues detected ⚠️',s.error===0?'success':'warning',8000);
-      igModal('S1: Live Runtime Config',msg.replace(/\n/g,'<br>'));
+      igModal('S1: Live Runtime Config',msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Live config error: '+e,'error'); });
   };
 
   window.igGatewayStatus = function(){
     igToast('Loading S2: Gateway Status…','info');
     igApi.get('/payments/gateway-status').then(function(d){
-      var msg = 'S2 Gateway Status\n'+d.s2_status+
-        '\nGateway: '+d.gateway+' | Mode: '+d.mode+
-        '\nAPI alive: '+d.api_alive+' | Latency: '+d.api_latency_ms+'ms'+
-        '\nCompliance: '+d.compliance_passed+'/'+d.compliance_total;
+      var msg = 'S2 Gateway Status\\n'+d.s2_status+
+        '\\nGateway: '+d.gateway+' | Mode: '+d.mode+
+        '\\nAPI alive: '+d.api_alive+' | Latency: '+d.api_latency_ms+'ms'+
+        '\\nCompliance: '+d.compliance_passed+'/'+d.compliance_total;
       igToast(d.mode==='LIVE'?'Razorpay LIVE ✅':'Gateway in '+d.mode+' mode',d.mode==='LIVE'?'success':'warning',8000);
-      igModal('S2: Payment Gateway Status',msg.replace(/\n/g,'<br>'));
+      igModal('S2: Payment Gateway Status',msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Gateway status error: '+e,'error'); });
   };
 
@@ -9603,12 +9622,12 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
     igToast('Loading S3: Stack Health…','info');
     igApi.get('/integrations/stack-health').then(function(d){
       var s = d.summary||{};
-      var msg = 'S3 Stack Health\n'+d.s3_status+
-        '\nTotal integrations: '+s.total+
-        '\nGreen: '+s.green+' | Warning: '+s.warning+' | Error: '+s.error+
-        '\nOverall: '+d.overall_health;
+      var msg = 'S3 Stack Health\\n'+d.s3_status+
+        '\\nTotal integrations: '+s.total+
+        '\\nGreen: '+s.green+' | Warning: '+s.warning+' | Error: '+s.error+
+        '\\nOverall: '+d.overall_health;
       igToast(d.overall_health==='green'?'Stack healthy ✅':'Stack needs attention',d.overall_health==='green'?'success':'warning',8000);
-      igModal('S3: Integration Stack Health',msg.replace(/\n/g,'<br>'));
+      igModal('S3: Integration Stack Health',msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Stack health error: '+e,'error'); });
   };
 
@@ -9617,14 +9636,14 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
   window.igGapAnalysis = function(){
     igToast('Loading S6: Gap Analysis…','info');
     igApi.get('/compliance/gap-analysis').then(function(d){
-      var msg = 'S6 Gap Analysis\n'+d.s6_status+
-        '\nWeighted score: '+d.weighted_score+'%'+
-        '\nCert level: '+d.certification_level+
-        '\nChecks: '+d.passed_checks+'/'+d.total_checks+
-        '\nOpen gaps: '+d.open_gaps.length+
-        '\nGold estimate: '+d.gold_score_estimate+'%';
+      var msg = 'S6 Gap Analysis\\n'+d.s6_status+
+        '\\nWeighted score: '+d.weighted_score+'%'+
+        '\\nCert level: '+d.certification_level+
+        '\\nChecks: '+d.passed_checks+'/'+d.total_checks+
+        '\\nOpen gaps: '+d.open_gaps.length+
+        '\\nGold estimate: '+d.gold_score_estimate+'%';
       igToast('Cert level: '+d.certification_level,d.certification_level==='Gold'?'success':'warning',8000);
-      igModal('S6: Compliance Gap Analysis',msg.replace(/\n/g,'<br>'));
+      igModal('S6: Compliance Gap Analysis',msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Gap analysis error: '+e,'error'); });
   };
 
@@ -9632,12 +9651,12 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
   window.igGoLiveChecklist = function(){
     igToast('Loading T1: Go-Live Checklist…','info');
     igApi.get('/admin/go-live-checklist').then(function(d){
-      var msg = 'T1 Go-Live Checklist\n'+d.t1_status+
-        '\nScore: '+d.score_pct+'%'+
-        '\nGo-live ready: '+d.go_live_ready+
-        '\nBlocking items: '+d.blocking_items.length;
+      var msg = 'T1 Go-Live Checklist\\n'+d.t1_status+
+        '\\nScore: '+d.score_pct+'%'+
+        '\\nGo-live ready: '+d.go_live_ready+
+        '\\nBlocking items: '+d.blocking_items.length;
       igToast(d.go_live_ready?'Ready to go live ✅':'Not yet ready ⚠️',d.go_live_ready?'success':'warning',8000);
-      igModal('T1: Production Go-Live Checklist',msg.replace(/\n/g,'<br>'));
+      igModal('T1: Production Go-Live Checklist',msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Go-live checklist error: '+e,'error'); });
   };
 
@@ -9645,13 +9664,13 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
     igToast('Loading T2: Transaction Log…','info');
     igApi.get('/payments/transaction-log').then(function(d){
       var g = d.gst_summary||{};
-      var msg = 'T2 Transaction Log\n'+d.t2_status+
-        '\nTotal captured: '+g.total_captured_inr+
-        '\nBase amount: '+g.base_amount_inr+
-        '\nGST 18%: '+g.gst_18pct_inr+
-        '\nHSN/SAC: '+g.hsn_sac;
+      var msg = 'T2 Transaction Log\\n'+d.t2_status+
+        '\\nTotal captured: '+g.total_captured_inr+
+        '\\nBase amount: '+g.base_amount_inr+
+        '\\nGST 18%: '+g.gst_18pct_inr+
+        '\\nHSN/SAC: '+g.hsn_sac;
       igToast('Transaction log loaded',d.database_available?'success':'info',8000);
-      igModal('T2: Payment Transaction Log',msg.replace(/\n/g,'<br>'));
+      igModal('T2: Payment Transaction Log',msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Transaction log error: '+e,'error'); });
   };
 
@@ -9660,11 +9679,11 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
   window.igMfaStatus = function(){
     igToast('Loading T4: MFA Status…','info');
     igApi.get('/auth/mfa-status').then(function(d){
-      var msg = 'T4 MFA Status\n'+d.t4_status+
-        '\nLive methods: '+d.live_methods+'/5'+
-        '\nCoverage: '+d.mfa_coverage;
+      var msg = 'T4 MFA Status\\n'+d.t4_status+
+        '\\nLive methods: '+d.live_methods+'/5'+
+        '\\nCoverage: '+d.mfa_coverage;
       igToast('MFA coverage: '+d.mfa_coverage,d.mfa_coverage==='High'?'success':'warning',8000);
-      igModal('T4: MFA Enrolment Status',msg.replace(/\n/g,'<br>'));
+      igModal('T4: MFA Enrolment Status',msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('MFA status error: '+e,'error'); });
   };
 
@@ -9672,12 +9691,12 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
     igToast('Loading T5: DPO Summary…','info');
     igApi.get('/dpdp/dpo-summary').then(function(d){
       var cs = d.compliance_summary||{};
-      var msg = 'T5 DPO Summary\n'+d.t5_status+
-        '\nCompliance: '+cs.score_pct+'%'+
-        '\nDone: '+cs.done+'/'+cs.total+
-        '\nCert gate: '+cs.cert_gate;
+      var msg = 'T5 DPO Summary\\n'+d.t5_status+
+        '\\nCompliance: '+cs.score_pct+'%'+
+        '\\nDone: '+cs.done+'/'+cs.total+
+        '\\nCert gate: '+cs.cert_gate;
       igToast('DPDP '+cs.score_pct+'% compliant',cs.score_pct>=95?'success':'warning',8000);
-      igModal('T5: DPO Operational Summary',msg.replace(/\n/g,'<br>'));
+      igModal('T5: DPO Operational Summary',msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('DPO summary error: '+e,'error'); });
   };
 
@@ -9685,12 +9704,12 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
     igToast('Loading T6: Risk Register…','info');
     igApi.get('/compliance/risk-register').then(function(d){
       var s = d.summary||{};
-      var msg = 'T6 Risk Register\n'+d.t6_status+
-        '\nTotal: '+s.total+' | Mitigated: '+s.mitigated+
-        '\nOpen: '+s.open+' | Accepted: '+s.accepted+
-        '\nOverall rating: '+d.overall_risk_rating;
+      var msg = 'T6 Risk Register\\n'+d.t6_status+
+        '\\nTotal: '+s.total+' | Mitigated: '+s.mitigated+
+        '\\nOpen: '+s.open+' | Accepted: '+s.accepted+
+        '\\nOverall rating: '+d.overall_risk_rating;
       igToast('Risk rating: '+d.overall_risk_rating,d.overall_risk_rating==='Low'?'success':'warning',8000);
-      igModal('T6: IT Risk Register',msg.replace(/\n/g,'<br>'));
+      igModal('T6: IT Risk Register',msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Risk register error: '+e,'error'); });
   };
 
@@ -9704,12 +9723,12 @@ window.igD1LiveStatus = function() {
     .then(function(r){ return r.json(); })
     .then(function(d) {
       var s = d.d1_status;
-      var msg = 'Binding: '+s.binding+'\nActive: '+s.binding_active+'\nDB: '+s.database_name
-        +'\nTables: '+s.total_tables+'\nBound: '+s.bound_count
-        +'\nReadiness: '+s.readiness_pct+'%'
-        +'\nAction: '+s.action_required;
+      var msg = 'Binding: '+s.binding+'\\nActive: '+s.binding_active+'\\nDB: '+s.database_name
+        +'\\nTables: '+s.total_tables+'\\nBound: '+s.bound_count
+        +'\\nReadiness: '+s.readiness_pct+'%'
+        +'\\nAction: '+s.action_required;
       igToast('D1 Live: '+s.readiness_pct+'% ready', s.binding_active?'success':'warning', 8000);
-      igModal('V1: D1 Live Binding Status', msg.replace(/\n/g,'<br>'));
+      igModal('V1: D1 Live Binding Status', msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('D1 live status error: '+e,'error'); });
 };
 
@@ -9720,10 +9739,10 @@ window.igRazorpayLiveValidation = function() {
       var rv = d.razorpay_validation;
       var rows = rv.checks.map(function(c) {
         return (c.pass ? '&#x2705;' : '&#x274C;')+' '+c.label+' — '+c.note;
-      }).join('\n');
-      var msg = 'Mode: '+rv.key_mode+'\nPassed: '+rv.passed+'/'+rv.total+'\nReadiness: '+rv.readiness_pct+'%\n\n'+rows+'\n\nAction: '+rv.action_required;
+      }).join('\\n');
+      var msg = 'Mode: '+rv.key_mode+'\\nPassed: '+rv.passed+'/'+rv.total+'\\nReadiness: '+rv.readiness_pct+'%\\n\\n'+rows+'\\n\\nAction: '+rv.action_required;
       igToast('Razorpay: '+rv.key_mode+' ('+rv.readiness_pct+'%)', rv.readiness_pct===100?'success':'warning', 8000);
-      igModal('V2: Razorpay Live Validation', msg.replace(/\n/g,'<br>'));
+      igModal('V2: Razorpay Live Validation', msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Razorpay validation error: '+e,'error'); });
 };
 
@@ -9735,12 +9754,12 @@ window.igEmailDeliverability = function() {
       var rows = ed.dns_records.map(function(r) {
         var icon = r.status==='verified'?'&#x2705;':'&#x274C;';
         return icon+' '+r.record+' ('+r.domain+'): '+r.note;
-      }).join('\n');
-      var msg = 'Provider: '+ed.provider+'\nAPI Key: '+(ed.api_key_present?'Configured':'Missing')+'\nDomain: '+ed.domain
-        +'\nVerified: '+ed.verified_count+'/'+ed.total_records+' records\nReadiness: '+ed.readiness_pct+'%\n\n'+rows
-        +'\n\nAction: '+ed.action_required;
+      }).join('\\n');
+      var msg = 'Provider: '+ed.provider+'\\nAPI Key: '+(ed.api_key_present?'Configured':'Missing')+'\\nDomain: '+ed.domain
+        +'\\nVerified: '+ed.verified_count+'/'+ed.total_records+' records\\nReadiness: '+ed.readiness_pct+'%\\n\\n'+rows
+        +'\\n\\nAction: '+ed.action_required;
       igToast('Email deliverability: '+ed.readiness_pct+'%', ed.readiness_pct===100?'success':'warning', 8000);
-      igModal('V3: Email Deliverability (SendGrid)', msg.replace(/\n/g,'<br>'));
+      igModal('V3: Email Deliverability (SendGrid)', msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Email deliverability error: '+e,'error'); });
 };
 
@@ -9749,13 +9768,13 @@ window.igPasskeyAttestation = function() {
     .then(function(r){ return r.json(); })
     .then(function(d) {
       var pa = d.passkey_attestation;
-      var msg = 'RP ID: '+pa.rp_id+'\nAttestation: '+pa.attestation_format
-        +'\nUser Verification: '+pa.user_verification
-        +'\nRegistered credentials: '+pa.registered_count
-        +'\nReadiness: '+pa.readiness_pct+'%'
-        +'\nAction: '+pa.action_required;
+      var msg = 'RP ID: '+pa.rp_id+'\\nAttestation: '+pa.attestation_format
+        +'\\nUser Verification: '+pa.user_verification
+        +'\\nRegistered credentials: '+pa.registered_count
+        +'\\nReadiness: '+pa.readiness_pct+'%'
+        +'\\nAction: '+pa.action_required;
       igToast('Passkey: '+pa.registered_count+' registered', pa.registered_count>0?'success':'warning', 8000);
-      igModal('V4: Passkey Attestation Status', msg.replace(/\n/g,'<br>'));
+      igModal('V4: Passkey Attestation Status', msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Passkey attestation error: '+e,'error'); });
 };
 
@@ -9767,11 +9786,11 @@ window.igVendorDpaTracker = function() {
       var rows = vt.vendors.map(function(v) {
         var icon = v.dpa_status==='signed'?'&#x2705;':'&#x274C;';
         return icon+' '+v.name+' ('+v.category+'): '+v.dpa_status;
-      }).join('\n');
-      var msg = 'Total vendors: '+vt.total_vendors+'\nSigned: '+vt.signed+'\nPending: '+vt.pending
-        +'\nReadiness: '+vt.readiness_pct+'%\n\n'+rows+'\n\nAction: '+vt.action_required;
+      }).join('\\n');
+      var msg = 'Total vendors: '+vt.total_vendors+'\\nSigned: '+vt.signed+'\\nPending: '+vt.pending
+        +'\\nReadiness: '+vt.readiness_pct+'%\\n\\n'+rows+'\\n\\nAction: '+vt.action_required;
       igToast('Vendor DPA: '+vt.signed+'/'+vt.total_vendors+' signed', vt.pending===0?'success':'warning', 8000);
-      igModal('V5: Vendor DPA Tracker', msg.replace(/\n/g,'<br>'));
+      igModal('V5: Vendor DPA Tracker', msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Vendor DPA tracker error: '+e,'error'); });
 };
 
@@ -9783,12 +9802,12 @@ window.igGoldCertReadiness = function() {
       var rows = gc.criteria.map(function(c) {
         var icon = c.status==='pass'?'&#x2705;':c.status==='partial'?'&#x26A0;':'&#x274C;';
         return icon+' ['+c.id+'] '+c.label+' ('+c.weight+'pts): '+c.note;
-      }).join('\n');
-      var msg = 'Cert Level: '+gc.cert_level+'\nReadiness: '+gc.readiness_pct+'%\nScore: '+gc.earned_weight+'/'+gc.total_weight
-        +'\nBlockers: '+gc.blockers.length+'\n\n'+rows
-        +'\n\nAction: '+gc.action_required;
+      }).join('\\n');
+      var msg = 'Cert Level: '+gc.cert_level+'\\nReadiness: '+gc.readiness_pct+'%\\nScore: '+gc.earned_weight+'/'+gc.total_weight
+        +'\\nBlockers: '+gc.blockers.length+'\\n\\n'+rows
+        +'\\n\\nAction: '+gc.action_required;
       igToast(gc.cert_level+' — '+gc.readiness_pct+'% ready', gc.cert_level==='Gold'?'success':'warning', 10000);
-      igModal('V6: Gold Cert Readiness', msg.replace(/\n/g,'<br>'));
+      igModal('V6: Gold Cert Readiness', msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Gold cert readiness error: '+e,'error'); });
 };
 
@@ -9802,15 +9821,15 @@ window.igD1BindingHealth = function() {
       var tblRows = (h.table_status||[]).map(function(t) {
         var ic = t.status==='live'?'&#x2705;':'&#x274C;';
         return ic+' '+t.name+(t.rows!==null?' ('+t.rows+' rows)':'');
-      }).join('\n');
-      var steps = h.binding_active ? '' : '\n\nActivation Steps:\n'+(h.steps_to_activate||[]).join('\n');
+      }).join('\\n');
+      var steps = h.binding_active ? '' : '\\n\\nActivation Steps:\\n'+(h.steps_to_activate||[]).join('\\n');
       var msg = 'Binding Active: '+(h.binding_active?'YES ✓':'NO — setup required')
-        +'\nDatabase: '+h.database_name
-        +'\nTables Found: '+h.tables_found+'/'+h.tables_expected
-        +'\nReadiness: '+h.readiness_pct+'%'
-        +'\n\n'+tblRows+steps;
+        +'\\nDatabase: '+h.database_name
+        +'\\nTables Found: '+h.tables_found+'/'+h.tables_expected
+        +'\\nReadiness: '+h.readiness_pct+'%'
+        +'\\n\\n'+tblRows+steps;
       igToast('D1 Binding: '+(h.binding_active?'Active ✓':'Not bound'), h.binding_active?'success':'warning', 10000);
-      igModal('W1: D1 Binding Health', msg.replace(/\n/g,'<br>'));
+      igModal('W1: D1 Binding Health', msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('D1 binding health error: '+e,'error'); });
 };
 
@@ -9822,18 +9841,18 @@ window.igRazorpayLiveTest = function() {
       var rt = d.razorpay_live_test;
       var pciRows = (rt.pci_checklist||[]).map(function(p) {
         return (p.pass?'&#x2705;':'&#x274C;')+' '+p.req+': '+p.label;
-      }).join('\n');
+      }).join('\\n');
       var order = rt.order_dry_run||{};
       var msg = 'Key Mode: '+rt.key_mode
-        +'\nKey ID: '+rt.key_id_prefix
-        +'\nSecret Present: '+(rt.secret_present?'Yes':'No')
-        +'\nWebhook Secret: '+(rt.webhook_secret_present?'Yes':'No')
-        +'\nOrder Dry-Run: '+order.status+(order.order_id?' ('+order.order_id+')':'')
-        +'\nPCI Score: '+rt.pci_passed+'/'+rt.pci_total+' ('+rt.pci_score_pct+'%)'
-        +'\nReadiness: '+rt.readiness_pct+'%'
-        +'\n\n'+pciRows;
+        +'\\nKey ID: '+rt.key_id_prefix
+        +'\\nSecret Present: '+(rt.secret_present?'Yes':'No')
+        +'\\nWebhook Secret: '+(rt.webhook_secret_present?'Yes':'No')
+        +'\\nOrder Dry-Run: '+order.status+(order.order_id?' ('+order.order_id+')':'')
+        +'\\nPCI Score: '+rt.pci_passed+'/'+rt.pci_total+' ('+rt.pci_score_pct+'%)'
+        +'\\nReadiness: '+rt.readiness_pct+'%'
+        +'\\n\\n'+pciRows;
       igToast('Razorpay: '+rt.key_mode+' — '+rt.readiness_pct+'% ready', rt.readiness_pct===100?'success':'warning', 10000);
-      igModal('W2: Razorpay Live Test', msg.replace(/\n/g,'<br>'));
+      igModal('W2: Razorpay Live Test', msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Razorpay live test error: '+e,'error'); });
 };
 
@@ -9845,15 +9864,15 @@ window.igDnsDeliverabilityLive = function() {
       var dl = d.dns_deliverability_live;
       var rows = (dl.checks||[]).map(function(c) {
         return (c.pass?'&#x2705;':'&#x274C;')+' '+c.record+' ('+c.type+'): '+c.note;
-      }).join('\n');
+      }).join('\\n');
       var msg = 'Domain: '+dl.domain
-        +'\nGrade: '+dl.grade+' ('+dl.readiness_pct+'%)'
-        +'\nPassed: '+dl.passed+'/'+dl.total
-        +'\nResolver: '+dl.resolver
-        +'\n\n'+rows
-        +'\n\nAction: '+dl.action_required;
+        +'\\nGrade: '+dl.grade+' ('+dl.readiness_pct+'%)'
+        +'\\nPassed: '+dl.passed+'/'+dl.total
+        +'\\nResolver: '+dl.resolver
+        +'\\n\\n'+rows
+        +'\\n\\nAction: '+dl.action_required;
       igToast('DNS Grade: '+dl.grade+' — '+dl.passed+'/'+dl.total+' passed', dl.grade==='A+'||dl.grade==='A'?'success':'warning', 10000);
-      igModal('W3: DNS Deliverability Live', msg.replace(/\n/g,'<br>'));
+      igModal('W3: DNS Deliverability Live', msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('DNS probe error: '+e,'error'); });
 };
 
@@ -9864,19 +9883,19 @@ window.igWebAuthnCredentialStore = function() {
       var ws = d.webauthn_credential_store;
       var valRows = (ws.rp_validation||[]).map(function(v) {
         return (v.pass?'&#x2705;':'&#x274C;')+' '+v.check+': '+v.note;
-      }).join('\n');
+      }).join('\\n');
       var creds = ws.credentials_enrolled > 0
-        ? (ws.credentials||[]).map(function(c) { return '&#x1F511; '+c.userName+' | '+c.authenticatorName+' | enrolled '+c.createdAt; }).join('\n')
-        : 'No credentials enrolled yet.\nEnroll via: /admin → Security → Passkeys';
+        ? (ws.credentials||[]).map(function(c) { return '&#x1F511; '+c.userName+' | '+c.authenticatorName+' | enrolled '+c.createdAt; }).join('\\n')
+        : 'No credentials enrolled yet.\\nEnroll via: /admin \u2192 Security \u2192 Passkeys';
       var msg = 'KV Bound: '+(ws.kv_bound?'Yes':'No')
-        +'\nRP ID: '+ws.rp_config.rp_id
-        +'\nCredentials Enrolled: '+ws.credentials_enrolled
-        +'\nReadiness: '+ws.readiness_pct+'%\n'
-        +'\n── RP Validation ──\n'+valRows
-        +'\n\n── Credentials ──\n'+creds
-        +'\n\nNext Action: '+ws.next_action;
+        +'\\nRP ID: '+ws.rp_config.rp_id
+        +'\\nCredentials Enrolled: '+ws.credentials_enrolled
+        +'\\nReadiness: '+ws.readiness_pct+'%\\n'
+        +'\\n── RP Validation ──\\n'+valRows
+        +'\\n\\n── Credentials ──\\n'+creds
+        +'\\n\\nNext Action: '+ws.next_action;
       igToast('WebAuthn: '+ws.credentials_enrolled+' credential(s)', ws.credentials_enrolled>0?'success':'warning', 10000);
-      igModal('W4: WebAuthn Credential Store', msg.replace(/\n/g,'<br>'));
+      igModal('W4: WebAuthn Credential Store', msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('WebAuthn store error: '+e,'error'); });
 };
 
@@ -9889,13 +9908,13 @@ window.igVendorDpaExecute = function() {
         var st = v.dpa_status==='signed'?'&#x2705; SIGNED':'&#x274C; PENDING';
         var extra = v.dpa_status==='signed'?' ('+v.signed_date+', expires '+v.expiry_date+')':'';
         return st+' '+v.name+' ['+v.id+']'+extra;
-      }).join('\n');
+      }).join('\\n');
       var msg = 'Signed: '+vd.summary.signed+'/'+vd.summary.total
-        +'\nPending: '+vd.summary.pending
-        +'\nReadiness: '+vd.summary.readiness_pct+'%\n\n'+rows
-        +'\n\nTo execute a DPA, POST with:\n{"vendor_id":"V001","action":"execute","reference_number":"DPA-CF-2026-001"}';
+        +'\\nPending: '+vd.summary.pending
+        +'\\nReadiness: '+vd.summary.readiness_pct+'%\\n\\n'+rows
+        +'\\n\\nTo execute a DPA, POST with:\\n{"vendor_id":"V001","action":"execute","reference_number":"DPA-CF-2026-001"}';
       igToast('DPA Status: '+vd.summary.signed+'/6 signed', vd.summary.signed===6?'success':'warning', 10000);
-      igModal('W5: Vendor DPA Execute', msg.replace(/\n/g,'<br>'));
+      igModal('W5: Vendor DPA Execute', msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Vendor DPA execute error: '+e,'error'); });
 };
 
@@ -9906,21 +9925,21 @@ window.igGoldCertSignoff = function() {
       var gs = d.gold_cert_signoff;
       var rows = (gs.criteria||[]).map(function(c) {
         return (c.pass?'&#x2705;':'&#x274C;')+' ['+c.id+']['+c.weight+'pt] '+c.label+': '+c.note;
-      }).join('\n');
+      }).join('\\n');
       var signoff = gs.assessor_signoff && gs.assessor_signoff.signed
-        ? '\n\n&#x1F3C6; SIGNED OFF by '+gs.assessor_signoff.signed_by+' on '+gs.assessor_signoff.signed_at
-        : '\n\n&#x23F3; Pending assessor sign-off at '+gs.assessor_contact;
+        ? '\\n\\n&#x1F3C6; SIGNED OFF by '+gs.assessor_signoff.signed_by+' on '+gs.assessor_signoff.signed_at
+        : '\\n\\n&#x23F3; Pending assessor sign-off at '+gs.assessor_contact;
       var msg = 'Certificate ID: '+gs.cert_id
-        +'\nCert Level: '+gs.cert_level
-        +'\nReadiness: '+gs.readiness_pct+'%'
-        +'\nCriteria: '+gs.criteria_passed
-        +'\nScore: '+gs.earned_weight+'/'+gs.total_weight+' pts'
-        +'\n\n'+rows
+        +'\\nCert Level: '+gs.cert_level
+        +'\\nReadiness: '+gs.readiness_pct+'%'
+        +'\\nCriteria: '+gs.criteria_passed
+        +'\\nScore: '+gs.earned_weight+'/'+gs.total_weight+' pts'
+        +'\\n\\n'+rows
         +signoff
-        +'\n\nNext: '+gs.next_action;
+        +'\\n\\nNext: '+gs.next_action;
       var lvl = gs.cert_level;
       igToast(lvl+' Cert — '+gs.readiness_pct+'% ('+gs.criteria_passed+')', lvl==='Gold'?'success':'warning', 12000);
-      igModal('W6: Gold Cert Sign-off', msg.replace(/\n/g,'<br>'));
+      igModal('W6: Gold Cert Sign-off', msg.replace(/\\n/g,'<br>'));
     }).catch(function(e){ igToast('Gold cert signoff error: '+e,'error'); });
 };
 
@@ -11709,11 +11728,11 @@ window.igSecTab = function(idx){
       navigator.credentials.create({publicKey:opts}).then(function(cred){
         var resp = {
           id: cred.id,
-          rawId: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.rawId))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+          rawId: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.rawId))).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=/g,''),
           type: cred.type,
           response: {
-            attestationObject: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.attestationObject))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
-            clientDataJSON:    btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.clientDataJSON))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+            attestationObject: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.attestationObject))).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=/g,''),
+            clientDataJSON:    btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.clientDataJSON))).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=/g,''),
             transports:        cred.response.getTransports ? cred.response.getTransports() : [],
           },
         };
@@ -11735,13 +11754,13 @@ window.igSecTab = function(idx){
       navigator.credentials.get({publicKey:opts}).then(function(cred){
         var resp = {
           id: cred.id,
-          rawId: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.rawId))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
+          rawId: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.rawId))).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=/g,''),
           type: cred.type,
           response: {
-            authenticatorData: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.authenticatorData))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
-            clientDataJSON:    btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.clientDataJSON))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
-            signature:         btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.signature))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,''),
-            userHandle:        cred.response.userHandle ? btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.userHandle))).replace(/\\+/g,'-').replace(/\//g,'_').replace(/=/g,'') : null,
+            authenticatorData: btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.authenticatorData))).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=/g,''),
+            clientDataJSON:    btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.clientDataJSON))).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=/g,''),
+            signature:         btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.signature))).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=/g,''),
+            userHandle:        cred.response.userHandle ? btoa(String.fromCharCode.apply(null,new Uint8Array(cred.response.userHandle))).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=/g,'') : null,
           },
         };
         return igApi.post('/auth/webauthn/authenticate/complete', resp);
@@ -12152,9 +12171,9 @@ mutation CreateInvoice($input: InvoiceInput!) {
     'Invoice':'type Invoice {\\n  id: ID!\\n  client: String\\n  amount: Float\\n  gst: Float\\n  total: Float\\n  irn: String\\n  status: String\\n  dueDate: String\\n}',
   };
   var gqlDemoResponses = {
-    'financeSummary':'{\n  "data": {\n    "financeSummary": {\n      "revenueYTD": 8950000,\n      "expensesYTD": 5620000,\n      "netProfit": 3330000,\n      "gstPayable": 142000\n    }\n  }\n}',
-    'employees':'{\n  "data": {\n    "employees": [\n      {"id":"IG-EMP-0001","name":"Arun Manikonda","designation":"CEO","ctc":3500000,"status":"Active"},\n      {"id":"IG-EMP-0002","name":"Pavan Manikonda","designation":"COO","ctc":2800000,"status":"Active"}\n    ]\n  }\n}',
-    'default':'{\n  "data": {\n    "result": "Demo response — connect to live GraphQL endpoint for real data"\n  },\n  "extensions": {\n    "tracing": {"version":2025,"duration_ms":12}\n  }\n}',
+    'financeSummary':'{\\n  "data": {\\n    "financeSummary": {\\n      "revenueYTD": 8950000,\\n      "expensesYTD": 5620000,\\n      "netProfit": 3330000,\\n      "gstPayable": 142000\\n    }\\n  }\\n}',
+    'employees':'{\\n  "data": {\\n    "employees": [\\n      {"id":"IG-EMP-0001","name":"Arun Manikonda","designation":"CEO","ctc":3500000,"status":"Active"},\\n      {"id":"IG-EMP-0002","name":"Pavan Manikonda","designation":"COO","ctc":2800000,"status":"Active"}\\n    ]\\n  }\\n}',
+    'default':'{\\n  "data": {\\n    "result": "Demo response — connect to live GraphQL endpoint for real data"\\n  },\\n  "extensions": {\\n    "tracing": {"version":2025,"duration_ms":12}\\n  }\\n}',
   };
   window.igGqlRun = function(){
     var q=document.getElementById('gql-editor')?.value||'';
@@ -12163,7 +12182,7 @@ mutation CreateInvoice($input: InvoiceInput!) {
     var key='default';
     if(q.includes('financeSummary')) key='financeSummary';
     else if(q.includes('employees')) key='employees';
-    resp.textContent='// Executing...\n';
+    resp.textContent='// Executing...\\n';
     igApi.post('/api/graphql',{query:q}).then(function(d){
       resp.textContent=JSON.stringify(d,null,2)||gqlDemoResponses[key]||gqlDemoResponses['default'];
       resp.style.color='#4ade80';
@@ -12364,7 +12383,7 @@ window.igKpiViewDetail = function(kpiName){
     '<div style="padding:1rem;background:#f8fafc;border:1px solid var(--border);">'
     +'<div style="font-size:.9rem;font-weight:600;color:#111;margin-bottom:.5rem;">'+kpiName+'</div>'
     +'<div style="font-size:.75rem;color:#64748b;margin-bottom:1rem;">Current tracking period: FY 2025-26 | Q4</div>'
-    +'<button onclick="igKpiDownloadDrillDown(kpiName)" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-download\' style=\'margin-right:.35rem;\'></i>Download Drill-Down</button>'
+    +'<button onclick="igKpiDownloadDrillDown(kpiName)" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-download\\x27 style=\\x27margin-right:.35rem;\\x27></i>Download Drill-Down</button>'
     +'</div>'
   );
 };
@@ -12477,9 +12496,17 @@ igApi.get('/risk/mandates').then(function(d){
     igModal('Mitigation Plan — '+riskId,
       '<div style="padding:1.25rem;"><div style="font-weight:700;margin-bottom:.75rem;">Risk: '+riskId+'</div>'
       +'<textarea id="risk-act" style="width:100%;padding:.5rem;border:1px solid #e5e7eb;font-size:.82rem;min-height:80px;" placeholder="Describe mitigation steps..."></textarea>'
-      +'<button onclick="var a=document.getElementById(\'risk-act\').value;if(!a){igToast(\'Enter action\',\'warn\');return;}igApi.post(\'/risk/register\',{risk_id:\''+riskId+'\',action:a}).then(function(){igToast(\'Mitigation saved\',\'success\');}).catch(function(){igToast(\'Mitigation plan saved\',\'success\');});" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;margin-top:.75rem;width:100%;">Save Plan</button>'
+      +'<button onclick="igRiskSaveMitigation('+riskId+')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;margin-top:.75rem;width:100%;">Save Plan</button>'
       +'</div>'
     );
+  };
+  window.igRiskSaveMitigation = function(riskId){
+    var a = document.getElementById('risk-act') ? document.getElementById('risk-act').value : '';
+    if(!a){ igToast('Enter action','warn'); return; }
+    igApi.post('/risk/register',{risk_id:riskId,action:a}).then(function(){
+      igToast('Mitigation saved','success');
+      igCloseOverlay();
+    }).catch(function(){ igToast('Mitigation plan saved','success'); igCloseOverlay(); });
   };
   window.igRiskReport = function(){
     igToast('Generating risk report…','info');
@@ -12766,8 +12793,8 @@ app.get('/sales/dashboard', (c) => {
       +'<span style="font-size:1rem;font-weight:700;color:'+probColor+';">'+prob+'%</span></div></div>'
       +'</div>'
       +'<div style="display:flex;gap:.75rem;margin-top:.5rem;">'
-      +'<button onclick="igUpdateLeadStage(\''+id+'\',\''+name+'\')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-edit\' style=\'margin-right:.35rem;\'></i>Update Stage</button>'
-      +'<button onclick="igLogActivity()" style="background:#2563eb;color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-plus\' style=\'margin-right:.35rem;\'></i>Log Activity</button>'
+      +'<button onclick="igUpdateLeadStage(\\x27'+id+'\\x27,\\x27'+name+'\\x27)" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-edit\\x27 style=\\x27margin-right:.35rem;\\x27></i>Update Stage</button>'
+      +'<button onclick="igLogActivity()" style="background:#2563eb;color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-plus\\x27 style=\\x27margin-right:.35rem;\\x27></i>Log Activity</button>'
       +'</div>'
     );
   };
@@ -12781,7 +12808,7 @@ app.get('/sales/dashboard', (c) => {
       +'<select id="modal-stage-sel" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;">'+opts+'</select></div>'
       +'<div style="margin-bottom:.75rem;"><label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b;display:block;margin-bottom:.35rem;">Update Note</label>'
       +'<textarea id="modal-stage-note" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;min-height:60px;resize:vertical;" placeholder="What happened? What are the next steps?"></textarea></div>'
-      +'<button onclick="var s=document.getElementById(\'modal-stage-sel\').value;var n=document.getElementById(\'modal-stage-note\').value;igApi.post(\'/sales/leads/stage\',{id:\''+id+'\',stage:s,note:n}).then(function(){igToast(\''+id+' moved to \'+s,\'success\');}).catch(function(){igToast(\''+id+' moved to \'+s,\'success\');});" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Save Update</button>'
+      +'<button onclick="var s=document.getElementById(\\x27modal-stage-sel\\x27).value;var n=document.getElementById(\\x27modal-stage-note\\x27).value;igApi.post(\\x27/sales/leads/stage\\x27,{id:\\x27'+id+'\\x27,stage:s,note:n}).then(function(){igToast(\\x27'+id+' moved to \\x27+s,\\x27success\\x27);}).catch(function(){igToast(\\x27'+id+' moved to \\x27+s,\\x27success\\x27);});" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Save Update</button>'
     );
   };
 
@@ -12805,7 +12832,7 @@ app.get('/sales/dashboard', (c) => {
         +'<td style="font-size:.75rem;">'+esc(contact||'—')+'</td>'
         +'<td><span style="font-size:.72rem;font-weight:700;color:#16a34a;">'+esc(prob)+'%</span></td>'
         +'<td style="font-size:.75rem;">Me</td>'
-        +'<td><button onclick="igViewLead(\''+esc(id)+'\',\''+esc(name)+'\',\''+esc(sector)+'\',\''+esc(value||'TBD')+'\',\''+esc(stage)+'\',\''+esc(contact||'—')+'\','+esc(prob)+',\'Me\',\'Today\')" style="background:var(--gold);color:#fff;border:none;padding:.22rem .5rem;font-size:.65rem;cursor:pointer;">View</button></td>';
+        +'<td><button onclick="igViewLead(\\x27'+esc(id)+'\\x27,\\x27'+esc(name)+'\\x27,\\x27'+esc(sector)+'\\x27,\\x27'+esc(value||'TBD')+'\\x27,\\x27'+esc(stage)+'\\x27,\\x27'+esc(contact||'—')+'\\x27,'+esc(prob)+',\\x27Me\\x27,\\x27Today\\x27)" style="background:var(--gold);color:#fff;border:none;padding:.22rem .5rem;font-size:.65rem;cursor:pointer;">View</button></td>';
       tbody.insertBefore(tr,tbody.firstChild);
     }
     igApi.post('/sales/leads',{name:name,sector:sector,value:value,stage:stage,contact:contact,probability:prob}).then(function(){}).catch(function(){});
@@ -12841,7 +12868,7 @@ app.get('/sales/dashboard', (c) => {
       +'<select id="act-lead" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;"><option>Green Valley Mall</option><option>Sunrise Hotel Chain</option><option>Tech Valley Office</option><option>Spice Garden F&B</option><option>PVR Entertainment</option><option>Coastal Resorts</option></select></div>'
       +'<div><label style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b;display:block;margin-bottom:.35rem;">Notes</label>'
       +'<textarea id="act-notes" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;min-height:80px;resize:vertical;" placeholder="What happened? Key takeaways, next steps…"></textarea></div>'
-      +'<button onclick="var t=document.getElementById(\'act-type\').value;var l=document.getElementById(\'act-lead\').value;var n=document.getElementById(\'act-notes\').value;igApi.post(\'/sales/activity\',{type:t,lead:l,notes:n}).then(function(){igToast(t+\' logged for \'+l,\'success\');}).catch(function(){igToast(t+\' logged for \'+l,\'success\');});" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Save Activity</button>'
+      +'<button onclick="var t=document.getElementById(\\x27act-type\\x27).value;var l=document.getElementById(\\x27act-lead\\x27).value;var n=document.getElementById(\\x27act-notes\\x27).value;igApi.post(\\x27/sales/activity\\x27,{type:t,lead:l,notes:n}).then(function(){igToast(t+\\x27 logged for \\x27+l,\\x27success\\x27);}).catch(function(){igToast(t+\\x27 logged for \\x27+l,\\x27success\\x27);});" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Save Activity</button>'
       +'</div>'
     );
   };
@@ -13289,8 +13316,8 @@ app.get('/mandates', (c) => {
       +'<div style="font-size:.72rem;color:#78350f;">Type: '+type+' · Date: '+date+'</div>'
       +'</div>'
       +'<div style="display:flex;gap:.75rem;margin-top:.5rem;">'
-      +'<button onclick="igDownloadMandate(\''+id+'\',\''+name+'\')" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-download\' style=\'margin-right:.35rem;\'></i>Download PDF</button>'
-      +'<button onclick="igSalesScheduleMeeting(id)" style="background:#2563eb;color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-calendar\' style=\'margin-right:.35rem;\'></i>Schedule Meeting</button>'
+      +'<button onclick="igDownloadMandate(\\x27'+id+'\\x27,\\x27'+name+'\\x27)" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-download\\x27 style=\\x27margin-right:.35rem;\\x27></i>Download PDF</button>'
+      +'<button onclick="igSalesScheduleMeeting(id)" style="background:#2563eb;color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-calendar\\x27 style=\\x27margin-right:.35rem;\\x27></i>Schedule Meeting</button>'
       +'</div>'
     );
   };
@@ -13332,8 +13359,8 @@ app.get('/mandates', (c) => {
         +'<td style="font-size:.72rem;">'+esc(client)+'</td>'
         +'<td style="font-size:.65rem;color:var(--ink-muted);">Mar 2026</td>'
         +'<td style="display:flex;gap:.3rem;">'
-        +'<button onclick="igViewMandate(\''+id+'\',\''+name+'\',\''+type+'\',\''+(value||'TBD')+'\',\''+stage+'\',\''+client+'\',\'Mar 2026\')" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;">View</button>'
-        +'<button onclick="igDownloadMandate(\''+id+'\',\''+name+'\')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.62rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button>'
+        +'<button onclick="igViewMandate(\\x27'+id+'\\x27,\\x27'+name+'\\x27,\\x27'+type+'\\x27,\\x27'+(value||'TBD')+'\\x27,\\x27'+stage+'\\x27,\\x27'+client+'\\x27,\\x27Mar 2026\\x27)" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;">View</button>'
+        +'<button onclick="igDownloadMandate(\\x27'+id+'\\x27,\\x27'+name+'\\x27)" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.62rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button>'
         +'</td>';
       tbody.insertBefore(tr,tbody.firstChild);
     }
@@ -13351,7 +13378,7 @@ app.get('/mandates', (c) => {
       +'<input type="datetime-local" id="sales-meet-dt" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;"></div>'
       +'<div><label style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:#64748b;display:block;margin-bottom:.3rem;">Mode</label>'
       +'<select id="sales-meet-mode" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;"><option>Video Call</option><option>In-Person</option><option>Phone</option></select></div>'
-      +'<button onclick="igApi.post(\'/sales/deals\',{action:\'schedule_meeting\',client:\''+(name||'client')+'\',date:document.getElementById(\'sales-meet-dt\').value}).then(function(){igToast(\'Meeting scheduled — invite sent\',\'success\');}).catch(function(){igToast(\'Meeting scheduled\',\'success\');});" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Schedule Meeting</button>'
+      +'<button onclick="igApi.post(\\x27/sales/deals\\x27,{action:\\x27schedule_meeting\\x27,client:\\x27'+(name||'client')+'\\x27,date:document.getElementById(\\x27sales-meet-dt\\x27).value}).then(function(){igToast(\\x27Meeting scheduled — invite sent\\x27,\\x27success\\x27);}).catch(function(){igToast(\\x27Meeting scheduled\\x27,\\x27success\\x27);});" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Schedule Meeting</button>'
       +'</div>'
     );
   };
@@ -13447,8 +13474,8 @@ app.get('/clients', (c) => {
       +'<div style="font-size:.9rem;font-weight:600;">'+since+'</div></div>'
       +'</div>'
       +'<div style="display:flex;gap:.75rem;margin-top:.5rem;">'
-      +'<button onclick="igSendNDA(\''+email+'\',\''+name+'\')" style="background:#2563eb;color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-file-signature\' style=\'margin-right:.35rem;\'></i>Send NDA</button>'
-      +'<button onclick="igSalesOpenDealRoom(name)" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-folder-open\' style=\'margin-right:.35rem;\'></i>Deal Room</button>'
+      +'<button onclick="igSendNDA(\\x27'+email+'\\x27,\\x27'+name+'\\x27)" style="background:#2563eb;color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-file-signature\\x27 style=\\x27margin-right:.35rem;\\x27></i>Send NDA</button>'
+      +'<button onclick="igSalesOpenDealRoom(name)" style="background:var(--gold);color:#fff;border:none;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;"><i class=\\x27fas fa-folder-open\\x27 style=\\x27margin-right:.35rem;\\x27></i>Deal Room</button>'
       +'</div>'
     );
   };
@@ -13493,7 +13520,7 @@ app.get('/clients', (c) => {
       +'<input type="datetime-local" id="sales-meet-dt2" style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;"></div>'
       +'<div><label style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:#64748b;display:block;margin-bottom:.3rem;">Mode</label>'
       +'<select style="width:100%;padding:.5rem .75rem;border:1px solid #e5e7eb;font-size:.82rem;"><option>Video Call</option><option>In-Person</option><option>Phone</option></select></div>'
-      +'<button onclick="igToast(\'Meeting scheduled for \'+(name||\'client\')+\' — invite sent\',\'success\');" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Confirm Meeting</button>'
+      +'<button onclick="igToast(\\x27Meeting scheduled for \\x27+(name||\\x27client\\x27)+\\x27 — invite sent\\x27,\\x27success\\x27);" style="background:var(--gold);color:#fff;border:none;padding:.5rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;width:100%;">Confirm Meeting</button>'
       +'</div>'
     );
   };
@@ -13632,8 +13659,8 @@ app.get('/documents', (c) => {
       +'<td style="font-size:.65rem;color:var(--ink-muted);">Today</td>'
       +'<td><span style="font-size:.62rem;color:'+(nda==='true'?'#dc2626':'#16a34a')+'">'+(nda==='true'?'🔒 Required':'✅ Open')+'</span></td>'
       +'<td style="display:flex;gap:.3rem;">'
-      +'<button onclick="igDownloadDoc(\''+id+'\',\''+name+'\',\''+nda+'\')" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;"><i class="fas fa-download"></i></button>'
-      +'<button onclick="igDeleteDoc(\''+id+'\',\''+name+'\')" style="background:none;border:1px solid #fecaca;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;color:#dc2626;"><i class="fas fa-trash"></i></button>'
+      +'<button onclick="igDownloadDoc(\\x27'+id+'\\x27,\\x27'+name+'\\x27,\\x27'+nda+'\\x27)" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;"><i class="fas fa-download"></i></button>'
+      +'<button onclick="igDeleteDoc(\\x27'+id+'\\x27,\\x27'+name+'\\x27)" style="background:none;border:1px solid #fecaca;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;color:#dc2626;"><i class="fas fa-trash"></i></button>'
       +'</td>';
     if(tbody) tbody.insertBefore(tr, tbody.firstChild);
     igApi.post('/documents/upload',{name:name,category:cat,nda_gated:nda==='true'}).then(function(){}).catch(function(){});
