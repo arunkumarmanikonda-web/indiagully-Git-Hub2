@@ -495,7 +495,7 @@ const FOOTER = `
   <div style="border-top:1px solid rgba(255,255,255,.05);">
     <div class="wrap" style="padding-top:.9rem;padding-bottom:.9rem;display:flex;flex-direction:column;gap:.5rem;align-items:center;justify-content:space-between;">
       <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;width:100%;gap:.75rem;">
-        <p style="font-size:.68rem;color:rgba(255,255,255,.5);">© 2025 Vivacious Entertainment and Hospitality Pvt. Ltd. All rights reserved. India Gully™ is a registered brand.</p>
+        <p style="font-size:.68rem;color:rgba(255,255,255,.5);">© 2026 Vivacious Entertainment and Hospitality Pvt. Ltd. All rights reserved. India Gully™ is a registered brand.</p>
         <div style="display:flex;gap:1.25rem;font-size:.68rem;color:rgba(255,255,255,.5);align-items:center;">
           <a href="/legal/privacy"    onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'" style="transition:color .2s;">Privacy Policy</a>
           <a href="/legal/terms"      onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'" style="transition:color .2s;">Terms of Use</a>
@@ -632,7 +632,13 @@ const SCRIPTS = (_nonce?: string) => `
   window.igToast = function(msg, type){
     var el = document.createElement('div');
     el.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;background:'+(type==='error'?'#dc2626':type==='warn'?'#d97706':'#15803d')+';color:#fff;padding:.75rem 1.25rem;font-size:.82rem;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,.25);max-width:360px;line-height:1.5;display:flex;align-items:center;gap:.6rem;';
-    el.innerHTML = '<i class="fas fa-'+(type==='error'?'exclamation-circle':type==='warn'?'exclamation-triangle':'check-circle')+'"></i>' + msg;
+    var icon = document.createElement('i');
+    icon.className = 'fas fa-'+(type==='error'?'exclamation-circle':type==='warn'?'exclamation-triangle':'check-circle');
+    icon.style.flexShrink = '0';
+    var txt = document.createElement('span');
+    txt.textContent = msg;
+    el.appendChild(icon);
+    el.appendChild(txt);
     document.body.appendChild(el);
     setTimeout(function(){ el.style.transition='opacity .4s'; el.style.opacity='0'; setTimeout(function(){ el.remove(); },400); }, 3500);
   };

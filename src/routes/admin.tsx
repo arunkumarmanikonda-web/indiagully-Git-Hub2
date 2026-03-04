@@ -125,6 +125,9 @@ function adminShell(pageTitle: string, active: string, body: string) {
 function toggleAdmNotif(){var p=document.getElementById('adm-notif-panel');p.style.display=p.style.display==='none'?'block':'none';}
 document.addEventListener('click',function(e){var btn=document.getElementById('adm-notif-btn');var panel=document.getElementById('adm-notif-panel');if(panel&&!panel.contains(e.target)&&btn&&!btn.contains(e.target))panel.style.display='none';});
 
+/* ── HTML ESCAPE HELPER — prevents XSS when inserting user/DB data into innerHTML ── */
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+
 /* ── ADMIN API CLIENT ── all fetch helpers for real backend wiring ── */
 window.igApi = {
   get: function(path){
@@ -1065,7 +1068,7 @@ app.get('/cms', (c) => {
         html += '<button onclick="igCmsCopyCode(snippet)" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.62rem;cursor:pointer;color:var(--ink-muted);"><i class=\'fas fa-copy\'></i></button>';
         html += '<button onclick="igCmsAddToEditor(snippet)" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;font-weight:600;">Use</button>';
         html += '</div></div>';
-        html += '<div style="font-size:.875rem;color:var(--ink);line-height:1.6;">'+bank[i]+'</div>';
+        html += '<div style="font-size:.875rem;color:var(--ink);line-height:1.6;">'+esc(bank[i])+'</div>';
         html += '</div>';
       }
       output.innerHTML = html;
@@ -1155,7 +1158,7 @@ app.get('/cms', (c) => {
     if(empty) empty.remove();
     var d = document.createElement('div');
     d.style.cssText = 'background:#fff;border:1px solid var(--border);border-left:4px solid '+c+';padding:.875rem;margin-bottom:.5rem;display:flex;align-items:center;justify-content:space-between;cursor:default;';
-    d.innerHTML = '<div><div style="font-size:.72rem;font-weight:700;color:'+c+';letter-spacing:.08em;text-transform:uppercase;">'+name+'</div><div style="font-size:.68rem;color:var(--ink-muted);margin-top:.2rem;">Click to configure</div></div><div style="display:flex;gap:.35rem;"><button onclick="igCmsConfigureBlock(\''+name+'\')" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.6rem;cursor:pointer;font-weight:600;">Edit</button><button onclick="this.closest(\'div[style]\').remove();igToast(\'Block removed\',\'warn\')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.6rem;cursor:pointer;color:#dc2626;"><i class=\'fas fa-trash\'></i></button></div>';
+    d.innerHTML = '<div><div style="font-size:.72rem;font-weight:700;color:'+c+';letter-spacing:.08em;text-transform:uppercase;">'+esc(name)+'</div><div style="font-size:.68rem;color:var(--ink-muted);margin-top:.2rem;">Click to configure</div></div><div style="display:flex;gap:.35rem;"><button onclick="igCmsConfigureBlock(\''+esc(name)+'\')" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.6rem;cursor:pointer;font-weight:600;">Edit</button><button onclick="this.closest(\'div[style]\').remove();igToast(\'Block removed\',\'warn\')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.6rem;cursor:pointer;color:#dc2626;"><i class=\'fas fa-trash\'></i></button></div>';
     canvas.appendChild(d);
     igToast(name+' block added to canvas','success');
   };
@@ -1496,10 +1499,10 @@ app.get('/users', (c) => {
         igUserEmails.push(email);
         var tr = document.createElement('tr');
         tr.id = 'user-row-'+idx;
-        tr.innerHTML = '<td id="user-name-'+idx+'" style="font-weight:500;">'+name+'</td>'
-          +'<td style="font-size:.8rem;">'+email+'</td>'
-          +'<td id="user-role-badge-'+idx+'"><span class="badge b-dk">'+role+'</span></td>'
-          +'<td style="font-size:.8rem;color:var(--ink-muted);">'+portal+'</td>'
+        tr.innerHTML = '<td id="user-name-'+idx+'" style="font-weight:500;">'+esc(name)+'</td>'
+          +'<td style="font-size:.8rem;">'+esc(email)+'</td>'
+          +'<td id="user-role-badge-'+idx+'"><span class="badge b-dk">'+esc(role)+'</span></td>'
+          +'<td style="font-size:.8rem;color:var(--ink-muted);">'+esc(portal)+'</td>'
           +'<td style="font-size:.78rem;color:var(--ink-muted);">Just now</td>'
           +'<td id="user-status-'+idx+'"><span class="badge b-gr">Active</span></td>'
           +'<td style="display:flex;gap:.5rem;">'
@@ -1901,8 +1904,8 @@ app.get('/workflows', (c) => {
       html += '<div onclick="editWfStep('+i+')" style="cursor:pointer;background:#fff;border:2px solid '+(wfbActiveStep===i?colorMap[s.type]||'#2563eb':'var(--border)')+';padding:.75rem;min-width:120px;text-align:center;position:relative;">';
       html += '<div style="width:28px;height:28px;background:'+(colorMap[s.type]||'#2563eb')+';margin:0 auto .4rem;display:flex;align-items:center;justify-content:center;">';
       html += '<i class="fas fa-'+(iconMap[s.type]||'circle')+'" style="color:#fff;font-size:.6rem;"></i></div>';
-      html += '<div style="font-size:.7rem;font-weight:600;color:var(--ink);">'+s.name+'</div>';
-      html += '<div style="font-size:.6rem;color:var(--ink-muted);margin-top:.2rem;">'+s.role+'</div>';
+      html += '<div style="font-size:.7rem;font-weight:600;color:var(--ink);">'+esc(s.name)+'</div>';
+      html += '<div style="font-size:.6rem;color:var(--ink-muted);margin-top:.2rem;">'+esc(s.role)+'</div>';
       html += '<div style="font-size:.58rem;color:var(--ink-muted);">SLA: '+s.sla+'h</div>';
       html += '</div>';
       if(i<wfbSteps.length-1) html += '<div style="width:32px;height:2px;background:'+(colorMap[s.type]||'#2563eb')+'margin:0 .1rem;flex-shrink:0;"></div>';
@@ -2138,7 +2141,7 @@ app.get('/finance', (c) => {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
       <div style="background:#fff;border:1px solid var(--border);">
         <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GSTR-3B — Feb 2025</h3>
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GSTR-3B — Feb 2026</h3>
           <button onclick="igConfirm('File GSTR-3B for February 2026?',function(){ igApi.post('/finance/gst/file',{form:'GSTR-3B',period:'Feb 2026'}).then(function(r){igToast('GSTR-3B filed. ARN: '+(r&&r.arn?r.arn:'AA270226123456'),'success');}).catch(function(){igToast('GSTR-3B filed. ARN: AA270226123456','success');}); })" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File Now</button>
         </div>
         <div style="padding:1.25rem;">
@@ -2177,7 +2180,7 @@ app.get('/finance', (c) => {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
       <div style="background:#fff;border:1px solid var(--border);">
         <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GSTR-3B — Feb 2025</h3>
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">GSTR-3B — Feb 2026</h3>
           <button onclick="igConfirm('File GSTR-3B for February 2026?',function(){ igApi.post('/finance/gst/file',{form:'GSTR-3B',period:'Feb 2026'}).then(function(r){igToast('GSTR-3B filed. ARN: '+(r&&r.arn?r.arn:'AA270226123456'),'success');}).catch(function(){igToast('GSTR-3B filed. ARN: AA270226123456','success');}); })" style="background:#16a34a;color:#fff;border:none;padding:.3rem .75rem;font-size:.68rem;font-weight:600;cursor:pointer;">File Now</button>
         </div>
         <div style="padding:1.25rem;">
@@ -2445,7 +2448,7 @@ app.get('/finance', (c) => {
     <!-- Period Closing Checklist -->
     <div style="background:#fff;border:1px solid var(--border);">
       <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);">
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Month-End Closing Checklist — February 2025</h3>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Month-End Closing Checklist — February 2026</h3>
       </div>
       <div style="padding:1.25rem;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.625rem;">
@@ -2642,7 +2645,7 @@ app.get('/finance', (c) => {
             {step:'02', task:'Post all accrual journal entries',               done:true,  resp:'Finance'},
             {step:'03', task:'Clear all inter-company transactions',           done:true,  resp:'Finance'},
             {step:'04', task:'Validate TDS deducted vs deposited',            done:true,  resp:'Finance'},
-            {step:'05', task:'File GSTR-1 for February 2025',                 done:false, resp:'Finance'},
+            {step:'05', task:'File GSTR-1 for February 2026',                 done:false, resp:'Finance'},
             {step:'06', task:'Confirm inventory count (HORECA)',               done:false, resp:'HORECA'},
             {step:'07', task:'Resolve all outstanding debit notes',           done:true,  resp:'Finance'},
             {step:'08', task:'Generate P&L and Balance Sheet draft',          done:false, resp:'CFO'},
@@ -2742,7 +2745,7 @@ app.get('/finance', (c) => {
   <!-- fin-pane-12: ITR Filing Tracker -->
   <div id="fin-pane-12" style="display:none;">
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
-      ${[{l:'ITR Filed',v:'AY 2023-24',c:'#16a34a'},{l:'Next Due',v:'31 Jul 2025',c:'#B8960C'},{l:'Advance Tax Paid',v:'₹10.0L',c:'#1A3A6B'},{l:'Refund Status',v:'₹1.24L',c:'#7c3aed'}].map(k=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem 1.25rem;"><div style="font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">${k.l}</div><div style="font-size:1.2rem;font-weight:700;color:${k.c};">${k.v}</div></div>`).join('')}
+      ${[{l:'ITR Filed',v:'AY 2023-24',c:'#16a34a'},{l:'Next Due',v:'31 Jul 2026',c:'#B8960C'},{l:'Advance Tax Paid',v:'₹10.0L',c:'#1A3A6B'},{l:'Refund Status',v:'₹1.24L',c:'#7c3aed'}].map(k=>`<div style="background:#fff;border:1px solid var(--border);padding:1rem 1.25rem;"><div style="font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">${k.l}</div><div style="font-size:1.2rem;font-weight:700;color:${k.c};">${k.v}</div></div>`).join('')}
     </div>
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
       <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
@@ -3020,12 +3023,12 @@ app.get('/finance', (c) => {
     tbody.innerHTML='';
     d.invoices.forEach(function(inv){
       var statusCol=inv.status==='Paid'?'#15803d':inv.status==='Overdue'?'#dc2626':'#d97706';
-      tbody.innerHTML+='<tr><td style="font-size:.78rem;font-weight:600;">'+inv.id+'</td>'
-        +'<td style="font-size:.78rem;">'+inv.client+'</td>'
-        +'<td style="font-size:.78rem;">'+inv.date+'</td>'
+      tbody.innerHTML+='<tr><td style="font-size:.78rem;font-weight:600;">'+esc(inv.id)+'</td>'
+        +'<td style="font-size:.78rem;">'+esc(inv.client)+'</td>'
+        +'<td style="font-size:.78rem;">'+esc(inv.date)+'</td>'
         +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+inv.amount.toLocaleString('en-IN')+'</td>'
-        +'<td><span style="font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:'+statusCol+';border:1px solid '+statusCol+'20;padding:.15rem .5rem;">'+inv.status+'</span></td>'
-        +'<td><button onclick="igFinViewInv(''+inv.id+'')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button></td>'
+        +'<td><span style="font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:'+statusCol+';border:1px solid '+statusCol+'20;padding:.15rem .5rem;">'+esc(inv.status)+'</span></td>'
+        +'<td><button onclick="igFinViewInv(''+esc(inv.id)+'')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-download"></i></button></td>'
         +'</tr>';
     });
   });
@@ -3236,30 +3239,30 @@ app.get('/finance', (c) => {
 
   // ── Finance: Initiate Period Close ───────────────────────────────────────
   window.igFinInitiatePeriodClose = function(){
-    igConfirm('Initiate period close for February 2025? This will lock the period for new entries.',function(){
-      igToast('Period closing initiated — February 2025 locking…','info');
-      igApi.post('/finance/voucher',{type:'Period Close',ref:'FEB-2025',amount:0}).then(function(){
-        igToast('February 2025 period closed and locked','success');
-      }).catch(function(){ igToast('Period closing initiated for February 2025','success'); });
+    igConfirm('Initiate period close for February 2026? This will lock the period for new entries.',function(){
+      igToast('Period closing initiated — February 2026 locking…','info');
+      igApi.post('/finance/voucher',{type:'Period Close',ref:'FEB-2026',amount:0}).then(function(){
+        igToast('February 2026 period closed and locked','success');
+      }).catch(function(){ igToast('Period closing initiated for February 2026','success'); });
     });
   };
 
   // ── Finance: Lock Period ─────────────────────────────────────────────────
   window.igFinLockPeriod = function(){
-    igConfirm('Lock February 2025 period? No further entries will be allowed.',function(){
+    igConfirm('Lock February 2026 period? No further entries will be allowed.',function(){
       igToast('Locking period…','info');
-      igApi.post('/finance/voucher',{type:'Period Lock',ref:'FEB-2025',amount:0}).then(function(){
-        igToast('Period lock initiated — February 2025 closing started','success');
-      }).catch(function(){ igToast('Period lock initiated — February 2025 closing started','success'); });
+      igApi.post('/finance/voucher',{type:'Period Lock',ref:'FEB-2026',amount:0}).then(function(){
+        igToast('Period lock initiated — February 2026 closing started','success');
+      }).catch(function(){ igToast('Period lock initiated — February 2026 closing started','success'); });
     });
   };
 
   // ── Finance: Request CFO Sign-off ────────────────────────────────────────
   window.igFinRequestCfoSignoff = function(){
     igToast('Sending CFO sign-off request…','info');
-    igApi.post('/finance/cfo-signoff',{period:'Feb 2025'}).then(function(){
-      igToast('CFO sign-off email sent for February 2025 financials','success');
-    }).catch(function(){ igToast('CFO sign-off email sent for February 2025 financials','success'); });
+    igApi.post('/finance/cfo-signoff',{period:'Feb 2026'}).then(function(){
+      igToast('CFO sign-off email sent for February 2026 financials','success');
+    }).catch(function(){ igToast('CFO sign-off email sent for February 2026 financials','success'); });
   };
 
   // ── Finance: Prepare TDS Q4 Return ──────────────────────────────────────
@@ -3563,7 +3566,7 @@ app.get('/hr', (c) => {
         </table>
       </div>
       <div style="background:#fff;border:1px solid var(--border);">
-        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">MTD Summary — February 2025</h3></div>
+        <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">MTD Summary — February 2026</h3></div>
         <div style="padding:1.25rem;">
           ${[
             {name:'Arun Manikonda',  present:19,late:1,absent:0,pct:'100%',c:'#16a34a'},
@@ -3636,7 +3639,7 @@ app.get('/hr', (c) => {
     <!-- Payroll Builder Header -->
     <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;">
       <select id="payroll-month" class="ig-input" style="font-size:.82rem;max-width:180px;" onchange="document.getElementById('pr-month-display').textContent=this.value">
-        <option>March 2025</option><option>February 2025</option><option>January 2025</option>
+        <option>March 2026</option><option>February 2026</option><option>January 2026</option>
       </select>
       <button onclick="igHrRecalcPayroll()" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--ink);"><i class="fas fa-sync" style="margin-right:.3rem;font-size:.7rem;"></i>Recalculate</button>
       <button onclick="togglePanel('salary-structure-panel')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--ink);"><i class="fas fa-sliders-h" style="margin-right:.3rem;font-size:.7rem;"></i>Salary Structure</button>
@@ -3702,7 +3705,7 @@ app.get('/hr', (c) => {
     <!-- Payroll Register -->
     <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Payroll Register — <span id="pr-month-display">March 2025</span></h3>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Payroll Register — <span id="pr-month-display">March 2026</span></h3>
         <div style="display:flex;gap:.5rem;align-items:center;">
           <div style="font-size:.72rem;color:var(--gold);font-weight:600;">Total Disbursement: ₹3,63,400</div>
           <button onclick="igHrExportPayrollRegister()" style="background:none;border:1px solid var(--border);padding:.3rem .6rem;font-size:.65rem;cursor:pointer;color:var(--gold);"><i class="fas fa-file-excel"></i></button>
@@ -3989,7 +3992,7 @@ app.get('/hr', (c) => {
 
   <!-- hr-pane-7: Appraisals & Performance Management -->
   <div id="hr-pane-7" style="display:none;">
-    <div class="ig-info" style="margin-bottom:1.25rem;"><i class="fas fa-star"></i><div><strong>Performance Cycle FY 2025-26:</strong> Mid-year review due 30 Sep 2025. Annual appraisal cycle runs Oct–Nov 2025. KRA setting deadline: 15 Apr 2025.</div></div>
+    <div class="ig-info" style="margin-bottom:1.25rem;"><i class="fas fa-star"></i><div><strong>Performance Cycle FY 2025-26:</strong> Mid-year review due 30 Sep 2026. Annual appraisal cycle runs Oct–Nov 2026. KRA setting deadline: 15 Apr 2026.</div></div>
     <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;">
       <button onclick="togglePanel('new-appraisal-panel')" style="background:#1E1E1E;color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;"><i class="fas fa-plus" style="margin-right:.4rem;"></i>Initiate Appraisal</button>
       <button onclick="igHrSendKraForms()" style="background:none;border:1px solid var(--border);padding:.5rem 1rem;font-size:.78rem;cursor:pointer;color:var(--ink);"><i class="fas fa-bullseye" style="margin-right:.4rem;"></i>Send KRA Forms</button>
@@ -4219,11 +4222,11 @@ app.get('/hr', (c) => {
       var empId = (r && r.employee && r.employee.id) || ('IG-'+String(Date.now()).slice(-3));
       var tbody=document.querySelector('#emp-table tbody');
       var tr=document.createElement('tr');
-      tr.innerHTML='<td style="font-size:.72rem;color:var(--gold);font-weight:600;">'+empId+'</td>'
-        +'<td style="font-weight:500;">'+name+'</td>'
-        +'<td style="font-size:.82rem;">'+des+'</td>'
-        +'<td><span class="badge b-dk">'+dept+'</span></td>'
-        +'<td style="font-size:.72rem;color:var(--ink-muted);">'+email+'</td>'
+      tr.innerHTML='<td style="font-size:.72rem;color:var(--gold);font-weight:600;">'+esc(empId)+'</td>'
+        +'<td style="font-weight:500;">'+esc(name)+'</td>'
+        +'<td style="font-size:.82rem;">'+esc(des)+'</td>'
+        +'<td><span class="badge b-dk">'+esc(dept)+'</span></td>'
+        +'<td style="font-size:.72rem;color:var(--ink-muted);">'+esc(email)+'</td>'
         +'<td style="font-size:.75rem;color:var(--ink-muted);">'+new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+'</td>'
         +'<td style="font-family:\'DM Serif Display\',Georgia,serif;">₹'+(parseInt(ctc)||0)/100000+'L</td>'
         +'<td><span class="badge b-gr">Active</span></td>'
@@ -5156,7 +5159,7 @@ app.get('/governance', (c) => {
           <div id="notice-preview" style="padding:1.25rem;font-size:.78rem;line-height:1.8;color:var(--ink);min-height:120px;background:#fffdf5;">
             <p style="text-align:center;font-weight:700;font-size:.88rem;margin-bottom:.75rem;">VIVACIOUS ENTERTAINMENT AND HOSPITALITY PVT. LTD.</p>
             <p style="text-align:center;font-size:.72rem;color:var(--ink-muted);margin-bottom:1rem;">CIN: U74900DL2017PTC000000 | Regd. Office: New Delhi, India</p>
-            <p style="font-size:.78rem;"><strong>Notice</strong> is hereby given that the <strong id="np-mtgno">4th Board Meeting</strong> of the Board of Directors will be held on <strong id="np-date">15 March 2025</strong> at <strong id="np-time">11:00 AM</strong> at <span id="np-venue">Boardroom, India Gully HQ</span> to transact the following business:</p>
+            <p style="font-size:.78rem;"><strong>Notice</strong> is hereby given that the <strong id="np-mtgno">4th Board Meeting</strong> of the Board of Directors will be held on <strong id="np-date">15 March 2026</strong> at <strong id="np-time">11:00 AM</strong> at <span id="np-venue">Boardroom, India Gully HQ</span> to transact the following business:</p>
             <div id="np-agenda-list" style="margin-top:.875rem;"></div>
             <p style="margin-top:.875rem;font-size:.72rem;color:var(--ink-muted);">By Order of the Board<br><br>Company Secretary<br>Date: <span id="np-today">02 Mar 2026</span></p>
           </div>
@@ -5226,7 +5229,7 @@ app.get('/governance', (c) => {
     list.innerHTML=agendaItems.map(function(item,i){
       var bg=item.type==='resolution'?'#ede9fe':item.type==='special'?'#fff0f0':'#f0f9ff';
       var badge=item.type==='resolution'?'<span style="font-size:.6rem;background:#7c3aed;color:#fff;padding:1px 5px;">Resolution</span>':item.type==='special'?'<span style="font-size:.6rem;background:#dc2626;color:#fff;padding:1px 5px;">Special</span>':'<span style="font-size:.6rem;background:#1A3A6B;color:#fff;padding:1px 5px;">Routine</span>';
-      return '<div style="display:flex;align-items:center;gap:.5rem;background:'+bg+';padding:.5rem .75rem;border:1px solid rgba(0,0,0,.07);"><span style="font-size:.75rem;font-weight:700;color:var(--gold);width:18px;flex-shrink:0;">'+(i+1)+'.</span>'+badge+'<input type="text" value="'+item.text+'" onchange="agendaItems['+i+'].text=this.value;igUpdateNoticePreview()" class="ig-input" style="flex:1;font-size:.78rem;border:none;background:transparent;padding:.1rem;"><button onclick="agendaItems.splice('+i+',1);igRenderAgendaBuilder();igUpdateNoticePreview();igToast(\'Item removed\',\'warn\')" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.72rem;flex-shrink:0;"><i class="fas fa-times"></i></button></div>';
+      return '<div style="display:flex;align-items:center;gap:.5rem;background:'+bg+';padding:.5rem .75rem;border:1px solid rgba(0,0,0,.07);"><span style="font-size:.75rem;font-weight:700;color:var(--gold);width:18px;flex-shrink:0;">'+(i+1)+'.</span>'+badge+'<input type="text" value="'+esc(item.text)+'" onchange="agendaItems['+i+'].text=this.value;igUpdateNoticePreview()" class="ig-input" style="flex:1;font-size:.78rem;border:none;background:transparent;padding:.1rem;"><button onclick="agendaItems.splice('+i+',1);igRenderAgendaBuilder();igUpdateNoticePreview();igToast(\'Item removed\',\'warn\')" style="background:none;border:none;cursor:pointer;color:#dc2626;font-size:.72rem;flex-shrink:0;"><i class="fas fa-times"></i></button></div>'
     }).join('');
     igUpdateNoticePreview();
   }
@@ -5247,7 +5250,7 @@ app.get('/governance', (c) => {
     if(npVenue && mtgVenue) npVenue.textContent=mtgVenue.value;
     if(npToday) npToday.textContent=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
     npList.innerHTML=agendaItems.map(function(item,i){
-      return '<p style="font-size:.78rem;margin:.4rem 0;"><strong>'+(i+1)+'.</strong> '+item.text+(item.type==='resolution'?' <em style="color:#7c3aed;font-size:.72rem;">(Resolution)</em>':item.type==='special'?' <em style="color:#dc2626;font-size:.72rem;">(Special Business)</em>':'')+'</p>';
+      return '<p style="font-size:.78rem;margin:.4rem 0;"><strong>'+(i+1)+'.</strong> '+esc(item.text)+(item.type==='resolution'?' <em style="color:#7c3aed;font-size:.72rem;">(Resolution)</em>':item.type==='special'?' <em style="color:#dc2626;font-size:.72rem;">(Special Business)</em>':'')+'</p>';
     }).join('');
   }
   window.igBuildNotice = function(){igUpdateNoticePreview(); igApi.post('/governance/resolutions',{action:'draft_notice',type:'Board Meeting'}).then(function(){}).catch(function(){}); igToast('Notice generated and preview updated','success');};
@@ -6679,9 +6682,9 @@ app.get('/contracts', (c) => {
         ${[
           {id:'CTR-001',name:'Advisory Retainer — Heritage Hotels',   party:'Heritage Hotels Ltd',         type:'Retainer',  exp:'31 Mar 2026', days:25,  auto:false, s:'Expiring Soon'},
           {id:'CTR-002',name:'NDA — Goa Hospitality Ventures',        party:'Goa Hospitality Ventures',    type:'NDA',       exp:'10 Mar 2026', days:4,   auto:false, s:'Critical'},
-          {id:'CTR-003',name:'Mandate Agreement — Entertainment City',party:'Entertainment City Limited',  type:'Mandate',   exp:'30 Jun 2025', days:117, auto:true,  s:'Active'},
-          {id:'CTR-004',name:'Vendor Agreement — Office Supplies',     party:'ABC Suppliers Ltd',          type:'Vendor',    exp:'31 Dec 2025', days:300, auto:true,  s:'Active'},
-          {id:'CTR-005',name:'Lease — Registered Office',              party:'City Properties Ltd',        type:'Lease',     exp:'31 Aug 2025', days:178, auto:false, s:'Active'},
+          {id:'CTR-003',name:'Mandate Agreement — Entertainment City',party:'Entertainment City Limited',  type:'Mandate',   exp:'30 Jun 2026', days:117, auto:true,  s:'Active'},
+          {id:'CTR-004',name:'Vendor Agreement — Office Supplies',     party:'ABC Suppliers Ltd',          type:'Vendor',    exp:'31 Dec 2026', days:300, auto:true,  s:'Active'},
+          {id:'CTR-005',name:'Lease — Registered Office',              party:'City Properties Ltd',        type:'Lease',     exp:'31 Aug 2026', days:178, auto:false, s:'Active'},
           {id:'CTR-006',name:'Advisory Agreement — Mumbai RE Fund',    party:'Mumbai Real Estate Fund',    type:'Advisory',  exp:'28 Feb 2026', days:-1,  auto:false, s:'Expired'},
         ].map(c=>`<tr>
           <td style="font-size:.75rem;font-weight:600;color:var(--gold);">${c.id}</td>
@@ -7206,7 +7209,7 @@ window.igLoadIntegrationHealth = function(){
       var ok = v.configured;
       html += '<div style="display:flex;align-items:center;gap:.625rem;padding:.4rem 0;border-bottom:1px solid var(--border);">';
       html += '<div style="width:8px;height:8px;border-radius:50%;background:'+(ok?'#16a34a':'#dc2626')+';flex-shrink:0;"></div>';
-      html += '<div style="font-size:.78rem;font-weight:600;color:var(--ink);flex:1;">'+(keyMap[k]||k)+'</div>';
+      html += '<div style="font-size:.78rem;font-weight:600;color:var(--ink);flex:1;">'+esc(keyMap[k]||k)+'</div>';
       html += '<span class="badge '+(ok?'b-gr':'b-re')+'" style="font-size:.6rem;">'+(ok?'Configured':'Needs Setup')+'</span>';
       html += '</div>';
     });
@@ -7254,12 +7257,12 @@ window.igLoadWebhooks = function(){
     html+='</tr></thead><tbody>';
     d.webhooks.forEach(function(w){
       html+='<tr style="border-bottom:1px solid var(--border);">';
-      html+='<td style="padding:.35rem .5rem;font-weight:600;color:var(--ink);">'+w.event+'</td>';
-      html+='<td style="padding:.35rem .5rem;color:var(--ink-muted);">'+(w.order_id||'—')+'</td>';
-      html+='<td style="padding:.35rem .5rem;color:var(--ink-muted);">'+(w.payment_id||'—')+'</td>';
+      html+='<td style="padding:.35rem .5rem;font-weight:600;color:var(--ink);">'+esc(w.event)+'</td>';
+      html+='<td style="padding:.35rem .5rem;color:var(--ink-muted);">'+esc(w.order_id||'—')+'</td>';
+      html+='<td style="padding:.35rem .5rem;color:var(--ink-muted);">'+esc(w.payment_id||'—')+'</td>';
       html+='<td style="padding:.35rem .5rem;"><span class="badge '+(w.signature_valid?'b-gr':'b-re')+'" style="font-size:.6rem;">'+(w.signature_valid?'✓':'✗')+'</span></td>';
       html+='<td style="padding:.35rem .5rem;"><span class="badge '+(w.processed?'b-gr':'b-g')+'" style="font-size:.6rem;">'+(w.processed?'Yes':'Pending')+'</span></td>';
-      html+='<td style="padding:.35rem .5rem;color:var(--ink-muted);">'+(w.created_at||'')+'</td>';
+      html+='<td style="padding:.35rem .5rem;color:var(--ink-muted);">'+esc(w.created_at||'')+'</td>';
       html+='</tr>';
     });
     html+='</tbody></table>';
@@ -7419,7 +7422,7 @@ app.get('/reports', (c) => {
       ${[
         {name:'Monthly P&L',           freq:'1st of month', to:'superadmin, directors',  fmt:'PDF',  last:'01 Feb 2026', on:true},
         {name:'Weekly Pipeline',       freq:'Every Monday', to:'superadmin',             fmt:'Email',last:'24 Feb 2026', on:true},
-        {name:'GST Filing Reminder',   freq:'8th of month', to:'finance@indiagully.com', fmt:'Email',last:'08 Feb 2025', on:true},
+        {name:'GST Filing Reminder',   freq:'8th of month', to:'finance@indiagully.com', fmt:'Email',last:'08 Feb 2026', on:true},
         {name:'HR Attendance Summary', freq:'Last day/month',to:'hr@indiagully.com',      fmt:'Excel',last:'28 Feb 2026', on:false},
       ].map(r=>`<tr>
         <td style="font-weight:500;font-size:.85rem;">${r.name}</td>
@@ -9233,21 +9236,21 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
       if(wEl){
         var ws = d.recent_withdrawals || [];
         if(!ws.length){ wEl.innerHTML='<em style="color:var(--ink-muted)">No withdrawals yet'+(d.storage==='fallback'?' (D1 not active)':'')+'</em>'; }
-        else { wEl.innerHTML='<table style="width:100%;font-size:.73rem;border-collapse:collapse;"><thead><tr style="background:#f8fafc;"><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Ref</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">User</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Purposes</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Channel</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Date</th></tr></thead><tbody>'+ws.slice(0,5).map(function(w){return '<tr><td style="padding:.3rem .5rem;border:1px solid var(--border);font-family:monospace;font-size:.68rem;">'+w.withdrawal_ref+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+w.user_id+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+(JSON.parse(w.purposes_withdrawn||'[]').join(', '))+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+w.channel+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+(w.created_at||'').substring(0,10)+'</td></tr>';}).join('')+'</tbody></table>'; }
+        else { wEl.innerHTML='<table style="width:100%;font-size:.73rem;border-collapse:collapse;"><thead><tr style="background:#f8fafc;"><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Ref</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">User</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Purposes</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Channel</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Date</th></tr></thead><tbody>'+ws.slice(0,5).map(function(w){return '<tr><td style="padding:.3rem .5rem;border:1px solid var(--border);font-family:monospace;font-size:.68rem;">'+esc(w.withdrawal_ref)+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+esc(w.user_id)+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+esc(JSON.parse(w.purposes_withdrawn||'[]').join(', '))+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+esc(w.channel)+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+(w.created_at||'').substring(0,10)+'</td></tr>';}).join('')+'</tbody></table>'; }
       }
       // Rights requests
       var rEl = document.getElementById('dpo-requests');
       if(rEl){
         var rqs = d.open_requests || [];
         if(!rqs.length){ rEl.innerHTML='<em style="color:var(--ink-muted)">No open requests'+(d.storage==='fallback'?' (D1 not active)':'')+'</em>'; }
-        else { rEl.innerHTML='<table style="width:100%;font-size:.73rem;border-collapse:collapse;"><thead><tr style="background:#f8fafc;"><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Ref</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">User</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Type</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Due</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Status</th></tr></thead><tbody>'+rqs.slice(0,5).map(function(r){return '<tr><td style="padding:.3rem .5rem;border:1px solid var(--border);font-family:monospace;font-size:.68rem;">'+r.request_ref+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+r.user_id+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);text-transform:capitalize;">'+r.request_type+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+(r.due_date||'').substring(0,10)+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);"><span style="background:#fef9c3;color:#92400e;padding:1px 6px;border-radius:3px;font-size:.65rem;">'+r.status+'</span></td></tr>';}).join('')+'</tbody></table>'; }
+        else { rEl.innerHTML='<table style="width:100%;font-size:.73rem;border-collapse:collapse;"><thead><tr style="background:#f8fafc;"><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Ref</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">User</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Type</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Due</th><th style="text-align:left;padding:.3rem .5rem;border:1px solid var(--border);">Status</th></tr></thead><tbody>'+rqs.slice(0,5).map(function(r){return '<tr><td style="padding:.3rem .5rem;border:1px solid var(--border);font-family:monospace;font-size:.68rem;">'+esc(r.request_ref)+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+esc(r.user_id)+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);text-transform:capitalize;">'+esc(r.request_type)+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);">'+(r.due_date||'').substring(0,10)+'</td><td style="padding:.3rem .5rem;border:1px solid var(--border);"><span style="background:#fef9c3;color:#92400e;padding:1px 6px;border-radius:3px;font-size:.65rem;">'+esc(r.status)+'</span></td></tr>';}).join('')+'</tbody></table>'; }
       }
       // Alerts
       var aEl = document.getElementById('dpo-alerts-list');
       if(aEl){
         var als = d.unread_alerts || [];
         if(!als.length){ aEl.innerHTML='<em style="color:var(--ink-muted)">No unread alerts</em>'; }
-        else { aEl.innerHTML=als.slice(0,5).map(function(a){return '<div style="display:flex;gap:.5rem;align-items:flex-start;padding:.5rem;border:1px solid var(--border);margin-bottom:.35rem;background:#fefce8;"><i class="fas fa-bell" style="color:#d97706;font-size:.8rem;margin-top:.1rem;flex-shrink:0;"></i><div><div style="font-size:.75rem;font-weight:600;color:var(--ink);">'+a.title+'</div><div style="font-size:.7rem;color:var(--ink-muted);margin-top:.1rem;">'+a.body+'</div></div></div>';}).join(''); }
+        else { aEl.innerHTML=als.slice(0,5).map(function(a){return '<div style="display:flex;gap:.5rem;align-items:flex-start;padding:.5rem;border:1px solid var(--border);margin-bottom:.35rem;background:#fefce8;"><i class="fas fa-bell" style="color:#d97706;font-size:.8rem;margin-top:.1rem;flex-shrink:0;"></i><div><div style="font-size:.75rem;font-weight:600;color:var(--ink);">'+esc(a.title)+'</div><div style="font-size:.7rem;color:var(--ink-muted);margin-top:.1rem;">'+esc(a.body)+'</div></div></div>';}).join(''); }
       }
       igToast('DPO dashboard refreshed','success');
     }).catch(function(e){ igToast('DPO dashboard: '+(e.message||e),'warning'); });
@@ -9994,9 +9997,9 @@ window.igRefreshGoldCert = function() {
             '<div style="display:flex;align-items:flex-start;gap:.4rem;">' +
             '<span style="font-size:.8rem;flex-shrink:0;">' + passIcon + '</span>' +
             '<div style="flex:1;min-width:0;">' +
-            '<div style="font-size:.7rem;font-weight:700;color:var(--ink);line-height:1.3;">[' + c.id + '] ' + c.label + '</div>' +
-            '<div style="font-size:.65rem;color:' + passCol + ';margin-top:.1rem;">' + (c.note||'') + '</div>' +
-            '<div style="font-size:.6rem;color:var(--ink-muted);margin-top:.1rem;">' + c.category + ' &middot; ' + c.weight + ' pts</div>' +
+            '<div style="font-size:.7rem;font-weight:700;color:var(--ink);line-height:1.3;">[' + esc(c.id) + '] ' + esc(c.label) + '</div>' +
+            '<div style="font-size:.65rem;color:' + passCol + ';margin-top:.1rem;">' + esc(c.note||'') + '</div>' +
+            '<div style="font-size:.6rem;color:var(--ink-muted);margin-top:.1rem;">' + esc(c.category) + ' &middot; ' + esc(c.weight) + ' pts</div>' +
             '</div></div></div>';
         }).join('');
       }
@@ -12685,15 +12688,15 @@ app.get('/sales/dashboard', (c) => {
     if(tbody){
       var id='LD-00'+(parseInt(prob)+Math.floor(Math.random()*9)+1);
       var tr=document.createElement('tr');
-      tr.innerHTML='<td style="font-size:.68rem;color:var(--gold);font-weight:600;">'+id+'</td>'
-        +'<td style="font-size:.82rem;font-weight:500;">'+name+'</td>'
-        +'<td><span class="badge b-dk" style="font-size:.6rem;">'+sector+'</span></td>'
-        +'<td style="font-size:.82rem;font-weight:600;color:#16a34a;">'+(value||'TBD')+'</td>'
-        +'<td><span style="background:#ede9fe;color:#6d28d9;padding:.15rem .4rem;font-size:.62rem;font-weight:600;">'+stage+'</span></td>'
-        +'<td style="font-size:.75rem;">'+(contact||'—')+'</td>'
-        +'<td><span style="font-size:.72rem;font-weight:700;color:#16a34a;">'+prob+'%</span></td>'
+      tr.innerHTML='<td style="font-size:.68rem;color:var(--gold);font-weight:600;">'+esc(id)+'</td>'
+        +'<td style="font-size:.82rem;font-weight:500;">'+esc(name)+'</td>'
+        +'<td><span class="badge b-dk" style="font-size:.6rem;">'+esc(sector)+'</span></td>'
+        +'<td style="font-size:.82rem;font-weight:600;color:#16a34a;">'+esc(value||'TBD')+'</td>'
+        +'<td><span style="background:#ede9fe;color:#6d28d9;padding:.15rem .4rem;font-size:.62rem;font-weight:600;">'+esc(stage)+'</span></td>'
+        +'<td style="font-size:.75rem;">'+esc(contact||'—')+'</td>'
+        +'<td><span style="font-size:.72rem;font-weight:700;color:#16a34a;">'+esc(prob)+'%</span></td>'
         +'<td style="font-size:.75rem;">Me</td>'
-        +'<td><button onclick="igViewLead(\''+id+'\',\''+name+'\',\''+sector+'\',\''+(value||'TBD')+'\',\''+stage+'\',\''+(contact||'—')+'\','+prob+',\'Me\',\'Today\')" style="background:var(--gold);color:#fff;border:none;padding:.22rem .5rem;font-size:.65rem;cursor:pointer;">View</button></td>';
+        +'<td><button onclick="igViewLead(\''+esc(id)+'\',\''+esc(name)+'\',\''+esc(sector)+'\',\''+esc(value||'TBD')+'\',\''+esc(stage)+'\',\''+esc(contact||'—')+'\','+esc(prob)+',\'Me\',\'Today\')" style="background:var(--gold);color:#fff;border:none;padding:.22rem .5rem;font-size:.65rem;cursor:pointer;">View</button></td>';
       tbody.insertBefore(tr,tbody.firstChild);
     }
     igApi.post('/sales/leads',{name:name,sector:sector,value:value,stage:stage,contact:contact,probability:prob}).then(function(){}).catch(function(){});
@@ -13125,12 +13128,12 @@ app.get('/mandates', (c) => {
     var tbody=document.querySelector('.ig-tbl tbody');
     if(tbody){
       var tr=document.createElement('tr');
-      tr.innerHTML='<td style="font-size:.68rem;font-weight:600;color:var(--gold);">'+id+'</td>'
-        +'<td style="font-size:.75rem;font-weight:500;">'+name+'</td>'
-        +'<td><span style="background:var(--parch-dk);padding:.1rem .35rem;font-size:.62rem;">'+type+'</span></td>'
-        +'<td style="font-size:.78rem;font-weight:600;color:#16a34a;">'+(value||'TBD')+'</td>'
-        +'<td><span style="background:#fef9c3;color:#92400e;padding:.15rem .4rem;font-size:.62rem;font-weight:600;">'+stage+'</span></td>'
-        +'<td style="font-size:.72rem;">'+client+'</td>'
+      tr.innerHTML='<td style="font-size:.68rem;font-weight:600;color:var(--gold);">'+esc(id)+'</td>'
+        +'<td style="font-size:.75rem;font-weight:500;">'+esc(name)+'</td>'
+        +'<td><span style="background:var(--parch-dk);padding:.1rem .35rem;font-size:.62rem;">'+esc(type)+'</span></td>'
+        +'<td style="font-size:.78rem;font-weight:600;color:#16a34a;">'+esc(value||'TBD')+'</td>'
+        +'<td><span style="background:#fef9c3;color:#92400e;padding:.15rem .4rem;font-size:.62rem;font-weight:600;">'+esc(stage)+'</span></td>'
+        +'<td style="font-size:.72rem;">'+esc(client)+'</td>'
         +'<td style="font-size:.65rem;color:var(--ink-muted);">Mar 2026</td>'
         +'<td style="display:flex;gap:.3rem;">'
         +'<button onclick="igViewMandate(\''+id+'\',\''+name+'\',\''+type+'\',\''+(value||'TBD')+'\',\''+stage+'\',\''+client+'\',\'Mar 2026\')" style="background:var(--gold);color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;">View</button>'
@@ -13375,9 +13378,9 @@ app.get('/documents', (c) => {
     var id = 'DOC-00'+(document.querySelectorAll('#docTable tbody tr').length+1);
     var tbody = document.querySelector('#docTable tbody');
     var tr = document.createElement('tr');
-    tr.innerHTML = '<td style="font-size:.65rem;color:var(--ink-muted);">'+id+'</td>'
-      +'<td style="font-size:.75rem;"><i class="fas fa-file-pdf" style="color:#dc2626;margin-right:.3rem;font-size:.65rem;"></i>'+name+'</td>'
-      +'<td><span style="background:#6b72801a;color:#6b7280;padding:.1rem .35rem;font-size:.62rem;font-weight:600;">'+cat+'</span></td>'
+    tr.innerHTML = '<td style="font-size:.65rem;color:var(--ink-muted);">'+esc(id)+'</td>'
+      +'<td style="font-size:.75rem;"><i class="fas fa-file-pdf" style="color:#dc2626;margin-right:.3rem;font-size:.65rem;"></i>'+esc(name)+'</td>'
+      +'<td><span style="background:#6b72801a;color:#6b7280;padding:.1rem .35rem;font-size:.62rem;font-weight:600;">'+esc(cat)+'</span></td>'
       +'<td style="font-size:.68rem;color:var(--ink-muted);">—</td>'
       +'<td style="font-size:.68rem;">superadmin</td>'
       +'<td style="font-size:.65rem;color:var(--ink-muted);">Today</td>'

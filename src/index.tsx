@@ -85,7 +85,7 @@ function legalPage(title: string, content: string) {
 }
 
 app.get('/legal/privacy', (c) => c.html(legalPage('Privacy Policy', `
-<p style="color:var(--ink-muted);font-size:.82rem;margin-bottom:1.75rem;">Effective Date: 1 January 2025 · Last Updated: 27 February 2025</p>
+<p style="color:var(--ink-muted);font-size:.82rem;margin-bottom:1.75rem;">Effective Date: 1 January 2025 · Last Updated: 4 March 2026</p>
 
 <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:var(--ink);margin-bottom:.875rem;margin-top:2rem;">1. Introduction</h2>
 <p>India Gully (operated by Vivacious Entertainment and Hospitality Pvt. Ltd., hereinafter "we", "our", or "the Company") is committed to protecting your personal data and respecting your privacy. This Privacy Policy describes how we collect, use, process, and disclose information about users of our website and enterprise platform.</p>
@@ -117,7 +117,7 @@ app.get('/legal/privacy', (c) => c.html(legalPage('Privacy Policy', `
 `)))
 
 app.get('/legal/terms', (c) => c.html(legalPage('Terms of Use', `
-<p style="color:var(--ink-muted);font-size:.82rem;margin-bottom:1.75rem;">Effective Date: 1 January 2025 · Last Updated: 27 February 2025</p>
+<p style="color:var(--ink-muted);font-size:.82rem;margin-bottom:1.75rem;">Effective Date: 1 January 2025 · Last Updated: 4 March 2026</p>
 
 <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:var(--ink);margin-bottom:.875rem;margin-top:2rem;">1. Acceptance of Terms</h2>
 <p>By accessing or using the India Gully website or enterprise platform (collectively, the "Platform"), you agree to be bound by these Terms of Use. If you do not agree, please do not use the Platform.</p>
@@ -142,7 +142,7 @@ app.get('/legal/terms', (c) => c.html(legalPage('Terms of Use', `
 `)))
 
 app.get('/legal/disclaimer', (c) => c.html(legalPage('Disclaimer', `
-<p style="color:var(--ink-muted);font-size:.82rem;margin-bottom:1.75rem;">Last Updated: 27 February 2025</p>
+<p style="color:var(--ink-muted);font-size:.82rem;margin-bottom:1.75rem;">Last Updated: 4 March 2026</p>
 
 <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:var(--ink);margin-bottom:.875rem;margin-top:2rem;">Advisory Disclaimer</h2>
 <p>India Gully is a multi-vertical advisory firm. The information, analyses, and recommendations provided by India Gully, whether on this website or through the enterprise platform, are prepared on the basis of information believed to be reliable but are provided "as is" without any warranty, express or implied.</p>

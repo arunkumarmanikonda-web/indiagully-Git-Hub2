@@ -312,7 +312,10 @@ app.get('/leads', (c) => {
 
   <script>
   var igCurrentLead = '';
-  window.igAddLead = function(){
+  /* HTML escape helper */
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+
+window.igAddLead = function(){
     var co=document.getElementById('nl-company').value.trim();
     var ct=document.getElementById('nl-contact').value.trim();
     var em=document.getElementById('nl-email').value.trim();
@@ -325,7 +328,7 @@ app.get('/leads', (c) => {
     var score=Math.floor(Math.random()*30+50);
     var tbody=document.getElementById('leads-tbody');
     var row=document.createElement('tr');
-    row.innerHTML='<td style="font-size:.72rem;font-weight:700;color:var(--gold);">'+id+'</td><td><div style="font-size:.82rem;font-weight:600;">'+co+'</div><div style="font-size:.68rem;color:var(--ink-muted);">'+em+'</div></td><td><div style="font-size:.78rem;">'+ct+'</div></td><td><span class="badge b-dk" style="font-size:.6rem;">'+vert+'</span></td><td style="font-size:.75rem;">Manual</td><td style="font-size:.82rem;font-weight:700;color:var(--gold);">₹'+val+'</td><td style="font-size:.72rem;font-weight:700;color:#d97706;">'+score+'</td><td style="font-size:.75rem;">'+assign+'</td><td><span class="badge b-g">'+status+'</span></td><td style="font-size:.72rem;color:var(--ink-muted);">Today</td><td><button onclick="igToast(\'Lead opened\',\'success\')" style="background:none;border:1px solid var(--border);padding:.22rem .5rem;font-size:.62rem;cursor:pointer;color:var(--gold);"><i class="fas fa-eye"></i></button></td>';
+    row.innerHTML='<td style="font-size:.72rem;font-weight:700;color:var(--gold);">'+esc(id)+'</td><td><div style="font-size:.82rem;font-weight:600;">'+esc(co)+'</div><div style="font-size:.68rem;color:var(--ink-muted);">'+esc(em)+'</div></td><td><div style="font-size:.78rem;">'+esc(ct)+'</div></td><td><span class="badge b-dk" style="font-size:.6rem;">'+esc(vert)+'</span></td><td style="font-size:.75rem;">Manual</td><td style="font-size:.82rem;font-weight:700;color:var(--gold);">₹'+esc(val)+'</td><td style="font-size:.72rem;font-weight:700;color:#d97706;">'+esc(score)+'</td><td style="font-size:.75rem;">'+esc(assign)+'</td><td><span class="badge b-g">'+esc(status)+'</span></td><td style="font-size:.72rem;color:var(--ink-muted);">Today</td><td><button onclick="igToast(\'Lead opened\',\'success\')" style="background:none;border:1px solid var(--border);padding:.22rem .5rem;font-size:.62rem;cursor:pointer;color:var(--gold);"><i class="fas fa-eye"></i></button></td>';
     tbody.insertBefore(row, tbody.firstChild);
     igToast('Lead '+id+' created for '+co,'success');
     togglePanel('new-lead-panel');
@@ -684,8 +687,8 @@ app.get('/engagements', (c) => {
   const engagements = [
     {id:'ENG-001',client:'Demo Client Corp',   title:'Advisory Retainer 2026',       vertical:'Real Estate',  start:'01 Jan 2026',end:'31 Dec 2026',value:'₹6.0 Cr',status:'Active',   progress:25,pm:'Amit Jhingan'},
     {id:'ENG-002',client:'Rajasthan Hotels',   title:'Hotel Pre-Opening PMC',         vertical:'Hospitality',  start:'15 Feb 2026',end:'14 Feb 2027',value:'₹45 L',  status:'Active',   progress:45,pm:'Arun Manikonda'},
-    {id:'ENG-003',client:'Entertainment Vent.',title:'Entertainment Feasibility',     vertical:'Entertainment',start:'01 Mar 2025',end:'31 Aug 2025',value:'₹4.5 Cr',status:'Active',   progress:20,pm:'Arun Manikonda'},
-    {id:'ENG-004',client:'Mumbai Mall Corp',   title:'Retail Leasing Mandate',        vertical:'Real Estate',  start:'01 Dec 2024',end:'30 Nov 2025',value:'₹2.1 Cr',status:'Active',   progress:75,pm:'Amit Jhingan'},
+    {id:'ENG-003',client:'Entertainment Vent.',title:'Entertainment Feasibility',     vertical:'Entertainment',start:'01 Mar 2025',end:'31 Aug 2026',value:'₹4.5 Cr',status:'Active',   progress:20,pm:'Arun Manikonda'},
+    {id:'ENG-004',client:'Mumbai Mall Corp',   title:'Retail Leasing Mandate',        vertical:'Real Estate',  start:'01 Dec 2024',end:'30 Nov 2026',value:'₹2.1 Cr',status:'Active',   progress:75,pm:'Amit Jhingan'},
     {id:'ENG-005',client:'EY India',           title:'Advisory Retainer (Concluded)', vertical:'Advisory',     start:'01 Apr 2024',end:'31 Mar 2025',value:'₹3.5 Cr',status:'Completed',progress:100,pm:'Pavan Manikonda'},
   ]
   const body = `
@@ -727,12 +730,12 @@ app.get('/engagements', (c) => {
 app.get('/tasks', (c) => {
   const tasks = [
     {id:'TSK-001',title:'Send Q1 proposal to NCR Entertainment',       due:'10 Mar 2025',priority:'High',  status:'Overdue',  assigned:'Arun Manikonda',  eng:'ENG-003'},
-    {id:'TSK-002',title:'Follow up on Rajasthan Resort HORECA quote',  due:'12 Mar 2025',priority:'High',  status:'Pending',  assigned:'Amit Jhingan',    eng:'ENG-002'},
-    {id:'TSK-003',title:'Prepare feasibility data pack — Entertainment',due:'15 Mar 2025',priority:'Medium',status:'In Progress',assigned:'Pavan Manikonda',eng:'ENG-003'},
-    {id:'TSK-004',title:'Client call — Mumbai RE Fund retainer renewal',due:'15 Mar 2025',priority:'Medium',status:'Pending',  assigned:'Pavan Manikonda', eng:'ENG-001'},
-    {id:'TSK-005',title:'Submit NDA to Tata Hotels',                    due:'18 Mar 2025',priority:'High',  status:'Pending',  assigned:'Arun Manikonda',  eng:'LD-007'},
-    {id:'TSK-006',title:'Update client portal — mandate progress 75%', due:'20 Mar 2025',priority:'Low',   status:'Pending',  assigned:'Amit Jhingan',    eng:'ENG-004'},
-    {id:'TSK-007',title:'Quarterly performance review — all mandates', due:'31 Mar 2025',priority:'Medium',status:'Pending',  assigned:'Arun Manikonda',  eng:'All'},
+    {id:'TSK-002',title:'Follow up on Rajasthan Resort HORECA quote',  due:'12 Mar 2026',priority:'High',  status:'Pending',  assigned:'Amit Jhingan',    eng:'ENG-002'},
+    {id:'TSK-003',title:'Prepare feasibility data pack — Entertainment',due:'15 Mar 2026',priority:'Medium',status:'In Progress',assigned:'Pavan Manikonda',eng:'ENG-003'},
+    {id:'TSK-004',title:'Client call — Mumbai RE Fund retainer renewal',due:'15 Mar 2026',priority:'Medium',status:'Pending',  assigned:'Pavan Manikonda', eng:'ENG-001'},
+    {id:'TSK-005',title:'Submit NDA to Tata Hotels',                    due:'18 Mar 2026',priority:'High',  status:'Pending',  assigned:'Arun Manikonda',  eng:'LD-007'},
+    {id:'TSK-006',title:'Update client portal — mandate progress 75%', due:'20 Mar 2026',priority:'Low',   status:'Pending',  assigned:'Amit Jhingan',    eng:'ENG-004'},
+    {id:'TSK-007',title:'Quarterly performance review — all mandates', due:'31 Mar 2026',priority:'Medium',status:'Pending',  assigned:'Arun Manikonda',  eng:'All'},
   ]
   const body = `
   <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1.25rem;">
@@ -788,7 +791,7 @@ app.get('/tasks', (c) => {
     var id='TSK-'+(Math.floor(Math.random()*900)+100);
     var tbody=document.getElementById('tasks-tbody');
     var row=document.createElement('tr');
-    row.innerHTML='<td style="font-size:.72rem;font-weight:700;color:var(--gold);">'+id+'</td><td style="font-size:.82rem;font-weight:500;">'+title+'</td><td style="font-size:.75rem;">'+due+'</td><td><span class="badge b-g">'+pri+'</span></td><td style="font-size:.75rem;">'+assign+'</td><td style="font-size:.72rem;color:var(--gold);">'+eng+'</td><td><span class="badge b-dk">Pending</span></td><td><button onclick="igToast(\'Done\',\'success\');this.closest(\'tr\').style.opacity=\'.5\'" style="background:#16a34a;color:#fff;border:none;padding:.22rem .5rem;font-size:.62rem;cursor:pointer;"><i class=\'fas fa-check\'></i></button></td>';
+    row.innerHTML='<td style="font-size:.72rem;font-weight:700;color:var(--gold);">'+esc(id)+'</td><td style="font-size:.82rem;font-weight:500;">'+esc(title)+'</td><td style="font-size:.75rem;">'+esc(due)+'</td><td><span class="badge b-g">'+esc(pri)+'</span></td><td style="font-size:.75rem;">'+esc(assign)+'</td><td style="font-size:.72rem;color:var(--gold);">'+esc(eng)+'</td><td><span class="badge b-dk">Pending</span></td><td><button onclick="igToast(\'Done\',\'success\');this.closest(\'tr\').style.opacity=\'.5\'" style="background:#16a34a;color:#fff;border:none;padding:.22rem .5rem;font-size:.62rem;cursor:pointer;"><i class=\'fas fa-check\'></i></button></td>';
     tbody.insertBefore(row, tbody.firstChild);
     igToast('Task '+id+' created','success');
     togglePanel('new-task-panel');
@@ -984,10 +987,10 @@ app.get('/commission', (c) => {
     </div>
     <table class="ig-tbl"><thead><tr><th>Ref</th><th>Employee</th><th>Engagement</th><th>Type</th><th>Deal Value</th><th>Rate</th><th>Commission</th><th>Payout Date</th><th>Status</th><th>Action</th></tr></thead><tbody>
       ${[
-        {ref:'COM-001',emp:'Arun Manikonda',   eng:'ENG-001 — L5 Resort',   type:'Success Fee',       deal:'₹15 Cr',   rate:'2.5%',amt:'₹37.5L',date:'28 Feb 2025',cls:'b-gr',s:'Paid'},
-        {ref:'COM-002',emp:'Amit Jhingan',     eng:'ENG-003 — Mumbai Retail',type:'Retainer Comm.',    deal:'₹3.5 Cr',  rate:'5.0%',amt:'₹17.5L',date:'15 Mar 2025',cls:'b-g', s:'Pending'},
-        {ref:'COM-003',emp:'Pavan Manikonda',  eng:'ENG-002 — Raj. Hotel',   type:'Success Fee',       deal:'₹8 Cr',    rate:'3.0%',amt:'₹24L',  date:'30 Mar 2025',cls:'b-g', s:'Pending'},
-        {ref:'COM-004',emp:'Arun Manikonda',   eng:'ENG-005 — Debt Mandate', type:'Bonus Incentive',   deal:'₹22 Cr',   rate:'1.5%',amt:'₹33L',  date:'01 Apr 2025',cls:'b-dk',s:'Approved'},
+        {ref:'COM-001',emp:'Arun Manikonda',   eng:'ENG-001 — L5 Resort',   type:'Success Fee',       deal:'₹15 Cr',   rate:'2.5%',amt:'₹37.5L',date:'28 Feb 2026',cls:'b-gr',s:'Paid'},
+        {ref:'COM-002',emp:'Amit Jhingan',     eng:'ENG-003 — Mumbai Retail',type:'Retainer Comm.',    deal:'₹3.5 Cr',  rate:'5.0%',amt:'₹17.5L',date:'15 Mar 2026',cls:'b-g', s:'Pending'},
+        {ref:'COM-003',emp:'Pavan Manikonda',  eng:'ENG-002 — Raj. Hotel',   type:'Success Fee',       deal:'₹8 Cr',    rate:'3.0%',amt:'₹24L',  date:'30 Mar 2026',cls:'b-g', s:'Pending'},
+        {ref:'COM-004',emp:'Arun Manikonda',   eng:'ENG-005 — Debt Mandate', type:'Bonus Incentive',   deal:'₹22 Cr',   rate:'1.5%',amt:'₹33L',  date:'01 Apr 2026',cls:'b-dk',s:'Approved'},
       ].map(r=>`<tr>
         <td style="font-weight:700;font-size:.78rem;color:var(--gold);">${r.ref}</td>
         <td style="font-size:.82rem;">${r.emp}</td>
