@@ -3519,7 +3519,7 @@ app.get('/hr', (c) => {
           ${[
             {id:'IG-0001',name:'Arun Manikonda', des:'Managing Director',    dept:'Leadership',email:'akm@indiagully.com',    join:'01 Apr 2017',ctc:'₹18L',  cls:'b-gr'},
             {id:'IG-0002',name:'Pavan Manikonda',des:'Executive Director',   dept:'Operations',email:'pavan@indiagully.com',  join:'01 Apr 2017',ctc:'₹15L',  cls:'b-gr'},
-            {id:'IG-0003',name:'Amit Jhingan',   des:'President, Real Estate',dept:'Advisory', email:'amit.j@indiagully.com',join:'01 Jan 2020',ctc:'₹21L',  cls:'b-gr'},
+            {id:'IG-0003',name:'Amit Jhingan',   des:'President, Real Estate',dept:'Advisory', email:'amit.jhingan@indiagully.com',join:'01 Jan 2020',ctc:'₹21L',  cls:'b-gr'},
           ].map(e=>`<tr id="emp-row-${e.id}">
             <td style="font-size:.72rem;color:var(--gold);font-weight:600;">${e.id}</td>
             <td style="font-weight:500;">${e.name}</td>
@@ -7843,7 +7843,7 @@ app.get('/security', (c) => {
               {u:'superadmin@indiagully.com',p:'Admin',     totp:true,  last:'28 Feb 09:15'},
               {u:'akm@indiagully.com',        p:'Admin',     totp:true,  last:'28 Feb 09:12'},
               {u:'pavan@indiagully.com',       p:'Admin',     totp:true,  last:'28 Feb 08:55'},
-              {u:'amit.j@indiagully.com',      p:'Employee',  totp:true,  last:'27 Feb 10:30'},
+              {u:'amit.jhingan@indiagully.com', p:'Employee',  totp:true,  last:'27 Feb 10:30'},
               {u:'demo@indiagully.com',         p:'Client',    totp:false, last:'27 Feb 22:14'},
               {u:'IG-KMP-0001',                p:'Board',     totp:false, last:'25 Feb 14:00'},
               {u:'IG-EMP-0001',                p:'Employee',  totp:false, last:'25 Feb 09:30'},
