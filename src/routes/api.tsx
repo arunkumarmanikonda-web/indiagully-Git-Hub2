@@ -627,9 +627,13 @@ app.post('/auth/login', async (c) => {
     const body = await c.req.parseBody()
     const { portal, identifier, password, otp } = body as Record<string, string>
 
-    // Input validation
-    if (!portal || !identifier || !password) {
-      return c.html(errorRedirect(`/portal/${portal || ''}`, 'All fields are required.'))
+    // Input validation — portal must be a known value
+    const VALID_PORTALS = ['client', 'employee', 'board']
+    if (!portal || !VALID_PORTALS.includes(portal)) {
+      return c.html(errorRedirect('/portal', 'Invalid portal specified.'))
+    }
+    if (!identifier || !password) {
+      return c.html(errorRedirect(`/portal/${portal}`, 'All fields are required.'))
     }
     if (identifier.length > 100 || password.length > 128) {
       return c.html(errorRedirect(`/portal/${portal}`, 'Invalid input length.'))
@@ -807,6 +811,9 @@ app.post('/auth/reset/request', async (c) => {
     const body = await c.req.parseBody()
     const { portal, email } = body as Record<string, string>
 
+    const VALID_PORTALS = ['client', 'employee', 'board']
+    const safePortal = portal && VALID_PORTALS.includes(portal) ? portal : 'client'
+
     if (!email || !email.includes('@')) {
       return c.json({ success: false, error: 'Valid email required' }, 400)
     }
@@ -835,7 +842,7 @@ app.post('/auth/reset/request', async (c) => {
       console.log(`[PASSWORD_RESET] OTP for ${email}: ${otp} (demo — set SENDGRID_API_KEY for live email)`)
     }
 
-    return c.html(successRedirect(`/portal/${portal || 'client'}/reset-confirm?email=${encodeURIComponent(email)}`,
+    return c.html(successRedirect(`/portal/${safePortal}/reset-confirm?email=${encodeURIComponent(email)}`,
       'Reset OTP sent to your registered email address. Valid for 10 minutes.'))
   } catch {
     return c.html(errorRedirect('/portal', 'Reset request failed. Please try again.'))
@@ -846,6 +853,9 @@ app.post('/auth/reset/verify', async (c) => {
   try {
     const body = await c.req.parseBody()
     const { email, otp, new_password, portal } = body as Record<string, string>
+
+    const VALID_PORTALS = ['client', 'employee', 'board']
+    const safePortal = portal && VALID_PORTALS.includes(portal) ? portal : 'client'
 
     if (!email || !otp || !new_password) {
       return c.json({ success: false, error: 'All fields required' }, 400)
@@ -861,7 +871,7 @@ app.post('/auth/reset/verify', async (c) => {
     const stored = resetOtpGet(email.trim())
 
     if (!stored || Date.now() > stored.expires || !safeEqual(otp, stored.otp)) {
-      return c.html(errorRedirect(`/portal/${portal || 'client'}`, 'Invalid or expired OTP.'))
+      return c.html(errorRedirect(`/portal/${safePortal}`, 'Invalid or expired OTP.'))
     }
 
     resetOtpDel(email.trim())
@@ -872,7 +882,7 @@ app.post('/auth/reset/verify', async (c) => {
       USER_STORE[userKey] = { ...USER_STORE[userKey], hash: newHash }
     }
 
-    return c.html(successRedirect(`/portal/${portal || 'client'}`, 'Password reset successfully. Please log in with your new password.'))
+    return c.html(successRedirect(`/portal/${safePortal}`, 'Password reset successfully. Please log in with your new password.'))
   } catch {
     return c.html(errorRedirect('/portal', 'Password reset failed.'))
   }
@@ -894,8 +904,11 @@ app.post('/auth/reset', async (c) => {
 
 /** GET /auth/lockout-status — public; tells UI when the lockout expires */
 app.get('/auth/lockout-status', async (c) => {
-  const ip = c.req.query('ip') || c.req.header('CF-Connecting-IP') || c.req.header('X-Forwarded-For') || 'unknown'
-  const portalType = c.req.query('portal') || 'portal'
+  // Always derive IP from trusted server-side headers, never from a query param
+  const ip = c.req.header('CF-Connecting-IP') || c.req.header('X-Forwarded-For') || 'unknown'
+  const _VALID_PORTALS_LS = ['client', 'employee', 'board']
+  const rawPortal = c.req.query('portal') || ''
+  const portalType = _VALID_PORTALS_LS.includes(rawPortal) ? rawPortal : 'portal'
   const rateKey = `login:${portalType}:${ip}`
   const data: RateLimitData | null = c.env?.IG_RATELIMIT_KV
     ? (async () => {
@@ -923,7 +936,8 @@ app.post('/auth/unlock', requireSession(), requireRole(['Super Admin'], ['admin'
   try {
     const { ip, portal_type } = await c.req.json() as { ip?: string; portal_type?: string }
     if (!ip) return c.json({ success: false, error: 'ip is required' }, 400)
-    const type = portal_type || 'portal'
+    const _VALID_PORTALS_UL = ['client', 'employee', 'board']
+    const type = portal_type && _VALID_PORTALS_UL.includes(portal_type) ? portal_type : 'portal'
     const rateKey = `login:${type}:${ip}`
     await kvRateDel(c.env?.IG_RATELIMIT_KV, rateKey)
     const adminUser = c.get('session') as SessionData

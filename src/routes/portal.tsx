@@ -400,7 +400,7 @@ app.get('/support', (c) => {
         {q:'My account is locked, what do I do?', a:'After 5 failed login attempts, your account locks for 5 minutes. Wait for the countdown to complete, then try again. For immediate manual unlock, email <a href="mailto:admin@indiagully.com" style="color:#1A3A6B;">admin@indiagully.com</a> with your user ID or call +91 8988 988 988.'},
         {q:'How do I set up my TOTP authenticator app?', a:'1. Install Google Authenticator, Authy, or Microsoft Authenticator on your phone.<br>2. Email admin@indiagully.com to request your personal QR code.<br>3. In the app, tap "+" → "Scan QR code".<br>4. Use the 6-digit rotating code during login. Codes refresh every 30 seconds.'},
         {q:'My TOTP code is being rejected even though it looks right.', a:'This is usually a clock-sync issue. On Google Authenticator: tap ⋮ → Time correction for codes → Sync now. On Authy: Settings → Account → Sync. Make sure your phone\'s date/time is set to Automatic (internet time).'},
-        {q:'How do I reset my password?', a:'Click "Forgot Password" on any login page or visit <a href="/portal/reset" style="color:#1A3A6B;">/portal/reset</a>. Enter your registered email/employee ID and a secure reset link will be sent. The link is valid for 15 minutes.'},
+        {q:'How do I reset my password?', a:'Click "Forgot Password" on any login page or visit <a href="/portal/reset" style="color:#1A3A6B;">/portal/reset</a>. Enter your registered email address and a 6-digit one-time reset code (OTP) will be sent. The code is valid for 10 minutes.'},
         {q:'Which portal should I use?', a:'<strong>Client Portal</strong>, for advisory clients (mandates, invoices, deliverables).<br><strong>Employee Portal</strong>, for staff (payroll, leave, Form-16, attendance).<br><strong>Board & KMP</strong>, for directors and KMPs (governance, voting, board packs).<br><strong>Super Admin</strong>, for platform administrators only.'},
         {q:'I can\'t see my invoice / document. What should I check?', a:'Ensure you\'re logged into the correct portal. For invoices, go to Invoices → All and check the date filter. For documents, go to Documents → All Files. If the item is still missing, contact support with the document reference or invoice number.'},
         {q:'How do I update my profile or email address?', a:'Log in to your portal → click your avatar top-right → Profile Settings. Email address changes require admin approval for security. Raise a ticket if you need to update your primary email.'},
@@ -440,7 +440,7 @@ app.get('/support', (c) => {
       </div>`).join('')}
       <div style="margin-top:1.25rem;background:#fffbeb;border:1.5px solid #fcd34d;padding:.875rem 1rem;font-size:.76rem;color:#92400e;line-height:1.7;">
         <i class="fas fa-exclamation-triangle" style="margin-right:.4rem;color:#d97706;"></i>
-        <strong>Security reminder:</strong> Never share your credentials. Each portal session auto-expires after 8 hours of inactivity.
+        <strong>Security reminder:</strong> Never share your credentials. Each portal session auto-expires after 30 minutes of inactivity.
         If you suspect unauthorised access, contact us immediately at <a href="mailto:admin@indiagully.com" style="color:#92400e;font-weight:700;">admin@indiagully.com</a>.
       </div>
     </div>
@@ -595,13 +595,13 @@ app.get('/reset', (c) => {
       <div style="background:var(--ink);padding:2rem;text-align:center;">
         <div style="width:48px;height:48px;background:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;"><i class="fas fa-key" style="color:#fff;"></i></div>
         <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;margin-bottom:.25rem;">Reset Password</h2>
-        <p style="font-size:.78rem;color:rgba(255,255,255,.45);">Enter your registered email to receive a secure one-time reset code (OTP).</p>
+        <p style="font-size:.78rem;color:rgba(255,255,255,.45);">Enter your registered email address to receive a 6-digit one-time code (OTP) for password reset.</p>
       </div>
       ${sent ? `<div style="background:#f0fdf4;border-bottom:1px solid #bbf7d0;padding:1rem 1.5rem;display:flex;gap:.6rem;">
         <i class="fas fa-check-circle" style="color:#16a34a;font-size:.875rem;flex-shrink:0;margin-top:.1rem;"></i>
         <div>
-          <p style="font-size:.82rem;font-weight:600;color:#166534;margin-bottom:.2rem;">Reset link sent!</p>
-          <p style="font-size:.75rem;color:#166534;">If this account exists, a one-time reset code (OTP) has been sent to the registered email address. The code expires in 10 minutes. Do not share it.</p>
+          <p style="font-size:.82rem;font-weight:600;color:#166534;margin-bottom:.2rem;">Reset code sent!</p>
+          <p style="font-size:.75rem;color:#166534;">If a matching account exists, a 6-digit one-time code (OTP) has been sent to that email address. The code expires in 10 minutes. Do not share it with anyone.</p>
         </div>
       </div>` : ''}
       <div style="padding:2rem;">
@@ -616,7 +616,7 @@ app.get('/reset', (c) => {
           <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:.75rem;font-size:.75rem;color:#0369a1;">
             <i class="fas fa-info-circle" style="margin-right:.35rem;"></i>For security, we never confirm whether an account exists.
           </div>
-          <button type="submit" id="reset-btn" style="width:100%;padding:.875rem;background:var(--gold);color:#fff;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;"><i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Send Reset Link</button>
+          <button type="submit" id="reset-btn" style="width:100%;padding:.875rem;background:var(--gold);color:#fff;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;"><i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Send Reset Code</button>
         </form>` : `
         <div style="text-align:center;margin-bottom:1rem;">
           <a href="/portal/${portal}" style="display:inline-flex;align-items:center;gap:.4rem;font-size:.78rem;background:var(--gold);color:#fff;padding:.625rem 1.25rem;text-decoration:none;font-weight:600;"><i class="fas fa-sign-in-alt" style="font-size:.72rem;"></i>Back to ${portalLabel} Login</a>
@@ -1086,7 +1086,7 @@ app.get('/client/invoices', (c) => {
         var base=Math.round(totalNum/1.18);var gst=totalNum-base;var half=Math.round(gst/2);
         document.getElementById('inv-tbody').innerHTML='<tr style="border-bottom:1px solid var(--border);"><td style="padding:.5rem .75rem;">'+desc+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+base.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+half.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+half.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;font-weight:600;">₹'+totalNum.toLocaleString('en-IN')+'</td></tr>';
         document.getElementById('inv-total-row').innerHTML='<span style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.78rem;">Total Amount</span><span style="font-family:\'DM Serif Display\',Georgia,serif;font-size:1.25rem;color:var(--gold);">₹'+totalNum.toLocaleString('en-IN')+'</span>';
-        document.getElementById('inv-pay-btn-area').innerHTML=status!=='Paid'?'<button onclick="igPayInvoice(\''+inv+'\',\''+total+'\',\''+status+'\')" style="background:#16a34a;color:#fff;border:none;padding:.6rem 1.25rem;font-size:.8rem;font-weight:600;cursor:pointer;width:100%;"><i class=\'fas fa-credit-card\' style=\'margin-right:.4rem;\'></i>Pay This Invoice</button>':'<div style="text-align:center;padding:.875rem;background:#f0fdf4;border:1px solid #86efac;color:#15803d;font-size:.82rem;font-weight:600;"><i class=\'fas fa-check-circle\' style=\'margin-right:.4rem;\'></i>This invoice has been paid. Thank you.</div>';
+        document.getElementById('inv-pay-btn-area').innerHTML=status!=='Paid'?'<button onclick="igPayInvoice(\''+inv+'\','+totalNum+',\''+status+'\')" style="background:#16a34a;color:#fff;border:none;padding:.6rem 1.25rem;font-size:.8rem;font-weight:600;cursor:pointer;width:100%;"><i class=\'fas fa-credit-card\' style=\'margin-right:.4rem;\'></i>Pay This Invoice</button>':'<div style="text-align:center;padding:.875rem;background:#f0fdf4;border:1px solid #86efac;color:#15803d;font-size:.82rem;font-weight:600;"><i class=\'fas fa-check-circle\' style=\'margin-right:.4rem;\'></i>This invoice has been paid. Thank you.</div>';
         var m=document.getElementById('inv-view-modal');m.style.display='flex';m.style.alignItems='center';m.style.justifyContent='center';
       };
       window.igPayInvoice = function(inv,total,status){
@@ -1119,7 +1119,7 @@ app.get('/client/invoices', (c) => {
         igToast('Payment of ₹'+parseInt(curInv.total).toLocaleString('en-IN')+' submitted. Awaiting finance verification.','success');
         var key='inv-status-'+curInv.inv.replace(/-/g,'_');
         var el=document.getElementById(key);
-        if(el){el.textContent='Under Review';el.className='badge b-g';}
+        if(el){el.innerHTML='Under Review';el.className='badge b-g';}
       };
       window.igSelectPayMethod = function(method){
         ['rz','upi','neft','chq'].forEach(function(m){
@@ -1402,7 +1402,7 @@ function empShell(pageTitle: string, active: string, body: string) {
   ]
   const notifs = [
     {msg:'Leave application pending approval. Casual Leave 5-7 Mar',type:'warn',time:'1h ago'},
-    {msg:'Payslip for February 2026 processed',type:'success',time:'3h ago'},
+    {msg:'Payslip for February 2026 processed and available',type:'success',time:'3h ago'},
     {msg:'New policy update: Performance Review Process',type:'info',time:'2d ago'},
   ]
   return `
@@ -1472,7 +1472,7 @@ app.get('/employee/dashboard', (c) => {
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem;">
       ${[
         { label:'Leave Balance',     value:'12',  sub:'Days available',   icon:'umbrella-beach',  color:'#1A3A6B' },
-        { label:'Attendance MTD',    value:'96%', sub:'Present this month', icon:'calendar-check', color:'#16a34a' },
+        { label:'Attendance MTD',    value:'95%', sub:'Present this month', icon:'calendar-check', color:'#16a34a' },
         { label:'Pending Approvals', value:'1',   sub:'Leave pending',    icon:'clock',           color:'#d97706' },
         { label:'Payroll Month',     value:'Feb', sub:'2026, Processed', icon:'money-check-alt', color:'#7c3aed' },
       ].map(s => `
@@ -1928,7 +1928,7 @@ app.get('/employee/payslips', (c) => {
         document.getElementById('tc-tax').textContent='₹'+Math.round(total).toLocaleString('en-IN');
         document.getElementById('tc-tds').textContent='₹'+monthly.toLocaleString('en-IN');
         document.getElementById('tc-rate').textContent=rate+'%';
-        document.getElementById('tc-slab').innerHTML='<strong>Slab breakdown:</strong> '+(taxable<=700000?'<span style="color:#15803d;">Nil tax. Rebate u/s 87A applies (Income ≤ ₹7L)</span>':slabDetails.join(' · '))+(cess>0?' + Cess ₹'+Math.round(cess).toLocaleString('en-IN'):'');
+        document.getElementById('tc-slab').innerHTML='<strong>Slab breakdown:</strong> '+(taxable<=1200000?'<span style="color:#15803d;">Nil tax — Rebate u/s 87A (Taxable income ≤ ₹12L, FY2025-26)</span>':slabDetails.join(' · '))+(cess>0?' + Cess ₹'+Math.round(cess).toLocaleString('en-IN'):'');
       };
       igCalcTax();
 
@@ -2090,7 +2090,7 @@ function boardShell(pageTitle: string, active: string, body: string) {
   ]
   const notifs = [
     {msg:'Board Meeting Q3 Review, 15 Mar 2026 confirmed',type:'info',  time:'1h ago'},
-    {msg:'Resolution BM-2025-003, Vote closes in 2 days', type:'warn',  time:'3h ago'},
+    {msg:'Resolution RES-2026-004, Vote closes in 2 days', type:'warn',  time:'3h ago'},
     {msg:'GSTR-1 due 11 Mar. Finance team notified',      type:'warn',  time:'1d ago'},
     {msg:'DIN renewal reminder. Arun Manikonda expiry',   type:'danger', time:'2d ago'},
   ]
@@ -2259,12 +2259,12 @@ app.get('/board/voting', (c) => {
       <h3 style="font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);">Pending Resolutions. Action Required</h3>
       ${[
         {
-          res:'RES-2025-003', title:'Approval of Q1 2025 Financial Statements',
-          desc:'Board resolution to approve standalone and consolidated financial statements for the quarter ended 31 December 2024.',
+          res:'RES-2026-003', title:'Approval of Q3 FY2025-26 Financial Statements',
+          desc:'Board resolution to approve standalone and consolidated financial statements for the quarter ended 31 December 2025.',
           date:'15 Mar 2026', type:'Ordinary Resolution',
         },
         {
-          res:'RES-2025-004', title:'Re-appointment of M/s Pipara & Co. as Statutory Auditors',
+          res:'RES-2026-004', title:'Re-appointment of M/s Pipara & Co. as Statutory Auditors',
           desc:'Board resolution to recommend re-appointment of Pipara & Co. as statutory auditors for FY 2025-26 to the shareholders.',
           date:'15 Mar 2026', type:'Special Resolution',
         },
@@ -2485,14 +2485,14 @@ app.get('/board/compliance', (c) => {
         <thead><tr><th>Due Date</th><th>Filing / Event</th><th>Form / Act</th><th>Responsible</th><th>Penalty if Missed</th><th>Status</th></tr></thead>
         <tbody>
           ${[
-            { date:'15 Mar 2025', event:'Board Meeting. Q1 2025',           form:'Companies Act §173',  resp:'Board', penalty:'₹5,000-25,000',    status:'Scheduled', cls:'b-gr' },
-            { date:'31 Mar 2025', event:'Annual Accounts Filing',            form:'AOC-4',               resp:'CFO/CS', penalty:'₹1,000/day',      status:'Due',       cls:'b-g'  },
-            { date:'30 Apr 2025', event:'Annual Return Filing',              form:'MGT-7A',              resp:'CS',     penalty:'₹200/day',        status:'Upcoming',  cls:'b-dk' },
-            { date:'30 Jun 2025', event:'Income Tax Return',                 form:'ITR-6',               resp:'CFO',    penalty:'₹5,000',          status:'Upcoming',  cls:'b-dk' },
-            { date:'31 Jul 2025', event:'Filing of Financial Statements',   form:'AOC-4 XBRL',          resp:'CS',     penalty:'₹1,000/day',      status:'Upcoming',  cls:'b-dk' },
-            { date:'30 Sep 2025', event:'Secretarial Audit',                 form:'MR-3',                resp:'CS',     penalty:'₹1,00,000+',      status:'Upcoming',  cls:'b-dk' },
-            { date:'30 Nov 2025', event:'MSME Payment Compliance Report',    form:'Specified Form',       resp:'CFO',    penalty:'N/A',             status:'Upcoming',  cls:'b-dk' },
-            { date:'31 Dec 2025', event:'Board Meeting. Q3 2025',           form:'Companies Act §173',  resp:'Board',  penalty:'₹5,000-25,000',   status:'Upcoming',  cls:'b-dk' },
+            { date:'15 Mar 2026', event:'Board Meeting. Q3 FY2025-26',      form:'Companies Act §173',  resp:'Board', penalty:'₹5,000-25,000',    status:'Scheduled', cls:'b-gr' },
+            { date:'31 Mar 2026', event:'Annual Accounts Filing (AOC-4)',    form:'AOC-4',               resp:'CFO/CS', penalty:'₹1,000/day',      status:'Due',       cls:'b-g'  },
+            { date:'30 Apr 2026', event:'Annual Return Filing',              form:'MGT-7A',              resp:'CS',     penalty:'₹200/day',        status:'Upcoming',  cls:'b-dk' },
+            { date:'30 Jun 2026', event:'Income Tax Return FY2025-26',      form:'ITR-6',               resp:'CFO',    penalty:'₹5,000',          status:'Upcoming',  cls:'b-dk' },
+            { date:'31 Jul 2026', event:'Filing of Financial Statements',   form:'AOC-4 XBRL',          resp:'CS',     penalty:'₹1,000/day',      status:'Upcoming',  cls:'b-dk' },
+            { date:'30 Sep 2026', event:'Secretarial Audit FY2025-26',      form:'MR-3',                resp:'CS',     penalty:'₹1,00,000+',      status:'Upcoming',  cls:'b-dk' },
+            { date:'30 Nov 2026', event:'MSME Payment Compliance Report',    form:'Specified Form',       resp:'CFO',    penalty:'N/A',             status:'Upcoming',  cls:'b-dk' },
+            { date:'31 Dec 2026', event:'Board Meeting. Q3 FY2026-27',      form:'Companies Act §173',  resp:'Board',  penalty:'₹5,000-25,000',   status:'Upcoming',  cls:'b-dk' },
           ].map(r => `
           <tr>
             <td style="font-size:.82rem;white-space:nowrap;font-weight:500;">${r.date}</td>
