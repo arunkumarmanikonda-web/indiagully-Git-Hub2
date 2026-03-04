@@ -118,7 +118,35 @@ function adminShell(pageTitle: string, active: string, body: string) {
         </div>
       </div>
     </div>
-    <div style="flex:1;padding:1.75rem;overflow-y:auto;">${body}</div>
+    <div style="flex:1;padding:1.75rem;overflow-y:auto;">
+<script>
+/* ── EARLY HELPERS — defined before body scripts so all pages can use them ── */
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+window.igApi = {
+  get: function(path){
+    return fetch('/api'+path,{credentials:'include'}).then(function(r){
+      if(r.status===401){window.location.href='/admin?error=Session+expired';return null;}
+      if(!r.ok) return null;
+      return r.json();
+    }).catch(function(){ return null; });
+  },
+  post: function(path,body){
+    return fetch('/api'+path,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){
+      if(r.status===401){window.location.href='/admin?error=Session+expired';return null;}
+      if(!r.ok) return r.json().catch(function(){return null;});
+      return r.json();
+    }).catch(function(){ return null; });
+  }
+};
+window.igToast = window.igToast || function(msg,type){
+  var el=document.createElement('div');
+  el.style.cssText='position:fixed;bottom:1.5rem;right:1.5rem;background:'+(type==='success'?'#16a34a':type==='warn'?'#d97706':'#2563eb')+';color:#fff;padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;z-index:9999;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.18);';
+  el.textContent=msg;
+  document.body.appendChild(el);
+  setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},3200);
+};
+</script>
+${body}</div>
   </main>
 </div>
 <script>
