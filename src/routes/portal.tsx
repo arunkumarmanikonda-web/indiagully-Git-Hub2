@@ -969,7 +969,7 @@ app.get('/client/invoices', (c) => {
             <td style="display:flex;gap:.4rem;">
               <button onclick="igViewInvoice('${r.inv}','${r.desc}','${r.total}','${r.due}','${r.status}')" style="font-size:.68rem;color:var(--gold);background:none;border:1px solid #B8960C;cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-eye'></i></button>
               ${r.status!=='Paid'?`<button onclick="igPayInvoice('${r.inv}','${r.total}','${r.status}')" style="font-size:.68rem;color:#fff;background:#16a34a;border:none;cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-credit-card'></i> Pay</button>`:'<span style="font-size:.68rem;color:#16a34a;"><i class="fas fa-check-circle"></i> Paid</span>'}
-              <button onclick="igToast('Invoice PDF, ${r.inv} downloading','success')" style="font-size:.68rem;color:var(--ink-muted);background:none;border:1px solid var(--border);cursor:pointer;padding:.2rem .5rem;"><i class='fas fa-download'></i></button>
+              <button onclick="igViewInvoice('${r.inv}','${r.desc}','${r.total}','${r.due}','${r.status}')" style="font-size:.68rem;color:var(--gold);background:var(--gold-pale,#FAF6E8);border:1px solid var(--gold);cursor:pointer;padding:.2rem .5rem;" title="Download Invoice PDF"><i class='fas fa-download'></i></button>
             </td>
           </tr>`).join('')}
         </tbody>
@@ -1086,7 +1086,14 @@ app.get('/client/invoices', (c) => {
         var base=Math.round(totalNum/1.18);var gst=totalNum-base;var half=Math.round(gst/2);
         document.getElementById('inv-tbody').innerHTML='<tr style="border-bottom:1px solid var(--border);"><td style="padding:.5rem .75rem;">'+desc+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+base.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+half.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+half.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;font-weight:600;">₹'+totalNum.toLocaleString('en-IN')+'</td></tr>';
         document.getElementById('inv-total-row').innerHTML='<span style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.78rem;">Total Amount</span><span style="font-family:\'DM Serif Display\',Georgia,serif;font-size:1.25rem;color:var(--gold);">₹'+totalNum.toLocaleString('en-IN')+'</span>';
-        document.getElementById('inv-pay-btn-area').innerHTML=status!=='Paid'?'<button onclick="igPayInvoice(\''+inv+'\','+totalNum+',\''+status+'\')" style="background:#16a34a;color:#fff;border:none;padding:.6rem 1.25rem;font-size:.8rem;font-weight:600;cursor:pointer;width:100%;"><i class=\'fas fa-credit-card\' style=\'margin-right:.4rem;\'></i>Pay This Invoice</button>':'<div style="text-align:center;padding:.875rem;background:#f0fdf4;border:1px solid #86efac;color:#15803d;font-size:.82rem;font-weight:600;"><i class=\'fas fa-check-circle\' style=\'margin-right:.4rem;\'></i>This invoice has been paid. Thank you.</div>';
+        document.getElementById('inv-pay-btn-area').innerHTML=
+          '<div style="display:flex;gap:.75rem;margin-top:.25rem;">'
+          +(status!=='Paid'
+            ?'<button onclick="igPayInvoice(\''+inv+'\','+totalNum+',\''+status+'\')" style="background:#16a34a;color:#fff;border:none;padding:.6rem 1.25rem;font-size:.8rem;font-weight:600;cursor:pointer;flex:1;"><i class=\'fas fa-credit-card\' style=\'margin-right:.4rem;\'></i>Pay Invoice</button>'
+            :'<div style="flex:1;text-align:center;padding:.875rem;background:#f0fdf4;border:1px solid #86efac;color:#15803d;font-size:.82rem;font-weight:600;"><i class=\'fas fa-check-circle\' style=\'margin-right:.4rem;\'></i>Paid. Thank you.</div>'
+          )
+          +'<button onclick="igDownloadInvoicePdf(\''+inv+'\')" style="background:var(--gold);color:#fff;border:none;padding:.6rem 1.25rem;font-size:.8rem;font-weight:600;cursor:pointer;"><i class=\'fas fa-download\' style=\'margin-right:.4rem;\'></i>Download PDF</button>'
+          +'</div>';
         var m=document.getElementById('inv-view-modal');m.style.display='flex';m.style.alignItems='center';m.style.justifyContent='center';
       };
       window.igPayInvoice = function(inv,total,status){
@@ -1127,6 +1134,21 @@ app.get('/client/invoices', (c) => {
           var btn=document.getElementById('pm-'+m);
           if(btn) btn.style.borderColor=m===method?'#16a34a':'var(--border)';
         });
+      };
+      window.igDownloadInvoicePdf = function(inv){
+        igToast('Generating PDF for '+inv+'…','info');
+        fetch('/api/invoices/'+inv+'/pdf',{credentials:'include'})
+          .then(function(r){ return r.ok ? r.json() : null; })
+          .then(function(d){
+            var label = d && d.filename ? d.filename : inv+'.pdf';
+            igToast(label+' ready — printing invoice','success');
+            // Trigger browser print of invoice modal as PDF
+            window.print();
+          })
+          .catch(function(){
+            igToast(inv+' PDF ready — use browser Print → Save as PDF','success');
+            window.print();
+          });
       };
     })();
     </script>`

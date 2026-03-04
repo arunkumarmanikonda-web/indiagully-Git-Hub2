@@ -2279,9 +2279,9 @@ app.get('/mandates',           (c) => c.json({ total:3, active:2, pipeline_value
 ]}))
 
 app.get('/invoices', requireAnyAuth(),           (c) => c.json({ total:3, total_billed:750160, total_paid:250160, total_due:500000, invoices:[
-  { id:'INV-2025-001', client:'Demo Client Corp', base:212000, gst:38160, total:250160, due:'15 Feb 2025', status:'Paid', sac:'998313' },
-  { id:'INV-2025-002', client:'Demo Client Corp', base:152542, gst:27458, total:180000, due:'28 Feb 2025', status:'Overdue', sac:'998313' },
-  { id:'INV-2025-003', client:'Entertainment Ventures', base:271186, gst:48814, total:320000, due:'31 Mar 2025', status:'Draft', sac:'998313' },
+  { id:'INV-2026-001', client:'Demo Client Corp', base:212000, gst:38160, total:250160, due:'15 Feb 2026', status:'Paid', sac:'998313' },
+  { id:'INV-2026-002', client:'Demo Client Corp', base:152542, gst:27458, total:180000, due:'28 Feb 2026', status:'Overdue', sac:'998313' },
+  { id:'INV-2026-003', client:'Entertainment Ventures', base:271186, gst:48814, total:320000, due:'31 Mar 2026', status:'Draft', sac:'998313' },
 ]}))
 
 app.get('/employees',          (c) => c.json({ total:3, active:3, employees:[
@@ -2366,7 +2366,7 @@ app.get('/governance/resolutions', (c) => c.json({ total:7, passed:6, pending:1,
   {id:'BR-2025-007',title:'Authorisation for NCR Entertainment PMC',passed_on:null,votes:{for:1,against:1,abstain:1},dsc_signed:false,status:'Pending'},
 ]}))
 
-app.get('/finance/gst/gstr1',  (c) => c.json({ period:'Feb 2026', gstin:'07AAGCV0867P1ZN', b2b_invoices:[{gstin:'27AAACN1234D1ZI',inv:'INV-2025-001',taxable:500000,cgst:45000,sgst:45000}], totals:{taxable:680000,cgst:61200,sgst:61200}, status:'Draft — Not filed', due_date:'11 Mar 2026' }))
+app.get('/finance/gst/gstr1',  (c) => c.json({ period:'Feb 2026', gstin:'07AAGCV0867P1ZN', b2b_invoices:[{gstin:'27AAACN1234D1ZI',inv:'INV-2026-001',taxable:500000,cgst:45000,sgst:45000}], totals:{taxable:680000,cgst:61200,sgst:61200}, status:'Draft — Not filed', due_date:'11 Mar 2026' }))
 app.get('/finance/gst/gstr3b', (c) => c.json({ period:'Feb 2026', gstin:'07AAGCV0867P1ZN', outward_taxable:{cgst:61200,sgst:61200}, itc_available:{cgst:12000,sgst:12000}, net_payable:{cgst:49200,sgst:49200}, status:'Draft — Not filed', due_date:'20 Mar 2026' }))
 app.get('/finance/hsn-sac',    (c) => c.json({ master:[
   {code:'998313',type:'SAC',description:'Management Consulting Services',gst_rate:18},
