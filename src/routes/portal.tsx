@@ -595,13 +595,13 @@ app.get('/reset', (c) => {
       <div style="background:var(--ink);padding:2rem;text-align:center;">
         <div style="width:48px;height:48px;background:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;"><i class="fas fa-key" style="color:#fff;"></i></div>
         <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;margin-bottom:.25rem;">Reset Password</h2>
-        <p style="font-size:.78rem;color:rgba(255,255,255,.45);">Enter your registered ID to receive a secure one-time link.</p>
+        <p style="font-size:.78rem;color:rgba(255,255,255,.45);">Enter your registered email to receive a secure one-time reset code (OTP).</p>
       </div>
       ${sent ? `<div style="background:#f0fdf4;border-bottom:1px solid #bbf7d0;padding:1rem 1.5rem;display:flex;gap:.6rem;">
         <i class="fas fa-check-circle" style="color:#16a34a;font-size:.875rem;flex-shrink:0;margin-top:.1rem;"></i>
         <div>
           <p style="font-size:.82rem;font-weight:600;color:#166534;margin-bottom:.2rem;">Reset link sent!</p>
-          <p style="font-size:.75rem;color:#166534;">If this account exists, a secure one-time link has been sent to the registered email/mobile. The link expires in 15 minutes. Do not share it.</p>
+          <p style="font-size:.75rem;color:#166534;">If this account exists, a one-time reset code (OTP) has been sent to the registered email address. The code expires in 10 minutes. Do not share it.</p>
         </div>
       </div>` : ''}
       <div style="padding:2rem;">
@@ -610,8 +610,8 @@ app.get('/reset', (c) => {
           <input type="hidden" name="portal" value="${portal}">
           <input type="hidden" name="csrf_r" id="csrf-reset" value="">
           <div>
-            <label class="ig-label">Registered Email / ID</label>
-            <input type="text" name="identifier" class="ig-input" required placeholder="your@email.com or IG-EMP-XXXX" autocomplete="username">
+            <label class="ig-label">Registered Email Address</label>
+            <input type="email" name="email" class="ig-input" required placeholder="your@email.com" autocomplete="email">
           </div>
           <div style="background:#f0f9ff;border:1px solid #bae6fd;padding:.75rem;font-size:.75rem;color:#0369a1;">
             <i class="fas fa-info-circle" style="margin-right:.35rem;"></i>For security, we never confirm whether an account exists.
@@ -636,8 +636,17 @@ app.get('/reset', (c) => {
   var form=document.getElementById('reset-form');
   if(form&&btn)form.addEventListener('submit',function(e){
     e.preventDefault();
+    var emailVal=form.querySelector('[name="email"]').value.trim();
+    if(!emailVal||!emailVal.includes('@')){
+      var errEl=form.querySelector('.ig-input[name="email"]');
+      if(errEl){errEl.style.borderColor='#dc2626';}
+      return;
+    }
     btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin" style="margin-right:.5rem;"></i>Sending\u2026';
-    setTimeout(function(){location.href='/portal/reset?portal=${portal}&sent=1';},1200);
+    var fd=new FormData();fd.append('portal','${portal}');fd.append('email',emailVal);
+    fetch('/api/auth/reset/request',{method:'POST',body:fd,credentials:'include'})
+      .then(function(){location.href='/portal/reset?portal=${portal}&sent=1';})
+      .catch(function(){location.href='/portal/reset?portal=${portal}&sent=1';});
   });
 })();
 </script>`
@@ -660,7 +669,7 @@ function clientShell(pageTitle: string, active: string, body: string) {
     { id:'profile',    icon:'user-cog',       label:'My Profile',    badge:'' },
   ]
   const notifs = [
-    {msg:'INV-2025-002 is overdue, ₹1.8L pending',type:'danger',  time:'2h ago'},
+    {msg:'INV-2026-002 is overdue, ₹1.8L pending',type:'danger',  time:'2h ago'},
     {msg:'Proposal signed. Hotel PMC Engagement Letter',type:'success',time:'5h ago'},
     {msg:'New document shared: Market Research Q4 2024',type:'info',  time:'1d ago'},
   ]
@@ -787,9 +796,9 @@ app.get('/client/dashboard', (c) => {
         <table class="ig-tbl">
           <thead><tr><th>Invoice</th><th>Amount</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td style="font-size:.82rem;">INV-2025-001</td><td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹2.5L</td><td><span class="badge b-gr">Paid</span></td></tr>
-            <tr><td style="font-size:.82rem;">INV-2025-002</td><td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹1.8L</td><td><span class="badge b-g">Due</span></td></tr>
-            <tr><td style="font-size:.82rem;">INV-2025-003</td><td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹3.2L</td><td><span class="badge b-dk">Draft</span></td></tr>
+            <tr><td style="font-size:.82rem;">INV-2026-001</td><td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹2.5L</td><td><span class="badge b-gr">Paid</span></td></tr>
+            <tr><td style="font-size:.82rem;">INV-2026-002</td><td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹1.8L</td><td><span class="badge b-re">Overdue</span></td></tr>
+            <tr><td style="font-size:.82rem;">INV-2026-003</td><td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹3.2L</td><td><span class="badge b-dk">Draft</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -1070,12 +1079,13 @@ app.get('/client/invoices', (c) => {
     (function(){
       var curInv = {};
       window.igViewInvoice = function(inv,desc,total,due,status){
-        curInv = {inv,total,status};
+        var totalNum = parseInt(total,10);
+        curInv = {inv,total:totalNum,status};
         document.getElementById('inv-number').textContent = inv;
         document.getElementById('inv-due').innerHTML = 'Due: '+due+'<br>Status: <strong style="color:'+(status==='Paid'?'#16a34a':status==='Overdue'?'#dc2626':'#d97706')+';">'+status+'</strong>';
-        var base=Math.round(total/1.18);var gst=total-base;var half=Math.round(gst/2);
-        document.getElementById('inv-tbody').innerHTML='<tr style="border-bottom:1px solid var(--border);"><td style="padding:.5rem .75rem;">'+desc+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+base.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+half.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+half.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;font-weight:600;">₹'+total.toLocaleString('en-IN')+'</td></tr>';
-        document.getElementById('inv-total-row').innerHTML='<span style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.78rem;">Total Amount</span><span style="font-family:\'DM Serif Display\',Georgia,serif;font-size:1.25rem;color:var(--gold);">₹'+total.toLocaleString('en-IN')+'</span>';
+        var base=Math.round(totalNum/1.18);var gst=totalNum-base;var half=Math.round(gst/2);
+        document.getElementById('inv-tbody').innerHTML='<tr style="border-bottom:1px solid var(--border);"><td style="padding:.5rem .75rem;">'+desc+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+base.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+half.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;">₹'+half.toLocaleString('en-IN')+'</td><td style="padding:.5rem .75rem;text-align:right;font-weight:600;">₹'+totalNum.toLocaleString('en-IN')+'</td></tr>';
+        document.getElementById('inv-total-row').innerHTML='<span style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.78rem;">Total Amount</span><span style="font-family:\'DM Serif Display\',Georgia,serif;font-size:1.25rem;color:var(--gold);">₹'+totalNum.toLocaleString('en-IN')+'</span>';
         document.getElementById('inv-pay-btn-area').innerHTML=status!=='Paid'?'<button onclick="igPayInvoice(\''+inv+'\',\''+total+'\',\''+status+'\')" style="background:#16a34a;color:#fff;border:none;padding:.6rem 1.25rem;font-size:.8rem;font-weight:600;cursor:pointer;width:100%;"><i class=\'fas fa-credit-card\' style=\'margin-right:.4rem;\'></i>Pay This Invoice</button>':'<div style="text-align:center;padding:.875rem;background:#f0fdf4;border:1px solid #86efac;color:#15803d;font-size:.82rem;font-weight:600;"><i class=\'fas fa-check-circle\' style=\'margin-right:.4rem;\'></i>This invoice has been paid. Thank you.</div>';
         var m=document.getElementById('inv-view-modal');m.style.display='flex';m.style.alignItems='center';m.style.justifyContent='center';
       };
@@ -1099,6 +1109,10 @@ app.get('/client/invoices', (c) => {
         if(activeMethod==='neft'){
           var utr=document.getElementById('pay-utr').value.trim();
           if(!utr){igToast('Please enter UTR / Transaction reference','warn');return;}
+        }
+        if(activeMethod==='chq'){
+          var chqNum=document.querySelector('#pay-panel-chq input').value.trim();
+          if(!chqNum){igToast('Please enter the cheque number','warn');return;}
         }
         document.getElementById('pay-modal').style.display='none';
         fetch('/api/invoices/mark-paid',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({invoice_id:curInv.inv,amount:curInv.total})}).then(function(){}).catch(function(){});
@@ -1226,7 +1240,7 @@ app.get('/client/messages', (c) => {
         ${[
           { name:'Arun Manikonda', role:'Managing Director', email:'akm@indiagully.com',    msg:'Please review the updated proposal...', time:'10:30 AM', unread:1, color:'#B8960C', id:'conv-akm' },
           { name:'Amit Jhingan',   role:'President, Real Estate', email:'amit.jhingan@indiagully.com', msg:'Site visit confirmed for Thursday...', time:'Yesterday', unread:0, color:'#4f46e5', id:'conv-aj' },
-          { name:'Finance Team',   role:'Billing & Accounts', email:'finance@indiagully.com', msg:'Invoice INV-2025-002 is due...', time:'2 days ago', unread:0, color:'#16a34a', id:'conv-fin' },
+          { name:'Finance Team',   role:'Billing & Accounts', email:'finance@indiagully.com', msg:'Invoice INV-2026-002 is due...', time:'2 days ago', unread:0, color:'#16a34a', id:'conv-fin' },
         ].map(c => `
         <div id="${c.id}" onclick="igSwitchConv(this,'${c.name}','${c.color}','${c.role}','${c.email}')" style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);cursor:pointer;display:flex;gap:.75rem;${c.id==='conv-akm'?'background:var(--parch-dk);':''}" onmouseover="if(this.style.background!=='var(--parch-dk)')this.style.background='var(--parch-dk)'" onmouseout="if(this.id!==document.getElementById('msg-active-conv').value)this.style.background=''">
           <div style="width:36px;height:36px;background:${c.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Serif Display',Georgia,serif;color:#fff;font-size:.8rem;">${c.name[0]}</div>
@@ -1287,7 +1301,7 @@ app.get('/client/messages', (c) => {
       var t = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});
       div.innerHTML = '<div style="width:30px;height:30px;background:var(--ink);display:flex;align-items:center;justify-content:center;font-family:\'DM Serif Display\',Georgia,serif;color:var(--gold);font-size:.75rem;flex-shrink:0;">C</div>'
         +'<div style="background:var(--ink);padding:.75rem 1rem;max-width:75%;">'
-        +'<p style="font-size:.85rem;color:#fff;line-height:1.6;">'+msg+'</p>'
+        +'<p style="font-size:.85rem;color:#fff;line-height:1.6;">'+msg.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')+'</p>'
         +'<div style="display:flex;align-items:center;gap:.35rem;justify-content:flex-end;margin-top:.2rem;"><span style="font-size:.68rem;color:rgba(255,255,255,.4);">'+t+' · Just now</span><span style="font-size:.62rem;color:rgba(255,255,255,.3);">✓</span></div>'
         +'</div>';
       thread.appendChild(div);
@@ -1388,7 +1402,7 @@ function empShell(pageTitle: string, active: string, body: string) {
   ]
   const notifs = [
     {msg:'Leave application pending approval. Casual Leave 5-7 Mar',type:'warn',time:'1h ago'},
-    {msg:'Payslip for February 2025 processed',type:'success',time:'3h ago'},
+    {msg:'Payslip for February 2026 processed',type:'success',time:'3h ago'},
     {msg:'New policy update: Performance Review Process',type:'info',time:'2d ago'},
   ]
   return `
@@ -1761,7 +1775,7 @@ app.get('/employee/leave', (c) => {
       if(!reason){ err.textContent='Please provide a reason for your leave request'; err.style.display='block'; return; }
       var d1 = new Date(from), d2 = new Date(to);
       if(d2 < d1){ err.textContent='To Date cannot be before From Date'; err.style.display='block'; return; }
-      var ref = 'LV-2025-'+String(Math.floor(Math.random()*900)+100);
+      var ref = 'LV-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*900)+100);
       var type = document.getElementById('lv-type').value;
       var diff = Math.round((d2-d1)/(1000*60*60*24))+1;
       fetch('/api/hr/leave/apply',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({type:type,from:from,to:to,reason:reason,ref:ref,days:diff})}).then(function(){}).catch(function(){});
@@ -1793,9 +1807,9 @@ app.get('/employee/payslips', (c) => {
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;">
       ${[
         {label:'Gross CTC (Annual)',value:'₹15,00,000',color:'var(--ink)'},
-        {label:'Net Pay (Feb)',value:'₹1,08,800',color:'var(--gold)'},
-        {label:'YTD TDS Paid',value:'₹85,000',color:'#dc2626'},
-        {label:'PF Contribution',value:'₹18,000/mo',color:'#2563eb'},
+        {label:'Net Pay (Feb)',value:'₹1,08,000',color:'var(--gold)'},
+        {label:'YTD TDS Paid',value:'₹1,02,000',color:'#dc2626'},
+        {label:'PF Contribution',value:'₹7,500/mo',color:'#2563eb'},
       ].map(s=>`<div class="am"><div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${s.label}</div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.6rem;color:${s.color};">${s.value}</div></div>`).join('')}
     </div>
     <!-- Payslip Table -->
@@ -1808,7 +1822,7 @@ app.get('/employee/payslips', (c) => {
         <h4 style="font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:.875rem;">FY 2025-26 Tax Estimator (New Regime)</h4>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:.875rem;">
           <div><label class="ig-label">Gross Annual CTC (₹)</label><input type="number" id="tc-ctc" class="ig-input" value="1500000" oninput="igCalcTax()" style="font-size:.82rem;"></div>
-          <div><label class="ig-label">Annual PF (₹)</label><input type="number" id="tc-pf" class="ig-input" value="216000" oninput="igCalcTax()" style="font-size:.82rem;"></div>
+          <div><label class="ig-label">Annual PF (₹)</label><input type="number" id="tc-pf" class="ig-input" value="90000" oninput="igCalcTax()" style="font-size:.82rem;"></div>
           <div><label class="ig-label">Other Deductions (₹)</label><input type="number" id="tc-ded" class="ig-input" value="0" oninput="igCalcTax()" style="font-size:.82rem;"></div>
         </div>
         <div id="tc-result" style="background:var(--parch-dk);border:1px solid var(--border);padding:1rem;display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;">
@@ -1824,12 +1838,12 @@ app.get('/employee/payslips', (c) => {
         <thead><tr><th>Month</th><th>Gross</th><th>PF</th><th>PT</th><th>TDS</th><th>Net Pay</th><th>Days</th><th>Status</th><th>Action</th></tr></thead>
         <tbody>
           ${[
-            {month:'February 2026',gross:125000,pf:15000,pt:200,tds:8500,net:108800,days:20,cls:'b-gr'},
-            {month:'January 2026', gross:125000,pf:15000,pt:200,tds:8500,net:108800,days:21,cls:'b-gr'},
-            {month:'December 2025',gross:125000,pf:15000,pt:200,tds:8500,net:108800,days:22,cls:'b-gr'},
-            {month:'November 2025',gross:125000,pf:15000,pt:200,tds:8500,net:108800,days:19,cls:'b-gr'},
-            {month:'October 2025', gross:125000,pf:15000,pt:200,tds:8500,net:108800,days:23,cls:'b-gr'},
-            {month:'September 2025',gross:125000,pf:15000,pt:200,tds:8500,net:108800,days:22,cls:'b-gr'},
+            {month:'February 2026',gross:125000,pf:7500,pt:200,tds:9300,net:108000,days:20,cls:'b-gr'},
+            {month:'January 2026', gross:125000,pf:7500,pt:200,tds:9300,net:108000,days:21,cls:'b-gr'},
+            {month:'December 2025',gross:125000,pf:7500,pt:200,tds:9300,net:108000,days:22,cls:'b-gr'},
+            {month:'November 2025',gross:125000,pf:7500,pt:200,tds:9300,net:108000,days:19,cls:'b-gr'},
+            {month:'October 2025', gross:125000,pf:7500,pt:200,tds:9300,net:108000,days:23,cls:'b-gr'},
+            {month:'September 2025',gross:125000,pf:7500,pt:200,tds:9300,net:108000,days:22,cls:'b-gr'},
           ].map(p => `
           <tr>
             <td style="font-weight:500;font-size:.85rem;">${p.month}</td>
@@ -1868,14 +1882,14 @@ app.get('/employee/payslips', (c) => {
             <tbody>
               <tr style="border-bottom:1px solid var(--border);"><td style="padding:.45rem .75rem;">Basic Salary</td><td style="padding:.45rem .75rem;text-align:right;">₹62,500</td><td style="padding:.45rem .75rem;">Employee PF (12%)</td><td style="padding:.45rem .75rem;text-align:right;color:#2563eb;">₹7,500</td></tr>
               <tr style="border-bottom:1px solid var(--border);"><td style="padding:.45rem .75rem;">HRA</td><td style="padding:.45rem .75rem;text-align:right;">₹25,000</td><td style="padding:.45rem .75rem;">Professional Tax</td><td style="padding:.45rem .75rem;text-align:right;color:var(--ink-muted);">₹200</td></tr>
-              <tr style="border-bottom:1px solid var(--border);"><td style="padding:.45rem .75rem;">Conveyance</td><td style="padding:.45rem .75rem;text-align:right;">₹5,000</td><td style="padding:.45rem .75rem;">Income Tax (TDS)</td><td style="padding:.45rem .75rem;text-align:right;color:#dc2626;">₹8,500</td></tr>
+              <tr style="border-bottom:1px solid var(--border);"><td style="padding:.45rem .75rem;">Conveyance</td><td style="padding:.45rem .75rem;text-align:right;">₹5,000</td><td style="padding:.45rem .75rem;">Income Tax (TDS)</td><td style="padding:.45rem .75rem;text-align:right;color:#dc2626;">₹9,300</td></tr>
               <tr style="border-bottom:1px solid var(--border);"><td style="padding:.45rem .75rem;">Special Allowance</td><td style="padding:.45rem .75rem;text-align:right;">₹32,500</td><td style="padding:.45rem .75rem;color:var(--ink-muted);"></td><td style="padding:.45rem .75rem;"></td></tr>
-              <tr style="background:var(--parch-dk);font-weight:700;"><td style="padding:.6rem .75rem;">Gross Earnings</td><td style="padding:.6rem .75rem;text-align:right;color:var(--gold);">₹1,25,000</td><td style="padding:.6rem .75rem;">Total Deductions</td><td style="padding:.6rem .75rem;text-align:right;color:#dc2626;">₹16,200</td></tr>
+              <tr style="background:var(--parch-dk);font-weight:700;"><td style="padding:.6rem .75rem;">Gross Earnings</td><td style="padding:.6rem .75rem;text-align:right;color:var(--gold);">₹1,25,000</td><td style="padding:.6rem .75rem;">Total Deductions</td><td style="padding:.6rem .75rem;text-align:right;color:#dc2626;">₹17,000</td></tr>
             </tbody>
           </table>
           <div style="background:var(--ink);color:#fff;padding:.875rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
             <span style="font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.82rem;">Net Pay (Take Home)</span>
-            <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:var(--gold);">₹1,08,800</span>
+            <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:var(--gold);">₹1,08,000</span>
           </div>
           <div style="font-size:.7rem;color:var(--ink-muted);text-align:center;margin-bottom:1rem;">This is a computer-generated payslip and does not require a signature. · Employer PF: ₹7,500 · Gratuity Provisioning: ₹5,952</div>
           <div style="display:flex;gap:.75rem;">
@@ -1896,7 +1910,8 @@ app.get('/employee/payslips', (c) => {
         var taxable = Math.max(0, ctc - pf - ded - std);
         document.getElementById('tc-taxable').textContent = '₹'+taxable.toLocaleString('en-IN');
         // New regime slabs FY 2025-26
-        var slabs = [{limit:400000,rate:0},{limit:800000,rate:.05},{limit:1200000,rate:.10},{limit:1600000,rate:.15},{limit:2000000,rate:.20},{limit:2400000,rate:.25},{limit:Infinity,rate:.30}];
+        // FY 2025-26 new regime slabs (Budget 2025): 0-3L=0%, 3-7L=5%, 7-10L=10%, 10-12L=15%, 12-15L=20%, >15L=30%
+        var slabs = [{limit:300000,rate:0},{limit:700000,rate:.05},{limit:1000000,rate:.10},{limit:1200000,rate:.15},{limit:1500000,rate:.20},{limit:Infinity,rate:.30}];
         var tax=0, prev=0, slabDetails=[];
         for(var s of slabs){
           if(taxable<=prev) break;
@@ -1905,7 +1920,7 @@ app.get('/employee/payslips', (c) => {
           if(chunk>0) slabDetails.push('₹'+(prev/100000).toFixed(1)+'L-₹'+(Math.min(taxable,s.limit)/100000).toFixed(1)+'L @'+(s.rate*100)+'% = ₹'+Math.round(t).toLocaleString('en-IN'));
           tax+=t; prev=s.limit;
         }
-        if(taxable<=700000) tax=0; // rebate u/s 87A
+        if(taxable<=1200000) tax=0; // rebate u/s 87A — nil tax up to ₹12L taxable income (FY2025-26 Budget)
         var cess=tax*0.04;
         var total=tax+cess;
         var monthly=Math.round(total/12);
@@ -2155,7 +2170,7 @@ app.get('/board/dashboard', (c) => {
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem;">
       ${[
         { label:'Next Board Meeting', value:'Mar 15', sub:'2026, Scheduled',    icon:'calendar',    color:'#1E1E1E' },
-        { label:'Pending Resolutions',value:'2',      sub:'For director approval', icon:'vote-yea',  color:'#d97706' },
+        { label:'Pending Resolutions',value:'2',      sub:'For director approval', icon:'check-square',  color:'#d97706' },
         { label:'Open Compliance',    value:'0',      sub:'All filings current',  icon:'check-circle', color:'#16a34a' },
         { label:'DIN Status',         value:'Active', sub:'All directors valid',  icon:'id-card',     color:'#2563eb' },
       ].map(s => `
@@ -2178,8 +2193,8 @@ app.get('/board/dashboard', (c) => {
       ${[
         { date:'15 Mar 2026', event:'Board Meeting. Q3 Review',           status:'Scheduled', cls:'b-gr' },
         { date:'31 Mar 2026', event:'Annual Accounts Filing (Form AOC-4)', status:'Due',       cls:'b-g'  },
-        { date:'30 Jun 2025', event:'Annual Return Filing (Form MGT-7)',   status:'Upcoming',  cls:'b-dk' },
-        { date:'30 Sep 2025', event:'Secretarial Audit (Form MR-3)',       status:'Upcoming',  cls:'b-dk' },
+        { date:'30 Jun 2026', event:'Annual Return Filing (Form MGT-7)',   status:'Upcoming',  cls:'b-dk' },
+        { date:'30 Sep 2026', event:'Secretarial Audit (Form MR-3)',       status:'Upcoming',  cls:'b-dk' },
       ].map(n => `
       <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;gap:1rem;align-items:center;">
         <span style="font-size:.72rem;color:var(--ink-muted);white-space:nowrap;min-width:90px;">${n.date}</span>

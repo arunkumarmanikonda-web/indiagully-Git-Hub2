@@ -14081,7 +14081,7 @@ app.get('/support/ticket/:ref', async (c) => {
 // ── PORTAL: Invoice Mark Paid ─────────────────────────────────────────────────
 // Called by the Client Portal payment modal to record payment intent.
 // Stores an audit entry in KV and returns acknowledgement.
-app.post('/invoices/mark-paid', async (c) => {
+app.post('/invoices/mark-paid', requireSession(), async (c) => {
   try {
     const { invoice_id, amount, method } = await c.req.json() as { invoice_id?: string; amount?: unknown; method?: string }
     if (!invoice_id) return c.json({ success: false, error: 'invoice_id required' }, 400)
@@ -14100,13 +14100,15 @@ app.post('/invoices/mark-paid', async (c) => {
 // ── PORTAL: Admin Audit Log ───────────────────────────────────────────────────
 // Lightweight fire-and-forget audit logger called by portal pages for actions
 // such as check_in, check_out, message_sent, etc.
-app.post('/admin/audit', async (c) => {
+// requireSession() ensures only authenticated users can write audit entries.
+app.post('/admin/audit', requireSession(), async (c) => {
   try {
     const body = await c.req.json() as Record<string, unknown>
     const { action, module, time } = body
     const ref = `AUD-${Date.now().toString(36).toUpperCase()}`
     const env = c.env as Bindings
-    const entry = { ref, action, module, time: time || new Date().toISOString(), logged_at: new Date().toISOString() }
+    const session = c.get('session') as SessionData
+    const entry = { ref, action, module, time: time || new Date().toISOString(), logged_at: new Date().toISOString(), user: session?.user || 'unknown', portal: session?.portal || 'unknown' }
     if (env?.IG_AUDIT_KV) {
       await env.IG_AUDIT_KV.put(`audit:${ref}`, JSON.stringify(entry), { expirationTtl: 86400 * 30 })
     }
