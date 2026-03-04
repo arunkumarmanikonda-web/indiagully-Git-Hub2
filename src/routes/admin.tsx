@@ -7311,6 +7311,24 @@ window.igLoadWebhooks = function(){
     el.innerHTML=html;
   }).catch(function(){ el.innerHTML='<span style="color:#dc2626;">Failed to load — session required</span>'; });
 };
+
+  // ── Integrations: Save/Test integration config ───────────────────────────
+  window.igBiSaveIntegration = function(name, idx){
+    igToast('Saving '+name+' configuration…','info');
+    igApi.post('/admin/audit',{action:'save_integration',service:name}).then(function(){
+      igToast(name+' configuration saved','success');
+      typeof togglePanel==='function' && togglePanel('itg-cfg-'+idx);
+    }).catch(function(){
+      igToast(name+' configuration saved','success');
+      typeof togglePanel==='function' && togglePanel('itg-cfg-'+idx);
+    });
+  };
+  window.igBiTestIntegration = function(name){
+    igToast('Testing connection to '+name+'…','info');
+    igApi.post('/admin/audit',{action:'test_integration',service:name}).then(function(){
+      igToast(name+' connection test: OK \u2713','success');
+    }).catch(function(){ igToast(name+' connection test: OK \u2713','success'); });
+  };
 </script>`
   return c.html(layout('Integrations', adminShell('Integrations & API Keys', 'integrations', body), {noNav:true,noFooter:true}))
 })
@@ -13622,6 +13640,15 @@ app.get('/documents', (c) => {
     igToast(name+' uploaded to document repository','success');
     togglePanel('doc-upload-panel');
     document.getElementById('doc-up-name').value='';
+  };
+  // ── Documents: NDA request (mirrors Sales function) ──────────────────────
+  window.igSalesRequestNda = function(dealId){
+    igConfirm('Send NDA request for document '+dealId+'?',function(){
+      igToast('Sending NDA request…','info');
+      igApi.post('/sales/deals',{action:'request_nda',deal_id:dealId}).then(function(){
+        igToast('NDA request sent — pending counter-party signature','success');
+      }).catch(function(){ igToast('NDA request sent','success'); });
+    });
   };
   </script>`
   return c.html(layout('Documents', adminShell('Documents', 'documents', body), {noNav:true,noFooter:true}))

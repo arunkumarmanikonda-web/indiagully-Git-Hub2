@@ -603,7 +603,9 @@ app.get('/auth/csrf-token', async (c) => {
   const token = await generateSecureToken(32)
   const sessionId = await generateSecureToken(16) // temporary pre-session ID
   MEM_CSRF.set(sessionId, { token, expires: Date.now() + 30 * 60 * 1000 })
-  c.header('Set-Cookie', `ig_pre_session=${sessionId}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=1800`)
+  const preProto = c.req.header('X-Forwarded-Proto') || c.req.header('x-forwarded-proto') || 'http'
+  const preSecure = preProto === 'https' ? '; Secure' : ''
+  c.header('Set-Cookie', `ig_pre_session=${sessionId}; HttpOnly${preSecure}; SameSite=Lax; Path=/; Max-Age=1800`)
   return c.json({ csrf_token: token, expires_in: 1800 })
 })
 
@@ -684,8 +686,10 @@ app.post('/auth/login', async (c) => {
     await kvSessionSet(c.env?.IG_SESSION_KV, sessionId, sessionData)
     MEM_CSRF.set(sessionId, { token: csrfToken, expires: Date.now() + SESSION_TTL_MS })
 
-    // Issue HttpOnly session cookie
-    const cookieFlags = 'HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=1800'
+    // Issue HttpOnly session cookie — Secure flag only when request arrived over HTTPS
+    const proto = c.req.header('X-Forwarded-Proto') || c.req.header('x-forwarded-proto') || 'http'
+    const secureFlag = proto === 'https' ? '; Secure' : ''
+    const cookieFlags = `HttpOnly${secureFlag}; SameSite=Lax; Path=/; Max-Age=1800`
     c.header('Set-Cookie', `ig_session=${sessionId}; ${cookieFlags}`)
     c.header('X-CSRF-Token', csrfToken)
 
@@ -750,8 +754,11 @@ app.post('/auth/admin', async (c) => {
     await kvSessionSet(c.env?.IG_SESSION_KV, sessionId, adminSessionData)
     MEM_CSRF.set(sessionId, { token: csrfToken, expires: Date.now() + SESSION_TTL_MS })
 
-    const cookieFlags = 'HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=1800'
-    c.header('Set-Cookie', `ig_session=${sessionId}; ${cookieFlags}`)
+    // Issue HttpOnly session cookie — Secure flag only when request arrived over HTTPS
+    const adminProto = c.req.header('X-Forwarded-Proto') || c.req.header('x-forwarded-proto') || 'http'
+    const adminSecureFlag = adminProto === 'https' ? '; Secure' : ''
+    const adminCookieFlags = `HttpOnly${adminSecureFlag}; SameSite=Lax; Path=/; Max-Age=1800`
+    c.header('Set-Cookie', `ig_session=${sessionId}; ${adminCookieFlags}`)
     c.header('X-CSRF-Token', csrfToken)
     await kvRateDel(c.env?.IG_RATELIMIT_KV, rateKey)
     await kvAuditLog(c.env?.IG_AUDIT_KV, 'AUTH_ADMIN_LOGIN', 'superadmin@indiagully.com', ip, 'SUCCESS')
@@ -776,7 +783,9 @@ app.post('/auth/logout', async (c) => {
     await kvSessionDel(c.env?.IG_SESSION_KV, sessionId)
     MEM_CSRF.delete(sessionId)
   }
-  c.header('Set-Cookie', 'ig_session=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT')
+  const logoutProto = c.req.header('X-Forwarded-Proto') || c.req.header('x-forwarded-proto') || 'http'
+  const logoutSecure = logoutProto === 'https' ? '; Secure' : ''
+  c.header('Set-Cookie', `ig_session=; HttpOnly${logoutSecure}; SameSite=Lax; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT`)
   return c.redirect(portalDest === 'admin' ? '/admin' : `/portal/${portalDest}`, 302)
 })
 
