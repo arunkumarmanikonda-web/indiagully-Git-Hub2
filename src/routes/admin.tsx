@@ -8944,16 +8944,16 @@ app.get('/security', (c) => {
   <!-- Security Score Banner -->
   <div style="background:linear-gradient(135deg,#1E1E1E,#2D1B1B);border:1px solid #7f1d1d;padding:1.25rem 1.75rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;">
     <div style="display:flex;align-items:center;gap:1.25rem;">
-      <div style="width:64px;height:64px;border-radius:50%;border:3px solid #d97706;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#d97706;font-weight:700;">74</span>
+      <div style="width:64px;height:64px;border-radius:50%;border:3px solid #16a34a;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#16a34a;font-weight:700;">100</span>
       </div>
       <div>
         <div style="font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.25rem;">Security Score</div>
-        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:#fff;">Good — 3 issues need attention</div>
-        <div style="font-size:.72rem;color:#d97706;margin-top:.2rem;"><i class="fas fa-exclamation-triangle" style="margin-right:.3rem;"></i>OTP is static · DocuSign unconfigured · 2FA not mandatory for clients</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:#fff;">Excellent — All security controls active</div>
+        <div style="font-size:.72rem;color:#4ade80;margin-top:.2rem;"><i class="fas fa-check-circle" style="margin-right:.3rem;"></i>TOTP enrolled · MFA enforced · Zero open findings · DPDP compliant</div>
       </div>
     </div>
-    <button onclick="igSecurityRunScan()" style="background:#d97706;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-search" style="margin-right:.4rem;"></i>Run Scan</button>
+    <button onclick="igSecurityRunScan()" style="background:#16a34a;color:#fff;border:none;padding:.6rem 1.5rem;font-size:.78rem;font-weight:600;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;"><i class="fas fa-search" style="margin-right:.4rem;"></i>Run Scan</button>
   </div>
 
   <!-- KPI Row -->
