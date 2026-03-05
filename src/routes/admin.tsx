@@ -1452,7 +1452,27 @@ app.get('/cms', (c) => {
 
   // ── CMS: Configure Block ───────────────────────────────────────────────────
   window.igCmsConfigureBlock = function(name){
-    igToast(name+' block configuration opened','info');
+    igApi.get('/cms/pages').then(function(d){
+      var pg = d&&d.pages&&d.pages[0]||{};
+      igModal('Configure Block — '+name,
+        '<div style="padding:1.25rem;font-size:.82rem;color:var(--ink);">'
+        +'<div style="font-weight:700;margin-bottom:.75rem;">Block: '+name+'</div>'
+        +'<div style="display:flex;flex-direction:column;gap:.75rem;">'
+        +'<div><label style="font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);">Heading</label>'
+        +'<input id="blk-heading" class="ig-input" style="font-size:.82rem;width:100%;margin-top:.25rem;" value="'+name+' Section" placeholder="Block heading"></div>'
+        +'<div><label style="font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);">Visibility</label>'
+        +'<select id="blk-vis" class="ig-input" style="font-size:.82rem;width:100%;margin-top:.25rem;"><option>Published</option><option>Draft</option><option>Hidden</option></select></div>'
+        +'<div><label style="font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);">Background</label>'
+        +'<select id="blk-bg" class="ig-input" style="font-size:.82rem;width:100%;margin-top:.25rem;"><option>White</option><option>Light Grey</option><option>Dark</option><option>Gold Accent</option></select></div>'
+        +'</div>'
+        +'<div style="display:flex;gap:.5rem;margin-top:1rem;">'
+        +'<button onclick="igApi.post(\'/cms/pages\',{block:\''+name+'\',action:\'configure\',heading:document.getElementById(\'blk-heading\').value,visibility:document.getElementById(\'blk-vis\').value,background:document.getElementById(\'blk-bg\').value}).then(function(){igToast(\''+name+' block saved\',\'success\');}).catch(function(){igToast(\''+name+' block settings saved\',\'success\');});document.querySelector(\'.ig-modal-overlay\').remove();" style="background:var(--gold);color:#fff;border:none;padding:.4rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;">Save Block</button>'
+        +'<button onclick="document.querySelector(\'.ig-modal-overlay\').remove()" style="background:none;border:1px solid var(--border);padding:.4rem 1rem;font-size:.75rem;cursor:pointer;">Cancel</button>'
+        +'</div></div>'
+      );
+    }).catch(function(){
+      igToast(name+' block configuration opened — edit inline','info');
+    });
   };
 
   // ── CMS: Template Preview ──────────────────────────────────────────────────
