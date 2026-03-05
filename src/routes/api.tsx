@@ -14834,4 +14834,216 @@ app.get('/invoices/:id', requireSession(), async (c) => {
   })
 })
 
+// ── SALES: Activity Log ───────────────────────────────────────────────────────
+app.post('/sales/activity', requireSession(), async (c) => {
+  const body = await c.req.json() as Record<string,string>
+  const ref = 'ACT-' + Date.now().toString().slice(-6)
+  return c.json({ success: true, ref, type: body.type, lead: body.lead, logged_at: new Date().toISOString() })
+})
+
+// ── SALES: Update Lead Stage ─────────────────────────────────────────────────
+app.post('/sales/leads/stage', requireSession(), async (c) => {
+  const body = await c.req.json() as Record<string,string>
+  return c.json({ success: true, lead_id: body.id, new_stage: body.stage, updated_at: new Date().toISOString() })
+})
+
+// ── SALES: Territory Management ───────────────────────────────────────────────
+app.get('/sales/territories', requireSession(), (c) => c.json({
+  territories: [
+    {id:'TER-001',region:'North India (Delhi NCR)',owner:'AKM',deals:4,pipeline:'₹1,820 Cr',status:'Active'},
+    {id:'TER-002',region:'West India (Mumbai)',owner:'Pavan',deals:3,pipeline:'₹1,010 Cr',status:'Active'},
+    {id:'TER-003',region:'South India (Bangalore/Hyderabad)',owner:'AKM',deals:2,pipeline:'₹1,545 Cr',status:'Active'},
+    {id:'TER-004',region:'East India (Kolkata)',owner:'—',deals:0,pipeline:'₹0',status:'Unassigned'},
+    {id:'TER-005',region:'Pan-India (Digital)',owner:'Pavan',deals:1,pipeline:'₹45 Cr',status:'Active'},
+  ]
+}))
+
+app.post('/sales/territories', requireSession(), async (c) => {
+  const body = await c.req.json() as Record<string,string>
+  return c.json({ success: true, id: 'TER-'+Date.now().toString().slice(-4), region: body.region, owner: body.owner })
+})
+
+// ── MANDATES: EOI & VDR workflows ─────────────────────────────────────────────
+app.post('/mandates/eoi', requireSession(), async (c) => {
+  const body = await c.req.json() as Record<string,string>
+  const ref = 'EOI-' + Date.now().toString().slice(-6)
+  return c.json({ success: true, ref, mandate_id: body.mandate_id, recipient: body.recipient, email: body.email, sent_at: new Date().toISOString() })
+})
+
+app.post('/mandates/vdr', requireSession(), async (c) => {
+  const body = await c.req.json() as Record<string,string>
+  const ref = 'VDR-' + Date.now().toString().slice(-6)
+  return c.json({ success: true, ref, mandate_id: body.mandate_id, doc_name: body.doc_name, uploaded_at: new Date().toISOString() })
+})
+
+app.get('/mandates/vdr/:id', requireSession(), (c) => {
+  const id = c.req.param('id')
+  return c.json({
+    mandate_id: id,
+    documents: [
+      {name:'Information Memorandum',type:'IM',locked:false,date:'01 Mar 2026',size:'4.8 MB'},
+      {name:'Financial Model',type:'Finance',locked:true,date:'15 Feb 2026',size:'2.1 MB'},
+      {name:'Legal Due Diligence',type:'Legal',locked:true,date:'20 Feb 2026',size:'1.3 MB'},
+    ],
+    access_log: [{user:'superadmin',action:'viewed',at:'05 Mar 2026 09:15'}]
+  })
+})
+
+// ── CONTRACTS: Renew by ID ────────────────────────────────────────────────────
+app.post('/contracts/:id/renew', requireSession(), async (c) => {
+  const id = c.req.param('id')
+  const ref = 'RNW-' + Date.now().toString().slice(-6)
+  return c.json({ success: true, contract_id: id, renewal_ref: ref, initiated_at: new Date().toISOString(), status: 'Renewal Workflow Started' })
+})
+
+// ── FINANCE: Additional endpoints ─────────────────────────────────────────────
+app.get('/finance/tds/summary', requireSession(), (c) => c.json({
+  fy: '2025-26',
+  total_tds_deducted: 485000,
+  total_tds_deposited: 485000,
+  pending_deposits: 0,
+  form_26as_reconciled: true,
+  deductees: [
+    {name:'Demo Advisory Client',pan:'AAAPD1234Z',section:'194J',amount:48000,deposited:true},
+    {name:'NCR Realty Corp',pan:'AABCD5678Y',section:'194J',amount:36000,deposited:true},
+  ]
+}))
+
+app.post('/finance/tds/deposit', requireSession(), async (c) => {
+  const body = await c.req.json() as Record<string,unknown>
+  const challan = 'CHL-' + Date.now().toString().slice(-8)
+  return c.json({ success: true, challan_no: challan, amount: body.amount, bank: body.bank, deposited_at: new Date().toISOString() })
+})
+
+app.get('/finance/gst/returns', requireSession(), (c) => c.json({
+  period: 'Feb 2026',
+  gstr1: {status:'Filed',date:'11 Mar 2026',arn:'AA270326001234XX'},
+  gstr3b: {status:'Filed',date:'20 Mar 2026',arn:'AA270320005678XX'},
+  gst_liability: 210000,
+  itc_available: 85000,
+  net_payable: 125000
+}))
+
+app.post('/finance/gst/file', requireSession(), async (c) => {
+  const body = await c.req.json() as Record<string,string>
+  const arn = 'AA27' + new Date().toISOString().slice(2,8).replace(/-/g,'') + Math.random().toString(36).slice(2,8).toUpperCase()
+  return c.json({ success: true, return_type: body.type, period: body.period, arn, filed_at: new Date().toISOString() })
+})
+
+app.get('/finance/eway-bill/list', requireSession(), (c) => c.json({
+  bills: [
+    {ewb_no:'1234567890',date:'03 Mar 2026',from:'Delhi',to:'Mumbai',value:850000,status:'Active',expiry:'08 Mar 2026'},
+    {ewb_no:'1234567891',date:'01 Mar 2026',from:'Mumbai',to:'Bangalore',value:420000,status:'Expired',expiry:'06 Mar 2026'},
+  ]
+}))
+
+app.post('/finance/eway-bill/generate', requireSession(), async (c) => {
+  const body = await c.req.json() as Record<string,unknown>
+  const ewb = '98765' + Date.now().toString().slice(-5)
+  return c.json({ success: true, ewb_no: ewb, generated_at: new Date().toISOString(), valid_till: new Date(Date.now()+5*86400000).toISOString().slice(0,10) })
+})
+
+// ── HR: Additional endpoints ──────────────────────────────────────────────────
+app.get('/hr/attendance/report', requireSession(), (c) => c.json({
+  period: 'Feb 2026',
+  employees: 8,
+  avg_attendance: 94.2,
+  leaves_taken: 6,
+  overtime_hours: 32,
+  records: [
+    {emp:'IG-EMP-0001',name:'Amit Jhingan',present:20,absent:1,leaves:1,pct:95.2},
+    {emp:'IG-EMP-0002',name:'Priya Sharma',present:18,absent:0,leaves:3,pct:100},
+  ]
+}))
+
+app.post('/hr/attendance/mark', requireSession(), async (c) => {
+  const body = await c.req.json() as Record<string,string>
+  return c.json({ success: true, emp_id: body.emp_id, type: body.type, timestamp: new Date().toISOString() })
+})
+
+app.get('/hr/form16/generate', requireSession(), (c) => {
+  const empId = c.req.query('emp_id') || 'IG-EMP-0001'
+  return c.json({
+    emp_id: empId,
+    fy: '2025-26',
+    gross_salary: 1200000,
+    deductions: 150000,
+    taxable_income: 1050000,
+    tax_deducted: 116000,
+    form16_ref: 'F16-' + empId + '-FY2526',
+    generated_at: new Date().toISOString()
+  })
+})
+
+// ── GOVERNANCE: Additional endpoints ─────────────────────────────────────────
+app.get('/governance/dsc/status', requireSession(), (c) => c.json({
+  enrolled: [
+    {name:'Arun Manikonda',din:'08123456',dsc_valid:'31 Dec 2026',provider:'eMudhra',status:'Active'},
+    {name:'Amit Jhingan',din:'08654321',dsc_valid:'30 Jun 2026',provider:'NSDL',status:'Active'},
+  ],
+  pending: [{name:'Pavan Manikonda',din:'09876543',status:'Pending enrollment'}]
+}))
+
+app.post('/governance/dsc/sign', requireSession(), async (c) => {
+  const body = await c.req.json() as Record<string,string>
+  const ref = 'DSC-SIG-' + Date.now().toString().slice(-6)
+  return c.json({ success: true, ref, document: body.document, signed_by: body.signatory, signed_at: new Date().toISOString() })
+})
+
+app.get('/governance/board-meetings', requireSession(), (c) => c.json({
+  meetings: [
+    {id:'BM-2026-03',date:'15 Mar 2026',type:'Board Meeting',status:'Scheduled',quorum:3,agenda_items:5},
+    {id:'BM-2026-02',date:'15 Feb 2026',type:'Board Meeting',status:'Completed',quorum:3,minutes:'Filed'},
+    {id:'AGM-2025',date:'30 Sep 2025',type:'AGM',status:'Completed',quorum:5,minutes:'Filed'},
+  ]
+}))
+
+// ── COMPLIANCE: Action complete and report ────────────────────────────────────
+app.get('/compliance/report', requireSession(), (c) => c.json({
+  score: 96,
+  period: 'Q4 FY 2025-26',
+  dpdp: {score:96,status:'Compliant'},
+  gst: {score:100,status:'Compliant'},
+  roc: {score:92,status:'Minor gaps'},
+  labour: {score:98,status:'Compliant'},
+  actions: [
+    {id:'CA-001',title:'DPDP Annual Audit',due:'30 Jun 2026',owner:'DPO',priority:'High',status:'Scheduled'},
+    {id:'CA-002',title:'ROC Annual Return',due:'30 Sep 2026',owner:'CS',priority:'Medium',status:'Pending'},
+  ]
+}))
+
+// ── AUDIT LOG: Enhanced with filters ─────────────────────────────────────────
+app.get('/admin/audit-log', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  const module = c.req.query('module') || ''
+  const risk = c.req.query('risk') || ''
+  const q = c.req.query('q') || ''
+  const entries = [
+    {timestamp:'2026-03-05 09:15:22',user:'superadmin@indiagully.com',action:'Platform health check',resource:'System',module:'Platform',ip:'103.21.x.x',result:'SUCCESS',risk:'Low'},
+    {timestamp:'2026-03-04 16:30:01',user:'superadmin@indiagully.com',action:'Contracts module enhanced',resource:'Admin',module:'Contracts',ip:'103.21.x.x',result:'SUCCESS',risk:'Low'},
+    {timestamp:'2026-03-04 14:22:10',user:'akm@indiagully.com',action:'Mandate VDR accessed',resource:'MND-002',module:'Mandates',ip:'49.36.x.x',result:'SUCCESS',risk:'Low'},
+    {timestamp:'2026-03-04 12:18:52',user:'superadmin@indiagully.com',action:'TOTP enrolled',resource:'Security',module:'Security',ip:'27.x.x.x',result:'SUCCESS',risk:'Low'},
+    {timestamp:'2026-03-03 20:05:19',user:'superadmin@indiagully.com',action:'Sales module restored',resource:'Sales',module:'Sales',ip:'27.x.x.x',result:'SUCCESS',risk:'Low'},
+    {timestamp:'2026-03-03 16:30:44',user:'akm@indiagully.com',action:'Board meeting BM-2026-03 notice issued',resource:'BM-2026-03',module:'Governance',ip:'49.x.x.x',result:'SUCCESS',risk:'Low'},
+    {timestamp:'2026-03-03 11:22:07',user:'pavan@indiagully.com',action:'Leave approved — Amit Jhingan',resource:'IG-EMP-0001',module:'HR',ip:'49.x.x.x',result:'SUCCESS',risk:'Low'},
+    {timestamp:'2026-03-02 14:45:22',user:'superadmin@indiagully.com',action:'GSTR-1 data synced',resource:'Finance',module:'Finance',ip:'27.x.x.x',result:'SUCCESS',risk:'Low'},
+    {timestamp:'2026-03-02 10:12:38',user:'superadmin@indiagully.com',action:'Failed login blocked',resource:'Auth',module:'Security',ip:'185.220.x.x',result:'BLOCKED',risk:'High'},
+    {timestamp:'2026-03-01 16:55:14',user:'akm@indiagully.com',action:'EY Retainer renewal reminder sent',resource:'RET-001',module:'Contracts',ip:'49.x.x.x',result:'SUCCESS',risk:'Low'},
+    {timestamp:'2026-03-01 11:30:52',user:'pavan@indiagully.com',action:'Services page AI Assist applied',resource:'CMS',module:'CMS',ip:'49.x.x.x',result:'SUCCESS',risk:'Low'},
+    {timestamp:'2026-02-28 17:45:01',user:'superadmin@indiagully.com',action:'FY Close step 3 completed',resource:'Finance',module:'Finance',ip:'27.x.x.x',result:'SUCCESS',risk:'Low'},
+    {timestamp:'2026-02-28 14:22:33',user:'akm@indiagully.com',action:'New SKU added — HRC-KE-024',resource:'HORECA',module:'HORECA',ip:'49.x.x.x',result:'SUCCESS',risk:'Low'},
+  ]
+  let filtered = entries
+  if (module) filtered = filtered.filter(e => e.module.toLowerCase().includes(module.toLowerCase()))
+  if (risk) filtered = filtered.filter(e => e.risk.toLowerCase() === risk.toLowerCase())
+  if (q) filtered = filtered.filter(e => JSON.stringify(e).toLowerCase().includes(q.toLowerCase()))
+  return c.json({ total: filtered.length, entries: filtered, exported_at: new Date().toISOString() })
+})
+
+// ── KPI: Add OKR endpoint ────────────────────────────────────────────────────
+app.post('/kpi/okr', requireSession(), async (c) => {
+  const body = await c.req.json() as Record<string,string>
+  const id = 'OKR-' + Date.now().toString().slice(-6)
+  return c.json({ success: true, id, key_result: body.key_result, target: body.target, created_at: new Date().toISOString() })
+})
+
 export default app
