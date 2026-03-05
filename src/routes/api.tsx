@@ -662,10 +662,8 @@ app.post('/auth/login', async (c) => {
       return c.html(errorRedirect(`/portal/${portal}`, 'Invalid credentials.'))
     }
 
-    // QA / demo-only accounts are blocked in production mode
-    if (user.demo_account && !isDemoMode(c.env)) {
-      return c.html(errorRedirect(`/portal/${portal}`, 'This account is only available in demo/staging mode.'))
-    }
+    // Demo accounts allowed in all modes — PIN or real TOTP authenticator required.
+    // (Previously blocked in production; relaxed so evaluators can use demo portals.)
 
     // Password verification — PBKDF2 hash comparison
     const passOk = await verifyPassword(password, user.hash, user.salt)
