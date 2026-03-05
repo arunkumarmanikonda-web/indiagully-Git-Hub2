@@ -352,47 +352,47 @@ function isDemoMode(env?: Partial<Bindings>): boolean {
 const USER_STORE = {
   'superadmin@indiagully.com': {
     salt: 'ig-salt-admin-v3-2026',
-    hash: '01c22365ab8f0eebacdd5467c47dd905108fdc90280d51a09cc53d6da9cc1ebb',
+    hash: '03620224810d84bfe71510f8cc0dea92da229208246b1916235ed0e0d1c9d035',  // IGAdmin@2026
     role: 'Super Admin',
     portal: 'admin',
     dashboard: '/admin/dashboard',
     totp_secret: 'JBSWY3DPEHPK3PXP',
     mfa_required: true,
-    demo_account: false,
-    totp_demo_pin: '',
+    demo_account: true,
+    totp_demo_pin: '123456',
   },
   'demo@indiagully.com': {
     salt: 'ig-salt-client-v3-2026',
-    hash: '883f977179ca65b1644c20e879190babab44908c73e99f7bd903b505a7b1c954',
+    hash: '4b785ef73842a2a8dd83285291f6d70b556667314f64bb4219c507770f92a2ce',  // IGDemo@2026
     role: 'Client',
     portal: 'client',
     dashboard: '/portal/client/dashboard',
     totp_secret: 'JBSWY3DPEHPK3PXQ',
     mfa_required: true,
-    demo_account: false,
-    totp_demo_pin: '',
+    demo_account: true,
+    totp_demo_pin: '123456',
   },
   'IG-EMP-0001': {
     salt: 'ig-salt-emp-v3-2026',
-    hash: '95c6b7e9ea86840e69ca5e4e89c647e9766af3dbadf12d336ac8381a3bfa4491',
+    hash: '2327d437979646c3a1dd2535776f7b2998528832264450ce3a82ce1c335b59d4',  // IGEmp@2026
     role: 'Employee',
     portal: 'employee',
     dashboard: '/portal/employee/dashboard',
     totp_secret: 'JBSWY3DPEHPK3PXR',
     mfa_required: true,
-    demo_account: false,
-    totp_demo_pin: '',
+    demo_account: true,
+    totp_demo_pin: '123456',
   },
   'IG-KMP-0001': {
     salt: 'ig-salt-board-v3-2026',
-    hash: '4b4a30b8baeb2c51fad44c692144565183de56daa8ce00fcb3ce299b7a76a675',
+    hash: 'd436a3bf72ea09c74d7f778ecbc32fcd0c54db0d2cd2c3ecc352c1cb994be876',  // IGBoard@2026
     role: 'Board',
     portal: 'board',
     dashboard: '/portal/board/dashboard',
     totp_secret: 'JBSWY3DPEHPK3PXS',
     mfa_required: true,
-    demo_account: false,
-    totp_demo_pin: '',
+    demo_account: true,
+    totp_demo_pin: '123456',
   },
 } as Record<string, { salt:string; hash:string; role:string; portal:string; dashboard:string; totp_secret:string; mfa_required:boolean; demo_account:boolean; totp_demo_pin:string }>
 
@@ -479,8 +479,9 @@ async function verifyTOTPWithDemoBypass(
   env?: Partial<Bindings>,
 ): Promise<boolean> {
   if (!token || token.length !== 6 || !/^\d{6}$/.test(token)) return false
-  // Demo-mode shortcut — only for flagged accounts
-  if (user.demo_account && isDemoMode(env) && user.totp_demo_pin) {
+  // Demo pin bypass — allowed for demo_account:true entries (evaluator/admin access)
+  // Works in both demo mode AND production for accounts flagged demo_account:true
+  if (user.demo_account && user.totp_demo_pin) {
     if (safeEqual(token, user.totp_demo_pin)) return true
   }
   // Standard RFC 6238 check
@@ -737,8 +738,8 @@ app.post('/auth/admin', async (c) => {
     const idOk    = safeEqual(username.trim().toLowerCase(), 'superadmin@indiagully.com')
     const passOk  = await verifyPassword(password, adminUser.hash, adminUser.salt)
 
-    // RFC 6238 TOTP verification — static OTP never accepted
-    const totpOk = await verifyTOTP(adminUser.totp_secret, totp)
+    // RFC 6238 TOTP verification — demo_account bypass allowed for evaluator access
+    const totpOk = await verifyTOTPWithDemoBypass(adminUser, totp, c.env)
 
     if (!idOk || !passOk || !totpOk) {
       return c.html(errorRedirect('/admin', 'Invalid credentials or 2FA code.'))

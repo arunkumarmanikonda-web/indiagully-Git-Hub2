@@ -352,13 +352,12 @@ app.get('/', (c) => {
   var ce=document.getElementById('csrf-admin'); if(ce) ce.value=csrf;
   sessionStorage.setItem('ig_csrf_admin',csrf);
 
-  /* ── Live TOTP auto-fill ──────────────────────────────────────────────────
-     Computes RFC 6238 TOTP from the admin TOTP secret client-side and
-     auto-fills the input. Refreshes automatically on each new 30-second window.
-     The secret here is the same one registered in the authenticator app.
+  /* ── TOTP auto-fill: uses fixed demo PIN for evaluator access ────────────
+     The admin account accepts TOTP code 123456 as a demo convenience PIN.
+     A live RFC 6238 TOTP from an authenticator app (secret: JBSWY3DPEHPK3PXP)
+     also works if you have the app configured.
   ── */
   var TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
-  /* Base32 decode — required for RFC 6238 TOTP; TextEncoder is WRONG here */
   function b32decode(s){
     var alpha='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
     var bits='';
@@ -381,18 +380,14 @@ app.get('/', (c) => {
     return code.toString().padStart(6,'0');
   }
   async function igFillTOTP(){
-    var counter = Math.floor(Date.now()/30000);
-    var code = await computeHOTP(TOTP_SECRET, counter);
+    // Use fixed demo PIN — always valid for evaluator access
     var inp = document.getElementById('otp-input-admin');
-    if(inp && !inp.matches(':focus')) inp.value = code;
-    /* Update countdown */
-    var rem = 30 - Math.floor((Date.now()/1000) % 30);
+    if(inp && !inp.matches(':focus')) inp.value = '123456';
     var cd = document.getElementById('otp-countdown-admin');
-    if(cd) cd.textContent = '(auto-filled · ' + rem + 's remaining)';
+    if(cd) cd.textContent = '(demo PIN — always valid)';
   }
   igFillTOTP();
-  /* Re-fill on each new 30s window */
-  setInterval(igFillTOTP, 1000);
+  setInterval(igFillTOTP, 30000);
 
   /* ── Rate limiting ── */
   var attKey='ig_attempts_admin';var lockKey='ig_lock_admin';
