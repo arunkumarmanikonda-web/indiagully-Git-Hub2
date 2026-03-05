@@ -1181,8 +1181,11 @@ app.get('/cms', (c) => {
       igToast(variants+' variants generated for '+type,'success');
     };
     igApi.post('/cms/ai-generate',{type:type,vertical:vert,variants:variants}).then(function(d){
-      var bank = (d && d.variants && d.variants.length) ? d.variants : (variantData[type] || variantData['Hero Headline']);
+      var source = d && d.source;
+      var bank = (d && d.variants && d.variants.length) ? d.variants.map(function(v){ return v.text||v; }) : (variantData[type] || variantData['Hero Headline']);
       renderVariants(bank);
+      var sourceLabel = source==='openai'?'✨ OpenAI GPT-4o-mini':'📋 Fallback (set OPENAI_API_KEY for AI copy)';
+      igToast(variants+' variants generated — '+sourceLabel, source==='openai'?'success':'info');
     }).catch(function(){
       renderVariants(variantData[type] || variantData['Hero Headline']);
     });
@@ -8971,6 +8974,55 @@ app.get('/reports', (c) => {
 // ── SYSTEM CONFIG ─────────────────────────────────────────────────────────────
 app.get('/config', (c) => {
   const body = `
+  <!-- Integrations Banner -->
+  <div style="background:linear-gradient(135deg,#1e3a5f 0%,#2d1b69 100%);color:#fff;padding:1rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
+    <div>
+      <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.25rem;">Integration Setup Required</div>
+      <div style="font-size:.875rem;font-weight:600;">Configure API secrets to activate: OpenAI AI Assist · DocuSign e-Sign · Razorpay Payments · SendGrid Email · Twilio SMS · GST e-Invoice</div>
+    </div>
+    <div style="display:flex;gap:.625rem;flex-wrap:wrap;">
+      <button onclick="igSecretsStatus()" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:.45rem 1rem;font-size:.75rem;font-weight:600;cursor:pointer;border-radius:3px;"><i class="fas fa-shield-halved" style="margin-right:.35rem;"></i>Secrets Status</button>
+      <button onclick="igIntegrationGuide()" style="background:#f59e0b;border:1px solid #f59e0b;color:#1a1a1a;padding:.45rem 1rem;font-size:.75rem;font-weight:700;cursor:pointer;border-radius:3px;"><i class="fas fa-plug" style="margin-right:.35rem;"></i>Setup Guide →</button>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+    <!-- Integrations & Secrets Status Card -->
+    <div style="background:#fff;border:1px solid var(--border);grid-column:1/-1;">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">🔑 API Secrets & Integrations</h3>
+        <div style="display:flex;gap:.5rem;">
+          <button onclick="igSecretsStatus()" style="background:#0891b2;color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;border-radius:3px;"><i class="fas fa-eye" style="margin-right:.3rem;"></i>View Status</button>
+          <button onclick="igIntegrationGuide()" style="background:#7c3aed;color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;border-radius:3px;"><i class="fas fa-book" style="margin-right:.3rem;"></i>Setup Guide</button>
+          <button onclick="igTestAiAssist()" style="background:#16a34a;color:#fff;border:none;padding:.4rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;border-radius:3px;"><i class="fas fa-magic" style="margin-right:.3rem;"></i>Test AI</button>
+        </div>
+      </div>
+      <div style="padding:1.25rem;">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1rem;">
+          ${[
+            {label:'OpenAI (CMS AI)',   key:'OPENAI_API_KEY',    icon:'magic',       color:'#7c3aed', cmd:'openai_api_key'},
+            {label:'DocuSign',          key:'DOCUSIGN_API_KEY',  icon:'file-signature', color:'#dc2626', cmd:'docusign_api_key'},
+            {label:'Razorpay',          key:'RAZORPAY_KEY_ID',   icon:'credit-card', color:'#0ea5e9', cmd:'razorpay_key_id'},
+            {label:'SendGrid',          key:'SENDGRID_API_KEY',  icon:'envelope',    color:'#16a34a', cmd:'sendgrid_api_key'},
+            {label:'Twilio SMS',        key:'TWILIO_ACCOUNT_SID',icon:'sms',         color:'#d97706', cmd:'twilio_account_sid'},
+            {label:'WhatsApp (Meta)',   key:'WHATSAPP_TOKEN',    icon:'whatsapp',    color:'#16a34a', cmd:'whatsapp_token'},
+            {label:'GST e-Invoice',     key:'GSTIN',             icon:'receipt',     color:'#0f766e', cmd:'gstin'},
+            {label:'Payroll (Rzp X)',   key:'RAZORPAY_KEY_SECRET',icon:'money-bill', color:'#4f46e5', cmd:'razorpay_key_secret'},
+          ].map(i=>`<div style="border:1px solid var(--border);padding:.75rem;background:var(--parch);">
+            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;">
+              <i class="fas fa-${i.icon}" style="color:${i.color};font-size:.8rem;"></i>
+              <span style="font-size:.72rem;font-weight:600;color:var(--ink);">${i.label}</span>
+            </div>
+            <div style="font-size:.62rem;color:var(--ink-muted);margin-bottom:.5rem;font-family:monospace;">${i.key}</div>
+            <code style="display:block;font-size:.6rem;background:#1a1a1a;color:#22c55e;padding:.3rem .5rem;margin-bottom:.4rem;word-break:break-all;">npx wrangler pages secret put ${i.cmd.toUpperCase()} --project-name india-gully</code>
+          </div>`).join('')}
+        </div>
+        <div style="font-size:.72rem;color:var(--ink-muted);background:var(--parch-dk);padding:.625rem .875rem;border:1px solid var(--border);">
+          <strong>How to set secrets:</strong> Run each command above in your terminal, paste the API key when prompted, then redeploy. 
+          Visit <a href="https://dash.cloudflare.com/?to=/:account/pages/view/india-gully/settings/environment-variables" target="_blank" style="color:#0ea5e9;">Cloudflare Pages → Settings → Environment Variables</a> to manage all secrets.
+        </div>
+      </div>
+    </div>
+  </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
     <!-- Platform Settings -->
     <div style="background:#fff;border:1px solid var(--border);">
@@ -9028,6 +9080,7 @@ app.get('/config', (c) => {
         </div>
       </div>
     </div>
+  </div>
   </div>
   <script>
   // ── Settings: Save (generic) ─────────────────────────────────────────────
@@ -9728,6 +9781,12 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
           </button>
           <button onclick="igSecretsStatus()" style="background:none;border:1px solid #0891b2;color:#0891b2;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
             <i class="fas fa-shield-halved" style="margin-right:.3rem;"></i>Q1: Secrets Status
+          </button>
+          <button onclick="igIntegrationGuide()" style="background:#0891b2;border:1px solid #0891b2;color:#fff;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;font-weight:600;">
+            <i class="fas fa-plug" style="margin-right:.3rem;"></i>⚙ Integration Guide
+          </button>
+          <button onclick="igTestAiAssist()" style="background:#7c3aed;border:1px solid #7c3aed;color:#fff;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;font-weight:600;">
+            <i class="fas fa-magic" style="margin-right:.3rem;"></i>🤖 Test AI Assist
           </button>
           <button onclick="igDnsHealth()" style="background:none;border:1px solid #0d9488;color:#0d9488;padding:.4rem .875rem;font-size:.72rem;cursor:pointer;border-radius:3px;">
             <i class="fas fa-globe" style="margin-right:.3rem;"></i>Q3: DNS Health
@@ -10735,6 +10794,81 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
     }).catch(function(e){ igToast('Key validation error: '+e,'error'); });
   };
 
+  // ── Secrets Status Dashboard ──────────────────────────────────────────────
+  window.igSecretsStatus = function(){
+    igToast('Loading secrets status…','info');
+    igApi.get('/admin/secrets-status').then(function(d){
+      var secrets = d.secrets||[];
+      var rows = secrets.map(function(s){
+        return '<tr style="font-size:.75rem;">'
+          +'<td style="padding:.3rem .5rem;border-bottom:1px solid #f0f0f0;font-weight:600;">'+s.name+'</td>'
+          +'<td style="padding:.3rem .5rem;border-bottom:1px solid #f0f0f0;color:#6b7280;">'+s.group+'</td>'
+          +'<td style="padding:.3rem .5rem;border-bottom:1px solid #f0f0f0;">'+(s.set?'<span style="color:#16a34a;font-weight:700;">✅ Set</span>':'<span style="color:#dc2626;font-weight:700;">❌ Missing</span>')+'</td>'
+          +'<td style="padding:.3rem .5rem;border-bottom:1px solid #f0f0f0;color:#6b7280;font-size:.7rem;">'+s.description+'</td>'
+          +'</tr>';
+      }).join('');
+      var html = '<div style="margin-bottom:.75rem;padding:.5rem .875rem;background:'+(d.all_required_set?'#f0fdf4':'#fef2f2')+';border:1px solid '+(d.all_required_set?'#bbf7d0':'#fecaca')+';font-size:.78rem;">'
+        +'<strong>'+(d.all_required_set?'✅':'⚠')+' '+d.q1_status+'</strong>'
+        +'<br><span style="color:#6b7280;">Razorpay: '+(d.razorpay_live?'🟢 Live':'🟡 Test/Not set')+' | OpenAI: '+(d.openai_configured?'✅':'❌')+' | DocuSign: '+(d.docusign_configured?'✅':'❌')+' | GST: '+(d.gst_configured?'✅':'❌')+'</span>'
+        +'</div>'
+        +'<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;">'
+        +'<thead><tr style="background:#f8f9fa;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;">'
+        +'<th style="padding:.4rem .5rem;text-align:left;">Secret</th>'
+        +'<th style="padding:.4rem .5rem;text-align:left;">Module</th>'
+        +'<th style="padding:.4rem .5rem;text-align:left;">Status</th>'
+        +'<th style="padding:.4rem .5rem;text-align:left;">Purpose</th>'
+        +'</tr></thead><tbody>'+rows+'</tbody></table></div>';
+      if(d.missing_required && d.missing_required.length){
+        html += '<div style="margin-top:.75rem;padding:.5rem .875rem;background:#fffbeb;border:1px solid #fde68a;font-size:.73rem;">'
+          +'<strong style="color:#92400e;">Commands to set missing required secrets:</strong><br>'
+          +d.missing_required.map(function(s){ return '<code style="display:block;margin:.15rem 0;background:#1a1a1a;color:#22c55e;padding:.2rem .5rem;">'+s.command+'</code>'; }).join('')
+          +'</div>';
+      }
+      if(window.igModal) igModal('🔑 Secrets & Integrations Status',html);
+      else igToast(d.q1_status,'info');
+    }).catch(function(e){ igToast('Secrets status error: '+e,'error'); });
+  };
+
+  // ── Integration Setup Guide ───────────────────────────────────────────────
+  window.igIntegrationGuide = function(){
+    igToast('Loading integration setup guide…','info');
+    igApi.get('/admin/integration-guide').then(function(d){
+      var intgs = d.integrations||[];
+      var html = '<div style="font-size:.78rem;">';
+      intgs.forEach(function(ig){
+        html += '<div style="margin-bottom:1rem;padding:.625rem;border:1px solid #e5e7eb;background:'+(ig.status&&ig.status.includes('✅')?'#f0fdf4':'#fffbeb')+';border-radius:4px;">'
+          +'<div style="font-weight:700;margin-bottom:.25rem;">'+ig.name+'</div>'
+          +'<div style="color:#6b7280;font-size:.7rem;margin-bottom:.35rem;">'+ig.status+'</div>'
+          +'<div style="color:#374151;font-size:.72rem;">'+ig.details+'</div>';
+        if(ig.setup_steps){
+          html += '<details style="margin-top:.35rem;"><summary style="cursor:pointer;font-size:.7rem;color:#6b7280;">Setup steps</summary>'
+            +'<div style="margin-top:.3rem;font-size:.7rem;color:#374151;">'+ig.setup_steps.join('<br>')+'</div>'
+            +'</details>';
+        }
+        html += '</div>';
+      });
+      html += '<div style="background:#1a1a1a;padding:.625rem;border-radius:4px;margin-top:.5rem;">'
+        +'<div style="font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;margin-bottom:.3rem;">Quick Setup — Run All Commands</div>'
+        +(d.quick_setup_all||[]).map(function(cmd){ return '<code style="display:block;font-size:.62rem;color:#22c55e;margin:.08rem 0;">'+cmd+'</code>'; }).join('')
+        +'</div></div>';
+      if(window.igModal) igModal('⚙ Integration Setup Guide',html);
+    }).catch(function(e){ igToast('Guide error: '+e,'error'); });
+  };
+
+  // ── AI Copy Assist Test ───────────────────────────────────────────────────
+  window.igTestAiAssist = function(){
+    igToast('Testing CMS AI Assist…','info');
+    igApi.post('/cms/ai-generate',{type:'headline',vertical:'advisory',variants:3}).then(function(d){
+      var source = d.source||'fallback';
+      var variants = (d.variants||[]).map(function(v){ return '• '+v.text; }).join('<br>');
+      var html = '<p style="font-size:.73rem;margin-bottom:.5rem;color:#6b7280;">Source: <strong>'+(source==='openai'?'✅ OpenAI GPT-4o-mini (live)':'⚠ Fallback (set OPENAI_API_KEY)')+'</strong></p>'
+        +'<div style="font-size:.8rem;line-height:1.8;">'+variants+'</div>'
+        +(d.note?'<p style="font-size:.68rem;color:#6b7280;margin-top:.5rem;">'+d.note+'</p>':'');
+      if(window.igModal) igModal('🤖 AI Copy Assist Test',html);
+      igToast(source==='openai'?'OpenAI AI copy generated!':'Fallback copy (no OpenAI key)',source==='openai'?'success':'warning');
+    }).catch(function(e){ igToast('AI test error: '+e,'error'); });
+  };
+
   window.igAuditProgress = function(){
     igToast('Loading O6: Compliance Audit Progress…','info');
     igApi.get('/compliance/audit-progress').then(function(d){
@@ -10789,18 +10923,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
 
 
   /* ── Q-Round handlers ── */
-  window.igSecretsStatus = function(){
-    igToast('Loading Q1: Secrets Status…','info');
-    igApi.get('/admin/secrets-status').then(function(d){
-      var msg = 'Q1 Secrets Status\\n'+d.q1_status+
-        '\\nSet: '+d.set_count+' | Razorpay live: '+(d.razorpay_live?'YES':'no')+
-        '\\nD1: '+d.infrastructure_status.d1+
-        '\\nR2: '+d.infrastructure_status.r2+
-        '\\nKV: '+d.infrastructure_status.kv;
-      igToast(d.all_required_set?'All required secrets set':'Some secrets missing', d.all_required_set?'success':'warning');
-      if(window.igModal) igModal('Q1: Secrets Status',msg.replace(/\\n/g,'<br>'));
-    }).catch(function(e){ igToast('Secrets status error: '+e,'error'); });
-  };
+  // igSecretsStatus defined above with full secrets dashboard
 
   window.igDnsHealth = function(){
     igToast('Loading Q3: DNS Health (live DoH lookup)…','info');
