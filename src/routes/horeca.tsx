@@ -328,13 +328,13 @@ app.get('/catalogue', (c) => {
         </div>
 
         <!-- Loading Spinner -->
-        <div id="cat-loading" style="text-align:center;padding:4rem;color:var(--ink-muted);">
+        <div id="cat-loading" style="display:block;text-align:center;padding:4rem;color:var(--ink-muted);">
           <i class="fas fa-spinner fa-spin" style="font-size:2rem;color:var(--gold);"></i>
           <p style="margin-top:1rem;font-size:.85rem;">Loading catalogue…</p>
         </div>
 
         <!-- Grid View -->
-        <div id="cat-grid-view" style="display:none;display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;" id="cat-grid"></div>
+        <div id="cat-grid-view" style="display:none;grid-template-columns:repeat(3,1fr);gap:1.25rem;"></div>
 
         <!-- Table View (hidden by default) -->
         <div id="cat-table-view" style="display:none;">
@@ -861,12 +861,12 @@ app.get('/portal', (c) => {
       </div>
 
       <!-- Loading -->
-      <div id="portal-loading" style="text-align:center;padding:3rem;color:#94a3b8;">
+      <div id="portal-loading" style="display:block;text-align:center;padding:3rem;color:#94a3b8;">
         <i class="fas fa-spinner fa-spin" style="font-size:2rem;color:var(--gold);"></i>
         <p style="margin-top:.75rem;font-size:.85rem;">Loading catalogue…</p>
       </div>
 
-      <div id="portal-product-grid" style="display:none;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;"></div>
+      <div id="portal-product-grid" style="display:none;grid-template-columns:repeat(3,1fr);gap:1rem;"></div>
     </div>
   </div>
 </div>
