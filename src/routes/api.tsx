@@ -2320,11 +2320,249 @@ app.get('/compliance',         (c) => c.json({ upcoming:[
   { date:'15 Apr 2026', event:'PF ECR Upload', form:'ECR', status:'Upcoming', penalty:'₹5,000 min' },
   { date:'31 May 2026', event:'MSME Form-1', form:'Form-1 MCA', status:'Upcoming', penalty:'₹10,000-25,000' },
 ]}))
-app.get('/horeca/catalogue',   (c) => c.json({ categories:8, categories_list:[
-  {name:'Kitchen Equipment',skus:124},{name:'Tableware & Crockery',skus:89},{name:'Linen & Soft Furnishing',skus:156},
-  {name:'Bar & Beverages',skus:67},{name:'Housekeeping Supplies',skus:98},{name:'Furniture & Fixtures',skus:203},
-  {name:'Tech & POS Systems',skus:34},{name:'Safety & Security',skus:45},
-]}))
+// ─────────────────────────────────────────────────────────────────────────────
+// HORECA CATALOGUE — Full KV-backed product management system
+// KV key: "horeca_catalogue" → JSON array of products
+// KV key: "horeca_categories" → JSON array of category objects
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Default seed data — used when KV is empty
+const HORECA_DEFAULT_PRODUCTS = [
+  // Kitchen Equipment
+  {id:'KE-001',sku:'KE-001',name:'6-Burner Commercial Range',category:'Kitchen Equipment',unit:'Piece',price:85000,stock:4,reorder:2,description:'Heavy-duty 6-burner gas range for commercial kitchens. Stainless steel body, cast iron grates.',hsn:'73239300',gst_rate:18,image:'',brand:'Hobart',active:true,featured:true},
+  {id:'KE-002',sku:'KE-002',name:'Convection Oven 40L',category:'Kitchen Equipment',unit:'Piece',price:42000,stock:2,reorder:1,description:'Electric convection oven, 40L capacity, 10 tray positions. Ideal for bakeries and hotel kitchens.',hsn:'85166000',gst_rate:18,image:'',brand:'Unox',active:true,featured:false},
+  {id:'KE-003',sku:'KE-003',name:'Commercial Refrigerator 500L',category:'Kitchen Equipment',unit:'Piece',price:65000,stock:3,reorder:2,description:'Upright commercial refrigerator, 500L double door, stainless steel interior, 2°C–8°C.',hsn:'84182190',gst_rate:12,image:'',brand:'Blue Star',active:true,featured:true},
+  {id:'KE-004',sku:'KE-004',name:'Industrial Dishwasher',category:'Kitchen Equipment',unit:'Piece',price:120000,stock:1,reorder:1,description:'Undercounter dishwasher, 500 plates/hour, auto-dosing system, energy-efficient.',hsn:'84221100',gst_rate:18,image:'',brand:'Winterhalter',active:true,featured:false},
+  {id:'KE-005',sku:'KE-005',name:'Commercial Deep Fryer 15L',category:'Kitchen Equipment',unit:'Piece',price:28000,stock:2,reorder:1,description:'Dual tank commercial deep fryer, 15L capacity, digital temperature control, auto lift basket.',hsn:'85166000',gst_rate:18,image:'',brand:'Pitco',active:true,featured:false},
+  // Crockery & Cutlery
+  {id:'CC-001',sku:'CC-001',name:'Bone China Dinner Set (24 pcs)',category:'Crockery & Cutlery',unit:'Set',price:4500,stock:28,reorder:10,description:'Premium bone china dinner set, 24 pieces, off-white with gold rim. Dishwasher safe.',hsn:'69111090',gst_rate:12,image:'',brand:'Corelle',active:true,featured:true},
+  {id:'CC-002',sku:'CC-002',name:'Stainless Steel Cutlery Set (72 pcs)',category:'Crockery & Cutlery',unit:'Set',price:3200,stock:45,reorder:20,description:'Premium 18/10 stainless steel cutlery, 72-piece set for 12 covers. Mirror polished finish.',hsn:'82159900',gst_rate:18,image:'',brand:'Sambonet',active:true,featured:false},
+  {id:'CC-003',sku:'CC-003',name:'Porcelain Soup Bowls (12-pack)',category:'Crockery & Cutlery',unit:'Pack',price:1200,stock:30,reorder:15,description:'White porcelain soup bowls, 350ml capacity, stackable. Set of 12.',hsn:'69111090',gst_rate:12,image:'',brand:'Villeroy & Boch',active:true,featured:false},
+  {id:'CC-004',sku:'CC-004',name:'Crystal Wine Glasses (Set of 12)',category:'Crockery & Cutlery',unit:'Set',price:2800,stock:18,reorder:8,description:'Lead-free crystal wine glasses, 450ml, tulip-shaped bowl. Dishwasher safe.',hsn:'70139900',gst_rate:18,image:'',brand:'Riedel',active:true,featured:true},
+  // Linen & Soft Furnishing
+  {id:'LN-001',sku:'LN-001',name:'Egyptian Cotton Bed Sheet Set (King)',category:'Linen & Soft Furnishing',unit:'Set',price:3800,stock:120,reorder:50,description:'500 thread count Egyptian cotton bed sheet set for king beds. 1 flat, 1 fitted, 2 pillow cases.',hsn:'63022900',gst_rate:5,image:'',brand:'Welspun',active:true,featured:true},
+  {id:'LN-002',sku:'LN-002',name:'Pillow Cases Premium (Pack of 4)',category:'Linen & Soft Furnishing',unit:'Pack',price:850,stock:200,reorder:80,description:'300TC pure cotton pillow cases. Envelope closure. Pack of 4.',hsn:'63022900',gst_rate:5,image:'',brand:'Trident',active:true,featured:false},
+  {id:'LN-003',sku:'LN-003',name:'Bath Towels Luxury 600 GSM',category:'Linen & Soft Furnishing',unit:'Piece',price:650,stock:180,reorder:60,description:'600 GSM luxury bath towels, 100% ring-spun cotton. Size 70×140cm. Available in white.',hsn:'63026000',gst_rate:5,image:'',brand:'Spaces',active:true,featured:true},
+  {id:'LN-004',sku:'LN-004',name:'Blackout Curtain Panels (Pair)',category:'Linen & Soft Furnishing',unit:'Pair',price:4200,stock:60,reorder:20,description:'Thermal blackout curtains, 100% polyester, eyelet top. Size 140×260cm. Multiple colors.',hsn:'63039200',gst_rate:5,image:'',brand:'Fabindia',active:true,featured:false},
+  // Bar & Beverages
+  {id:'BB-001',sku:'BB-001',name:'Commercial Bar Blender 2L',category:'Bar & Beverages',unit:'Piece',price:18500,stock:5,reorder:2,description:'Heavy-duty bar blender, 2L polycarbonate jar, 3HP motor, 38,500 RPM. NSF certified.',hsn:'85094000',gst_rate:18,image:'',brand:'Vitamix',active:true,featured:true},
+  {id:'BB-002',sku:'BB-002',name:'Stainless Steel Bar Shaker Set',category:'Bar & Beverages',unit:'Set',price:2200,stock:12,reorder:5,description:'Professional bar shaker set: 28oz cobbler shaker, strainer, jigger, muddler, bar spoon.',hsn:'73239300',gst_rate:18,image:'',brand:'Cocktail Kingdom',active:true,featured:false},
+  {id:'BB-003',sku:'BB-003',name:'Wine Cooler 48-Bottle Dual Zone',category:'Bar & Beverages',unit:'Piece',price:45000,stock:3,reorder:1,description:'Dual zone wine cooler, 48-bottle capacity. 6°C–18°C range, UV-protected glass door.',hsn:'84182190',gst_rate:12,image:'',brand:'Haier',active:true,featured:true},
+  // Housekeeping
+  {id:'HK-001',sku:'HK-001',name:'Industrial Upright Vacuum Cleaner',category:'Housekeeping Supplies',unit:'Piece',price:15500,stock:6,reorder:3,description:'Commercial upright vacuum, 1800W, 12L dust bag, HEPA filtration. Ideal for carpets and hard floors.',hsn:'85081900',gst_rate:18,image:'',brand:'Numatic',active:true,featured:false},
+  {id:'HK-002',sku:'HK-002',name:'Housekeeping Trolley Steel',category:'Housekeeping Supplies',unit:'Piece',price:8500,stock:8,reorder:3,description:'Heavy-duty steel housekeeping trolley with 2 shelves, linen bag, waste bag holder. Lockable.',hsn:'87162000',gst_rate:18,image:'',brand:'Crown',active:true,featured:true},
+  {id:'HK-003',sku:'HK-003',name:'Commercial Mop & Wringer Set',category:'Housekeeping Supplies',unit:'Set',price:1800,stock:20,reorder:8,description:'Stainless steel mop wringer with 16L bucket, Kentucky mop 400g, 10 replacement heads.',hsn:'96039000',gst_rate:18,image:'',brand:'Filmop',active:true,featured:false},
+  // Furniture & Fixtures
+  {id:'FF-001',sku:'FF-001',name:'Teak Wood Dining Table (8-seater)',category:'Furniture & Fixtures',unit:'Piece',price:85000,stock:3,reorder:1,description:'Solid teak wood dining table, 240×100cm, 8-seater. Lacquer finish. Suitable for fine dining.',hsn:'94031090',gst_rate:12,image:'',brand:'FabIndia Home',active:true,featured:true},
+  {id:'FF-002',sku:'FF-002',name:'Banquet Chair Padded',category:'Furniture & Fixtures',unit:'Piece',price:2800,stock:150,reorder:30,description:'Stackable banquet chair, powder-coated steel frame, foam padded seat, fabric upholstery.',hsn:'94013000',gst_rate:18,image:'',brand:'Indo International',active:true,featured:false},
+  {id:'FF-003',sku:'FF-003',name:'Hotel Room Safe Digital',category:'Furniture & Fixtures',unit:'Piece',price:6500,stock:25,reorder:10,description:'In-room digital safe, laptop size (35×26×18cm), 4-digit pin + key override, anchor bolts included.',hsn:'83030000',gst_rate:18,image:'',brand:'Godrej',active:true,featured:false},
+  // Technology
+  {id:'TK-001',sku:'TK-001',name:'Smart TV 55" 4K UHD',category:'Tech & POS Systems',unit:'Piece',price:52000,stock:12,reorder:5,description:'55-inch 4K UHD smart TV, HDMI×3, USB×2, WiFi+Ethernet. Hotel mode with custom boot screen.',hsn:'85287200',gst_rate:28,image:'',brand:'Samsung',active:true,featured:true},
+  {id:'TK-002',sku:'TK-002',name:'WiFi Access Point Ceiling Mount',category:'Tech & POS Systems',unit:'Piece',price:14000,stock:8,reorder:4,description:'Dual-band WiFi 6 access point, 2.4GHz+5GHz, PoE powered, ceiling mount. Up to 300 clients.',hsn:'85176200',gst_rate:18,image:'',brand:'Ubiquiti',active:true,featured:false},
+  {id:'TK-003',sku:'TK-003',name:'POS Terminal Touchscreen',category:'Tech & POS Systems',unit:'Piece',price:38000,stock:4,reorder:2,description:'15.6" all-in-one POS terminal, Intel Core i3, 8GB RAM, thermal receipt printer, cash drawer port.',hsn:'84715000',gst_rate:18,image:'',brand:'PAX',active:true,featured:true},
+  // Safety & Security
+  {id:'SS-001',sku:'SS-001',name:'Fire Extinguisher ABC 4kg',category:'Safety & Security',unit:'Piece',price:1800,stock:30,reorder:10,description:'Multi-purpose ABC dry powder fire extinguisher, 4kg. BIS certified, ISI mark, with wall bracket.',hsn:'84248900',gst_rate:18,image:'',brand:'Ceasefire',active:true,featured:false},
+  {id:'SS-002',sku:'SS-002',name:'CCTV IP Camera 4MP Dome',category:'Safety & Security',unit:'Piece',price:4500,stock:20,reorder:5,description:'4MP IP dome camera, 2.8mm lens, IR 30m night vision, PoE, IP67 weatherproof, H.265+.',hsn:'85258020',gst_rate:18,image:'',brand:'Hikvision',active:true,featured:true},
+]
+
+const HORECA_DEFAULT_CATEGORIES = [
+  {id:'cat-1',name:'Kitchen Equipment',   icon:'utensils',      color:'#0d9488',description:'Commercial kitchen equipment — ranges, ovens, refrigeration, dishwashers'},
+  {id:'cat-2',name:'Crockery & Cutlery',  icon:'concierge-bell',color:'#2563eb',description:'Tableware, crockery, cutlery, glassware for restaurant and hotel use'},
+  {id:'cat-3',name:'Linen & Soft Furnishing',icon:'bed',        color:'#7c3aed',description:'Bed linen, towels, curtains, cushions and soft furnishings'},
+  {id:'cat-4',name:'Bar & Beverages',     icon:'wine-glass-alt',color:'#dc2626',description:'Bar equipment, glassware, beverage dispensers and accessories'},
+  {id:'cat-5',name:'Housekeeping Supplies',icon:'broom',        color:'#16a34a',description:'Cleaning equipment, trolleys, mops and housekeeping supplies'},
+  {id:'cat-6',name:'Furniture & Fixtures',icon:'couch',         color:'#92400e',description:'Tables, chairs, hotel room furniture, fixtures and fittings'},
+  {id:'cat-7',name:'Tech & POS Systems',  icon:'desktop',       color:'#9f1239',description:'Smart TVs, WiFi, POS terminals and hotel technology solutions'},
+  {id:'cat-8',name:'Safety & Security',   icon:'shield-alt',    color:'#475569',description:'Fire safety, CCTV, access control and security equipment'},
+]
+
+// KV helpers for catalogue
+async function kvGetProducts(kv?: KVNamespace): Promise<typeof HORECA_DEFAULT_PRODUCTS> {
+  if (!kv) return HORECA_DEFAULT_PRODUCTS
+  try {
+    const raw = await kv.get('horeca_products')
+    if (!raw) { await kv.put('horeca_products', JSON.stringify(HORECA_DEFAULT_PRODUCTS)); return HORECA_DEFAULT_PRODUCTS }
+    return JSON.parse(raw)
+  } catch { return HORECA_DEFAULT_PRODUCTS }
+}
+async function kvSaveProducts(kv: KVNamespace | undefined, products: unknown[]): Promise<void> {
+  if (!kv) return
+  await kv.put('horeca_products', JSON.stringify(products))
+}
+async function kvGetCategories(kv?: KVNamespace): Promise<typeof HORECA_DEFAULT_CATEGORIES> {
+  if (!kv) return HORECA_DEFAULT_CATEGORIES
+  try {
+    const raw = await kv.get('horeca_categories')
+    if (!raw) { await kv.put('horeca_categories', JSON.stringify(HORECA_DEFAULT_CATEGORIES)); return HORECA_DEFAULT_CATEGORIES }
+    return JSON.parse(raw)
+  } catch { return HORECA_DEFAULT_CATEGORIES }
+}
+async function kvSaveCategories(kv: KVNamespace | undefined, cats: unknown[]): Promise<void> {
+  if (!kv) return
+  await kv.put('horeca_categories', JSON.stringify(cats))
+}
+
+// ── GET /horeca/catalogue — public product catalogue (no auth required)
+app.get('/horeca/catalogue', async (c) => {
+  const products = await kvGetProducts(c.env?.IG_SESSION_KV)
+  const categories = await kvGetCategories(c.env?.IG_SESSION_KV)
+  const { category, search, featured } = c.req.query()
+  let filtered = products.filter((p: any) => p.active !== false)
+  if (category) filtered = filtered.filter((p: any) => p.category === category)
+  if (search) { const q = search.toLowerCase(); filtered = filtered.filter((p: any) => p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q)) }
+  if (featured === '1') filtered = filtered.filter((p: any) => p.featured)
+  const catSummary = categories.map((cat: any) => ({
+    ...cat,
+    skus: products.filter((p: any) => p.category === cat.name && p.active !== false).length
+  }))
+  return c.json({
+    success: true, total: filtered.length, categories: catSummary,
+    products: filtered,
+    stats: { total_products: products.length, total_categories: categories.length, featured_count: products.filter((p:any) => p.featured && p.active !== false).length }
+  })
+})
+
+// ── GET /horeca/products/:id — single product detail (no auth required)
+app.get('/horeca/products/:id', async (c) => {
+  const products = await kvGetProducts(c.env?.IG_SESSION_KV)
+  const product = products.find((p: any) => p.id === c.req.param('id') || p.sku === c.req.param('id'))
+  if (!product) return c.json({ success: false, error: 'Product not found' }, 404)
+  return c.json({ success: true, product })
+})
+
+// ── POST /horeca/products — admin: add product
+app.post('/horeca/products', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  try {
+    const body = await c.req.json() as Record<string, unknown>
+    const { sku, name, category, unit, price, stock, reorder, description, hsn, gst_rate, brand, image, active, featured } = body
+    if (!sku || !name || !category) return c.json({ success: false, error: 'sku, name, category required' }, 400)
+    const products = await kvGetProducts(c.env?.IG_SESSION_KV)
+    if (products.find((p: any) => p.sku === sku)) return c.json({ success: false, error: `SKU ${sku} already exists` }, 409)
+    const newProduct = {
+      id: String(sku), sku: String(sku), name: String(name), category: String(category),
+      unit: String(unit || 'Piece'), price: Number(price) || 0, stock: Number(stock) || 0,
+      reorder: Number(reorder) || 0, description: String(description || ''),
+      hsn: String(hsn || ''), gst_rate: Number(gst_rate) || 18,
+      brand: String(brand || ''), image: String(image || ''),
+      active: active !== false, featured: Boolean(featured),
+      created_at: new Date().toISOString(), updated_at: new Date().toISOString()
+    }
+    products.push(newProduct)
+    await kvSaveProducts(c.env?.IG_SESSION_KV, products)
+    return c.json({ success: true, product: newProduct, message: `Product ${sku} — ${name} added to catalogue` })
+  } catch(e) { return c.json({ success: false, error: 'Product creation failed' }, 500) }
+})
+
+// ── PUT /horeca/products/:id — admin: update product
+app.put('/horeca/products/:id', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  try {
+    const products = await kvGetProducts(c.env?.IG_SESSION_KV)
+    const idx = products.findIndex((p: any) => p.id === c.req.param('id') || p.sku === c.req.param('id'))
+    if (idx === -1) return c.json({ success: false, error: 'Product not found' }, 404)
+    const updates = await c.req.json() as Record<string, unknown>
+    const updated = { ...(products[idx] as object), ...updates, updated_at: new Date().toISOString() }
+    products[idx] = updated as any
+    await kvSaveProducts(c.env?.IG_SESSION_KV, products)
+    return c.json({ success: true, product: updated, message: 'Product updated successfully' })
+  } catch(e) { return c.json({ success: false, error: 'Product update failed' }, 500) }
+})
+
+// ── DELETE /horeca/products/:id — admin: delete product
+app.delete('/horeca/products/:id', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  try {
+    const products = await kvGetProducts(c.env?.IG_SESSION_KV)
+    const idx = products.findIndex((p: any) => p.id === c.req.param('id') || p.sku === c.req.param('id'))
+    if (idx === -1) return c.json({ success: false, error: 'Product not found' }, 404)
+    const deleted = products[idx]
+    products.splice(idx, 1)
+    await kvSaveProducts(c.env?.IG_SESSION_KV, products)
+    return c.json({ success: true, deleted_id: (deleted as any).id, message: `Product ${(deleted as any).sku} deleted from catalogue` })
+  } catch(e) { return c.json({ success: false, error: 'Product deletion failed' }, 500) }
+})
+
+// ── GET /horeca/categories — list categories (no auth required)
+app.get('/horeca/categories', async (c) => {
+  const categories = await kvGetCategories(c.env?.IG_SESSION_KV)
+  const products = await kvGetProducts(c.env?.IG_SESSION_KV)
+  const result = categories.map((cat: any) => ({
+    ...cat,
+    skus: products.filter((p: any) => p.category === cat.name && p.active !== false).length
+  }))
+  return c.json({ success: true, categories: result })
+})
+
+// ── POST /horeca/categories — admin: add category
+app.post('/horeca/categories', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  try {
+    const { name, icon, color, description } = await c.req.json() as Record<string, string>
+    if (!name) return c.json({ success: false, error: 'Category name required' }, 400)
+    const categories = await kvGetCategories(c.env?.IG_SESSION_KV)
+    if ((categories as any[]).find((cat: any) => cat.name === name)) return c.json({ success: false, error: 'Category already exists' }, 409)
+    const newCat = { id: `cat-${Date.now()}`, name, icon: icon || 'box', color: color || '#475569', description: description || '' }
+    ;(categories as any[]).push(newCat)
+    await kvSaveCategories(c.env?.IG_SESSION_KV, categories)
+    return c.json({ success: true, category: newCat, message: `Category "${name}" added` })
+  } catch { return c.json({ success: false, error: 'Category creation failed' }, 500) }
+})
+
+// ── DELETE /horeca/categories/:id — admin: delete category
+app.delete('/horeca/categories/:id', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  try {
+    const categories = await kvGetCategories(c.env?.IG_SESSION_KV)
+    const idx = (categories as any[]).findIndex((cat: any) => cat.id === c.req.param('id') || cat.name === c.req.param('id'))
+    if (idx === -1) return c.json({ success: false, error: 'Category not found' }, 404)
+    ;(categories as any[]).splice(idx, 1)
+    await kvSaveCategories(c.env?.IG_SESSION_KV, categories)
+    return c.json({ success: true, message: 'Category deleted' })
+  } catch { return c.json({ success: false, error: 'Category deletion failed' }, 500) }
+})
+
+// ── GET /horeca/catalogue/download — public: download full catalogue as CSV (no auth required)
+app.get('/horeca/catalogue/download', async (c) => {
+  const products = await kvGetProducts(c.env?.IG_SESSION_KV)
+  const active = products.filter((p: any) => p.active !== false)
+  const { format = 'csv', category } = c.req.query()
+  const filtered = category ? active.filter((p: any) => p.category === category) : active
+  if (format === 'csv') {
+    const headers = ['SKU','Product Name','Category','Unit','Price (₹)','GST Rate (%)','HSN Code','Brand','Stock','Description']
+    const rows = filtered.map((p: any) => [
+      p.sku, `"${p.name}"`, `"${p.category}"`, p.unit, p.price, p.gst_rate, p.hsn, `"${p.brand||''}"`, p.stock, `"${(p.description||'').replace(/"/g,"'")}"`
+    ].join(','))
+    const csv = [headers.join(','), ...rows].join('\n')
+    c.header('Content-Type', 'text/csv')
+    c.header('Content-Disposition', `attachment; filename="india-gully-horeca-catalogue-${new Date().toISOString().slice(0,10)}.csv"`)
+    return c.body(csv)
+  }
+  // JSON format
+  return c.json({ success: true, generated_at: new Date().toISOString(), total: filtered.length, products: filtered })
+})
+
+// ── POST /horeca/products/bulk — admin: bulk import products via JSON array
+app.post('/horeca/products/bulk', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  try {
+    const { products: incoming, replace = false } = await c.req.json() as { products: any[]; replace?: boolean }
+    if (!Array.isArray(incoming) || incoming.length === 0) return c.json({ success: false, error: 'products array required' }, 400)
+    const existing = replace ? [] : await kvGetProducts(c.env?.IG_SESSION_KV)
+    let added = 0, skipped = 0
+    for (const p of incoming) {
+      if (!p.sku || !p.name || !p.category) { skipped++; continue }
+      if ((existing as any[]).find((e: any) => e.sku === p.sku)) { skipped++; continue }
+      ;(existing as any[]).push({ ...p, id: p.sku, active: p.active !== false, created_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+      added++
+    }
+    await kvSaveProducts(c.env?.IG_SESSION_KV, existing)
+    return c.json({ success: true, added, skipped, total: (existing as any[]).length, message: `Bulk import: ${added} added, ${skipped} skipped` })
+  } catch(e) { return c.json({ success: false, error: 'Bulk import failed' }, 500) }
+})
+
+// ── POST /horeca/catalogue/reset — admin: reset to default products
+app.post('/horeca/catalogue/reset', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
+  if (c.env?.IG_SESSION_KV) {
+    await c.env.IG_SESSION_KV.put('horeca_products', JSON.stringify(HORECA_DEFAULT_PRODUCTS))
+    await c.env.IG_SESSION_KV.put('horeca_categories', JSON.stringify(HORECA_DEFAULT_CATEGORIES))
+  }
+  return c.json({ success: true, message: `Catalogue reset to ${HORECA_DEFAULT_PRODUCTS.length} default products`, count: HORECA_DEFAULT_PRODUCTS.length })
+})
 app.get('/kpi/summary',        (c) => c.json({ quarter:'Q4 FY2025-26', overall_health:'At Risk', departments:[
   {dept:'Finance',progress:82,status:'On Track'},{dept:'Sales',progress:70,status:'At Risk'},
   {dept:'HR',progress:60,status:'At Risk'},{dept:'Governance',progress:75,status:'On Track'},{dept:'HORECA',progress:55,status:'Behind'},
@@ -14718,9 +14956,20 @@ app.get('/workflows', requireSession(), requireRole(['Super Admin'], ['admin']),
 // HORECA: SKU Catalogue
 app.post('/horeca/sku', requireSession(), requireRole(['Super Admin'], ['admin']), async (c) => {
   try {
-    const { sku, name, category, price } = await c.req.json() as { sku?: string; name?: string; category?: string; price?: number }
+    const body = await c.req.json() as Record<string, unknown>
+    const { sku, name, category, price, unit, stock, reorder } = body
     if (!sku || !name) return c.json({ success: false, error: 'SKU code and name required' }, 400)
-    return c.json({ success: true, sku, name, category: category || 'General', price: price || 0, added_at: new Date().toISOString(), message: `SKU ${sku} — ${name} added to ${category || 'General'} catalogue.` })
+    const products = await kvGetProducts(c.env?.IG_SESSION_KV)
+    if ((products as any[]).find((p: any) => p.sku === String(sku))) return c.json({ success: false, error: `SKU ${sku} already exists` }, 409)
+    const newProduct: any = {
+      id: String(sku), sku: String(sku), name: String(name), category: String(category || 'General'),
+      unit: String(unit || 'Piece'), price: Number(price) || 0, stock: Number(stock) || 0,
+      reorder: Number(reorder) || 0, description: '', hsn: '', gst_rate: 18, brand: '', image: '',
+      active: true, featured: false, created_at: new Date().toISOString(), updated_at: new Date().toISOString()
+    }
+    ;(products as any[]).push(newProduct)
+    await kvSaveProducts(c.env?.IG_SESSION_KV, products)
+    return c.json({ success: true, sku: String(sku), name: String(name), category: String(category || 'General'), price: Number(price) || 0, added_at: new Date().toISOString(), message: `SKU ${sku} — ${name} added to ${category || 'General'} catalogue.` })
   } catch { return c.json({ success: false, error: 'SKU creation failed' }, 500) }
 })
 

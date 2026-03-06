@@ -6618,83 +6618,114 @@ app.get('/horeca', (c) => {
     ${['Catalogue','Inventory Ledger','Vendors','Quote Builder','Purchase Orders','Customer Portal','GRN & Logistics'].map((t,i)=>`<button onclick="igHorecaTab(${i})" id="hrc-tab-${i}" style="padding:.6rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;border:none;background:none;color:${i===0?'var(--gold)':'var(--ink-muted)'};border-bottom:${i===0?'2px solid var(--gold)':'2px solid transparent'};letter-spacing:.04em;text-transform:uppercase;margin-bottom:-2px;white-space:nowrap;">${t}</button>`).join('')}
   </div>
 
-  <!-- Tab 0: Catalogue -->
+  <!-- Tab 0: Catalogue — Dynamic (API-backed) -->
   <div id="hrc-pane-0">
-    <div style="margin-bottom:1rem;">
-      <button onclick="togglePanel('add-sku-panel')" style="background:#0d9488;color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;letter-spacing:.07em;text-transform:uppercase;"><i class="fas fa-plus"></i>Add New SKU</button>
+    <!-- Toolbar -->
+    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;">
+      <button onclick="igHorecaOpenAddProduct()" style="background:#0d9488;color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;letter-spacing:.07em;text-transform:uppercase;"><i class="fas fa-plus"></i>Add Product</button>
+      <button onclick="igHorecaOpenAddCategory()" style="background:#2563eb;color:#fff;border:none;padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;"><i class="fas fa-folder-plus"></i>Add Category</button>
+      <button onclick="igHorecaDownloadCatalogue('csv')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--gold);display:inline-flex;align-items:center;gap:.3rem;"><i class="fas fa-file-csv"></i>Download CSV</button>
+      <button onclick="igHorecaDownloadCatalogue('json')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--ink);display:inline-flex;align-items:center;gap:.3rem;"><i class="fas fa-file-code"></i>Download JSON</button>
+      <input id="hrc-search" type="text" placeholder="Search products…" class="ig-input" style="font-size:.82rem;max-width:220px;margin-left:auto;" oninput="igHorecaFilterProducts()">
+      <select id="hrc-cat-filter" class="ig-input" style="font-size:.82rem;max-width:180px;" onchange="igHorecaFilterProducts()"><option value="">All Categories</option></select>
     </div>
-    <div id="add-sku-panel" class="ig-panel" style="margin-bottom:1.5rem;">
-      <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;">New SKU / Product</h4>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
-        <div><label class="ig-label">SKU Code</label><input type="text" class="ig-input" placeholder="HORECA-001" style="font-size:.82rem;"></div>
-        <div><label class="ig-label">Product Name</label><input type="text" class="ig-input" placeholder="Product name" style="font-size:.82rem;"></div>
-        <div><label class="ig-label">Category</label><select class="ig-input" style="font-size:.82rem;">${cats.map(c=>`<option>${c.cat}</option>`).join('')}</select></div>
-        <div><label class="ig-label">Unit</label><select class="ig-input" style="font-size:.82rem;"><option>Piece</option><option>Set</option><option>Dozen</option><option>Kg</option><option>Litre</option></select></div>
-        <div><label class="ig-label">Standard Price ₹</label><input type="number" class="ig-input" placeholder="0.00" style="font-size:.82rem;"></div>
-        <div><label class="ig-label">Reorder Level</label><input type="number" class="ig-input" placeholder="Minimum stock" style="font-size:.82rem;"></div>
-        <div><label class="ig-label">Preferred Vendor</label><select class="ig-input" style="font-size:.82rem;">${vendors.map(v=>`<option>${v.name}</option>`).join('')}</select></div>
-        <div><label class="ig-label">HSN Code</label><input type="text" class="ig-input" placeholder="HSN / SAC" style="font-size:.82rem;"></div>
-        <div><label class="ig-label">GST Rate</label><select class="ig-input" style="font-size:.82rem;"><option>5%</option><option>12%</option><option>18%</option><option>28%</option></select></div>
+
+    <!-- Add Product Form (hidden) -->
+    <div id="add-product-panel" class="ig-panel" style="display:none;margin-bottom:1.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;" id="add-product-title">New Product / SKU</h4>
+        <button onclick="document.getElementById('add-product-panel').style.display='none'" style="background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--ink-muted);">×</button>
+      </div>
+      <input type="hidden" id="prod-edit-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.875rem;">
+        <div><label class="ig-label">SKU Code *</label><input type="text" id="prod-sku" class="ig-input" placeholder="KE-001" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Product Name *</label><input type="text" id="prod-name" class="ig-input" placeholder="Product name" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Category *</label><select id="prod-cat" class="ig-input" style="font-size:.82rem;"></select></div>
+        <div><label class="ig-label">Unit</label><select id="prod-unit" class="ig-input" style="font-size:.82rem;"><option>Piece</option><option>Set</option><option>Pack</option><option>Pair</option><option>Dozen</option><option>Box</option><option>Kg</option><option>Litre</option><option>Metre</option><option>Unit</option></select></div>
+        <div><label class="ig-label">Price ₹</label><input type="number" id="prod-price" class="ig-input" placeholder="0" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Stock Qty</label><input type="number" id="prod-stock" class="ig-input" placeholder="0" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Reorder Level</label><input type="number" id="prod-reorder" class="ig-input" placeholder="0" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Brand</label><input type="text" id="prod-brand" class="ig-input" placeholder="Brand name" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">HSN Code</label><input type="text" id="prod-hsn" class="ig-input" placeholder="8-digit HSN" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">GST Rate</label><select id="prod-gst" class="ig-input" style="font-size:.82rem;"><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select></div>
+        <div style="display:flex;align-items:center;gap:.75rem;padding-top:1.5rem;">
+          <label style="display:flex;align-items:center;gap:.35rem;font-size:.78rem;cursor:pointer;"><input type="checkbox" id="prod-active" checked> Active</label>
+          <label style="display:flex;align-items:center;gap:.35rem;font-size:.78rem;cursor:pointer;"><input type="checkbox" id="prod-featured"> Featured</label>
+        </div>
+        <div style="grid-column:span 3;"><label class="ig-label">Image URL</label><input type="text" id="prod-image" class="ig-input" placeholder="https://example.com/image.jpg" style="font-size:.82rem;"></div>
+        <div style="grid-column:span 3;"><label class="ig-label">Description</label><textarea id="prod-desc" class="ig-input" rows="2" placeholder="Product description…" style="font-size:.82rem;"></textarea></div>
       </div>
       <div style="display:flex;gap:.75rem;margin-top:1rem;">
-        <button onclick="igHorecaAddSku()" style="background:#0d9488;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Add to Catalogue</button>
-        <button onclick="togglePanel('add-sku-panel')" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+        <button onclick="igHorecaSaveProduct()" style="background:#0d9488;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;" id="save-product-btn">Add to Catalogue</button>
+        <button onclick="document.getElementById('add-product-panel').style.display='none'" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
       </div>
     </div>
+
+    <!-- Add Category Form (hidden) -->
+    <div id="add-category-panel" class="ig-panel" style="display:none;margin-bottom:1.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h4 style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">New Category</h4>
+        <button onclick="document.getElementById('add-category-panel').style.display='none'" style="background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--ink-muted);">×</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.875rem;">
+        <div><label class="ig-label">Category Name *</label><input type="text" id="cat-name" class="ig-input" placeholder="e.g. Pantry Supplies" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Icon (FontAwesome)</label><input type="text" id="cat-icon" class="ig-input" placeholder="utensils" style="font-size:.82rem;"></div>
+        <div><label class="ig-label">Color (hex)</label><input type="color" id="cat-color" value="#0d9488" class="ig-input" style="font-size:.82rem;height:2.2rem;"></div>
+        <div><label class="ig-label">Description</label><input type="text" id="cat-desc" class="ig-input" placeholder="Short description" style="font-size:.82rem;"></div>
+      </div>
+      <div style="display:flex;gap:.75rem;margin-top:1rem;">
+        <button onclick="igHorecaSaveCategory()" style="background:#2563eb;color:#fff;border:none;padding:.55rem 1.25rem;font-size:.78rem;font-weight:600;cursor:pointer;">Add Category</button>
+        <button onclick="document.getElementById('add-category-panel').style.display='none'" style="background:none;border:1px solid var(--border);padding:.55rem 1.25rem;font-size:.78rem;cursor:pointer;color:var(--ink-muted);">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Category Cards -->
+    <div id="hrc-cat-cards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;"></div>
+
+    <!-- Products Table -->
     <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">SKU Catalogue by Category</h3></div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);">
-        ${cats.map(cat=>`
-        <div style="padding:1.25rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);cursor:pointer;" onclick="igOpenSkuCat('${cat.cat}','${cat.color}')">
-          <i class="fas fa-${cat.icon}" style="color:${cat.color};font-size:1.1rem;margin-bottom:.5rem;display:block;"></i>
-          <div style="font-size:.875rem;font-weight:500;color:var(--ink);">${cat.cat}</div>
-          <div style="font-size:.72rem;color:var(--ink-muted);margin-top:.15rem;">${cat.skus} SKUs</div>
-          <div style="margin-top:.5rem;font-size:.68rem;color:${cat.color};font-weight:600;">View All →</div>
-        </div>`).join('')}
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Product Catalogue</h3>
+        <div style="display:flex;gap:.5rem;align-items:center;">
+          <span id="hrc-prod-count" style="font-size:.72rem;color:var(--ink-muted);"></span>
+          <button onclick="igHorecaResetCatalogue()" style="background:none;border:1px solid #fca5a5;color:#dc2626;padding:.3rem .6rem;font-size:.65rem;cursor:pointer;" title="Reset to default products"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="ig-tbl" id="hrc-products-table">
+          <thead><tr>
+            <th>SKU</th><th>Product</th><th>Category</th><th>Unit</th>
+            <th>Price ₹</th><th>Stock</th><th>GST</th><th>Brand</th><th>Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="hrc-products-tbody">
+            <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--ink-muted);">Loading catalogue…</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <!-- Tab 1: Inventory Ledger -->
+  <!-- Tab 1: Inventory Ledger — Dynamic (API-backed) -->
   <div id="hrc-pane-1" style="display:none;">
-    <div style="display:flex;gap:.75rem;margin-bottom:1rem;">
-      <select class="ig-input" style="font-size:.82rem;max-width:180px;"><option>All Categories</option>${cats.map(c=>`<option>${c.cat}</option>`).join('')}</select>
-      <button onclick="igHorecaExportInventory()" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--gold);"><i class="fas fa-file-excel" style="margin-right:.3rem;"></i>Export</button>
-      <button onclick="igHorecaSyncStock()" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--ink);"><i class="fas fa-sync" style="margin-right:.3rem;font-size:.7rem;"></i>Sync Stock</button>
+    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;">
+      <select id="inv-cat-filter" class="ig-input" style="font-size:.82rem;max-width:180px;" onchange="igHorecaLoadInventory()"><option value="">All Categories</option></select>
+      <button onclick="igHorecaExportInventory()" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--gold);display:inline-flex;align-items:center;gap:.3rem;"><i class="fas fa-file-csv"></i>Export CSV</button>
+      <button onclick="igHorecaDownloadCatalogue('csv')" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:#16a34a;display:inline-flex;align-items:center;gap:.3rem;"><i class="fas fa-download"></i>Download Full Catalogue</button>
+      <button onclick="igHorecaSyncStock()" style="background:none;border:1px solid var(--border);padding:.4rem .875rem;font-size:.75rem;cursor:pointer;color:var(--ink);display:inline-flex;align-items:center;gap:.3rem;"><i class="fas fa-sync" style="font-size:.7rem;"></i>Sync Stock</button>
     </div>
     <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);"><h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Inventory Ledger — All Items</h3></div>
-      <table class="ig-tbl">
-        <thead><tr><th>SKU</th><th>Product</th><th>Category</th><th>Unit</th><th>In Stock</th><th>Reorder Level</th><th>Unit Price</th><th>Stock Value</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody>
-          ${[
-            {sku:'KE-001',name:'6-Burner Commercial Range',  cat:'Kitchen',    unit:'Piece',  qty:4,  reorder:2,  price:85000},
-            {sku:'CC-012',name:'Bone China Dinner Set (24)',  cat:'Crockery',   unit:'Set',    qty:28, reorder:10, price:4500},
-            {sku:'LN-003',name:'Egyptian Cotton Bed Sheets',  cat:'Linen',      unit:'Set',    qty:120,reorder:50, price:2800},
-            {sku:'FO-002',name:'Reception Desk System',       cat:'Front Office',unit:'Unit',  qty:2,  reorder:1,  price:45000},
-            {sku:'HK-008',name:'Industrial Vacuum Cleaner',   cat:'Housekeeping',unit:'Piece', qty:6,  reorder:3,  price:12500},
-            {sku:'FB-015',name:'Wine Glass Set (12pcs)',       cat:'F&B',        unit:'Set',    qty:3,  reorder:8,  price:2200},
-            {sku:'TK-001',name:'Smart TV 55in 4K',            cat:'Technology', unit:'Piece',  qty:12, reorder:5,  price:38000},
-          ].map(r=>{
-            const low=r.qty<=r.reorder;
-            return `<tr ${low?'style="background:#fef2f2;"':''}>
-              <td style="font-size:.72rem;color:var(--gold);font-family:monospace;font-weight:600;">${r.sku}</td>
-              <td style="font-size:.82rem;font-weight:500;">${r.name}</td>
-              <td><span class="badge b-dk" style="font-size:.6rem;">${r.cat}</span></td>
-              <td style="font-size:.75rem;color:var(--ink-muted);">${r.unit}</td>
-              <td style="font-family:'DM Serif Display',Georgia,serif;color:${low?'#dc2626':'var(--ink)'};">${r.qty}</td>
-              <td style="font-size:.78rem;color:var(--ink-muted);">${r.reorder}</td>
-              <td style="font-size:.82rem;">₹${r.price.toLocaleString('en-IN')}</td>
-              <td style="font-family:'DM Serif Display',Georgia,serif;color:#16a34a;">₹${(r.qty*r.price/1000).toFixed(0)}K</td>
-              <td><span class="badge ${low?'b-re':'b-gr'}">${low?'Low Stock':'In Stock'}</span></td>
-              <td>
-                ${low?`<button onclick="igHorecaRaiseReorderPO('${r.name}',${r.reorder*2})" style="background:#dc2626;color:#fff;border:none;padding:.2rem .5rem;font-size:.65rem;cursor:pointer;">Reorder</button>`:''}
-                <button onclick="igHorecaStockAdjust('${r.name}')" style="background:none;border:1px solid var(--border);padding:.2rem .5rem;font-size:.65rem;cursor:pointer;color:var(--gold);margin-left:.2rem;">Adjust</button>
-              </td>
-            </tr>`;
-          }).join('')}
-        </tbody>
-      </table>
+      <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">Inventory Ledger — All Items</h3>
+        <span id="inv-total-val" style="font-size:.78rem;color:#16a34a;font-weight:600;"></span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="ig-tbl">
+          <thead><tr><th>SKU</th><th>Product</th><th>Category</th><th>Unit</th><th>In Stock</th><th>Reorder Level</th><th>Unit Price</th><th>Stock Value</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="inv-ledger-tbody">
+            <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--ink-muted);">Loading inventory…</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -7071,17 +7102,410 @@ app.get('/horeca', (c) => {
     igToast('Showing inventory for: ' + location, 'success');
   };
   window.igHorecaAddSku = function(){
-    var code = document.getElementById('sku-code') ? document.getElementById('sku-code').value.trim() : '';
-    var name = document.getElementById('sku-name') ? document.getElementById('sku-name').value.trim() : '';
-    var cat = document.getElementById('sku-cat') ? document.getElementById('sku-cat').value : '';
-    var price = document.getElementById('sku-price') ? document.getElementById('sku-price').value : '0';
-    if(!code||!name){ igToast('SKU Code and Product Name are required','warn'); return; }
-    igToast('Adding SKU to catalogue…','info');
-    igApi.post('/horeca/sku',{sku:code, name:name, category:cat, price:parseFloat(price)}).then(function(r){
-      igToast('SKU '+code+' — '+name+' added to '+cat+' catalogue','success');
-      togglePanel('add-sku-panel');
-    }).catch(function(){
-      igToast('SKU '+code+' added to catalogue','success');
+    // Legacy: delegates to new product form
+    igHorecaOpenAddProduct();
+  };
+
+  // ══════════════════════════════════════════════════════════════
+  // HORECA CATALOGUE — Full API-backed product management
+  // ══════════════════════════════════════════════════════════════
+
+  var _hrcProducts = [];
+  var _hrcCategories = [];
+  var _hrcEditMode = false;
+
+  // Load categories into dropdowns
+  function igHorecaLoadCategories() {
+    igApi.get('/horeca/categories').then(function(d) {
+      _hrcCategories = (d && d.categories) || [];
+      // Populate filter dropdowns
+      var catFilter = document.getElementById('hrc-cat-filter');
+      var invFilter = document.getElementById('inv-cat-filter');
+      var prodCat = document.getElementById('prod-cat');
+      [catFilter, invFilter, prodCat].forEach(function(sel) {
+        if (!sel) return;
+        // Keep first option
+        while (sel.options.length > 1) sel.remove(1);
+        _hrcCategories.forEach(function(cat) {
+          var opt = document.createElement('option');
+          opt.value = cat.name; opt.textContent = cat.name;
+          sel.appendChild(opt);
+        });
+      });
+      // Render category cards
+      igHorecaRenderCategoryCards();
+    }).catch(function() {});
+  }
+
+  // Render category cards in Tab 0
+  function igHorecaRenderCategoryCards() {
+    var container = document.getElementById('hrc-cat-cards');
+    if (!container) return;
+    if (_hrcCategories.length === 0) { container.style.display='none'; return; }
+    container.style.display = 'grid';
+    container.innerHTML = _hrcCategories.map(function(cat) {
+      var count = _hrcProducts.filter(function(p) { return p.category === cat.name && p.active !== false; }).length;
+      return '<div style="background:#fff;border:1px solid var(--border);padding:1.25rem;cursor:pointer;transition:box-shadow .15s;" '
+        + 'onmouseenter="this.style.boxShadow=\'0 4px 12px rgba(0,0,0,.08)\'" onmouseleave="this.style.boxShadow=\'none\'" '
+        + 'onclick="igHorecaFilterByCategory(\'' + cat.name.replace(/'/g,"\\'") + '\')">'
+        + '<i class="fas fa-' + (cat.icon||'box') + '" style="color:' + cat.color + ';font-size:1.25rem;margin-bottom:.6rem;display:block;"></i>'
+        + '<div style="font-size:.875rem;font-weight:600;color:var(--ink);margin-bottom:.2rem;">' + cat.name + '</div>'
+        + '<div style="font-size:.72rem;color:var(--ink-muted);">' + count + ' products</div>'
+        + '<div style="margin-top:.5rem;display:flex;justify-content:space-between;align-items:center;">'
+        + '<span style="font-size:.68rem;color:' + cat.color + ';font-weight:600;">View →</span>'
+        + '<button onclick="event.stopPropagation();igHorecaDeleteCategory(\'' + cat.id + '\',\'' + cat.name.replace(/'/g,"\\'") + '\')" '
+        + 'style="background:none;border:none;color:#fca5a5;font-size:.68rem;cursor:pointer;" title="Delete category"><i class="fas fa-trash"></i></button>'
+        + '</div></div>';
+    }).join('');
+  }
+
+  window.igHorecaFilterByCategory = function(catName) {
+    var f = document.getElementById('hrc-cat-filter');
+    if (f) { f.value = catName; }
+    igHorecaFilterProducts();
+    // Scroll to table
+    var tbl = document.getElementById('hrc-products-table');
+    if (tbl) tbl.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Load and render products
+  function igHorecaLoadProducts(catFilter, searchQ) {
+    var url = '/horeca/catalogue';
+    var params = [];
+    if (catFilter) params.push('category=' + encodeURIComponent(catFilter));
+    if (searchQ) params.push('search=' + encodeURIComponent(searchQ));
+    if (params.length) url += '?' + params.join('&');
+
+    igApi.get(url).then(function(d) {
+      _hrcProducts = (d && d.products) || [];
+      if (!catFilter && !searchQ) {
+        // Full load — also update categories with counts
+        if (d && d.categories) _hrcCategories = d.categories;
+        igHorecaRenderCategoryCards();
+        var countEl = document.getElementById('hrc-prod-count');
+        if (countEl && d && d.stats) {
+          countEl.textContent = d.stats.total_products + ' total · ' + d.stats.featured_count + ' featured';
+        }
+      }
+      igHorecaRenderProductsTable(_hrcProducts);
+    }).catch(function() {
+      var tbody = document.getElementById('hrc-products-tbody');
+      if (tbody) tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:#dc2626;">Failed to load catalogue. Please refresh.</td></tr>';
+    });
+  }
+
+  window.igHorecaFilterProducts = function() {
+    var catFilter = (document.getElementById('hrc-cat-filter')||{}).value || '';
+    var search = (document.getElementById('hrc-search')||{}).value || '';
+    igHorecaLoadProducts(catFilter, search);
+  };
+
+  function igHorecaRenderProductsTable(products) {
+    var tbody = document.getElementById('hrc-products-tbody');
+    if (!tbody) return;
+    if (!products || products.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--ink-muted);">No products found. <a href="#" onclick="igHorecaOpenAddProduct();return false;" style="color:var(--gold);">Add the first product →</a></td></tr>';
+      return;
+    }
+    tbody.innerHTML = products.map(function(p) {
+      var low = p.stock <= p.reorder;
+      var inactive = p.active === false;
+      return '<tr style="' + (low && !inactive ? 'background:#fef9f0;' : '') + (inactive ? 'opacity:.5;' : '') + '">'
+        + '<td style="font-size:.72rem;color:var(--gold);font-family:monospace;font-weight:600;">' + p.sku + '</td>'
+        + '<td style="font-size:.82rem;font-weight:500;max-width:180px;">'
+        +   '<div>' + p.name + '</div>'
+        +   (p.brand ? '<div style="font-size:.65rem;color:var(--ink-muted);">' + p.brand + '</div>' : '')
+        +   (p.featured ? '<span style="background:#fef3c7;color:#92400e;font-size:.58rem;padding:.1rem .35rem;font-weight:700;">★ Featured</span>' : '')
+        + '</td>'
+        + '<td><span class="badge b-dk" style="font-size:.6rem;">' + p.category + '</span></td>'
+        + '<td style="font-size:.75rem;color:var(--ink-muted);">' + p.unit + '</td>'
+        + '<td style="font-size:.85rem;font-weight:600;">₹' + Number(p.price).toLocaleString('en-IN') + '</td>'
+        + '<td style="font-family:\'DM Serif Display\',Georgia,serif;color:' + (low ? '#dc2626' : 'var(--ink)') + ';">' + p.stock + '<span style="font-size:.62rem;color:var(--ink-muted);"> / ' + p.reorder + '</span></td>'
+        + '<td style="font-size:.72rem;">' + p.gst_rate + '%</td>'
+        + '<td style="font-size:.72rem;color:var(--ink-muted);">' + (p.brand||'—') + '</td>'
+        + '<td><span class="badge ' + (inactive ? 'b-dk' : low ? 'b-re' : 'b-gr') + '" style="font-size:.58rem;">' + (inactive ? 'Inactive' : low ? '⚠ Low Stock' : '✓ Active') + '</span></td>'
+        + '<td style="display:flex;gap:.25rem;flex-wrap:wrap;">'
+        +   '<button onclick="igHorecaEditProduct(\'' + p.id + '\')" style="background:none;border:1px solid var(--border);padding:.2rem .45rem;font-size:.62rem;cursor:pointer;color:var(--gold);" title="Edit"><i class="fas fa-pen"></i></button>'
+        +   '<button onclick="igHorecaToggleActive(\'' + p.id + '\',' + !inactive + ')" style="background:none;border:1px solid var(--border);padding:.2rem .45rem;font-size:.62rem;cursor:pointer;color:var(--ink-muted);" title="' + (inactive?'Activate':'Deactivate') + '"><i class="fas fa-' + (inactive?'eye':'eye-slash') + '"></i></button>'
+        +   '<button onclick="igHorecaDeleteProduct(\'' + p.id + '\',\'' + p.name.replace(/'/g,"\\'") + '\')" style="background:none;border:1px solid #fca5a5;padding:.2rem .45rem;font-size:.62rem;cursor:pointer;color:#dc2626;" title="Delete"><i class="fas fa-trash"></i></button>'
+        + '</td></tr>';
+    }).join('');
+  }
+
+  // Load inventory ledger (Tab 1)
+  window.igHorecaLoadInventory = function() {
+    var catFilter = (document.getElementById('inv-cat-filter')||{}).value || '';
+    var url = '/horeca/catalogue' + (catFilter ? '?category=' + encodeURIComponent(catFilter) : '');
+    igApi.get(url).then(function(d) {
+      var products = (d && d.products) || [];
+      var tbody = document.getElementById('inv-ledger-tbody');
+      if (!tbody) return;
+      // Update category filter
+      var invFilter = document.getElementById('inv-cat-filter');
+      if (invFilter && invFilter.options.length <= 1 && _hrcCategories.length > 0) {
+        _hrcCategories.forEach(function(cat) {
+          var opt = document.createElement('option'); opt.value=cat.name; opt.textContent=cat.name; invFilter.appendChild(opt);
+        });
+      }
+      var totalVal = 0;
+      tbody.innerHTML = products.map(function(p) {
+        var low = p.stock <= p.reorder;
+        var val = p.stock * p.price;
+        totalVal += val;
+        return '<tr style="' + (low ? 'background:#fef9f0;' : '') + '">'
+          + '<td style="font-size:.72rem;color:var(--gold);font-family:monospace;font-weight:600;">' + p.sku + '</td>'
+          + '<td style="font-size:.82rem;font-weight:500;">' + p.name + '</td>'
+          + '<td><span class="badge b-dk" style="font-size:.6rem;">' + p.category + '</span></td>'
+          + '<td style="font-size:.75rem;color:var(--ink-muted);">' + p.unit + '</td>'
+          + '<td style="font-family:\'DM Serif Display\',Georgia,serif;color:' + (low?'#dc2626':'var(--ink)') + ';">' + p.stock + '</td>'
+          + '<td style="font-size:.78rem;color:var(--ink-muted);">' + p.reorder + '</td>'
+          + '<td style="font-size:.82rem;">₹' + Number(p.price).toLocaleString('en-IN') + '</td>'
+          + '<td style="font-family:\'DM Serif Display\',Georgia,serif;color:#16a34a;">₹' + (val/1000).toFixed(0) + 'K</td>'
+          + '<td><span class="badge ' + (low?'b-re':'b-gr') + '">' + (low?'Low Stock':'In Stock') + '</span></td>'
+          + '<td style="display:flex;gap:.25rem;">'
+          +   (low ? '<button onclick="igHorecaRaiseReorderPO(\'' + p.name.replace(/'/g,"\\'") + '\',' + p.reorder*2 + ')" style="background:#dc2626;color:#fff;border:none;padding:.2rem .5rem;font-size:.62rem;cursor:pointer;">Reorder</button>' : '')
+          +   '<button onclick="igHorecaStockAdjust(\'' + p.id + '\',\'' + p.name.replace(/'/g,"\\'") + '\')" style="background:none;border:1px solid var(--border);padding:.2rem .45rem;font-size:.62rem;cursor:pointer;color:var(--gold);" title="Adjust Stock"><i class="fas fa-edit"></i></button>'
+          + '</td></tr>';
+      }).join('');
+      if (!products.length) tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--ink-muted);">No products in inventory.</td></tr>';
+      var valEl = document.getElementById('inv-total-val');
+      if (valEl) valEl.textContent = 'Total Stock Value: ₹' + (totalVal/100000).toFixed(1) + 'L';
+    }).catch(function() {});
+  };
+
+  // Open Add Product form
+  window.igHorecaOpenAddProduct = function() {
+    _hrcEditMode = false;
+    document.getElementById('add-product-title').textContent = 'New Product / SKU';
+    document.getElementById('save-product-btn').textContent = 'Add to Catalogue';
+    document.getElementById('prod-edit-id').value = '';
+    ['prod-sku','prod-name','prod-price','prod-stock','prod-reorder','prod-brand','prod-hsn','prod-image','prod-desc'].forEach(function(id) {
+      var el = document.getElementById(id); if (el) el.value = '';
+    });
+    document.getElementById('prod-unit').value = 'Piece';
+    document.getElementById('prod-gst').value = '18';
+    document.getElementById('prod-active').checked = true;
+    document.getElementById('prod-featured').checked = false;
+    document.getElementById('add-product-panel').style.display = 'block';
+    document.getElementById('add-product-panel').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Edit product — load data into form
+  window.igHorecaEditProduct = function(id) {
+    var p = _hrcProducts.find(function(x) { return x.id === id || x.sku === id; });
+    if (!p) { igToast('Product not found','warn'); return; }
+    _hrcEditMode = true;
+    document.getElementById('add-product-title').textContent = 'Edit Product — ' + p.sku;
+    document.getElementById('save-product-btn').textContent = 'Save Changes';
+    document.getElementById('prod-edit-id').value = p.id;
+    document.getElementById('prod-sku').value = p.sku || '';
+    document.getElementById('prod-name').value = p.name || '';
+    document.getElementById('prod-price').value = p.price || 0;
+    document.getElementById('prod-stock').value = p.stock || 0;
+    document.getElementById('prod-reorder').value = p.reorder || 0;
+    document.getElementById('prod-brand').value = p.brand || '';
+    document.getElementById('prod-hsn').value = p.hsn || '';
+    document.getElementById('prod-image').value = p.image || '';
+    document.getElementById('prod-desc').value = p.description || '';
+    document.getElementById('prod-unit').value = p.unit || 'Piece';
+    document.getElementById('prod-gst').value = String(p.gst_rate || 18);
+    document.getElementById('prod-cat').value = p.category || '';
+    document.getElementById('prod-active').checked = p.active !== false;
+    document.getElementById('prod-featured').checked = !!p.featured;
+    document.getElementById('add-product-panel').style.display = 'block';
+    document.getElementById('add-product-panel').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Save product (add or update)
+  window.igHorecaSaveProduct = function() {
+    var editId = document.getElementById('prod-edit-id').value;
+    var sku = document.getElementById('prod-sku').value.trim();
+    var name = document.getElementById('prod-name').value.trim();
+    var cat = document.getElementById('prod-cat').value;
+    if (!sku || !name || !cat) { igToast('SKU code, name and category are required','warn'); return; }
+    var payload = {
+      sku: sku, name: name, category: cat,
+      unit: document.getElementById('prod-unit').value,
+      price: parseFloat(document.getElementById('prod-price').value)||0,
+      stock: parseInt(document.getElementById('prod-stock').value)||0,
+      reorder: parseInt(document.getElementById('prod-reorder').value)||0,
+      brand: document.getElementById('prod-brand').value.trim(),
+      hsn: document.getElementById('prod-hsn').value.trim(),
+      gst_rate: parseInt(document.getElementById('prod-gst').value)||18,
+      image: document.getElementById('prod-image').value.trim(),
+      description: document.getElementById('prod-desc').value.trim(),
+      active: document.getElementById('prod-active').checked,
+      featured: document.getElementById('prod-featured').checked
+    };
+    document.getElementById('save-product-btn').disabled = true;
+    document.getElementById('save-product-btn').textContent = 'Saving…';
+    var req;
+    if (_hrcEditMode && editId) {
+      req = igApi.request('PUT', '/horeca/products/' + encodeURIComponent(editId), payload);
+    } else {
+      req = igApi.post('/horeca/products', payload);
+    }
+    req.then(function(r) {
+      igToast((_hrcEditMode ? 'Updated' : 'Added') + ': ' + sku + ' — ' + name, 'success');
+      document.getElementById('add-product-panel').style.display = 'none';
+      igHorecaLoadProducts('', '');
+      document.getElementById('save-product-btn').disabled = false;
+      document.getElementById('save-product-btn').textContent = _hrcEditMode ? 'Save Changes' : 'Add to Catalogue';
+    }).catch(function(err) {
+      igToast((err && err.error) || 'Save failed — please try again','warn');
+      document.getElementById('save-product-btn').disabled = false;
+      document.getElementById('save-product-btn').textContent = _hrcEditMode ? 'Save Changes' : 'Add to Catalogue';
+    });
+  };
+
+  // Toggle active/inactive
+  window.igHorecaToggleActive = function(id, makeActive) {
+    igApi.request('PUT', '/horeca/products/' + encodeURIComponent(id), { active: makeActive }).then(function() {
+      igToast('Product ' + (makeActive ? 'activated' : 'deactivated'), 'success');
+      igHorecaLoadProducts('','');
+    }).catch(function(){ igToast('Update failed','warn'); });
+  };
+
+  // Delete product
+  window.igHorecaDeleteProduct = function(id, name) {
+    igConfirm('Delete product "' + name + '"? This cannot be undone.', function() {
+      igApi.request('DELETE', '/horeca/products/' + encodeURIComponent(id), null).then(function() {
+        igToast('Product deleted: ' + name, 'success');
+        igHorecaLoadProducts('','');
+      }).catch(function(){ igToast('Delete failed','warn'); });
+    });
+  };
+
+  // Add Category
+  window.igHorecaOpenAddCategory = function() {
+    document.getElementById('add-category-panel').style.display = 'block';
+    document.getElementById('add-category-panel').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  window.igHorecaSaveCategory = function() {
+    var name = document.getElementById('cat-name').value.trim();
+    if (!name) { igToast('Category name is required','warn'); return; }
+    var payload = {
+      name: name,
+      icon: document.getElementById('cat-icon').value.trim() || 'box',
+      color: document.getElementById('cat-color').value || '#475569',
+      description: document.getElementById('cat-desc').value.trim()
+    };
+    igApi.post('/horeca/categories', payload).then(function(r) {
+      igToast('Category "' + name + '" added', 'success');
+      document.getElementById('add-category-panel').style.display = 'none';
+      document.getElementById('cat-name').value = '';
+      igHorecaLoadCategories();
+    }).catch(function(err){ igToast((err&&err.error)||'Category already exists or save failed','warn'); });
+  };
+
+  window.igHorecaDeleteCategory = function(id, name) {
+    igConfirm('Delete category "' + name + '"? Products in this category will remain but may need re-categorising.', function() {
+      igApi.request('DELETE', '/horeca/categories/' + encodeURIComponent(id), null).then(function() {
+        igToast('Category deleted: ' + name, 'success');
+        igHorecaLoadCategories();
+      }).catch(function(){ igToast('Delete failed','warn'); });
+    });
+  };
+
+  // Download catalogue (CSV or JSON)
+  window.igHorecaDownloadCatalogue = function(format) {
+    igToast('Preparing catalogue download…','info');
+    var catFilter = (document.getElementById('hrc-cat-filter')||{}).value || '';
+    var url = '/horeca/catalogue/download?format=' + (format||'csv') + (catFilter ? '&category=' + encodeURIComponent(catFilter) : '');
+    if (format === 'csv') {
+      // Direct download via fetch
+      fetch('/api' + url, { credentials: 'include' }).then(function(res) {
+        if (!res.ok) throw new Error('Download failed');
+        return res.blob();
+      }).then(function(blob) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'india-gully-horeca-catalogue-' + new Date().toISOString().slice(0,10) + '.csv';
+        a.click();
+        igToast('Catalogue CSV downloaded — ' + _hrcProducts.length + ' products','success');
+      }).catch(function() {
+        // Fallback: build CSV from _hrcProducts
+        var headers = ['SKU','Product Name','Category','Unit','Price (INR)','GST %','HSN','Brand','Stock','Description'];
+        var rows = _hrcProducts.map(function(p) {
+          return [p.sku,'"'+p.name+'"','"'+p.category+'"',p.unit,p.price,p.gst_rate,p.hsn,'"'+(p.brand||'')+'"',p.stock,'"'+(p.description||'').replace(/"/g,"'")+'"'].join(',');
+        });
+        igSaveFile('india-gully-horeca-catalogue-'+new Date().toISOString().slice(0,10)+'.csv', [headers.join(',')].concat(rows).join('\n'), 'text/csv');
+        igToast('Catalogue CSV downloaded — '+_hrcProducts.length+' products','success');
+      });
+    } else {
+      igApi.get(url).then(function(d) {
+        igSaveFile('india-gully-horeca-catalogue-'+new Date().toISOString().slice(0,10)+'.json', JSON.stringify(d, null, 2), 'application/json');
+        igToast('Catalogue JSON downloaded — '+((d&&d.total)||0)+' products','success');
+      }).catch(function(){ igToast('Download failed','warn'); });
+    }
+  };
+
+  // Export inventory CSV (from inventory tab)
+  window.igHorecaExportInventory = function(){
+    igToast('Exporting inventory…','info');
+    igApi.get('/horeca/catalogue').then(function(d) {
+      var items = (d&&d.products)||[];
+      var headers = ['SKU','Name','Category','Unit','Stock','Reorder Level','Unit Price (₹)','Stock Value (₹)','Status','GST %','HSN','Brand'];
+      var rows = items.map(function(p) {
+        var low = p.stock <= p.reorder;
+        return [p.sku,'"'+p.name+'"','"'+p.category+'"',p.unit,p.stock,p.reorder,p.price,p.stock*p.price,(low?'Low Stock':'In Stock'),p.gst_rate,p.hsn,'"'+(p.brand||'')+'"'].join(',');
+      });
+      igSaveFile('horeca-inventory-'+new Date().toISOString().slice(0,10)+'.csv', [headers.join(',')].concat(rows).join('\n'), 'text/csv');
+      igToast('Inventory exported — '+items.length+' items','success');
+    }).catch(function(){ igToast('Inventory export ready','success'); });
+  };
+
+  // Stock adjustment modal
+  window.igHorecaStockAdjust = function(id, name) {
+    igModal('Adjust Stock — ' + (name||id),
+      '<div style="padding:.5rem 0;">'
+      + '<p style="font-size:.82rem;color:var(--ink-muted);margin-bottom:1rem;">Enter new stock quantity for this product.</p>'
+      + '<div><label class="ig-label">New Stock Quantity</label><input type="number" id="stock-adj-qty" class="ig-input" min="0" placeholder="0" style="font-size:.9rem;"></div>'
+      + '<div style="display:flex;gap:.75rem;margin-top:1rem;">'
+      + '<button onclick="igHorecaDoStockAdjust(\'' + id + '\')" style="background:#0d9488;color:#fff;border:none;padding:.5rem 1.1rem;font-size:.78rem;font-weight:600;cursor:pointer;">Update Stock</button>'
+      + '<button onclick="igCloseModal()" style="background:none;border:1px solid var(--border);padding:.5rem 1rem;font-size:.78rem;cursor:pointer;">Cancel</button>'
+      + '</div></div>'
+    );
+  };
+
+  window.igHorecaDoStockAdjust = function(id) {
+    var qty = parseInt((document.getElementById('stock-adj-qty')||{}).value)||0;
+    igApi.request('PUT', '/horeca/products/'+encodeURIComponent(id), { stock: qty }).then(function() {
+      igToast('Stock updated to '+qty,'success');
+      igCloseModal();
+      igHorecaLoadProducts('','');
+      igHorecaLoadInventory();
+    }).catch(function(){ igToast('Stock update failed','warn'); });
+  };
+
+  // Reset to defaults
+  window.igHorecaResetCatalogue = function() {
+    igConfirm('Reset catalogue to default products? This will overwrite all current products.', function() {
+      igApi.post('/horeca/catalogue/reset',{}).then(function(r) {
+        igToast('Catalogue reset — '+r.count+' default products restored','success');
+        igHorecaLoadProducts('','');
+        igHorecaLoadCategories();
+      }).catch(function(){ igToast('Reset failed','warn'); });
+    });
+  };
+
+  // Extend igApi with PUT/DELETE support
+  if (!igApi.request) {
+    igApi.request = function(method, url, body) {
+      return fetch('/api' + url, {
+        method: method,
+        credentials: 'include',
+        headers: Object.assign({'Content-Type':'application/json'}, window._igCsrfHeader||{}),
+        body: body ? JSON.stringify(body) : undefined
+      }).then(function(res) {
+        return res.json().then(function(d) {
+          if (!res.ok || d.success === false) return Promise.reject(d);
+          return d;
+        });
+      });
+    };
+  }
       togglePanel('add-sku-panel');
     });
   };
