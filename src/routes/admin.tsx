@@ -7053,7 +7053,19 @@ app.get('/horeca', (c) => {
       if(p) p.style.display=i===idx?'block':'none';
       if(t){ t.style.color=i===idx?'var(--gold)':'var(--ink-muted)'; t.style.borderBottom=i===idx?'2px solid var(--gold)':'2px solid transparent'; }
     }
+    // Auto-load data for each tab when switched to
+    if(idx===0){ igHorecaLoadCategories(); igHorecaLoadProducts('',''); }
+    else if(idx===1){ igHorecaLoadInventory(); }
+    else if(idx===2){ igHorecaLoadVendors && igHorecaLoadVendors(); }
+    else if(idx===4){ igHorecaLoadPOs && igHorecaLoadPOs(); }
+    else if(idx===6){ igHorecaLoadGrn && igHorecaLoadGrn(); }
   };
+  // ── HORECA: Auto-init on page load ───────────────────────────────────────
+  (function igHorecaInit(){
+    if(!document.getElementById('hrc-pane-0')) return;
+    igHorecaLoadCategories();
+    igHorecaLoadProducts('','');
+  })();
   function igHorecaCalcQuote(){
     var rooms = parseInt(document.getElementById('qt-rooms').value) || 0;
     var star  = parseInt(document.getElementById('qt-star').value) || 5;
