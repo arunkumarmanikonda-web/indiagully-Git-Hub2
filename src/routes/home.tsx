@@ -7,7 +7,7 @@ const app = new Hono()
 // ── HERO SLIDES ─────────────────────────────────────────────────────────────
 const SLIDES = [
   {
-    bg: 'linear-gradient(135deg,#06060a 0%,#0f0f05 100%)',
+    bg: '#040408',
     tag: 'Transaction Advisory · Pan-India',
     h1a: 'Celebrating',
     h1b: 'Desiness',
@@ -16,9 +16,10 @@ const SLIDES = [
     cta1: { text: 'View Active Mandates', href: '/listings' },
     cta2: { text: 'Submit Mandate', href: '/contact' },
     img: 'https://www.mapleresorts.in/img/about/new-left1.jpg',
+    label: 'India Gully Advisory',
   },
   {
-    bg: 'linear-gradient(135deg,#040408 0%,#080412 100%)',
+    bg: '#040408',
     tag: 'Active Mandate · Chandigarh · ₹70 Cr · Seller Mandated',
     h1a: 'Hotel Rajshree',
     h1b: '& Spa.',
@@ -27,9 +28,10 @@ const SLIDES = [
     cta1: { text: 'View This Mandate', href: '/listings/hotel-rajshree-chandigarh' },
     cta2: { text: 'Submit Enquiry', href: '/contact' },
     img: 'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/Hotel-Rajshree-5-scaled-e1765525431558.webp',
+    label: 'Hospitality Asset Sale',
   },
   {
-    bg: 'linear-gradient(135deg,#040a04 0%,#060f08 100%)',
+    bg: '#040408',
     tag: 'Heritage Asset · Kasauli · ₹45 Cr · ITC WelcomHeritage',
     h1a: 'WelcomHeritage',
     h1b: 'Santa Roza.',
@@ -38,9 +40,10 @@ const SLIDES = [
     cta1: { text: 'View This Mandate', href: '/listings/welcomheritage-santa-roza-kasauli' },
     cta2: { text: 'Submit EOI', href: '/contact' },
     img: 'https://www.welcomheritagehotels.in/app/uploaded_files/hotel_gallery/-web%20Banner%20245527.jpg',
+    label: 'Heritage Hospitality',
   },
   {
-    bg: 'linear-gradient(135deg,#080404 0%,#140808 100%)',
+    bg: '#040408',
     tag: 'Mountain Resort · Chail, HP · ₹30 Cr · Owner Direct',
     h1a: 'Maple Resort',
     h1b: 'Chail.',
@@ -49,6 +52,7 @@ const SLIDES = [
     cta1: { text: 'View This Mandate', href: '/listings/maple-resort-chail' },
     cta2: { text: 'Submit EOI', href: '/contact' },
     img: 'https://www.mapleresorts.in/img/about/new-right1.jpg',
+    label: 'Mountain Boutique Resort',
   },
 ]
 
@@ -60,405 +64,563 @@ app.get('/', (c) => {
   <div class="car-track">
     ${SLIDES.map((s, i) => `
     <div class="car-slide${i === 0 ? ' on' : ''}">
-      <!-- Background image with Ken Burns -->
-      <div class="car-bg" style="background-image:url('${s.img}');background-color:${s.bg.includes('#')?s.bg.split(' ').find((x:string)=>x.startsWith('#')):'#060606'};"></div>
-      <!-- Dark cinematic overlay -->
-      <div style="position:absolute;inset:0;background:linear-gradient(105deg,rgba(4,4,8,.88) 0%,rgba(4,4,8,.6) 55%,rgba(4,4,8,.2) 100%);pointer-events:none;"></div>
-      <!-- Gold grid overlay -->
-      <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.04) 1px,transparent 1px);background-size:72px 72px;pointer-events:none;"></div>
-      <div class="car-ov"></div>
+      <!-- Full-bleed background with Ken Burns -->
+      <div class="car-bg" style="background-image:url('${s.img}');background-color:${s.bg};"></div>
+      <!-- Cinematic layered overlays -->
+      <div class="car-ov-main"></div>
+      <div class="car-ov-btm"></div>
+      <div class="car-ov-gold"></div>
+      <!-- Gold grid texture -->
+      <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.025) 1px,transparent 1px);background-size:88px 88px;pointer-events:none;"></div>
+
+      <!-- Slide body -->
       <div class="car-body">
         <div class="wrap" style="width:100%;">
-          <div class="s-txt" style="max-width:700px;">
-            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;">
-              <div style="width:36px;height:1.5px;background:var(--gold);"></div>
-              <span class="eyebrow">${s.tag}</span>
+          <div style="max-width:760px;">
+
+            <!-- Tag line — slides in from left -->
+            <div class="s-tag" style="display:flex;align-items:center;gap:.875rem;margin-bottom:2rem;">
+              <div style="width:36px;height:1px;background:linear-gradient(90deg,var(--gold),var(--gold-lt));flex-shrink:0;"></div>
+              <span style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);">${s.tag}</span>
             </div>
-            <h1 class="h1" style="margin-bottom:1.5rem;">
-              ${s.h1a}<br>
-              <em style="font-style:italic;color:var(--gold);">${s.h1b}</em><br>
-              <span style="font-size:.58em;font-weight:300;color:rgba(255,255,255,.5);">${s.h1c}</span>
-            </h1>
-            <p class="lead-lt" style="max-width:560px;margin-bottom:2.25rem;">${s.sub}</p>
-            <div style="display:flex;flex-wrap:wrap;gap:.875rem;">
-              <a href="${s.cta1.href}" class="btn btn-g">${s.cta1.text}</a>
-              <a href="${s.cta2.href}" class="btn btn-ghost">${s.cta2.text}</a>
+
+            <!-- Display headline -->
+            <div class="s-txt">
+              <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:clamp(3.4rem,7.5vw,7rem);line-height:1.01;color:#fff;letter-spacing:-.025em;font-weight:400;margin-bottom:1.75rem;">
+                ${s.h1a}<br>
+                <em style="font-style:italic;color:var(--gold);display:inline-block;position:relative;">${s.h1b}<span style="position:absolute;bottom:-.15em;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-lt),transparent);opacity:.5;"></span></em><br>
+                <span style="font-size:.48em;font-weight:300;color:rgba(255,255,255,.42);letter-spacing:-.01em;">${s.h1c}</span>
+              </h1>
+              <p style="font-size:1.05rem;line-height:1.9;color:rgba(255,255,255,.62);max-width:560px;margin-bottom:2.5rem;font-weight:400;">${s.sub}</p>
             </div>
+
+            <!-- CTAs -->
+            <div class="s-cta" style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
+              <a href="${s.cta1.href}" class="btn btn-g" style="min-width:200px;justify-content:center;">${s.cta1.text}</a>
+              <a href="${s.cta2.href}" class="btn btn-ghost" style="min-width:160px;justify-content:center;">${s.cta2.text}</a>
+            </div>
+
           </div>
         </div>
+      </div>
+
+      <!-- Slide label — bottom right -->
+      <div style="position:absolute;bottom:3.5rem;right:2.5rem;z-index:3;display:flex;flex-direction:column;align-items:flex-end;gap:.35rem;">
+        <div style="width:1px;height:40px;background:linear-gradient(180deg,transparent,rgba(184,150,12,.5));margin-left:auto;"></div>
+        <span style="font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.3);">${s.label}</span>
       </div>
     </div>
     `).join('')}
   </div>
 
+  <!-- Controls -->
   <div class="car-ct"></div>
-  <button class="car-arr car-prev"><i class="fas fa-chevron-left"></i></button>
-  <button class="car-arr car-next"><i class="fas fa-chevron-right"></i></button>
-  <div class="car-dots">
-    ${SLIDES.map((_,i) => `<button class="c-dot${i===0?' on':''}"></button>`).join('')}
+  <button class="car-arr car-prev" aria-label="Previous slide"><i class="fas fa-chevron-left"></i></button>
+  <button class="car-arr car-next" aria-label="Next slide"><i class="fas fa-chevron-right"></i></button>
+  <div class="car-dots" role="tablist">
+    ${SLIDES.map((_,i) => `<button class="c-dot${i===0?' on':''}" role="tab" aria-label="Go to slide ${i+1}"></button>`).join('')}
   </div>
-  <div class="car-pb"></div>
+  <div class="car-pb" aria-hidden="true"></div>
 
-  <div style="position:absolute;bottom:2rem;right:2rem;z-index:10;display:flex;align-items:center;gap:.5rem;opacity:.35;">
-    <span style="font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:#fff;">Scroll</span>
-    <i class="fas fa-arrow-down" style="font-size:.6rem;color:var(--gold);animation:bounce 2s infinite;"></i>
+  <!-- Scroll hint -->
+  <div style="position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:.5rem;">
+    <span style="font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.25);">Scroll</span>
+    <div style="width:1px;height:32px;background:linear-gradient(180deg,rgba(184,150,12,.4),transparent);animation:pulse-line 2s ease-in-out infinite;"></div>
   </div>
 </div>
-<style>@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}</style>
+<style>
+@keyframes pulse-line{0%,100%{opacity:.3;transform:scaleY(.8)}50%{opacity:.8;transform:scaleY(1)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+</style>
 
-<!-- ══ GOLD TICKER ════════════════════════════════════════════════════════ -->
-<div class="ticker">
+<!-- ══ GOLD SERVICE TICKER ═══════════════════════════════════════════════ -->
+<div class="ticker" role="marquee" aria-label="India Gully services">
   <div class="ticker-tr">
-    ${['Real Estate Advisory','Retail Leasing Strategy','Hotel Management','Entertainment Advisory','Debt & Special Situations','HORECA Solutions','Transaction Advisory','Brand On-Boarding','Feasibility Studies','Project Management','Asset Management','Greenfield Hotels','Mall Leasing','FF&E Procurement','₹8,815 Cr+ Pipeline','15+ Hotel Projects','30+ Retail Brands'].map(t=>`<span style="font-size:.66rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(0,0,0,.8);padding:0 2.25rem;">${t}</span><span style="color:rgba(0,0,0,.3);font-size:.5rem;">◆</span>`).join('')}
-    ${['Real Estate Advisory','Retail Leasing Strategy','Hotel Management','Entertainment Advisory','Debt & Special Situations','HORECA Solutions','Transaction Advisory','Brand On-Boarding','Feasibility Studies','Project Management','Asset Management','Greenfield Hotels','Mall Leasing','FF&E Procurement','₹8,815 Cr+ Pipeline','15+ Hotel Projects','30+ Retail Brands'].map(t=>`<span style="font-size:.66rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(0,0,0,.8);padding:0 2.25rem;">${t}</span><span style="color:rgba(0,0,0,.3);font-size:.5rem;">◆</span>`).join('')}
+    ${[
+      'Real Estate Advisory','Transaction Advisory','Retail Leasing Strategy',
+      'Hotel Management Advisory','Entertainment Destinations','Debt & Special Situations',
+      'HORECA Solutions','Brand On-Boarding','Financial Feasibility','Project Management',
+      'Asset Management','Greenfield Hotels','Mall Leasing','FF&E Procurement',
+      '₹8,815 Cr+ Pipeline','15+ Hotel Projects','30+ Retail Brands','Pan-India Presence'
+    ].map(t=>`<span style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.75);padding:0 2.5rem;">${t}</span><span style="color:rgba(0,0,0,.25);font-size:.45rem;flex-shrink:0;">◆</span>`).join('')}
+    ${[
+      'Real Estate Advisory','Transaction Advisory','Retail Leasing Strategy',
+      'Hotel Management Advisory','Entertainment Destinations','Debt & Special Situations',
+      'HORECA Solutions','Brand On-Boarding','Financial Feasibility','Project Management',
+      'Asset Management','Greenfield Hotels','Mall Leasing','FF&E Procurement',
+      '₹8,815 Cr+ Pipeline','15+ Hotel Projects','30+ Retail Brands','Pan-India Presence'
+    ].map(t=>`<span style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.75);padding:0 2.5rem;">${t}</span><span style="color:rgba(0,0,0,.25);font-size:.45rem;flex-shrink:0;">◆</span>`).join('')}
   </div>
 </div>
 
-<!-- ══ STATS BAR ══════════════════════════════════════════════════════════ -->
-<div class="sec-wh" style="padding:3.5rem 0;border-bottom:1px solid var(--border);" id="homeStatsSection">
-  <div class="wrap">
-    <div id="homeStats">
-      ${[
-        { n:'₹10,000 Cr+', l:'Advisory Pipeline' },
-        { n:'15+',         l:'Hotel Projects' },
-        { n:'30+',         l:'Retail Brand Partners' },
-        { n:'20+',         l:'Hospitality Brands' },
-        { n:'Pan-India',   l:'Operations Reach' },
-      ].map((s) => `
-      <div class="home-stat-cell">
-        <div class="stat-n count-up" data-target="${s.n}">${s.n}</div>
-        <div style="font-size:.66rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-top:.45rem;">${s.l}</div>
-      </div>`).join('')}
-    </div>
+<!-- ══ STATS BAR ════════════════════════════════════════════════════════ -->
+<div style="position:relative;z-index:1;" id="homeStatsSection">
+  <div id="homeStats">
+    ${[
+      { n:'₹10,000 Cr+', l:'Advisory Pipeline',      sub:'Total active mandates', icon:'chart-line' },
+      { n:'15+',         l:'Hotel Projects',          sub:'Pan-India portfolio',   icon:'hotel' },
+      { n:'30+',         l:'Retail Brand Partners',   sub:'Leasing & franchise',   icon:'store' },
+      { n:'20+',         l:'Hospitality Brands',      sub:'Management & advisory', icon:'concierge-bell' },
+      { n:'Pan-India',   l:'Operations Reach',        sub:'Tier 1, 2 & 3 cities',  icon:'map-marked-alt' },
+    ].map((s) => `
+    <div class="home-stat-cell">
+      <div style="display:flex;align-items:center;justify-content:center;gap:.625rem;margin-bottom:.625rem;">
+        <i class="fas fa-${s.icon}" style="font-size:.7rem;color:var(--gold);opacity:.7;"></i>
+        <div class="stat-n count-up" data-target="${s.n}" style="font-size:2.5rem;">${s.n}</div>
+      </div>
+      <div style="font-size:.65rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);margin-bottom:.25rem;">${s.l}</div>
+      <div style="font-size:.68rem;color:var(--ink-muted);">${s.sub}</div>
+    </div>`).join('')}
   </div>
 </div>
+<!-- gold rule separator -->
+<div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold-line),transparent);"></div>
 
-<!-- ══ WHY INDIA GULLY ══════════════════════════════════════════════════════ -->
-<div class="sec-pc" style="padding-top:4.5rem;padding-bottom:4.5rem;">
+<!-- ══ WHY INDIA GULLY ══════════════════════════════════════════════════ -->
+<div class="sec-pc" style="padding-top:7rem;padding-bottom:7rem;">
   <div class="wrap">
-    <div style="text-align:center;max-width:640px;margin:0 auto 3rem;">
-      <div class="gr-c"></div>
-      <p class="eyebrow" style="margin-bottom:.75rem;">Why India Gully</p>
-      <h2 class="h2">The Advisory Partner<br>Built for India</h2>
-      <p class="lead" style="margin-top:1rem;">20+ years of boots-on-the-ground execution across every vertical — not just strategy, but delivery.</p>
-    </div>
-    <div class="why-grid">
-      ${[
-        { icon:'trophy',         color:'#B8960C', title:'₹2,000+ Cr Transacted',       desc:'Landmark transactions including joint advisory with EY for the ₹1,350 Cr+ divestment of Entertainment City Limited.' },
-        { icon:'hotel',          color:'#065F46', title:'15+ Hotels On-Boarded',        desc:'Hotel brand selection, pre-opening management and PMC across Marriott, Radisson, Cygnett, Regenta and more.' },
-        { icon:'store',          color:'#1A3A6B', title:'1,40,000+ Sq Ft Leased',       desc:'Premium F&B and retail leasing at Gardens Galleria, Hyatt Andaz, AIPL Joy Street and Entertainment City.' },
-        { icon:'utensils',       color:'#B8960C', title:'HORECA to 15+ Properties',     desc:'End-to-end supply of FF&E, OS&E, kitchen equipment and amenities for Mahindra Holidays, Accor, CGH Earth and more.' },
-        { icon:'handshake',      color:'#7C3AED', title:'Co-Advisory with EY & CBRE',   desc:'Trusted by India\'s top professional service firms as co-advisor on complex, multi-party institutional transactions.' },
-        { icon:'map-marked-alt', color:'#B8960C', title:'Pan-India Presence',           desc:'Active mandates in Delhi NCR, Chandigarh, Kasauli, Chail, Jaipur, Noida, Gurugram, Bengaluru, Mumbai and Kerala.' },
-      ].map((w,wi) => `
-      <div class="why-card reveal" style="animation-delay:${wi*0.08}s;">
-        <div style="width:48px;height:48px;background:${w.color==='#B8960C'?'rgba(184,150,12,.1)':w.color==='#065F46'?'rgba(6,95,70,.1)':w.color==='#1A3A6B'?'rgba(26,58,107,.1)':w.color==='#7C3AED'?'rgba(124,58,237,.1)':'rgba(184,150,12,.1)'};display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
-          <i class="fas fa-${w.icon}" style="color:${w.color};font-size:1rem;"></i>
-        </div>
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.05rem;color:var(--ink);margin-bottom:.5rem;">${w.title}</h3>
-        <p class="body">${w.desc}</p>
-      </div>`).join('')}
-    </div>
-  </div>
-</div>
 
-<!-- ══ FEATURED MANDATES ══════════════════════════════════════════════════ -->
-<div class="sec-pd" style="padding-top:5rem;">
-  <div class="wrap">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3.5rem;flex-wrap:wrap;gap:1.5rem;">
+    <!-- Section header -->
+    <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:5rem;align-items:start;margin-bottom:4.5rem;" class="mob-stack">
       <div>
         <div class="gr"></div>
-        <p class="eyebrow" style="margin-bottom:.75rem;">Active Mandates</p>
-        <h2 class="h2" style="max-width:460px;">Investment Opportunities<br>of Institutional Grade</h2>
+        <p class="eyebrow" style="margin-bottom:1rem;">Why India Gully</p>
+        <h2 class="h2">The Advisory Partner<br>Built for India</h2>
       </div>
-      <div style="text-align:right;">
-        <p class="body" style="max-width:360px;margin-bottom:1.25rem;">Exclusive mandates across Real Estate, Entertainment, Hospitality and Retail. All subject to NDA.</p>
-        <a href="/listings" class="btn btn-dk">View All 8 Mandates</a>
+      <div style="display:flex;align-items:center;padding-top:1rem;">
+        <div>
+          <p class="lead" style="margin-bottom:1.5rem;">20+ years of boots-on-the-ground execution across every vertical — not just strategy, but delivery. We are investors' most trusted partner in India's complex advisory landscape.</p>
+          <div style="width:48px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);"></div>
+        </div>
       </div>
     </div>
 
-    <!-- Featured 3-column grid with images -->
-    <div id="featuredMandates">
-      ${LISTINGS.filter((l: any) => l.highlight).slice(0,3).map((l: any) => {
-        const img = l.images?.[0] || ''
-        const ss = { active: { bg:'rgba(184,150,12,.12)', text:'#B8960C', border:'rgba(184,150,12,.3)' }, negotiation: { bg:'rgba(37,99,235,.1)', text:'#1d4ed8', border:'rgba(37,99,235,.25)' }, feasibility: { bg:'rgba(22,163,74,.08)', text:'#15803d', border:'rgba(22,163,74,.2)' } }[l.statusType] || { bg:'rgba(184,150,12,.12)', text:'#B8960C', border:'rgba(184,150,12,.3)' }
-        return `
-      <a href="/listings/${l.id}" style="display:block;background:#fff;border:1px solid var(--border);overflow:hidden;transition:all .3s;text-decoration:none;" onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 16px 50px rgba(0,0,0,.1)';var im=this.querySelector('img');if(im)im.style.transform='scale(1.04)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none';var im=this.querySelector('img');if(im)im.style.transform='scale(1)'">
-        <div style="height:230px;overflow:hidden;position:relative;background:#1a1a1a;">
-          ${img
-            ? `<img src="${img}" alt="${l.title}" style="width:100%;height:100%;object-fit:cover;transition:transform 6s ease;" loading="lazy">`
-            : `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;"><i class="fas fa-lock" style="color:#B8960C;font-size:1.75rem;opacity:.8;"></i><span style="font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);">Images Under NDA</span></div>`
-          }
-          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,rgba(0,0,0,.1) 60%,transparent 100%);"></div>
-          <div style="position:absolute;top:1rem;left:1rem;">
-            <span style="background:${l.sectorColor};color:#fff;font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.25rem .65rem;">${l.sector}</span>
-          </div>
-          <div style="position:absolute;bottom:1rem;left:1rem;">
-            <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:#fff;line-height:1;">${l.value}</div>
-          </div>
+    <!-- Why cards grid -->
+    <div class="why-grid">
+      ${[
+        { icon:'trophy',         color:'#B8960C', bg:'rgba(184,150,12,.08)', border:'rgba(184,150,12,.18)', title:'₹2,000+ Cr Transacted',       desc:'Landmark transactions including joint advisory with EY for the ₹1,350 Cr+ divestment of Entertainment City Limited — India\'s largest entertainment sector transaction.' },
+        { icon:'hotel',          color:'#065F46', bg:'rgba(6,95,70,.08)',    border:'rgba(6,95,70,.18)',    title:'15+ Hotels On-Boarded',        desc:'Hotel brand selection, pre-opening management and PMC across Marriott, Radisson, Cygnett, Regenta and more — from site selection to first check-in.' },
+        { icon:'store',          color:'#1A3A6B', bg:'rgba(26,58,107,.08)', border:'rgba(26,58,107,.18)',  title:'1,40,000+ Sq Ft Leased',       desc:'Premium F&B and retail leasing at Gardens Galleria, Hyatt Andaz, AIPL Joy Street and Entertainment City — India\'s top retail destinations.' },
+        { icon:'utensils',       color:'#B8960C', bg:'rgba(184,150,12,.08)', border:'rgba(184,150,12,.18)', title:'HORECA to 15+ Properties',     desc:'End-to-end supply of FF&E, OS&E, kitchen equipment and amenities for Mahindra Holidays, Accor, CGH Earth and more across India.' },
+        { icon:'handshake',      color:'#7C3AED', bg:'rgba(124,58,237,.08)', border:'rgba(124,58,237,.18)', title:'Co-Advisory with EY & CBRE',   desc:'Trusted by India\'s top professional service firms as co-advisor on complex, multi-party institutional transactions requiring deep sector expertise.' },
+        { icon:'map-marked-alt', color:'#B8960C', bg:'rgba(184,150,12,.08)', border:'rgba(184,150,12,.18)', title:'Pan-India Presence',           desc:'Active mandates in Delhi NCR, Chandigarh, Kasauli, Chail, Jaipur, Noida, Gurugram, Bengaluru, Mumbai and Kerala — Tier 1 to 3 markets.' },
+      ].map((w, wi) => `
+      <div class="why-card reveal" style="transition-delay:${wi*0.07}s;">
+        <div class="why-icon" style="background:${w.bg};border:1px solid ${w.border};">
+          <i class="fas fa-${w.icon}" style="color:${w.color};font-size:1.1rem;"></i>
         </div>
-        <div style="padding:1.5rem;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
-            <span style="background:${ss.bg};color:${ss.text};border:1px solid ${ss.border};font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .6rem;">${l.status}</span>
-            <span style="font-size:.7rem;color:var(--ink-muted);display:flex;align-items:center;gap:.3rem;"><i class="fas fa-map-marker-alt" style="color:var(--gold);font-size:.55rem;"></i>${l.locationShort}</span>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.15rem;color:var(--ink);margin-bottom:.6rem;line-height:1.25;">${w.title}</h3>
+        <p style="font-size:.875rem;line-height:1.8;color:var(--ink-soft);">${w.desc}</p>
+        <div style="width:28px;height:1px;background:linear-gradient(90deg,${w.color},transparent);margin-top:1.25rem;opacity:.6;"></div>
+      </div>`).join('')}
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ FEATURED MANDATES ═══════════════════════════════════════════════ -->
+<div class="sec-dk" style="position:relative;overflow:hidden;padding-top:7rem;padding-bottom:7rem;">
+  <!-- Background texture -->
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.03) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 100%,rgba(184,150,12,.04) 0%,transparent 60%);pointer-events:none;"></div>
+
+  <div class="wrap" style="position:relative;">
+
+    <!-- Section header -->
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:4rem;flex-wrap:wrap;gap:2rem;">
+      <div>
+        <div class="gr-lt"></div>
+        <p class="eyebrow-lt" style="margin-bottom:1rem;">Active Mandates</p>
+        <h2 class="h2-lt" style="max-width:500px;">Investment Opportunities<br>of Institutional Grade</h2>
+      </div>
+      <div style="text-align:right;max-width:360px;">
+        <p style="font-size:.875rem;line-height:1.8;color:rgba(255,255,255,.45);margin-bottom:1.5rem;">Exclusive mandates across Hospitality, Real Estate, Heritage & Mixed-Use. All strictly subject to NDA.</p>
+        <a href="/listings" class="btn btn-ghost-g">View All 8 Mandates <i class="fas fa-arrow-right" style="font-size:.6rem;margin-left:.25rem;"></i></a>
+      </div>
+    </div>
+
+    <!-- Featured 3-column mandate cards -->
+    <div id="featuredMandates">
+      ${LISTINGS.filter((l: any) => l.highlight).slice(0,3).map((l: any, idx: number) => {
+        const img = l.images?.[0] || ''
+        const ss = { active: { bg:'rgba(184,150,12,.15)', text:'#D4AE2A', border:'rgba(184,150,12,.35)' }, negotiation: { bg:'rgba(59,130,246,.12)', text:'#60a5fa', border:'rgba(59,130,246,.3)' }, feasibility: { bg:'rgba(22,163,74,.1)', text:'#4ade80', border:'rgba(22,163,74,.25)' } }[l.statusType] || { bg:'rgba(184,150,12,.15)', text:'#D4AE2A', border:'rgba(184,150,12,.35)' }
+        return `
+      <a href="/listings/${l.id}"
+         class="ed-card reveal"
+         style="display:block;text-decoration:none;transition-delay:${idx*0.1}s;"
+         onmouseover="this.style.borderColor='rgba(184,150,12,.4)';this.style.boxShadow='0 24px 70px rgba(0,0,0,.5)';this.style.transform='translateY(-6px)'"
+         onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.boxShadow='none';this.style.transform='translateY(0)'"
+         style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);overflow:hidden;transition:all .3s cubic-bezier(.4,0,.2,1);">
+
+        <!-- Image area -->
+        <div class="ed-card-img" style="height:248px;background:#0a0a12;position:relative;">
+          ${img
+            ? `<img src="${img}" alt="${l.title}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">`
+            : `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;background:linear-gradient(135deg,#0a0a14 0%,#141428 100%);">
+                <div style="width:60px;height:60px;background:rgba(184,150,12,.1);border:1px solid rgba(184,150,12,.25);display:flex;align-items:center;justify-content:center;">
+                  <i class="fas fa-lock" style="color:var(--gold);font-size:1.15rem;"></i>
+                </div>
+                <div style="text-align:center;">
+                  <div style="font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.4);">Images Under NDA</div>
+                  <div style="font-size:.58rem;color:rgba(255,255,255,.2);margin-top:.25rem;">Available post NDA execution</div>
+                </div>
+              </div>`
+          }
+          <!-- Gradient overlay -->
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8) 0%,rgba(0,0,0,.2) 50%,transparent 100%);"></div>
+
+          <!-- Sector pill -->
+          <div style="position:absolute;top:1.25rem;left:1.25rem;">
+            <span style="background:${l.sectorColor};color:#fff;font-size:.57rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.28rem .75rem;">${l.sector}</span>
           </div>
-          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.15rem;color:var(--ink);line-height:1.25;margin-bottom:.35rem;">${l.title}</h3>
-          <p style="font-size:.72rem;color:var(--gold);margin-bottom:.875rem;">${l.subtitle}</p>
-          <p style="font-size:.82rem;color:var(--ink-muted);line-height:1.7;margin-bottom:1.1rem;">${l.desc}</p>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:.875rem;border-top:1px solid var(--border);">
-            <span style="font-size:.72rem;color:var(--gold);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">View Mandate Details</span>
-            <i class="fas fa-arrow-right" style="color:var(--gold);font-size:.65rem;"></i>
+
+          <!-- Value overlay on image bottom -->
+          ${img ? `<div style="position:absolute;bottom:1.25rem;left:1.25rem;right:1.25rem;display:flex;align-items:flex-end;justify-content:space-between;">
+            <div>
+              <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.1rem;color:#fff;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.6);">${l.value}</div>
+              ${l.valueUSD ? `<div style="font-size:.6rem;color:rgba(255,255,255,.5);letter-spacing:.08em;">${l.valueUSD}</div>` : ''}
+            </div>
+            ${l.nda ? `<div style="background:rgba(0,0,0,.45);backdrop-filter:blur(6px);padding:.2rem .55rem;display:flex;align-items:center;gap:.3rem;border:1px solid rgba(184,150,12,.25);">
+              <i class="fas fa-lock" style="font-size:.5rem;color:var(--gold);"></i>
+              <span style="font-size:.58rem;color:rgba(255,255,255,.65);letter-spacing:.06em;">NDA</span>
+            </div>` : ''}
+          </div>` : ''}
+        </div>
+
+        <!-- Content -->
+        <div style="padding:1.75rem;">
+          <!-- Status + location -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;">
+            <span style="background:${ss.bg};color:${ss.text};border:1px solid ${ss.border};font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.22rem .65rem;">${l.status}</span>
+            <span style="font-size:.68rem;color:rgba(255,255,255,.4);display:flex;align-items:center;gap:.3rem;"><i class="fas fa-map-marker-alt" style="color:var(--gold);font-size:.55rem;"></i>${l.locationShort}</span>
+          </div>
+
+          <!-- Title -->
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;line-height:1.2;margin-bottom:.35rem;">${l.title}</h3>
+          <p style="font-size:.72rem;color:var(--gold);font-weight:500;letter-spacing:.04em;margin-bottom:1rem;">${l.subtitle}</p>
+
+          <!-- Description -->
+          <p style="font-size:.825rem;color:rgba(255,255,255,.45);line-height:1.75;margin-bottom:1.25rem;">${l.desc}</p>
+
+          <!-- Highlights row -->
+          <div style="display:flex;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+            ${l.highlights.slice(0,2).map((h: any) => `
+            <div style="flex:1;min-width:120px;padding:.75rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);">
+              <div style="font-size:.58rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.3rem;">${h.label}</div>
+              <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--gold);line-height:1;">${h.value}</div>
+            </div>`).join('')}
+          </div>
+
+          <!-- CTA row -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.1rem;border-top:1px solid rgba(255,255,255,.07);">
+            <span style="font-size:.68rem;color:var(--gold);font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:.4rem;">
+              <i class="fas fa-file-signature" style="font-size:.6rem;"></i>View Mandate
+            </span>
+            <div style="width:28px;height:28px;background:rgba(184,150,12,.12);border:1px solid rgba(184,150,12,.25);display:flex;align-items:center;justify-content:center;transition:all .22s;" onmouseover="this.style.background='var(--gold)';this.style.borderColor='var(--gold)'" onmouseout="this.style.background='rgba(184,150,12,.12)';this.style.borderColor='rgba(184,150,12,.25)'">
+              <i class="fas fa-arrow-right" style="font-size:.55rem;color:var(--gold);pointer-events:none;"></i>
+            </div>
           </div>
         </div>
       </a>`
       }).join('')}
     </div>
 
-    <!-- Remaining mandates as compact list -->
-    <div style="background:#fff;border:1px solid var(--border);">
-      <div style="padding:1rem 1.5rem;background:var(--ink);display:flex;align-items:center;justify-content:space-between;">
-        <p style="font-size:.65rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);">More Active Mandates</p>
-        <a href="/listings" style="font-size:.68rem;color:var(--gold);font-weight:600;letter-spacing:.08em;text-transform:uppercase;">View All →</a>
+    <!-- Remaining mandates list -->
+    <div style="border:1px solid rgba(255,255,255,.07);overflow:hidden;margin-top:.25rem;">
+      <div style="padding:1.1rem 1.75rem;background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06);">
+        <div style="display:flex;align-items:center;gap:.75rem;">
+          <i class="fas fa-folder-open" style="color:var(--gold);font-size:.75rem;"></i>
+          <span style="font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);">More Active Mandates</span>
+        </div>
+        <a href="/listings" style="font-size:.65rem;color:var(--gold);font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:.4rem;">View All <i class="fas fa-arrow-right" style="font-size:.55rem;"></i></a>
       </div>
       ${LISTINGS.filter((l: any) => !l.highlight).map((l: any) => `
-      <a href="/listings/${l.id}" style="display:flex;align-items:center;gap:1.25rem;padding:1.1rem 1.5rem;border-bottom:1px solid var(--border);transition:background .2s;text-decoration:none;" onmouseover="this.style.background='var(--parch)'" onmouseout="this.style.background='transparent'">
+      <a href="/listings/${l.id}"
+         style="display:flex;align-items:center;gap:1.5rem;padding:1.1rem 1.75rem;border-bottom:1px solid rgba(255,255,255,.04);text-decoration:none;transition:background .2s;"
+         onmouseover="this.style.background='rgba(255,255,255,.03)'" onmouseout="this.style.background='transparent'">
         ${l.images?.[0]
-            ? `<div style="width:56px;height:44px;overflow:hidden;flex-shrink:0;background:#1a1a1a;"><img src="${l.images[0]}" alt="${l.title}" style="width:100%;height:100%;object-fit:cover;" loading="lazy"></div>`
-            : `<div style="width:56px;height:44px;overflow:hidden;flex-shrink:0;background:#111;display:flex;align-items:center;justify-content:center;"><i class="fas fa-lock" style="color:#B8960C;font-size:.75rem;"></i></div>`
-          }
+          ? `<div style="width:60px;height:46px;overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.08);"><img src="${l.images[0]}" alt="${l.title}" style="width:100%;height:100%;object-fit:cover;" loading="lazy"></div>`
+          : `<div style="width:60px;height:46px;flex-shrink:0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;"><i class="fas fa-lock" style="color:rgba(184,150,12,.5);font-size:.7rem;"></i></div>`
+        }
         <div style="flex:1;min-width:0;">
-          <div style="font-size:.875rem;font-weight:600;color:var(--ink);margin-bottom:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${l.title}</div>
-          <div style="font-size:.72rem;color:var(--ink-muted);">${l.locationShort} · ${l.sector}</div>
+          <div style="font-size:.875rem;font-weight:600;color:#fff;margin-bottom:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${l.title}</div>
+          <div style="font-size:.7rem;color:rgba(255,255,255,.35);">${l.locationShort} · ${l.sector}</div>
         </div>
         <div style="flex-shrink:0;text-align:right;">
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--gold);">${l.value}</div>
-          <div style="font-size:.62rem;color:var(--ink-faint);">${l.status}</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.05rem;color:var(--gold);">${l.value}</div>
+          <div style="font-size:.6rem;color:rgba(255,255,255,.3);letter-spacing:.06em;margin-top:.1rem;">${l.status}</div>
         </div>
+        <i class="fas fa-chevron-right" style="font-size:.55rem;color:rgba(255,255,255,.2);flex-shrink:0;"></i>
       </a>`).join('')}
     </div>
 
-    <div style="text-align:center;margin-top:2rem;">
-      <p style="font-size:.75rem;color:var(--ink-muted);margin-bottom:.875rem;">All mandates strictly by NDA · Information Memorandum available to qualified investors & family offices</p>
+    <!-- NDA disclaimer -->
+    <div style="text-align:center;margin-top:2rem;padding:1.25rem;border:1px solid rgba(184,150,12,.1);background:rgba(184,150,12,.03);">
+      <p style="font-size:.72rem;color:rgba(255,255,255,.35);line-height:1.75;">
+        <i class="fas fa-shield-alt" style="color:var(--gold);margin-right:.5rem;font-size:.65rem;"></i>
+        All mandates strictly by Mutual NDA · Information Memoranda available to qualified investors, family offices &amp; institutional buyers upon request
+      </p>
     </div>
+
   </div>
 </div>
 
-<!-- ══ ADVISORY VERTICALS ═════════════════════════════════════════════════ -->
-<div class="sec-wh">
+<!-- ══ ADVISORY VERTICALS ═════════════════════════════════════════════ -->
+<div class="sec-wh" style="padding-top:7rem;padding-bottom:7rem;">
   <div class="wrap">
-    <div style="display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start;margin-bottom:3.5rem;" class="mob-stack">
+
+    <!-- Section header -->
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:5rem;align-items:start;margin-bottom:4.5rem;" class="mob-stack">
       <div>
         <div class="gr"></div>
-        <p class="eyebrow" style="margin-bottom:.75rem;">Advisory Verticals</p>
+        <p class="eyebrow" style="margin-bottom:1rem;">Advisory Verticals</p>
         <h2 class="h2">Six Verticals.<br>One Trusted Partner.</h2>
       </div>
-      <div style="display:flex;align-items:flex-end;justify-content:flex-end;">
-        <p class="lead" style="max-width:420px;">From strategy to execution, India Gully delivers institutional-grade advisory across every sector it operates in.</p>
+      <div style="display:flex;align-items:flex-end;padding-bottom:.25rem;">
+        <p class="lead" style="max-width:480px;">From strategy to execution, India Gully delivers institutional-grade advisory across every sector it operates in. Deep expertise. Proven results.</p>
       </div>
     </div>
+
+    <!-- Vertical grid -->
     <div class="vg">
-      ${VERTICALS.map(v => `
-      <div class="vg-cell" onclick="window.location='/services#${v.id}'">
-        <div style="font-size:2rem;margin-bottom:1.25rem;">${v.icon}</div>
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.15rem;color:var(--ink);margin-bottom:.6rem;">${v.name}</h3>
-        <p class="body" style="margin-bottom:1rem;">${v.desc}</p>
-        <div class="vg-arr">Explore <i class="fas fa-arrow-right" style="margin-left:.3rem;font-size:.65rem;"></i></div>
+      ${VERTICALS.map((v: any) => `
+      <div class="vg-cell" onclick="window.location='/services#${v.id}'" role="button" tabindex="0">
+        <div class="vg-icon">
+          <span style="font-size:1.35rem;">${v.icon}</span>
+        </div>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.2rem;color:var(--ink);margin-bottom:.65rem;line-height:1.2;">${v.name}</h3>
+        <p style="font-size:.875rem;line-height:1.8;color:var(--ink-soft);margin-bottom:1.1rem;">${v.desc}</p>
+        <div class="vg-arr" style="display:flex;align-items:center;gap:.5rem;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;">
+          Explore <i class="fas fa-arrow-right" style="font-size:.6rem;"></i>
+        </div>
       </div>`).join('')}
     </div>
+
   </div>
 </div>
 
-<!-- ══ THE INDIA GULLY DIFFERENCE ════════════════════════════════════════ -->
-<div class="sec-dk">
-  <div class="wrap">
-    <div style="text-align:center;max-width:640px;margin:0 auto 3.5rem;">
+<!-- ══ THE INDIA GULLY DIFFERENCE ════════════════════════════════════ -->
+<div class="sec-dk" style="position:relative;overflow:hidden;padding-top:7rem;padding-bottom:7rem;">
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.03) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;"></div>
+
+  <div class="wrap" style="position:relative;">
+    <div style="text-align:center;max-width:640px;margin:0 auto 4.5rem;">
       <div class="gr-c"></div>
-      <p class="eyebrow-lt" style="margin-bottom:.75rem;">Our Proposition</p>
+      <p class="eyebrow-lt" style="margin-bottom:1rem;">Our Proposition</p>
       <h2 class="h2-lt">The India Gully Difference</h2>
+      <p style="font-size:1rem;line-height:1.85;color:rgba(255,255,255,.45);margin-top:1.25rem;">What separates us from other advisory firms is not just depth of expertise — it is the way we stay committed from mandate inception to final delivery.</p>
     </div>
+
     <div class="diff-grid">
       ${[
-        { icon:'flag',      title:'India-Deep Expertise',    desc:'Born in India. We understand local markets, regulations, culture and consumer behaviour at granular depth across Tier 1, 2 and 3 cities.' },
-        { icon:'handshake', title:'20+ Brand Relationships', desc:'Deep relationships with every major hotel brand. We know which brand fits which project and navigate negotiations with authority.' },
-        { icon:'utensils',  title:'HORECA End-to-End',       desc:'One of the few consultants who also procure and supply, giving clients a single accountable partner from strategy to FF&E delivery.' },
-        { icon:'bolt',      title:'Execution-Led',           desc:'We stay involved through implementation, not just advisory. Turnkey delivery and hands-on project management is our differentiator.' },
-      ].map((d,i) => `
+        { icon:'flag',      n:'01', title:'India-Deep Expertise',    desc:'Born in India. We understand local markets, regulations, culture and consumer behaviour at granular depth across Tier 1, 2 and 3 cities.' },
+        { icon:'handshake', n:'02', title:'20+ Brand Relationships', desc:'Deep relationships with every major hotel brand. We know which brand fits which project and navigate negotiations with authority.' },
+        { icon:'utensils',  n:'03', title:'HORECA End-to-End',       desc:'One of the few consultants who also procure and supply, giving clients a single accountable partner from strategy to FF&E delivery.' },
+        { icon:'bolt',      n:'04', title:'Execution-Led',           desc:'We stay involved through implementation, not just advisory. Turnkey delivery and hands-on project management is our differentiator.' },
+      ].map((d) => `
       <div class="diff-cell">
-        <div style="width:44px;height:44px;border:1px solid rgba(184,150,12,.35);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;transition:background .22s;" onmouseover="this.style.background='var(--gold)'" onmouseout="this.style.background='transparent'">
-          <i class="fas fa-${d.icon}" style="color:var(--gold);font-size:.85rem;"></i>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:3.5rem;color:rgba(184,150,12,.08);line-height:1;margin-bottom:1.5rem;letter-spacing:-.05em;">${d.n}</div>
+        <div style="width:44px;height:44px;border:1px solid rgba(184,150,12,.3);display:flex;align-items:center;justify-content:center;margin-bottom:1.75rem;transition:all .25s;" onmouseover="this.style.background='var(--gold)';this.style.borderColor='var(--gold)'" onmouseout="this.style.background='transparent';this.style.borderColor='rgba(184,150,12,.3)'">
+          <i class="fas fa-${d.icon}" style="color:var(--gold);font-size:.85rem;pointer-events:none;"></i>
         </div>
-        <h3 class="h3-lt" style="font-size:1.1rem;margin-bottom:.75rem;">${d.title}</h3>
-        <p class="body-lt">${d.desc}</p>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;line-height:1.2;margin-bottom:.875rem;">${d.title}</h3>
+        <p style="font-size:.875rem;line-height:1.85;color:rgba(255,255,255,.42);">${d.desc}</p>
       </div>`).join('')}
     </div>
   </div>
 </div>
 
-<!-- ══ HOSPITALITY BRAND PARTNERS ════════════════════════════════════════ -->
-<div class="sec-wh" style="padding-top:5rem;padding-bottom:5rem;">
+<!-- ══ BRAND PARTNERS ═════════════════════════════════════════════════ -->
+<div class="sec-wh" style="padding-top:7rem;padding-bottom:7rem;">
   <div class="wrap">
-    <div style="text-align:center;max-width:600px;margin:0 auto 3rem;">
-      <div class="gr-c"></div>
-      <p class="eyebrow" style="margin-bottom:.75rem;">Hospitality Partners</p>
-      <h2 class="h2">Hotel Brands We<br>Work With</h2>
-      <p class="lead" style="margin-top:1rem;">India Gully holds active relationships with India's most prominent hospitality brands, from global chains to homegrown operators.</p>
-    </div>
 
-    <!-- Logo grid with fallback text logos -->
-    <div class="brand-grid" style="margin-bottom:2.5rem;">
-      ${HOSPITALITY_BRANDS.map((b: any) => `
-      <div style="background:#fff;padding:1.25rem .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90px;gap:.5rem;transition:background .2s;cursor:default;" onmouseover="this.style.background='var(--parch)'" onmouseout="this.style.background='#fff'">
-        <img src="${b.svg}" alt="${b.name}" style="width:100px;height:40px;object-fit:contain;display:block;"
-             onerror="this.onerror=null;this.src='';this.style.display='none';this.nextElementSibling.style.display='flex';">
-        <div style="display:none;width:100px;height:40px;background:${b.color};align-items:center;justify-content:center;border-radius:2px;">
-          <span style="font-size:.6rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff;text-align:center;padding:0 4px;">${b.name}</span>
+    <!-- Hospitality brands -->
+    <div style="margin-bottom:6rem;">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3.5rem;flex-wrap:wrap;gap:1.5rem;">
+        <div>
+          <div class="gr"></div>
+          <p class="eyebrow" style="margin-bottom:.875rem;">Hospitality Partners</p>
+          <h2 class="h2">Hotel Brands We<br>Work With</h2>
         </div>
-        <div style="font-size:.55rem;color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase;text-align:center;">${b.cat}</div>
-      </div>`).join('')}
-    </div>
-
-    <div style="text-align:center;">
-      <a href="/services#hospitality" class="btn btn-dko">Our Hospitality Practice</a>
-    </div>
-  </div>
-</div>
-
-<!-- ══ RETAIL BRAND PARTNERS ══════════════════════════════════════════════ -->
-<div class="sec-pd" style="padding-top:5rem;padding-bottom:5rem;">
-  <div class="wrap">
-    <div style="text-align:center;max-width:600px;margin:0 auto 3rem;">
-      <div class="gr-c"></div>
-      <p class="eyebrow" style="margin-bottom:.75rem;">Retail Partners</p>
-      <h2 class="h2">Retail Brands We<br>Advise & Place</h2>
-      <p class="lead" style="margin-top:1rem;">30+ active retail brand relationships spanning anchor tenants, fashion, food & beverage and entertainment across malls and mixed-use destinations.</p>
-    </div>
-
-    <div class="brand-grid" style="margin-bottom:2.5rem;">
-      ${RETAIL_BRANDS.map((b: any) => `
-      <div style="background:#fff;padding:1.25rem .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90px;gap:.5rem;transition:background .2s;cursor:default;" onmouseover="this.style.background='var(--parch)'" onmouseout="this.style.background='#fff'">
-        <img src="${b.svg}" alt="${b.name}" style="width:100px;height:40px;object-fit:contain;display:block;"
-             onerror="this.onerror=null;this.src='';this.style.display='none';this.nextElementSibling.style.display='flex';">
-        <div style="display:none;width:100px;height:40px;background:#1a1a1a;align-items:center;justify-content:center;border-radius:2px;">
-          <span style="font-size:.6rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff;text-align:center;padding:0 4px;">${b.name}</span>
+        <div style="max-width:380px;text-align:right;">
+          <p class="lead" style="font-size:.9375rem;margin-bottom:1.25rem;">Active relationships with India's most prominent hotel brands, from global chains to homegrown operators.</p>
+          <a href="/services#hospitality" class="btn btn-sm btn-dko">Our Hospitality Practice</a>
         </div>
-        <div style="font-size:.55rem;color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase;text-align:center;">${b.cat}</div>
-      </div>`).join('')}
-    </div>
-
-    <div style="text-align:center;">
-      <a href="/services#retail" class="btn btn-dko">Our Retail Practice</a>
-    </div>
-  </div>
-</div>
-
-<!-- ══ TRANSACTION ADVISORY PARTNERS ════════════════════════════════════ -->
-<div class="sec-wh" style="padding-top:5rem;padding-bottom:5rem;">
-  <div class="wrap">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;margin-bottom:3.5rem;">
-      <div>
-        <div class="gr"></div>
-        <p class="eyebrow" style="margin-bottom:.75rem;">Transaction Advisory</p>
-        <h2 class="h2">Our Advisory<br>Partners</h2>
-        <p class="lead" style="margin-top:1.25rem;">India Gully collaborates with globally recognised advisory and consulting firms, bringing institutional credibility, financial rigour and sector depth to complex mandates.</p>
       </div>
-      <div class="partners-grid">
-        ${ADVISORY_PARTNERS.slice(0,4).map((p: any) => `
-        <div style="border:1px solid var(--border);padding:1.5rem;text-align:center;background:#fff;transition:border-color .25s,box-shadow .25s;" onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 8px 24px rgba(0,0,0,.07)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
-          <div style="display:flex;align-items:center;justify-content:center;margin-bottom:.875rem;min-height:48px;">
-            <img src="${p.logo}" alt="${p.name}" style="max-width:130px;max-height:40px;width:auto;height:auto;object-fit:contain;display:block;"
-                 onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex'">
-            <div style="display:none;width:110px;height:40px;background:${p.color};align-items:center;justify-content:center;border-radius:2px;">
-              <span style="font-size:.75rem;font-weight:800;letter-spacing:.06em;color:${p.textColor || '#fff'};text-align:center;">${p.abbr}</span>
-            </div>
+
+      <div class="brand-grid">
+        ${HOSPITALITY_BRANDS.map((b: any) => `
+        <div class="brand-cell">
+          <img src="${b.svg}" alt="${b.name}" style="width:110px;height:42px;object-fit:contain;filter:grayscale(1) opacity(.55);transition:filter .3s;"
+               onmouseover="this.style.filter='grayscale(0) opacity(1)'" onmouseout="this.style.filter='grayscale(1) opacity(.55)'"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div style="display:none;width:110px;height:42px;background:${b.color};align-items:center;justify-content:center;border-radius:2px;">
+            <span style="font-size:.58rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff;text-align:center;padding:0 6px;">${b.name}</span>
           </div>
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">${p.name}</div>
-          <div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:.25rem;">${p.sub}</div>
+          <div style="font-size:.52rem;color:var(--ink-faint);letter-spacing:.08em;text-transform:uppercase;text-align:center;">${b.cat}</div>
         </div>`).join('')}
       </div>
     </div>
 
-    <!-- 5th partner centred -->
-    <div style="display:flex;justify-content:center;">
-      ${ADVISORY_PARTNERS.slice(4).map((p: any) => `
-      <div style="border:1px solid var(--border);padding:1.5rem 2.5rem;text-align:center;background:#fff;transition:border-color .25s,box-shadow .25s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-        <div style="display:flex;align-items:center;justify-content:center;margin-bottom:.875rem;min-height:48px;">
-          <img src="${p.logo}" alt="${p.name}" style="max-width:140px;max-height:44px;width:auto;height:auto;object-fit:contain;display:block;"
-               onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex'">
-          <div style="display:none;width:110px;height:40px;background:${p.color};align-items:center;justify-content:center;border-radius:2px;">
-            <span style="font-size:.75rem;font-weight:800;letter-spacing:.06em;color:${p.textColor || '#fff'};text-align:center;">${p.abbr}</span>
-          </div>
+    <!-- Retail brands -->
+    <div>
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3.5rem;flex-wrap:wrap;gap:1.5rem;">
+        <div>
+          <div class="gr"></div>
+          <p class="eyebrow" style="margin-bottom:.875rem;">Retail Partners</p>
+          <h2 class="h2">Retail Brands We<br>Advise &amp; Place</h2>
         </div>
-        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);">${p.name}</div>
-        <div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:.25rem;">${p.sub}</div>
-      </div>`).join('')}
+        <div style="max-width:380px;text-align:right;">
+          <p class="lead" style="font-size:.9375rem;margin-bottom:1.25rem;">30+ active retail brand relationships spanning anchor tenants, fashion, food &amp; beverage and entertainment.</p>
+          <a href="/services#retail" class="btn btn-sm btn-dko">Our Retail Practice</a>
+        </div>
+      </div>
+
+      <div class="brand-grid">
+        ${RETAIL_BRANDS.map((b: any) => `
+        <div class="brand-cell">
+          <img src="${b.svg}" alt="${b.name}" style="width:110px;height:42px;object-fit:contain;filter:grayscale(1) opacity(.55);transition:filter .3s;"
+               onmouseover="this.style.filter='grayscale(0) opacity(1)'" onmouseout="this.style.filter='grayscale(1) opacity(.55)'"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div style="display:none;width:110px;height:42px;background:#1a1a1a;align-items:center;justify-content:center;border-radius:2px;">
+            <span style="font-size:.58rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff;text-align:center;padding:0 6px;">${b.name}</span>
+          </div>
+          <div style="font-size:.52rem;color:var(--ink-faint);letter-spacing:.08em;text-transform:uppercase;text-align:center;">${b.cat}</div>
+        </div>`).join('')}
+      </div>
     </div>
+
   </div>
 </div>
 
-<!-- ══ TRACK RECORD ════════════════════════════════════════════════════════ -->
-<div class="sec-pd" style="padding-top:5rem;">
+<!-- ══ ADVISORY PARTNERS ══════════════════════════════════════════════ -->
+<div class="sec-pd" style="padding-top:7rem;padding-bottom:7rem;">
   <div class="wrap">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;flex-wrap:wrap;gap:1.5rem;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;" class="mob-stack">
       <div>
         <div class="gr"></div>
-        <p class="eyebrow" style="margin-bottom:.75rem;">Track Record</p>
+        <p class="eyebrow" style="margin-bottom:1rem;">Transaction Advisory</p>
+        <h2 class="h2" style="margin-bottom:1.5rem;">Our Advisory<br>Partners</h2>
+        <p class="lead" style="margin-bottom:2rem;">India Gully collaborates with globally recognised advisory and consulting firms, bringing institutional credibility, financial rigour and sector depth to complex mandates.</p>
+        <div style="padding:1.25rem 1.5rem;border-left:3px solid var(--gold);background:rgba(184,150,12,.04);">
+          <p style="font-size:.82rem;line-height:1.8;color:var(--ink-soft);">Joint advisory with Ernst &amp; Young on the <strong style="color:var(--ink);">₹1,350+ Cr Entertainment City Limited divestment</strong> — India's largest entertainment real estate transaction.</p>
+        </div>
+      </div>
+      <div class="partners-grid">
+        ${ADVISORY_PARTNERS.slice(0,4).map((p: any) => `
+        <div class="partner-card reveal">
+          <div style="height:52px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+            <img src="${p.logo}" alt="${p.name}" style="max-width:140px;max-height:42px;width:auto;height:auto;object-fit:contain;"
+                 onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex'">
+            <div style="display:none;align-items:center;justify-content:center;width:130px;height:42px;background:${p.color};border-radius:2px;">
+              <span style="font-size:.78rem;font-weight:800;letter-spacing:.06em;color:${p.textColor || '#fff'};">${p.abbr}</span>
+            </div>
+          </div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:.95rem;color:var(--ink);margin-bottom:.25rem;">${p.name}</div>
+          <div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);">${p.sub}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <!-- 5th partner centred -->
+    ${ADVISORY_PARTNERS.slice(4).length > 0 ? `
+    <div style="display:flex;justify-content:center;margin-top:1.75rem;">
+      ${ADVISORY_PARTNERS.slice(4).map((p: any) => `
+      <div class="partner-card" style="padding:1.75rem 3rem;">
+        <div style="height:52px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+          <img src="${p.logo}" alt="${p.name}" style="max-width:150px;max-height:46px;width:auto;height:auto;object-fit:contain;"
+               onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex'">
+          <div style="display:none;align-items:center;justify-content:center;width:130px;height:42px;background:${p.color};border-radius:2px;">
+            <span style="font-size:.78rem;font-weight:800;letter-spacing:.06em;color:${p.textColor || '#fff'};">${p.abbr}</span>
+          </div>
+        </div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:.95rem;color:var(--ink);text-align:center;margin-bottom:.25rem;">${p.name}</div>
+        <div style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);text-align:center;">${p.sub}</div>
+      </div>`).join('')}
+    </div>` : ''}
+  </div>
+</div>
+
+<!-- ══ TRACK RECORD ══════════════════════════════════════════════════ -->
+<div class="sec-wh" style="padding-top:7rem;padding-bottom:7rem;">
+  <div class="wrap">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:4rem;flex-wrap:wrap;gap:2rem;">
+      <div>
+        <div class="gr"></div>
+        <p class="eyebrow" style="margin-bottom:1rem;">Track Record</p>
         <h2 class="h2">Mandates Executed.<br>Relationships Built.</h2>
       </div>
       <a href="/works" class="btn btn-dko">View All Completed Works</a>
     </div>
+
     <div id="trackRecord">
       ${[
-        { title:'Entertainment City Limited — Landmark Divestment',  loc:'Joint Advisory with EY · Noida',      icon:'🏆', type:'Transaction Advisory', desc:'Served as Joint Transaction Advisors alongside EY for the 100% divestment of Entertainment City Limited. Managed end-to-end advisory for this ₹1,350+ Crore landmark transaction.' },
-        { title:'Worlds of Wonder — Post-COVID Re-opening',          loc:'10-Acre Waterpark · Noida',           icon:'🎡', type:'Operational Revival',  desc:"Orchestrated the strategic re-opening of India's premier waterpark following COVID-19 closure. Managed lease negotiations and operational revival for this 10-acre world-class attraction." },
-        { title:'Khubani at Hyatt Andaz Delhi',                      loc:'42,000 Sq. Ft. Dining · New Delhi',  icon:'🍽️', type:'Hospitality Leasing',  desc:'Negotiated and executed leasing for a signature 27,000 + 15,000 Sq. Ft. premium restaurant space within the iconic Hyatt Andaz property.' },
-        { title:'800 Sq. Yard Asset — Anand Lok, New Delhi',         loc:'₹65 Cr+ Exit · South Delhi',         icon:'🏛️', type:'Asset Acquisition',    desc:'Executed a strategic acquisition of a prime South Delhi property. Delivered an exceptional ₹65+ Crores exit within a 6-month turnaround — superior deal structuring and market timing.' },
-        { title:'HORECA Supply — Mahindra Holidays & Resorts',        loc:'Pan-India · Multiple Locations',     icon:'🍽️', type:'HORECA Procurement',   desc:"Established strategic HORECA supply partnership with Mahindra Holidays & Resorts, one of India's largest leisure hospitality companies, across their pan-India resort network." },
-        { title:'Due Diligence — Adlabs Imagica for ECL',            loc:'₹500 Cr Transaction · Maharashtra',  icon:'⚖️', type:'Client-Side SPOC',     desc:'Served as dedicated Client-Side SPOC for comprehensive due diligence in Entertainment City Limited\'s evaluation of Adlabs Imagica. Coordinated financial, legal and technical assessments.' },
-      ].map(p => `
-      <div class="card card-lift" style="padding:1.75rem;">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;">
-          <span style="font-size:2rem;">${p.icon}</span>
-          <span style="background:rgba(184,150,12,.1);color:var(--gold);border:1px solid rgba(184,150,12,.22);font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .6rem;">${p.type}</span>
+        { title:'Entertainment City Limited — Landmark Divestment',  loc:'Joint Advisory with EY · Noida, UP',      icon:'🏆', type:'Transaction Advisory', value:'₹1,350+ Cr', desc:'Served as Joint Transaction Advisors alongside EY for the 100% divestment of Entertainment City Limited. Managed end-to-end advisory for this landmark transaction — India\'s largest entertainment real estate deal.' },
+        { title:'Worlds of Wonder — Post-COVID Re-opening',          loc:'10-Acre Waterpark · Noida, UP',           icon:'🎡', type:'Operational Revival',  value:'Pan-India',  desc:"Orchestrated the strategic re-opening of India's premier waterpark following COVID-19 closure. Managed lease negotiations and operational revival for this 10-acre world-class attraction." },
+        { title:'Khubani at Hyatt Andaz Delhi',                      loc:'42,000 Sq. Ft. Dining · New Delhi',       icon:'🍽️', type:'Hospitality Leasing',  value:'42,000 Sq Ft', desc:'Negotiated and executed leasing for a signature 27,000 + 15,000 Sq. Ft. premium restaurant space within the iconic Hyatt Andaz property in New Delhi.' },
+        { title:'800 Sq. Yard Asset — Anand Lok, New Delhi',         loc:'₹65 Cr+ Exit · South Delhi',              icon:'🏛️', type:'Asset Acquisition',    value:'₹65 Cr+', desc:'Executed a strategic acquisition of a prime South Delhi property. Delivered an exceptional ₹65+ Crores exit within a 6-month turnaround — demonstrating superior deal structuring and market timing.' },
+        { title:'HORECA Supply — Mahindra Holidays & Resorts',        loc:'Pan-India · Multiple Locations',          icon:'🍽️', type:'HORECA Procurement',   value:'Pan-India', desc:"Established strategic HORECA supply partnership with Mahindra Holidays & Resorts, one of India's largest leisure hospitality companies, across their pan-India resort network." },
+        { title:'Due Diligence — Adlabs Imagica for ECL',            loc:'₹500 Cr Transaction · Maharashtra',       icon:'⚖️', type:'Client-Side SPOC',     value:'₹500 Cr', desc:'Served as dedicated Client-Side SPOC for comprehensive due diligence in ECL\'s evaluation of Adlabs Imagica. Coordinated financial, legal and technical assessments for this landmark acquisition review.' },
+      ].map((p, pi) => `
+      <div class="feature-card reveal" style="padding:0;overflow:hidden;transition-delay:${pi*0.08}s;">
+        <!-- Colored top strip -->
+        <div style="height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-lt),transparent);"></div>
+        <div style="padding:2rem 1.75rem;">
+          <!-- Icon + type -->
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;gap:.75rem;">
+            <span style="font-size:2.1rem;flex-shrink:0;">${p.icon}</span>
+            <span style="background:rgba(184,150,12,.08);color:var(--gold);border:1px solid rgba(184,150,12,.2);font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .65rem;white-space:nowrap;">${p.type}</span>
+          </div>
+          <!-- Value display -->
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:var(--gold);line-height:1;margin-bottom:.625rem;">${p.value}</div>
+          <!-- Title + location -->
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);line-height:1.3;margin-bottom:.3rem;">${p.title}</h3>
+          <p style="font-size:.68rem;letter-spacing:.07em;color:var(--ink-muted);margin-bottom:1rem;display:flex;align-items:center;gap:.35rem;"><i class="fas fa-map-marker-alt" style="color:var(--gold);font-size:.58rem;"></i>${p.loc}</p>
+          <p style="font-size:.85rem;color:var(--ink-soft);line-height:1.8;">${p.desc}</p>
         </div>
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);margin-bottom:.3rem;">${p.title}</h3>
-        <p style="font-size:.72rem;letter-spacing:.06em;color:var(--ink-muted);margin-bottom:.875rem;">${p.loc}</p>
-        <p class="body">${p.desc}</p>
       </div>`).join('')}
     </div>
   </div>
 </div>
 
-<!-- ══ LEADERSHIP ════════════════════════════════════════════════════════ -->
-<div class="sec-wh" style="padding-top:5rem;">
+<!-- ══ LEADERSHIP ════════════════════════════════════════════════════ -->
+<div class="sec-pd" style="padding-top:7rem;padding-bottom:7rem;">
   <div class="wrap">
-    <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:4.5rem;align-items:start;" class="mob-stack">
-      <div>
+    <div style="display:grid;grid-template-columns:1fr 1.7fr;gap:5rem;align-items:start;" class="mob-stack">
+      <div class="reveal-l">
         <div class="gr"></div>
-        <p class="eyebrow" style="margin-bottom:.75rem;">Leadership</p>
-        <h2 class="h2" style="margin-bottom:1.25rem;">Steered by<br>Industry Veterans</h2>
-        <p class="lead" style="margin-bottom:2rem;">Our leadership brings decades of combined experience across hospitality, real estate, retail and entertainment, having led marquee mandates for India's most prominent developers, hotel brands and institutional investors.</p>
+        <p class="eyebrow" style="margin-bottom:1rem;">Leadership</p>
+        <h2 class="h2" style="margin-bottom:1.5rem;">Steered by<br>Industry Veterans</h2>
+        <p class="lead" style="margin-bottom:2.25rem;">Our leadership brings decades of combined experience across hospitality, real estate, retail and entertainment, having led marquee mandates for India's most prominent developers, hotel brands and institutional investors.</p>
         <a href="/about" class="btn btn-dk">Meet the Full Team</a>
+        <div style="margin-top:3rem;padding:1.5rem;border:1px solid var(--border);background:rgba(184,150,12,.03);">
+          <div style="font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">Board & KMP</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);line-height:1.5;">Three Directors. One Vision.<br>Building India's Premier Advisory Practice.</div>
+        </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:1rem;">
+
+      <div style="display:flex;flex-direction:column;gap:1.25rem;">
         ${[
-          { name:'Arun Manikonda',  title:'Managing Director',      sub:'Director on Board & KMP',   init:'AM', photo:'/static/team/arun-manikonda.jpg', ph:'+91 98108 89134', em:'akm@indiagully.com', bio:'Founding Director with 20+ years across hospitality, real estate and entertainment.' },
-          { name:'Pavan Manikonda', title:'Executive Director',      sub:'Director on Board & KMP',   init:'PM', photo:'/static/team/pavan-manikonda.jpg', ph:'+91 62825 56067', em:'pavan@indiagully.com', bio:'Drives operations and business development across HORECA, hotel management and new verticals.' },
-          { name:'Amit Jhingan',    title:'President, Real Estate',  sub:'Key Managerial Personnel',  init:'AJ', photo:'/static/team/amit-jhingan.png', ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com', bio:'Real Estate Vertical Head. Specialist in retail leasing, commercial transactions and entertainment city advisory.' },
-        ].map(p => `
-        <div class="card" style="padding:1.5rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.25rem;align-items:center;">
-          <div style="width:56px;height:56px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--gold);background:var(--ink);">
+          { name:'Arun Manikonda',  title:'Managing Director',      sub:'Director on Board & KMP',  init:'AM', photo:'/static/team/arun-manikonda.jpg',  ph:'+91 98108 89134', em:'akm@indiagully.com', bio:'Founding Director with 20+ years across hospitality, real estate and entertainment. Leads India Gully\'s strategic direction and all major institutional mandates.' },
+          { name:'Pavan Manikonda', title:'Executive Director',      sub:'Director on Board & KMP',  init:'PM', photo:'/static/team/pavan-manikonda.jpg',  ph:'+91 62825 56067', em:'pavan@indiagully.com', bio:'Drives operations and business development across HORECA, hotel management and new verticals. Board Director and KMP of Vivacious Entertainment and Hospitality Pvt. Ltd.' },
+          { name:'Amit Jhingan',    title:'President, Real Estate',  sub:'Key Managerial Personnel', init:'AJ', photo:'/static/team/amit-jhingan.png',       ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com', bio:'Real Estate Vertical Head. Specialist in retail leasing, commercial transactions and entertainment city advisory with 15+ years of pan-India experience.' },
+        ].map((p, pi) => `
+        <div class="card reveal" style="padding:1.75rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.5rem;align-items:center;transition-delay:${pi*0.1}s;" onmouseover="this.style.borderColor='rgba(184,150,12,.3)';this.style.boxShadow='0 12px 40px rgba(0,0,0,.07)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+          <!-- Avatar -->
+          <div style="width:62px;height:62px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid rgba(184,150,12,.3);background:var(--ink);position:relative;">
             <img src="${p.photo}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;object-position:center top;"
-                 onerror="this.onerror=null;this.style.display='none';this.parentElement.innerHTML='<div style=\'width:56px;height:56px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;\'><span style=\'font-family:DM Serif Display,Georgia,serif;font-size:1.1rem;color:var(--gold);\'>${p.init}</span></div>';">
+                 onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'width:62px;height:62px;background:var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;\'><span style=\'font-family:DM Serif Display,Georgia,serif;font-size:1.15rem;color:var(--gold);\'>${p.init}</span></div>';">
           </div>
+          <!-- Info -->
           <div>
-            <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.05rem;color:var(--ink);margin-bottom:.12rem;">${p.name}</div>
-            <div style="font-size:.78rem;color:var(--ink-soft);">${p.title}</div>
-            <div style="font-size:.68rem;color:var(--ink-muted);">${p.sub}</div>
-            <div style="font-size:.75rem;color:var(--ink-soft);margin-top:.35rem;line-height:1.5;">${p.bio}</div>
+            <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);margin-bottom:.12rem;">${p.name}</div>
+            <div style="font-size:.8rem;color:var(--ink-soft);margin-bottom:.1rem;">${p.title}</div>
+            <div style="font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${p.sub}</div>
+            <div style="font-size:.8rem;color:var(--ink-muted);line-height:1.6;">${p.bio}</div>
           </div>
-          <div style="text-align:right;flex-shrink:0;">
-            <a href="tel:${p.ph.replace(/\\s/g,'')}" style="display:block;font-size:.72rem;color:var(--ink-muted);margin-bottom:.2rem;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'"><i class="fas fa-phone" style="margin-right:.35rem;font-size:.6rem;"></i>${p.ph}</a>
-            <a href="mailto:${p.em}" style="display:block;font-size:.72rem;color:var(--ink-muted);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'"><i class="fas fa-envelope" style="margin-right:.35rem;font-size:.6rem;"></i>${p.em}</a>
+          <!-- Contact -->
+          <div style="text-align:right;flex-shrink:0;display:flex;flex-direction:column;gap:.3rem;">
+            <a href="tel:${p.ph.replace(/\s/g,'')}" style="font-size:.68rem;color:var(--ink-muted);display:flex;align-items:center;gap:.3rem;justify-content:flex-end;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'"><i class="fas fa-phone" style="font-size:.58rem;color:var(--gold);"></i>${p.ph}</a>
+            <a href="mailto:${p.em}" style="font-size:.68rem;color:var(--ink-muted);display:flex;align-items:center;gap:.3rem;justify-content:flex-end;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'"><i class="fas fa-envelope" style="font-size:.58rem;color:var(--gold);"></i>${p.em}</a>
           </div>
         </div>`).join('')}
       </div>
@@ -466,21 +628,48 @@ app.get('/', (c) => {
   </div>
 </div>
 
-<!-- ══ CTA ════════════════════════════════════════════════════════════════ -->
+<!-- ══ FINAL CTA ═══════════════════════════════════════════════════════ -->
 <div class="sec-dk" style="position:relative;overflow:hidden;">
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(184,150,12,.06) 0%,transparent 70%);pointer-events:none;"></div>
+  <!-- Radial gold glow -->
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 65% 85% at 50% 50%,rgba(184,150,12,.07) 0%,transparent 65%);pointer-events:none;"></div>
+  <!-- Subtle grid -->
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.025) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;"></div>
+
   <div class="wrap" style="text-align:center;max-width:820px;margin:0 auto;position:relative;">
     <div class="gr-c"></div>
-    <p class="eyebrow-lt" style="margin-bottom:.75rem;">Get in Touch</p>
-    <h2 class="h2-lt" style="margin-bottom:1.25rem;">Ready to Work<br>With India Gully?</h2>
-    <p class="lead-lt" style="max-width:560px;margin:0 auto 2.5rem;">Whether you are a developer, investor, brand or operator, we bring the advisory depth, network and execution capability to deliver results.</p>
-    <div style="display:flex;flex-wrap:wrap;gap:.875rem;justify-content:center;">
-      <div class="cta-flex" style="display:flex;flex-wrap:wrap;gap:.875rem;justify-content:center;">
-        <a href="/contact"  class="btn btn-g">Submit a Mandate Enquiry</a>
-        <a href="/listings" class="btn btn-ghost-g">View Active Mandates</a>
-        <a href="/horeca"   class="btn btn-ghost">HORECA Supply Enquiry</a>
+    <p class="eyebrow-lt" style="margin-bottom:1rem;">Get in Touch</p>
+    <h2 class="h2-lt" style="margin-bottom:1.5rem;">Ready to Work<br>With India Gully?</h2>
+    <p style="font-size:1.05rem;line-height:1.9;color:rgba(255,255,255,.5);max-width:580px;margin:0 auto 3rem;">Whether you are a developer, investor, brand or operator — we bring the advisory depth, network and execution capability to deliver exceptional results.</p>
+
+    <!-- CTA buttons -->
+    <div class="cta-flex" style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-bottom:4rem;">
+      <a href="/contact"  class="btn btn-g" style="min-width:230px;justify-content:center;padding:.9rem 2.25rem;">Submit a Mandate Enquiry</a>
+      <a href="/listings" class="btn btn-ghost-g" style="min-width:200px;justify-content:center;">View Active Mandates</a>
+      <a href="/horeca"   class="btn btn-ghost" style="min-width:200px;justify-content:center;">HORECA Supply Enquiry</a>
+    </div>
+
+    <!-- Quick contact strip -->
+    <div style="border-top:1px solid rgba(255,255,255,.07);padding-top:2.5rem;display:flex;flex-wrap:wrap;gap:2.5rem;justify-content:center;align-items:center;">
+      <a href="tel:+918988988988" style="display:flex;align-items:center;gap:.65rem;font-size:.82rem;color:rgba(255,255,255,.45);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.45)'">
+        <div style="width:32px;height:32px;background:rgba(184,150,12,.1);border:1px solid rgba(184,150,12,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-phone" style="font-size:.65rem;color:var(--gold);"></i>
+        </div>
+        +91 8988 988 988
+      </a>
+      <a href="mailto:info@indiagully.com" style="display:flex;align-items:center;gap:.65rem;font-size:.82rem;color:rgba(255,255,255,.45);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.45)'">
+        <div style="width:32px;height:32px;background:rgba(184,150,12,.1);border:1px solid rgba(184,150,12,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-envelope" style="font-size:.65rem;color:var(--gold);"></i>
+        </div>
+        info@indiagully.com
+      </a>
+      <div style="display:flex;align-items:center;gap:.65rem;font-size:.82rem;color:rgba(255,255,255,.35);">
+        <div style="width:32px;height:32px;background:rgba(184,150,12,.1);border:1px solid rgba(184,150,12,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-map-marker-alt" style="font-size:.65rem;color:var(--gold);"></i>
+        </div>
+        New Delhi, India
       </div>
     </div>
+
   </div>
 </div>
 
@@ -499,11 +688,7 @@ app.get('/', (c) => {
           "url": "https://india-gully.pages.dev",
           "logo": "https://india-gully.pages.dev/assets/logo-white.png",
           "description": "India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions.",
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "New Delhi",
-            "addressCountry": "IN"
-          },
+          "address": { "@type": "PostalAddress", "addressLocality": "New Delhi", "addressCountry": "IN" },
           "telephone": "+918988988988",
           "email": "info@indiagully.com",
           "sameAs": ["https://indiagully.com"],

@@ -618,31 +618,33 @@ app.get('/', (c) => {
 
   const content = `
 <style>
-/* ── INSIGHTS PAGE STYLES ── */
-.ins-filter-row{display:flex;flex-wrap:wrap;gap:.45rem;}
-.ins-filter-btn{padding:.4rem 1rem;font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:1px solid rgba(255,255,255,.18);background:transparent;color:rgba(255,255,255,.55);cursor:pointer;transition:all .25s;white-space:nowrap;}
-.ins-filter-btn:hover{border-color:rgba(255,255,255,.5);color:rgba(255,255,255,.85);}
+.ins-filter-row{display:flex;flex-wrap:wrap;gap:.5rem;}
+.ins-filter-btn{padding:.5rem 1.1rem;font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.03);color:rgba(255,255,255,.5);cursor:pointer;transition:all .25s;white-space:nowrap;backdrop-filter:blur(4px);}
+.ins-filter-btn:hover{border-color:rgba(255,255,255,.4);color:rgba(255,255,255,.8);}
 .ins-filter-btn.active{border-color:var(--gold);background:var(--gold);color:#fff;}
 .ins-filter-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
-.insight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
-.ins-card{background:#fff;border:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:border-color .25s,box-shadow .25s,transform .25s;}
-.ins-card:hover{border-color:var(--gold);box-shadow:0 12px 40px rgba(0,0,0,.08);transform:translateY(-3px);}
-.ins-card__img{height:185px;overflow:hidden;position:relative;background:#1a1a1a;flex-shrink:0;}
-.ins-card__img img{width:100%;height:100%;object-fit:cover;transition:transform 6s ease;}
+.insight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem;}
+.ins-card{background:#fff;border:1px solid var(--border-lt);display:flex;flex-direction:column;overflow:hidden;transition:border-color .28s,box-shadow .28s,transform .28s;position:relative;}
+.ins-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .28s;}
+.ins-card:hover{border-color:rgba(184,150,12,.3);box-shadow:0 16px 52px rgba(0,0,0,.1);transform:translateY(-5px);}
+.ins-card:hover::before{opacity:1;}
+.ins-card__img{height:200px;overflow:hidden;position:relative;background:#111;flex-shrink:0;}
+.ins-card__img img{width:100%;height:100%;object-fit:cover;transition:transform 6s cubic-bezier(.4,0,.2,1);}
 .ins-card:hover .ins-card__img img{transform:scale(1.05);}
 .ins-card__overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,rgba(0,0,0,.08) 60%,transparent 100%);}
 .ins-card__meta{position:absolute;bottom:.875rem;left:.875rem;right:.875rem;display:flex;align-items:flex-end;justify-content:space-between;}
-.ins-card__body{padding:1.5rem;flex:1;display:flex;flex-direction:column;}
-.ins-card__title{font-family:'DM Serif Display',Georgia,serif;font-size:1.08rem;color:var(--ink);line-height:1.32;margin-bottom:.7rem;flex:1;}
-.ins-card__excerpt{font-size:.81rem;color:var(--ink-muted);line-height:1.72;margin-bottom:1rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
-.ins-card__tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:1rem;}
-.ins-card__tag{background:rgba(17,17,17,.04);color:var(--ink-soft);border:1px solid var(--border);font-size:.58rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.14rem .48rem;}
-.ins-card__read{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);transition:gap .2s;margin-top:auto;}
+.ins-card__body{padding:1.75rem;flex:1;display:flex;flex-direction:column;}
+.ins-card__title{font-family:'DM Serif Display',Georgia,serif;font-size:1.12rem;color:var(--ink);line-height:1.28;margin-bottom:.75rem;flex:1;}
+.ins-card__excerpt{font-size:.82rem;color:var(--ink-muted);line-height:1.75;margin-bottom:1.1rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.ins-card__tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:1.1rem;}
+.ins-card__tag{background:rgba(10,10,10,.04);color:var(--ink-soft);border:1px solid var(--border);font-size:.57rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.15rem .5rem;}
+.ins-card__read{display:inline-flex;align-items:center;gap:.4rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);transition:gap .2s;margin-top:auto;}
 .ins-card__read:hover{gap:.65rem;}
-.ins-stats-bar{display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.06);}
-.ins-stat{padding:1.5rem 1.75rem;border-right:1px solid rgba(255,255,255,.06);text-align:center;}
-.ins-stat__n{font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--gold);line-height:1;margin-bottom:.3rem;}
-.ins-stat__l{font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);}
+.ins-stats-bar{display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.05);}
+.ins-stat{padding:1.75rem 2rem;border-right:1px solid rgba(255,255,255,.05);text-align:center;transition:background .22s;}
+.ins-stat:hover{background:rgba(184,150,12,.04);}
+.ins-stat__n{font-family:'DM Serif Display',Georgia,serif;font-size:1.9rem;color:var(--gold);line-height:1;margin-bottom:.35rem;letter-spacing:-.02em;}
+.ins-stat__l{font-size:.58rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.42);}
 @media(max-width:860px){.insight-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:580px){
   .insight-grid{grid-template-columns:1fr;}
@@ -650,25 +652,27 @@ app.get('/', (c) => {
   .ins-filter-row::-webkit-scrollbar{display:none;}
   .ins-filter-btn{flex-shrink:0;}
   .ins-stats-bar{grid-template-columns:repeat(2,1fr);}
-  .ins-stat{padding:1rem 1.25rem;}
-  .ins-stat__n{font-size:1.35rem;}
+  .ins-stat{padding:1.25rem 1rem;}
+  .ins-stat__n{font-size:1.5rem;}
 }
 </style>
 
 <!-- ══ INSIGHTS HERO ════════════════════════════════════════════════════ -->
-<div style="background:var(--ink);padding:7rem 0 5rem;position:relative;overflow:hidden;">
-  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.05) 1px,transparent 1px);background-size:72px 72px;"></div>
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 40%,rgba(184,150,12,.04) 0%,transparent 60%);pointer-events:none;"></div>
+<div class="hero-dk">
+  <div class="hero-dk-grid"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 40%,rgba(184,150,12,.05) 0%,transparent 55%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(to bottom,transparent,var(--ink));pointer-events:none;"></div>
   <div class="wrap" style="position:relative;">
     <div style="max-width:720px;" class="fu">
-      <div class="gr-lt"></div>
-      <p class="eyebrow" style="margin-bottom:.875rem;">Insights &amp; Research</p>
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+        <div style="width:40px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);"></div>
+        <span style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);">Insights &amp; Research</span>
+      </div>
       <h1 class="h1" style="margin-bottom:1.5rem;">Thought Leadership<br><em style="color:var(--gold);font-style:italic;">from the Field</em></h1>
-      <p class="lead-lt" style="max-width:600px;margin-bottom:2.5rem;">Market research, sector analysis and operational insights from India Gully's advisory practice — drawn from active mandates across hospitality, real estate, retail and entertainment.</p>
-
-      <!-- Category Filter Buttons (horizontal scroll on mobile) -->
+      <p class="lead-lt" style="max-width:600px;margin-bottom:2.75rem;">Market research, sector analysis and operational insights from India Gully's advisory practice — drawn from active mandates across hospitality, real estate, retail and entertainment.</p>
+      <!-- Category Filter Buttons -->
       <div id="insightFilterRow" class="ins-filter-row" role="group" aria-label="Filter articles by category">
-        ${ALL_CATS.map((cat, i) => `
+        ${ALL_CATS.map((cat: string, i: number) => `
         <button onclick="filterInsights('${cat}')" data-cat="${cat}"
                 class="ins-filter-btn${i === 0 ? ' active' : ''}"
                 aria-pressed="${i === 0 ? 'true' : 'false'}">${cat}</button>`).join('')}
@@ -678,7 +682,7 @@ app.get('/', (c) => {
 </div>
 
 <!-- ══ STATS BAR ══════════════════════════════════════════════════════════ -->
-<div style="background:var(--ink-mid);border-bottom:1px solid rgba(255,255,255,.06);">
+<div style="background:var(--ink-mid);border-bottom:1px solid rgba(255,255,255,.05);">
   <div class="wrap" style="padding:0;">
     <div class="ins-stats-bar">
       ${[
@@ -686,44 +690,47 @@ app.get('/', (c) => {
         { n: '6',  l: 'Sectors Covered' },
         { n: '₹1,165 Cr+', l: 'Active Pipeline' },
         { n: '2024–26', l: 'Research Period' },
-      ].map(s => `<div class="ins-stat"><div class="ins-stat__n">${s.n}</div><div class="ins-stat__l">${s.l}</div></div>`).join('')}
+      ].map((s: any) => `<div class="ins-stat"><div class="ins-stat__n">${s.n}</div><div class="ins-stat__l">${s.l}</div></div>`).join('')}
     </div>
   </div>
 </div>
 
 <!-- ══ FEATURED ARTICLE ════════════════════════════════════════════════ -->
-<div class="sec-wh" id="insightsContent">
+<div class="sec-wh" id="insightsContent" style="padding-top:6rem;">
   <div class="wrap">
 
-    <!-- Featured Card -->
+    <!-- Featured Card — editorial magazine layout -->
     <div id="featuredArticle" data-cat="${featured.category}"
-         style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);overflow:hidden;margin-bottom:3.5rem;transition:border-color .3s;"
-         class="mob-stack feat-card"
-         onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
-      <div style="position:relative;min-height:340px;overflow:hidden;background:#1a1a1a;">
+         style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border-lt);overflow:hidden;margin-bottom:4rem;transition:all .3s;position:relative;"
+         class="mob-stack feat-card feature-card"
+         onmouseover="this.style.borderColor='rgba(184,150,12,.3)';this.style.boxShadow='0 20px 60px rgba(0,0,0,.1)'" onmouseout="this.style.borderColor='var(--border-lt)';this.style.boxShadow='none'">
+      <!-- Image side -->
+      <div style="position:relative;min-height:380px;overflow:hidden;background:#111;">
         <img src="${CAT_IMAGES[featured.category] || 'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/Hotel-Rajshree-5-scaled-e1765525431558.webp'}"
              alt="${featured.title}"
-             style="width:100%;height:100%;object-fit:cover;transition:transform 8s ease;" loading="eager"
+             style="width:100%;height:100%;object-fit:cover;transition:transform 8s cubic-bezier(.4,0,.2,1);" loading="eager"
              onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
-        <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,.4) 0%,rgba(0,0,0,.1) 100%);"></div>
-        <div style="position:absolute;top:1.25rem;left:1.25rem;">${catBadge(featured.category)}</div>
-        <div style="position:absolute;top:1.25rem;right:1.25rem;background:rgba(0,0,0,.5);color:rgba(255,255,255,.75);font-size:.62rem;font-weight:600;letter-spacing:.06em;padding:.28rem .65rem;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-clock" style="font-size:.55rem;color:var(--gold);"></i>${featured.readTime}</div>
-        <div style="position:absolute;bottom:1.25rem;left:1.25rem;font-size:.68rem;color:rgba(255,255,255,.55);letter-spacing:.06em;">${featured.date}</div>
+        <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,.45) 0%,rgba(0,0,0,.1) 100%);"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.5) 0%,transparent 50%);"></div>
+        <div style="position:absolute;top:1.5rem;left:1.5rem;">${catBadge(featured.category)}</div>
+        <div style="position:absolute;top:1.5rem;right:1.5rem;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);color:rgba(255,255,255,.7);font-size:.6rem;font-weight:600;letter-spacing:.08em;padding:.28rem .7rem;display:flex;align-items:center;gap:.35rem;"><i class="fas fa-clock" style="font-size:.52rem;color:var(--gold);"></i>${featured.readTime}</div>
+        <div style="position:absolute;bottom:1.5rem;left:1.5rem;font-size:.65rem;color:rgba(255,255,255,.5);letter-spacing:.08em;">${featured.date}</div>
       </div>
-      <div style="padding:2.75rem;display:flex;flex-direction:column;justify-content:center;">
-        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.875rem;">
-          <span style="font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);background:rgba(184,150,12,.08);border:1px solid rgba(184,150,12,.2);padding:.22rem .65rem;">Featured</span>
+      <!-- Content side -->
+      <div style="padding:3.25rem;display:flex;flex-direction:column;justify-content:center;background:#fff;">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.1rem;">
+          <span style="font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);background:rgba(184,150,12,.08);border:1px solid rgba(184,150,12,.2);padding:.22rem .65rem;">Featured Article</span>
           <span style="font-size:.6rem;color:var(--ink-faint);letter-spacing:.08em;">${featured.readTime}</span>
         </div>
-        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:clamp(1.35rem,2.2vw,1.9rem);color:var(--ink);line-height:1.2;margin-bottom:1rem;">${featured.title}</h2>
-        <p style="font-size:.875rem;color:var(--ink-soft);line-height:1.8;margin-bottom:1.75rem;">${featured.excerpt}</p>
-        <div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1.75rem;">
-          ${featured.tags.map((t: string) => `<span style="background:rgba(17,17,17,.05);color:var(--ink-soft);border:1px solid var(--border);font-size:.62rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .55rem;">${t}</span>`).join('')}
+        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:clamp(1.5rem,2.4vw,2rem);color:var(--ink);line-height:1.18;margin-bottom:1.1rem;">${featured.title}</h2>
+        <p style="font-size:.9rem;color:var(--ink-soft);line-height:1.85;margin-bottom:2rem;">${featured.excerpt}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:2rem;">
+          ${featured.tags.map((t: string) => `<span style="background:rgba(10,10,10,.04);color:var(--ink-soft);border:1px solid var(--border);font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.18rem .55rem;">${t}</span>`).join('')}
         </div>
-        <a href="/insights/${featured.id}" class="btn btn-g" style="align-self:flex-start;">Read Full Article <i class="fas fa-arrow-right" style="margin-left:.4rem;font-size:.65rem;"></i></a>
+        <a href="/insights/${featured.id}" class="btn btn-g" style="align-self:flex-start;">Read Full Article <i class="fas fa-arrow-right" style="margin-left:.4rem;font-size:.62rem;"></i></a>
       </div>
     </div>
-    <style>@media(max-width:640px){.feat-card{grid-template-columns:1fr!important;}.feat-card>div:first-child{min-height:220px!important;}}</style>
+    <style>@media(max-width:640px){.feat-card{grid-template-columns:1fr!important;}.feat-card>div:first-child{min-height:240px!important;}}</style>
 
     <!-- Articles Grid -->
     <div class="insight-grid" id="articleGrid">

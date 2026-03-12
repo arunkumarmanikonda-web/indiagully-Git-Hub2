@@ -84,39 +84,43 @@ app.get('/', (c) => {
   const content = `
 
 <!-- ══ HERO ═══════════════════════════════════════════════════════════════ -->
-<div style="background:var(--ink);padding:7rem 0 5rem;position:relative;overflow:hidden;">
-  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.045) 1px,transparent 1px);background-size:72px 72px;pointer-events:none;"></div>
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 20% 50%,rgba(184,150,12,.05) 0%,transparent 70%);pointer-events:none;"></div>
+<div class="hero-dk">
+  <div class="hero-dk-grid"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 20% 50%,rgba(184,150,12,.05) 0%,transparent 60%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(to bottom,transparent,var(--ink));pointer-events:none;"></div>
   <div class="wrap" style="position:relative;">
     <div style="max-width:820px;" class="fu">
-      <div class="gr-lt"></div>
-      <p class="eyebrow" style="margin-bottom:.875rem;">Our Portfolio</p>
-      <h1 class="h1" style="margin-bottom:1.5rem;">Completed Works &amp;<br><em style="color:var(--gold);font-style:italic;">Track Record</em></h1>
-      <p class="lead-lt" style="max-width:640px;margin-bottom:2.5rem;">A portfolio of landmark transactions, project management mandates, leasing assignments and HORECA supply partnerships executed across India's premier hospitality, real estate, retail and entertainment sectors. Every project reflects India Gully's commitment to institutional rigour and client-first delivery.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+        <div style="width:40px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);"></div>
+        <span style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);">Our Portfolio</span>
+      </div>
+      <h1 class="h1" style="margin-bottom:1.75rem;">Completed Works &amp;<br><em style="color:var(--gold);font-style:italic;">Track Record</em></h1>
+      <p class="lead-lt" style="max-width:640px;margin-bottom:3rem;">A portfolio of landmark transactions, project management mandates, leasing assignments and HORECA supply partnerships executed across India's premier sectors.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:.625rem;">
         <button onclick="filterVertical('all')" data-filter="all" class="vert-btn active"
-                style="padding:.42rem 1.1rem;font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--gold);background:var(--gold);color:#fff;cursor:pointer;transition:all .2s;">All Verticals</button>
-        ${verticals.map(v => `
+                style="padding:.5rem 1.2rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--gold);background:var(--gold);color:#fff;cursor:pointer;transition:all .22s;">All Verticals</button>
+        ${verticals.map((v: any) => `
         <button onclick="filterVertical('${v.id}')" data-filter="${v.id}" class="vert-btn"
-                style="padding:.42rem 1.1rem;font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:1px solid rgba(255,255,255,.18);background:transparent;color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s;">${v.name}</button>`).join('')}
+                style="padding:.5rem 1.2rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.03);color:rgba(255,255,255,.45);cursor:pointer;transition:all .22s;backdrop-filter:blur(4px);">${v.name}</button>`).join('')}
       </div>
     </div>
   </div>
 </div>
 
 <!-- ══ SUMMARY STATS ═════════════════════════════════════════════════════ -->
-<div style="background:var(--ink-mid);border-bottom:1px solid rgba(255,255,255,.06);">
+<div style="background:var(--ink-mid);border-bottom:1px solid rgba(255,255,255,.05);">
   <div class="wrap" style="padding-top:0;padding-bottom:0;">
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.06);">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.05);">
       ${[
-        { n: '₹2,000 Cr+', l: 'Transactions Advised' },
-        { n: String(totalDeals) + '+',   l: 'Mandates Delivered' },
-        { n: '6',           l: 'Verticals Covered' },
-        { n: 'Pan-India',   l: 'Geographic Reach' },
+        { n: '₹2,000 Cr+', l: 'Transactions Advised',  icon:'trophy' },
+        { n: String(totalDeals) + '+', l: 'Mandates Delivered', icon:'check-circle' },
+        { n: '6',           l: 'Verticals Covered',     icon:'layer-group' },
+        { n: 'Pan-India',   l: 'Geographic Reach',      icon:'map-marked-alt' },
       ].map(s => `
-      <div style="padding:2rem 1.75rem;border-right:1px solid rgba(255,255,255,.06);text-align:center;">
-        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.25rem;color:var(--gold);line-height:1;margin-bottom:.4rem;">${s.n}</div>
-        <div style="font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);">${s.l}</div>
+      <div style="padding:2.25rem 2rem;border-right:1px solid rgba(255,255,255,.05);text-align:center;transition:background .22s;" onmouseover="this.style.background='rgba(184,150,12,.04)'" onmouseout="this.style.background='transparent'">
+        <i class="fas fa-${s.icon}" style="font-size:.72rem;color:rgba(184,150,12,.35);margin-bottom:.625rem;display:block;"></i>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.4rem;color:var(--gold);line-height:1;margin-bottom:.5rem;letter-spacing:-.02em;">${s.n}</div>
+        <div style="font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.45);">${s.l}</div>
       </div>`).join('')}
     </div>
   </div>

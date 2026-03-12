@@ -10,12 +10,16 @@ app.get('/', (c) => {
   const content = `
 
 <!-- CONTACT HERO -->
-<div style="background:var(--ink);padding:7rem 0 5rem;position:relative;overflow:hidden;">
-  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.05) 1px,transparent 1px);background-size:72px 72px;"></div>
+<div class="hero-dk">
+  <div class="hero-dk-grid"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 60% 50%,rgba(184,150,12,.05) 0%,transparent 55%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(to bottom,transparent,var(--ink));pointer-events:none;"></div>
   <div class="wrap" style="position:relative;">
     <div style="max-width:660px;" class="fu">
-      <div class="gr-lt"></div>
-      <p class="eyebrow" style="margin-bottom:.875rem;">Contact &amp; RFQ</p>
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+        <div style="width:40px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);"></div>
+        <span style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);">Contact &amp; RFQ</span>
+      </div>
       <h1 class="h1" style="margin-bottom:1.5rem;">Let's Work<br><em style="color:var(--gold);font-style:italic;">Together</em></h1>
       <p class="lead-lt" style="max-width:520px;">Submit a mandate enquiry, HORECA RFQ or general inquiry. Our leadership team reviews all submissions within 24 hours.</p>
     </div>

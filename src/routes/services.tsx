@@ -94,18 +94,21 @@ app.get('/', (c) => {
   const content = `
 
 <!-- ══ SERVICES HERO ════════════════════════════════════════════════════ -->
-<div style="background:var(--ink);padding:7rem 0 5rem;position:relative;overflow:hidden;">
-  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.045) 1px,transparent 1px);background-size:72px 72px;pointer-events:none;"></div>
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 30% 50%,rgba(184,150,12,.04) 0%,transparent 60%);pointer-events:none;"></div>
+<div class="hero-dk">
+  <div class="hero-dk-grid"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 65% at 30% 50%,rgba(184,150,12,.05) 0%,transparent 55%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(to bottom,transparent,var(--ink));pointer-events:none;"></div>
   <div class="wrap" style="position:relative;">
     <div style="max-width:720px;" class="fu">
-      <div class="gr-lt"></div>
-      <p class="eyebrow" style="margin-bottom:.875rem;">Advisory Services</p>
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+        <div style="width:40px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);"></div>
+        <span style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);">Advisory Services</span>
+      </div>
       <h1 class="h1" style="margin-bottom:1.5rem;">Six Verticals.<br><em style="color:var(--gold);font-style:italic;">One Partner.</em></h1>
-      <p class="lead-lt" style="max-width:580px;margin-bottom:2rem;">Institutional-grade advisory across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA, delivered by domain specialists with deep India market knowledge.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:.65rem;">
-        ${SERVICES.map(s => `<a href="#${s.id}" class="btn btn-ghost" style="padding:.42rem 1rem;font-size:.68rem;">${s.name}</a>`).join('')}
-        <a href="/horeca" class="btn btn-ghost" style="padding:.42rem 1rem;font-size:.68rem;">HORECA Solutions</a>
+      <p class="lead-lt" style="max-width:580px;margin-bottom:2.5rem;">Institutional-grade advisory across Real Estate, Retail, Hospitality, Entertainment, Debt &amp; HORECA, delivered by domain specialists with deep India market knowledge.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:.625rem;">
+        ${SERVICES.map((s: any) => `<a href="#${s.id}" class="btn btn-ghost btn-sm">${s.name}</a>`).join('')}
+        <a href="/horeca" class="btn btn-ghost btn-sm">HORECA Solutions</a>
       </div>
     </div>
   </div>
@@ -113,25 +116,32 @@ app.get('/', (c) => {
 
 <!-- ══ SERVICES DETAIL ════════════════════════════════════════════════════ -->
 ${SERVICES.map((s, i) => `
-<div id="${s.id}" class="${i%2===0 ? 'sec-wh' : 'sec-pd'}" style="padding-top:5rem;padding-bottom:5rem;">
+<div id="${s.id}" class="${i%2===0 ? 'sec-wh' : 'sec-pd'}" style="padding-top:6rem;padding-bottom:6rem;">
   <div class="wrap">
-    <div style="display:grid;grid-template-columns:5fr 4fr;gap:4.5rem;align-items:start;">
+    <div style="display:grid;grid-template-columns:5fr 4fr;gap:5rem;align-items:start;" class="mob-stack">
 
       <!-- Left -->
-      <div>
-        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
-          <span style="font-size:2.25rem;">${s.icon}</span>
-          <p class="eyebrow">Advisory Vertical</p>
+      <div class="reveal-l">
+        <div style="display:flex;align-items:center;gap:1.25rem;margin-bottom:2rem;">
+          <div style="width:56px;height:56px;background:rgba(184,150,12,.08);border:1px solid rgba(184,150,12,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <span style="font-size:1.5rem;">${s.icon}</span>
+          </div>
+          <div>
+            <span style="font-size:.58rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);">Advisory Vertical</span>
+          </div>
         </div>
-        <h2 class="h2" style="margin-bottom:.75rem;">${s.name}</h2>
-        <p style="font-size:.875rem;color:var(--gold);font-weight:500;letter-spacing:.04em;margin-bottom:1.25rem;">${s.tagline}</p>
-        <p class="lead" style="margin-bottom:2rem;">${s.desc}</p>
+        <h2 class="h2" style="margin-bottom:.875rem;">${s.name}</h2>
+        <p style="font-size:.875rem;color:var(--gold);font-weight:500;letter-spacing:.04em;margin-bottom:1.5rem;">${s.tagline}</p>
+        <p class="lead" style="margin-bottom:2.5rem;">${s.desc}</p>
 
+        <!-- Service items grid -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
-          ${s.items.map(item => `
-          <div style="display:flex;align-items:flex-start;gap:.6rem;padding:.625rem .875rem;background:${i%2===0?'var(--parch)':'#fff'};border:1px solid var(--border);">
-            <i class="fas fa-check" style="color:var(--gold);font-size:.65rem;margin-top:.28rem;flex-shrink:0;"></i>
-            <span style="font-size:.8rem;color:var(--ink-soft);">${item}</span>
+          ${s.items.map((item: string) => `
+          <div class="service-item">
+            <div style="width:20px;height:20px;background:rgba(184,150,12,.1);border:1px solid rgba(184,150,12,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.05rem;">
+              <i class="fas fa-check" style="color:var(--gold);font-size:.52rem;"></i>
+            </div>
+            <span style="font-size:.82rem;color:var(--ink-soft);">${item}</span>
           </div>`).join('')}
         </div>
 
@@ -140,21 +150,22 @@ ${SERVICES.map((s, i) => `
       </div>
 
       <!-- Right -->
-      <div>
-        <div style="background:var(--ink);padding:2rem;margin-bottom:1.5rem;">
-          <p class="eyebrow-lt" style="margin-bottom:1.25rem;">Track Record</p>
-          <div style="display:flex;flex-direction:column;gap:1rem;">
-            ${s.highlights.map(h => `
-            <div style="padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.07);">
-              <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:var(--gold);line-height:1;margin-bottom:.35rem;">${h.v}</div>
-              <p style="font-size:.8rem;color:rgba(255,255,255,.5);line-height:1.65;">${h.l}</p>
+      <div class="reveal-r">
+        <div style="background:var(--ink);padding:2.25rem;margin-bottom:1.75rem;">
+          <p class="eyebrow-lt" style="margin-bottom:1.5rem;">Track Record</p>
+          <div style="display:flex;flex-direction:column;gap:1.25rem;">
+            ${s.highlights.map((h: any) => `
+            <div style="padding-bottom:1.25rem;border-bottom:1px solid rgba(255,255,255,.06);">
+              <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.25rem;color:var(--gold);line-height:1;margin-bottom:.4rem;">${h.v}</div>
+              <p style="font-size:.82rem;color:rgba(255,255,255,.45);line-height:1.7;">${h.l}</p>
             </div>`).join('')}
           </div>
         </div>
 
-        <div style="border:1px solid var(--border);padding:1.5rem;">
-          <p style="font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.875rem;">Engage This Vertical</p>
-          <p class="body" style="margin-bottom:1.25rem;font-size:.82rem;">Interested in this advisory vertical? Our team will respond within 24 hours.</p>
+        <div style="border:1px solid var(--border);padding:1.75rem;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-lt),transparent);opacity:.6;"></div>
+          <p style="font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:1rem;">Engage This Vertical</p>
+          <p style="font-size:.875rem;color:var(--ink-soft);line-height:1.75;margin-bottom:1.5rem;">Interested in this advisory vertical? Our team will respond within 24 hours.</p>
           <a href="/contact?service=${s.id}" class="btn btn-g" style="width:100%;justify-content:center;">Discuss Your Mandate</a>
         </div>
       </div>
