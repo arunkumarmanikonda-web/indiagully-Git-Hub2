@@ -14,6 +14,7 @@ import portalRoute from './routes/portal'
 import adminRoute from './routes/admin'
 import apiRoute from './routes/api'
 import salesRoute from './routes/sales'
+import worksRoute from './routes/works'
 import { layout } from './lib/layout'
 
 const app = new Hono()
@@ -173,6 +174,7 @@ app.route('/about', aboutRoute)
 app.route('/services', servicesRoute)
 app.route('/horeca', horecaRoute)
 app.route('/listings', listingsRoute)
+app.route('/works', worksRoute)
 app.route('/insights', insightsRoute)
 app.route('/contact', contactRoute)
 app.route('/portal', portalRoute)

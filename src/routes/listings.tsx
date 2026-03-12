@@ -36,7 +36,7 @@ app.get('/', (c) => {
       <h1 class="h1" style="margin-bottom:1.5rem;">Active<br><em style="color:var(--gold);font-style:italic;">Mandates</em></h1>
       <p class="lead-lt" style="max-width:580px;margin-bottom:2.5rem;">Institutional-grade investment mandates across India's premier asset classes. All opportunities are exclusive to India Gully's advisory pipeline and subject to NDA. Information Memoranda available to qualified investors, family offices and institutional buyers upon request.</p>
       <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
-        ${['All Mandates','Entertainment','Real Estate','Hospitality','Retail'].map((f,i) => `
+        ${['All Mandates','Hospitality','Real Estate','Entertainment','Heritage Hospitality'].map((f,i) => `
         <button onclick="filterMandates('${f}')" data-filter="${f}" class="filter-btn${i===0?' active':''}" style="padding:.42rem 1.1rem;font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:1px solid ${i===0?'var(--gold)':'rgba(255,255,255,.18)'};background:${i===0?'var(--gold)':'transparent'};color:${i===0?'#fff':'rgba(255,255,255,.5)'};cursor:pointer;transition:all .2s;">${f}</button>
         `).join('')}
       </div>
@@ -49,9 +49,9 @@ app.get('/', (c) => {
   <div class="wrap" style="padding-top:0;padding-bottom:0;">
     <div style="display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.06);">
       ${[
-        { n:'₹8,815 Cr+', l:'Total Pipeline Value' },
-        { n:'6',          l:'Active Mandates' },
-        { n:'5',          l:'Asset Classes' },
+        { n:'₹2,165 Cr+', l:'Total Pipeline Value' },
+        { n:'8',           l:'Active Mandates' },
+        { n:'4',           l:'Asset Classes' },
         { n:'NDA Required', l:'All Mandates · Exclusive' },
       ].map(s => `
       <div style="padding:2rem 1.75rem;border-right:1px solid rgba(255,255,255,.06);text-align:center;">

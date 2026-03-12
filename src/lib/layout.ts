@@ -378,6 +378,7 @@ const NAV = `
         </div>
       </div>
       <a href="/listings" class="n-lk">Mandates</a>
+      <a href="/works" class="n-lk">Our Work</a>
       <a href="/insights" class="n-lk">Insights</a>
       <a href="/contact"  class="n-lk">Contact</a>
     </div>
@@ -426,6 +427,7 @@ const NAV = `
       <a href="/services" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Advisory Services</a>
       <a href="/horeca"   style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">HORECA Solutions</a>
       <a href="/listings" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Mandates</a>
+      <a href="/works" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Our Work</a>
       <a href="/insights" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Insights</a>
       <a href="/contact"  style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Contact</a>
       <div style="padding-top:.75rem;display:flex;flex-direction:column;gap:.5rem;">
@@ -469,7 +471,7 @@ const FOOTER = `
     <div>
       <p class="eyebrow" style="color:rgba(184,150,12,.85);margin-bottom:1.1rem;">Platform</p>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:.6rem;">
-        ${[['Active Mandates','/listings'],['Insights','/insights'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.65);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.65)'">${l}</a></li>`).join('')}
+        ${[['Active Mandates','/listings'],['Our Work','/works'],['Insights','/insights'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.65);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.65)'">${l}</a></li>`).join('')}
       </ul>
     </div>
 

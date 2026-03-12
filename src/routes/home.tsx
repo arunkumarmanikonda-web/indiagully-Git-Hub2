@@ -371,16 +371,16 @@ app.get('/', (c) => {
         <p class="eyebrow" style="margin-bottom:.75rem;">Track Record</p>
         <h2 class="h2">Mandates Executed.<br>Relationships Built.</h2>
       </div>
-      <a href="/services" class="btn btn-dko">All Services</a>
+      <a href="/works" class="btn btn-dko">View All Completed Works</a>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
       ${[
-        { title:'Bijolai Palace, Jodhpur',       loc:'Heritage Hotel · Rajasthan',    icon:'🏰', type:'Hotel Management',  desc:'Strategic management consultancy for this iconic heritage palace. Brand positioning, revenue strategy and operational excellence mandate.' },
-        { title:'Cygnett Style Shubh, Ramnagar', loc:'Business Hotel · Uttarakhand',  icon:'🦢', type:'Brand On-Boarding',  desc:'Brand on-boarding and pre-opening management for Cygnett Style Shubh. Full pre-opening planning, training and launch execution.' },
-        { title:'Regenta Central, Noida',         loc:'Business Hotel · Delhi NCR',   icon:'🌸', type:'Turnkey PMC',        desc:'Turnkey project management and brand on-boarding for Regenta Central Noida. Advisory from planning through pre-opening and launch.' },
-        { title:'Park Inn by Radisson, Delhi',    loc:'Business Hotel · Delhi',       icon:'🔴', type:'Pre-Opening',        desc:'Mock-up room execution and pre-opening support. FF&E specification and vendor management for the IP Extension property.' },
-        { title:'Villa Hotel, Jim Corbett',       loc:'Villa Resort · Uttarakhand',   icon:'🌿', type:'Turnkey + Equity',   desc:'Strategic cum turnkey management for this villa-styled eco resort. Project planning, execution, equity advisory and asset monetisation.' },
-        { title:'100-Room Hotel, Hosur',          loc:'Business Hotel · Tamil Nadu',  icon:'🏗️', type:'Greenfield Turnkey', desc:'Greenfield 100-room branded upscale hotel in Hosur, first branded upscale hotel of the industrial town on the TN-Karnataka border.' },
+        { title:'Entertainment City Limited — Landmark Divestment',  loc:'Joint Advisory with EY · Noida',      icon:'🏆', type:'Transaction Advisory', desc:'Served as Joint Transaction Advisors alongside EY for the 100% divestment of Entertainment City Limited. Managed end-to-end advisory for this ₹1,350+ Crore landmark transaction.' },
+        { title:'Worlds of Wonder — Post-COVID Re-opening',          loc:'10-Acre Waterpark · Noida',           icon:'🎡', type:'Operational Revival',  desc:"Orchestrated the strategic re-opening of India's premier waterpark following COVID-19 closure. Managed lease negotiations and operational revival for this 10-acre world-class attraction." },
+        { title:'Khubani at Hyatt Andaz Delhi',                      loc:'42,000 Sq. Ft. Dining · New Delhi',  icon:'🍽️', type:'Hospitality Leasing',  desc:'Negotiated and executed leasing for a signature 27,000 + 15,000 Sq. Ft. premium restaurant space within the iconic Hyatt Andaz property.' },
+        { title:'800 Sq. Yard Asset — Anand Lok, New Delhi',         loc:'₹65 Cr+ Exit · South Delhi',         icon:'🏛️', type:'Asset Acquisition',    desc:'Executed a strategic acquisition of a prime South Delhi property. Delivered an exceptional ₹65+ Crores exit within a 6-month turnaround — superior deal structuring and market timing.' },
+        { title:'HORECA Supply — Mahindra Holidays & Resorts',        loc:'Pan-India · Multiple Locations',     icon:'🍽️', type:'HORECA Procurement',   desc:"Established strategic HORECA supply partnership with Mahindra Holidays & Resorts, one of India's largest leisure hospitality companies, across their pan-India resort network." },
+        { title:'Due Diligence — Adlabs Imagica for ECL',            loc:'₹500 Cr Transaction · Maharashtra',  icon:'⚖️', type:'Client-Side SPOC',     desc:'Served as dedicated Client-Side SPOC for comprehensive due diligence in Entertainment City Limited\'s evaluation of Adlabs Imagica. Coordinated financial, legal and technical assessments.' },
       ].map(p => `
       <div class="card card-lift" style="padding:1.75rem;">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem;">
