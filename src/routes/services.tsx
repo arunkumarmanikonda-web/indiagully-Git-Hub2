@@ -52,8 +52,8 @@ const SERVICES = [
     desc: 'India Gully advises on large-format entertainment destinations, from concept development and operator selection to financial feasibility, project management and revenue optimisation. Our active entertainment pipeline exceeds ₹5,700 Cr.',
     items: ['Concept development & master planning','Entertainment operator identification','Financial feasibility & business plan','Technology & AV systems advisory','Attraction design & programming','Revenue mix & yield optimisation','Integrated destination planning','Project management & commissioning'],
     highlights: [
-      { v:'₹4,500 Cr', l:'Integrated Entertainment Destination, Maharashtra. Phase 1 approved' },
-      { v:'₹1,200 Cr+', l:'Entertainment City, Noida NCR, co-advised with Entertainment City Limited' },
+      { v:'₹1,350 Cr+', l:'Entertainment City Limited divestment — Joint Transaction Advisors alongside EY' },
+      { v:'₹500 Cr',    l:'Adlabs Imagica acquisition due diligence for Entertainment City Limited' },
     ],
     partners: [] as string[],
   },

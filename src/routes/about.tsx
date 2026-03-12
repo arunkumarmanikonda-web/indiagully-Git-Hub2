@@ -83,7 +83,7 @@ app.get('/', (c) => {
         { year:'2019', desc:'Expanded into Real Estate consulting and Retail Leasing strategy, building a truly diversified advisory practice across four complementary verticals.' },
         { year:'2020', desc:'HORECA Supplies vertical launched. Providing end-to-end FF&E, OS&E and kitchen procurement for hotel pre-openings and renovations across India.' },
         { year:'2021', desc:'Launched India Gully brand identity, celebrating Desiness. Deepened retail leasing practice with 30+ brand relationships across fashion, F&B and entertainment.' },
-        { year:'2023', desc:'Greenfield hotel projects in Hosur, Shirdi and Goa underway. Entertainment destination advisory scaled to ₹4,500 Cr pipeline. Debt & Special Situations vertical established.' },
+        { year:'2023', desc:'Scaled hospitality transaction advisory with high-value asset sales and acquisitions across Delhi NCR, Chandigarh and Himachal Pradesh. Debt & Special Situations vertical established. Advisory pipeline crosses ₹1,000 Cr+.' },
         { year:'2024', desc:'Digital transformation initiative. India Gully Enterprise Platform (ERP), integrated advisory management, governance and HORECA procurement system launched.' },
       ].map((t,i) => `
       <div style="display:grid;grid-template-columns:1fr 40px 1fr;gap:0;margin-bottom:2rem;align-items:center;">

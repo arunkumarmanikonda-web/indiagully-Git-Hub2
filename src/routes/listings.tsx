@@ -248,6 +248,12 @@ app.get('/:id', (c) => {
                    onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
           </div>
           <div>
+            <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.25rem;">Phone / WhatsApp *</label>
+            <input id="nda-phone" type="tel" placeholder="+91 98XXX XXXXX" required autocomplete="tel"
+                   style="width:100%;box-sizing:border-box;border:1px solid var(--border);padding:.65rem .875rem;font-size:.875rem;color:var(--ink);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;background:#fafaf7;"
+                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+          <div>
             <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.25rem;">Organisation / Fund *</label>
             <input id="nda-org" type="text" placeholder="e.g. XYZ Family Office / ABC Fund" required autocomplete="organization"
                    style="width:100%;box-sizing:border-box;border:1px solid var(--border);padding:.65rem .875rem;font-size:.875rem;color:var(--ink);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;background:#fafaf7;"
@@ -324,11 +330,12 @@ app.get('/:id', (c) => {
       var d = JSON.parse(stored);
       if (d && d.accepted) {
         if (gate) gate.style.display = 'none';
-        // Pre-fill EOI form with stored name/email/org
+        // Pre-fill EOI form with stored name/email/phone/org
         setTimeout(function(){
-          var en = document.getElementById('eoi-name'); if(en && d.name) en.value = d.name;
+          var en = document.getElementById('eoi-name');  if(en && d.name)  en.value = d.name;
           var ee = document.getElementById('eoi-email'); if(ee && d.email) ee.value = d.email;
-          var eo = document.getElementById('eoi-org'); if(eo && d.org) eo.value = d.org;
+          var ep = document.getElementById('eoi-phone'); if(ep && d.phone) ep.value = d.phone;
+          var eo = document.getElementById('eoi-org');   if(eo && d.org)   eo.value = d.org;
         }, 100);
       }
     }
@@ -345,6 +352,7 @@ app.get('/:id', (c) => {
 function igAcceptNDA(mandateId) {
   var nameVal  = (document.getElementById('nda-name')  || {value:''}).value.trim();
   var emailVal = (document.getElementById('nda-email') || {value:''}).value.trim();
+  var phoneVal = (document.getElementById('nda-phone') || {value:''}).value.trim();
   var orgVal   = (document.getElementById('nda-org')   || {value:''}).value.trim();
   var checked  = document.getElementById('nda-check') && document.getElementById('nda-check').checked;
 
@@ -359,6 +367,7 @@ function igAcceptNDA(mandateId) {
 
   if (!nameVal || nameVal.length < 2) { showErr('Please enter your full name (at least 2 characters).'); return; }
   if (!emailVal || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(emailVal)) { showErr('Please enter a valid email address.'); return; }
+  if (!phoneVal || phoneVal.length < 7) { showErr('Please enter a valid phone / WhatsApp number.'); return; }
   if (!orgVal || orgVal.length < 2) { showErr('Please enter your organisation or fund name.'); return; }
   if (!checked) { showErr('You must read and accept the NDA terms before proceeding.'); return; }
 
@@ -367,15 +376,16 @@ function igAcceptNDA(mandateId) {
   // Store acceptance with details
   try {
     sessionStorage.setItem('ig_nda_' + mandateId, JSON.stringify({
-      accepted: true, name: nameVal, email: emailVal, org: orgVal, ts: new Date().toISOString()
+      accepted: true, name: nameVal, email: emailVal, phone: phoneVal, org: orgVal, ts: new Date().toISOString()
     }));
   } catch(e) {}
 
   // Pre-fill EOI form
   setTimeout(function(){
-    var en = document.getElementById('eoi-name'); if(en) en.value = nameVal;
+    var en = document.getElementById('eoi-name');  if(en) en.value = nameVal;
     var ee = document.getElementById('eoi-email'); if(ee) ee.value = emailVal;
-    var eo = document.getElementById('eoi-org'); if(eo) eo.value = orgVal;
+    var ep = document.getElementById('eoi-phone'); if(ep) ep.value = phoneVal;
+    var eo = document.getElementById('eoi-org');   if(eo) eo.value = orgVal;
   }, 350);
 
   // Dismiss gate with animation
@@ -394,7 +404,7 @@ function igAcceptNDA(mandateId) {
         type: 'nda_acceptance',
         mandate: mandateId,
         mandateTitle: '${l.title}',
-        name: nameVal, email: emailVal, org: orgVal,
+        name: nameVal, email: emailVal, phone: phoneVal, org: orgVal,
         ts: new Date().toISOString()
       })
     }).catch(function(){});
@@ -583,8 +593,8 @@ ${ndaModal}
                      onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
             </div>
             <div>
-              <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.3rem;">Phone Number</label>
-              <input type="tel" name="phone" placeholder="+91 XXXXX XXXXX"
+              <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.3rem;">Phone / WhatsApp *</label>
+              <input id="eoi-phone" type="tel" name="phone" required placeholder="+91 XXXXX XXXXX"
                      style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.72rem .9rem;font-size:.85rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;"
                      onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
             </div>

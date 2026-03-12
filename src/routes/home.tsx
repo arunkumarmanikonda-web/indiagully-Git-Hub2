@@ -173,7 +173,7 @@ app.get('/', (c) => {
       </div>
       <div style="text-align:right;">
         <p class="body" style="max-width:360px;margin-bottom:1.25rem;">Exclusive mandates across Real Estate, Entertainment, Hospitality and Retail. All subject to NDA.</p>
-        <a href="/listings" class="btn btn-dk">View All 6 Mandates</a>
+        <a href="/listings" class="btn btn-dk">View All 8 Mandates</a>
       </div>
     </div>
 
@@ -219,9 +219,10 @@ app.get('/', (c) => {
       </div>
       ${LISTINGS.filter((l: any) => !l.highlight).map((l: any) => `
       <a href="/listings/${l.id}" style="display:flex;align-items:center;gap:1.25rem;padding:1.1rem 1.5rem;border-bottom:1px solid var(--border);transition:background .2s;text-decoration:none;" onmouseover="this.style.background='var(--parch)'" onmouseout="this.style.background='transparent'">
-        <div style="width:56px;height:44px;overflow:hidden;flex-shrink:0;background:#1a1a1a;">
-          <img src="${l.images?.[0]||''}" alt="${l.title}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
-        </div>
+        ${l.images?.[0]
+            ? `<div style="width:56px;height:44px;overflow:hidden;flex-shrink:0;background:#1a1a1a;"><img src="${l.images[0]}" alt="${l.title}" style="width:100%;height:100%;object-fit:cover;" loading="lazy"></div>`
+            : `<div style="width:56px;height:44px;overflow:hidden;flex-shrink:0;background:#111;display:flex;align-items:center;justify-content:center;"><i class="fas fa-lock" style="color:#B8960C;font-size:.75rem;"></i></div>`
+          }
         <div style="flex:1;min-width:0;">
           <div style="font-size:.875rem;font-weight:600;color:var(--ink);margin-bottom:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${l.title}</div>
           <div style="font-size:.72rem;color:var(--ink-muted);">${l.locationShort} · ${l.sector}</div>
