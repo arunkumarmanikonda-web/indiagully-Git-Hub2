@@ -2265,13 +2265,15 @@ app.post('/subscribe', async (c) => {
   } catch { return c.json({ success: false, error: 'Subscription failed' }, 500) }
 })
 
-app.get('/listings', (c) => c.json({ total: 6, pipeline_value: '₹8,815 Cr', listings: [
-  { id:'entertainment-maharashtra', title:'Integrated Entertainment Destination', location:'Maharashtra',       value:'₹4,500 Cr', sector:'Entertainment', status:'Active' },
-  { id:'retail-hub-mumbai',         title:'Entertainment & Retail Hub',           location:'Mumbai MMR',        value:'₹2,100 Cr', sector:'Real Estate',   status:'Active' },
-  { id:'heritage-rajasthan',        title:'6-Property Heritage Hotel Portfolio',  location:'Rajasthan',         value:'₹620 Cr',   sector:'Heritage',      status:'Under Negotiation' },
-  { id:'luxury-resorts-pan-india',  title:'5-Property Luxury Resort Rollout',     location:'Rajasthan · Goa',   value:'₹350 Cr',   sector:'Hospitality',   status:'Feasibility' },
-  { id:'entertainment-ncr',         title:'Entertainment City — Delhi NCR',       location:'Noida, Delhi NCR',  value:'₹1,200 Cr', sector:'Entertainment', status:'Active' },
-  { id:'desi-brand-retail',         title:'Desi Brand — 15-City Retail Expansion',location:'Tier 1 & 2 Cities',value:'₹45 Cr',    sector:'Retail',        status:'Active' },
+app.get('/listings', (c) => c.json({ total: 8, pipeline_value: '₹1,165 Cr', listings: [
+  { id:'prism-tower-gurgaon',           title:'Prism Tower — Mixed-Use Hospitality & Commercial', location:'Gwalpahari, Gurugram',      value:'₹400 Cr', sector:'Real Estate',         status:'Reference Transaction – Due Diligence Stage' },
+  { id:'belcibo-hospitality',           title:'Belcibo Hospitality Platform',                    location:'Delhi NCR & Goa',           value:'₹100 Cr', sector:'Hospitality',         status:'Open for Investment – Active Fundraise' },
+  { id:'hotel-rajshree-chandigarh',     title:'Hotel Rajshree & Spa',                            location:'Chandigarh',                value:'₹70 Cr',  sector:'Hospitality',         status:'Asset Sale – Actively Marketing' },
+  { id:'welcomheritage-santa-roza-kasauli', title:'WelcomHeritage Santa Roza',                   location:'Kasauli, Himachal Pradesh', value:'₹45 Cr',  sector:'Heritage Hospitality',status:'Asset Sale – Seller Mandated' },
+  { id:'heritage-hotel-jaipur',         title:'Heritage Hotel Structure — Jaipur',               location:'Jaipur, Rajasthan',         value:'₹20 Cr',  sector:'Heritage Hospitality',status:'Structure Sale – Ready for Fit-Out' },
+  { id:'maple-resort-chail',            title:'Maple Resort Chail',                              location:'Chail, Himachal Pradesh',   value:'₹30 Cr',  sector:'Hospitality',         status:'Asset Sale – Owner Direct' },
+  { id:'ambience-tower-north-delhi',    title:'Ambience Tower — Adaptive Reuse',                 location:'Shalimar Bagh, North Delhi', value:'₹350 Cr', sector:'Real Estate',        status:'Conversion Opportunity – Technical Feasibility Complete' },
+  { id:'sawasdee-jlg-noida',            title:'Sawasdee JLG Galleria',                           location:'Noida',                     value:'₹150 Cr', sector:'Mixed-Use',           status:'Outright Sale – Negotiation Ready' },
 ]}))
 
 app.post('/attendance/checkin', async (c) => {

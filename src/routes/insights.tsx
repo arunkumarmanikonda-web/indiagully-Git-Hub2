@@ -3,14 +3,22 @@ import { layout } from '../lib/layout'
 
 const app = new Hono()
 
-// ── ARTICLE IMAGES (Unsplash — topic-matched, verified) ─────────────────────
+// ── ARTICLE IMAGES — India Gully project images only ──────────────────────
+// All images sourced from active India Gully mandate properties only.
+// No generic stock / Unsplash images used.
 const CAT_IMAGES: Record<string, string> = {
-  'Real Estate':             'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=900&q=80',
-  'Entertainment':           'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=900&q=80',
-  'HORECA':                  'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80',
-  'Debt & Special Situations':'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=900&q=80',
-  'Retail':                  'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=900&q=80',
-  'Hospitality':             'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=900&q=80',
+  // Hotel Rajshree & Spa, Chandigarh — Real Estate / Commercial article header
+  'Real Estate':             'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/Hotel-Rajshree-5-scaled-e1765525431558.webp',
+  // WelcomHeritage Santa Roza, Kasauli — Heritage & Entertainment context
+  'Entertainment':           'https://www.welcomheritagehotels.in/wp-content/uploads/2024/09/santa-roza-overview.jpg',
+  // Hotel Rajshree interior — HORECA / F&B procurement context
+  'HORECA':                  'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/IMG_1157-1-scaled-1.webp',
+  // Maple Resort Chail — mountain asset, suitable for Debt / Special Situations
+  'Debt & Special Situations':'https://www.mapleresorts.in/images/slider/maple-resort-chail-1.jpg',
+  // Maple Resort exterior — Retail / leasing context
+  'Retail':                  'https://www.mapleresorts.in/images/slider/maple-resort-chail-2.jpg',
+  // WelcomHeritage Santa Roza — Hospitality article header
+  'Hospitality':             'https://www.welcomheritagehotels.in/wp-content/uploads/2024/09/santa-roza-room.jpg',
 }
 
 // ── ARTICLES ─────────────────────────────────────────────────────────────────
@@ -693,7 +701,7 @@ app.get('/', (c) => {
          class="mob-stack feat-card"
          onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
       <div style="position:relative;min-height:340px;overflow:hidden;background:#1a1a1a;">
-        <img src="${CAT_IMAGES[featured.category] || 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=900&q=80'}"
+        <img src="${CAT_IMAGES[featured.category] || 'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/Hotel-Rajshree-5-scaled-e1765525431558.webp'}"
              alt="${featured.title}"
              style="width:100%;height:100%;object-fit:cover;transition:transform 8s ease;" loading="eager"
              onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
@@ -722,7 +730,7 @@ app.get('/', (c) => {
       ${rest.map((a, i) => `
       <article class="ins-card" data-cat="${a.category}" style="animation:fadeUp .5s ease ${i * 0.06}s both;">
         <div class="ins-card__img">
-          <img src="${CAT_IMAGES[a.category] || 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80'}"
+          <img src="${CAT_IMAGES[a.category] || 'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/Hotel-Rajshree-5-scaled-e1765525431558.webp'}"
                alt="${a.title}" loading="lazy">
           <div class="ins-card__overlay"></div>
           <div style="position:absolute;top:.875rem;left:.875rem;">${catBadge(a.category)}</div>
@@ -860,7 +868,7 @@ app.get('/:id', (c) => {
   if (!article) return c.redirect('/insights')
 
   const relatedArticles = ARTICLES.filter(a => a.id !== id && (a.category === article.category || a.tags.some((t: string) => article.tags.includes(t)))).slice(0, 3)
-  const catImg = CAT_IMAGES[article.category] || 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80'
+  const catImg = CAT_IMAGES[article.category] || 'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/Hotel-Rajshree-5-scaled-e1765525431558.webp'
 
   const content = `
 
