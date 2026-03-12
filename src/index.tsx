@@ -254,6 +254,9 @@ app.route('/contact', contactRoute)
 app.route('/portal', portalRoute)
 app.route('/admin', adminRoute)
 app.route('/admin/sales', salesRoute)
+app.route('/sales', salesRoute)
+// Redirect bare /sales to /sales/dashboard
+app.get('/sales', (c) => c.redirect('/sales/dashboard', 302))
 app.route('/api', apiRoute)
 
 // ── 404 NOT FOUND ─────────────────────────────────────────────────────────────

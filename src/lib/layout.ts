@@ -8,7 +8,7 @@ export function layout(title: string, content: string, opts?: {
   noNav?: boolean
   noFooter?: boolean
   cspNonce?: string       // kept for API compatibility; CSP now uses unsafe-inline + CDN allowlist
-  jsonLd?: string         // optional JSON-LD structured data blob
+  jsonLd?: string | object  // optional JSON-LD structured data blob (string or object)
   canonical?: string      // optional canonical URL override
 }) {
   const desc = opts?.description || "India Gully — Celebrating Desiness. India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions."
@@ -31,7 +31,7 @@ export function layout(title: string, content: string, opts?: {
 <title>${title} — India Gully</title>
 ${opts?.canonical ? `<link rel="canonical" href="${opts.canonical}">` : ''}
 <!-- FAVICON: hologram asset — locked, no AI, no optimisation, lossless only -->
-${opts?.jsonLd ? `<script type="application/ld+json">${opts.jsonLd}</script>` : ''}
+${opts?.jsonLd ? `<script type="application/ld+json">${typeof opts.jsonLd === 'string' ? opts.jsonLd : JSON.stringify(opts.jsonLd)}</script>` : ''}
 <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon-64.png">
 <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
@@ -517,10 +517,16 @@ body{overflow-x:hidden;}
 #homeStats{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--border);}
 @media(max-width:900px){#homeStats{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:560px){#homeStats{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:400px){#homeStats{grid-template-columns:1fr;}}
 .home-stat-cell{padding:1.75rem 1.25rem;text-align:center;border-right:1px solid var(--border);}
 .home-stat-cell:last-child{border-right:none;}
-@media(max-width:900px){.home-stat-cell:nth-child(3){border-right:none;}.home-stat-cell:nth-child(4){border-right:1px solid var(--border);}}
-@media(max-width:560px){.home-stat-cell:nth-child(2n){border-right:none;}.home-stat-cell:nth-child(2n+1):not(:last-child){border-right:1px solid var(--border);}}
+@media(max-width:900px){.home-stat-cell:nth-child(3){border-right:none;}.home-stat-cell:nth-child(4){border-right:1px solid var(--border);}
+  .home-stat-cell:nth-child(n+4){border-top:1px solid var(--border);}}
+@media(max-width:560px){.home-stat-cell:nth-child(2n){border-right:none;}.home-stat-cell:nth-child(2n+1):not(:last-child){border-right:1px solid var(--border);}
+  .home-stat-cell:nth-child(n+3){border-top:1px solid var(--border);}
+  .home-stat-cell:nth-child(5){grid-column:1/-1;border-right:none;border-top:1px solid var(--border);}}
+@media(max-width:400px){.home-stat-cell{border-right:none;border-bottom:1px solid var(--border);padding:1.25rem 1rem;}
+  .home-stat-cell:last-child{border-bottom:none;}}
 
 /* ── Brand logo grid: 6→4→3→2 ───────────────── */
 .brand-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);}

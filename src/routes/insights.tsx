@@ -609,24 +609,61 @@ app.get('/', (c) => {
   const rest = ARTICLES.slice(1)
 
   const content = `
+<style>
+/* ── INSIGHTS PAGE STYLES ── */
+.ins-filter-row{display:flex;flex-wrap:wrap;gap:.45rem;}
+.ins-filter-btn{padding:.4rem 1rem;font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:1px solid rgba(255,255,255,.18);background:transparent;color:rgba(255,255,255,.55);cursor:pointer;transition:all .25s;white-space:nowrap;}
+.ins-filter-btn:hover{border-color:rgba(255,255,255,.5);color:rgba(255,255,255,.85);}
+.ins-filter-btn.active{border-color:var(--gold);background:var(--gold);color:#fff;}
+.ins-filter-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+.insight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.ins-card{background:#fff;border:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:border-color .25s,box-shadow .25s,transform .25s;}
+.ins-card:hover{border-color:var(--gold);box-shadow:0 12px 40px rgba(0,0,0,.08);transform:translateY(-3px);}
+.ins-card__img{height:185px;overflow:hidden;position:relative;background:#1a1a1a;flex-shrink:0;}
+.ins-card__img img{width:100%;height:100%;object-fit:cover;transition:transform 6s ease;}
+.ins-card:hover .ins-card__img img{transform:scale(1.05);}
+.ins-card__overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,rgba(0,0,0,.08) 60%,transparent 100%);}
+.ins-card__meta{position:absolute;bottom:.875rem;left:.875rem;right:.875rem;display:flex;align-items:flex-end;justify-content:space-between;}
+.ins-card__body{padding:1.5rem;flex:1;display:flex;flex-direction:column;}
+.ins-card__title{font-family:'DM Serif Display',Georgia,serif;font-size:1.08rem;color:var(--ink);line-height:1.32;margin-bottom:.7rem;flex:1;}
+.ins-card__excerpt{font-size:.81rem;color:var(--ink-muted);line-height:1.72;margin-bottom:1rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.ins-card__tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:1rem;}
+.ins-card__tag{background:rgba(17,17,17,.04);color:var(--ink-soft);border:1px solid var(--border);font-size:.58rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.14rem .48rem;}
+.ins-card__read{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);transition:gap .2s;margin-top:auto;}
+.ins-card__read:hover{gap:.65rem;}
+.ins-stats-bar{display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.06);}
+.ins-stat{padding:1.5rem 1.75rem;border-right:1px solid rgba(255,255,255,.06);text-align:center;}
+.ins-stat__n{font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--gold);line-height:1;margin-bottom:.3rem;}
+.ins-stat__l{font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);}
+@media(max-width:860px){.insight-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:580px){
+  .insight-grid{grid-template-columns:1fr;}
+  .ins-filter-row{flex-wrap:nowrap;overflow-x:auto;padding-bottom:.5rem;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+  .ins-filter-row::-webkit-scrollbar{display:none;}
+  .ins-filter-btn{flex-shrink:0;}
+  .ins-stats-bar{grid-template-columns:repeat(2,1fr);}
+  .ins-stat{padding:1rem 1.25rem;}
+  .ins-stat__n{font-size:1.35rem;}
+}
+</style>
 
 <!-- ══ INSIGHTS HERO ════════════════════════════════════════════════════ -->
 <div style="background:var(--ink);padding:7rem 0 5rem;position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.05) 1px,transparent 1px);background-size:72px 72px;"></div>
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 40%,rgba(184,150,12,.04) 0%,transparent 60%);pointer-events:none;"></div>
   <div class="wrap" style="position:relative;">
-    <div style="max-width:680px;" class="fu">
+    <div style="max-width:720px;" class="fu">
       <div class="gr-lt"></div>
       <p class="eyebrow" style="margin-bottom:.875rem;">Insights &amp; Research</p>
       <h1 class="h1" style="margin-bottom:1.5rem;">Thought Leadership<br><em style="color:var(--gold);font-style:italic;">from the Field</em></h1>
-      <p class="lead-lt" style="max-width:580px;margin-bottom:2.5rem;">Market research, sector analysis and operational insights from India Gully's advisory practice, drawn from active mandates across hospitality, real estate, retail and entertainment.</p>
+      <p class="lead-lt" style="max-width:600px;margin-bottom:2.5rem;">Market research, sector analysis and operational insights from India Gully's advisory practice — drawn from active mandates across hospitality, real estate, retail and entertainment.</p>
 
-      <!-- Category Filter Buttons -->
-      <div id="insightFilterRow" style="display:flex;flex-wrap:wrap;gap:.5rem;">
+      <!-- Category Filter Buttons (horizontal scroll on mobile) -->
+      <div id="insightFilterRow" class="ins-filter-row" role="group" aria-label="Filter articles by category">
         ${ALL_CATS.map((cat, i) => `
         <button onclick="filterInsights('${cat}')" data-cat="${cat}"
                 class="ins-filter-btn${i === 0 ? ' active' : ''}"
-                style="padding:.4rem 1rem;font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:1px solid ${i === 0 ? 'var(--gold)' : 'rgba(255,255,255,.18)'};background:${i === 0 ? 'var(--gold)' : 'transparent'};color:${i === 0 ? '#fff' : 'rgba(255,255,255,.55)'};cursor:pointer;transition:all .2s;">${cat}</button>`).join('')}
+                aria-pressed="${i === 0 ? 'true' : 'false'}">${cat}</button>`).join('')}
       </div>
     </div>
   </div>
@@ -635,17 +672,13 @@ app.get('/', (c) => {
 <!-- ══ STATS BAR ══════════════════════════════════════════════════════════ -->
 <div style="background:var(--ink-mid);border-bottom:1px solid rgba(255,255,255,.06);">
   <div class="wrap" style="padding:0;">
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.06);">
+    <div class="ins-stats-bar">
       ${[
         { n: '12', l: 'In-Depth Articles' },
         { n: '6',  l: 'Sectors Covered' },
-        { n: '₹6,000 Cr+', l: 'Advisory Mandates Behind Research' },
-        { n: '2024–26', l: 'Latest Research Period' },
-      ].map(s => `
-      <div style="padding:1.5rem 1.75rem;border-right:1px solid rgba(255,255,255,.06);text-align:center;">
-        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--gold);line-height:1;margin-bottom:.3rem;">${s.n}</div>
-        <div style="font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);">${s.l}</div>
-      </div>`).join('')}
+        { n: '₹6,000 Cr+', l: 'Advisory Mandates' },
+        { n: '2024–26', l: 'Research Period' },
+      ].map(s => `<div class="ins-stat"><div class="ins-stat__n">${s.n}</div><div class="ins-stat__l">${s.l}</div></div>`).join('')}
     </div>
   </div>
 </div>
@@ -655,20 +688,25 @@ app.get('/', (c) => {
   <div class="wrap">
 
     <!-- Featured Card -->
-    <div id="featuredArticle" data-cat="${featured.category}" style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);overflow:hidden;margin-bottom:3.5rem;transition:border-color .3s;" class="mob-stack" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+    <div id="featuredArticle" data-cat="${featured.category}"
+         style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);overflow:hidden;margin-bottom:3.5rem;transition:border-color .3s;"
+         class="mob-stack feat-card"
+         onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
       <div style="position:relative;min-height:340px;overflow:hidden;background:#1a1a1a;">
         <img src="${CAT_IMAGES[featured.category] || 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=900&q=80'}"
              alt="${featured.title}"
              style="width:100%;height:100%;object-fit:cover;transition:transform 8s ease;" loading="eager"
              onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
         <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,.4) 0%,rgba(0,0,0,.1) 100%);"></div>
-        <div style="position:absolute;top:1.25rem;left:1.25rem;">
-          ${catBadge(featured.category)}
-        </div>
-        <div style="position:absolute;bottom:1.25rem;left:1.25rem;font-size:.68rem;color:rgba(255,255,255,.55);letter-spacing:.06em;">${featured.date} · ${featured.readTime}</div>
+        <div style="position:absolute;top:1.25rem;left:1.25rem;">${catBadge(featured.category)}</div>
+        <div style="position:absolute;top:1.25rem;right:1.25rem;background:rgba(0,0,0,.5);color:rgba(255,255,255,.75);font-size:.62rem;font-weight:600;letter-spacing:.06em;padding:.28rem .65rem;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-clock" style="font-size:.55rem;color:var(--gold);"></i>${featured.readTime}</div>
+        <div style="position:absolute;bottom:1.25rem;left:1.25rem;font-size:.68rem;color:rgba(255,255,255,.55);letter-spacing:.06em;">${featured.date}</div>
       </div>
       <div style="padding:2.75rem;display:flex;flex-direction:column;justify-content:center;">
-        <p style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">Featured Article</p>
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.875rem;">
+          <span style="font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);background:rgba(184,150,12,.08);border:1px solid rgba(184,150,12,.2);padding:.22rem .65rem;">Featured</span>
+          <span style="font-size:.6rem;color:var(--ink-faint);letter-spacing:.08em;">${featured.readTime}</span>
+        </div>
         <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:clamp(1.35rem,2.2vw,1.9rem);color:var(--ink);line-height:1.2;margin-bottom:1rem;">${featured.title}</h2>
         <p style="font-size:.875rem;color:var(--ink-soft);line-height:1.8;margin-bottom:1.75rem;">${featured.excerpt}</p>
         <div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1.75rem;">
@@ -677,31 +715,29 @@ app.get('/', (c) => {
         <a href="/insights/${featured.id}" class="btn btn-g" style="align-self:flex-start;">Read Full Article <i class="fas fa-arrow-right" style="margin-left:.4rem;font-size:.65rem;"></i></a>
       </div>
     </div>
+    <style>@media(max-width:640px){.feat-card{grid-template-columns:1fr!important;}.feat-card>div:first-child{min-height:220px!important;}}</style>
 
     <!-- Articles Grid -->
     <div class="insight-grid" id="articleGrid">
       ${rest.map((a, i) => `
-      <article class="ins-card" data-cat="${a.category}"
-               style="background:#fff;border:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:border-color .25s,box-shadow .25s,transform .25s;animation:fadeUp .55s ease ${i * 0.07}s both;"
-               onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 12px 40px rgba(0,0,0,.08)';this.style.transform='translateY(-3px)'"
-               onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none';this.style.transform='translateY(0)'">
-        <!-- Image Header -->
-        <div style="height:180px;overflow:hidden;position:relative;background:#1a1a1a;flex-shrink:0;">
+      <article class="ins-card" data-cat="${a.category}" style="animation:fadeUp .5s ease ${i * 0.06}s both;">
+        <div class="ins-card__img">
           <img src="${CAT_IMAGES[a.category] || 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80'}"
-               alt="${a.title}" style="width:100%;height:100%;object-fit:cover;transition:transform 6s ease;" loading="lazy"
-               onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,rgba(0,0,0,.1) 60%,transparent 100%);"></div>
+               alt="${a.title}" loading="lazy">
+          <div class="ins-card__overlay"></div>
           <div style="position:absolute;top:.875rem;left:.875rem;">${catBadge(a.category)}</div>
-          <div style="position:absolute;bottom:.875rem;left:.875rem;font-size:.62rem;color:rgba(255,255,255,.55);letter-spacing:.06em;">${a.date}</div>
-          <div style="position:absolute;bottom:.875rem;right:.875rem;font-size:.62rem;color:rgba(255,255,255,.45);letter-spacing:.04em;">${a.readTime}</div>
-        </div>
-        <div style="padding:1.5rem;flex:1;display:flex;flex-direction:column;">
-          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);line-height:1.3;margin-bottom:.75rem;flex:1;">${a.title}</h3>
-          <p style="font-size:.82rem;color:var(--ink-muted);line-height:1.7;margin-bottom:1.1rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${a.excerpt}</p>
-          <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:1.1rem;">
-            ${a.tags.slice(0, 3).map((t: string) => `<span style="background:rgba(17,17,17,.04);color:var(--ink-soft);border:1px solid var(--border);font-size:.6rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .5rem;">${t}</span>`).join('')}
+          <div class="ins-card__meta">
+            <span style="font-size:.62rem;color:rgba(255,255,255,.6);letter-spacing:.06em;">${a.date}</span>
+            <span style="font-size:.62rem;color:rgba(255,255,255,.5);letter-spacing:.04em;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-clock" style="font-size:.52rem;color:var(--gold);"></i>${a.readTime}</span>
           </div>
-          <a href="/insights/${a.id}" style="display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);transition:gap .2s;" onmouseover="this.style.gap='.65rem'" onmouseout="this.style.gap='.4rem'">Read Article <i class="fas fa-arrow-right" style="font-size:.6rem;"></i></a>
+        </div>
+        <div class="ins-card__body">
+          <h3 class="ins-card__title">${a.title}</h3>
+          <p class="ins-card__excerpt">${a.excerpt}</p>
+          <div class="ins-card__tags">
+            ${a.tags.slice(0, 3).map((t: string) => `<span class="ins-card__tag">${t}</span>`).join('')}
+          </div>
+          <a href="/insights/${a.id}" class="ins-card__read">Read Article <i class="fas fa-arrow-right" style="font-size:.6rem;"></i></a>
         </div>
       </article>`).join('')}
     </div>
@@ -775,29 +811,45 @@ function filterInsights(cat) {
   var cards = document.querySelectorAll('.ins-card');
   var featured = document.getElementById('featuredArticle');
   var btns = document.querySelectorAll('.ins-filter-btn');
+  var grid = document.getElementById('articleGrid');
 
   btns.forEach(function(b) {
     var isActive = b.dataset.cat === cat;
-    b.style.borderColor = isActive ? 'var(--gold)' : 'rgba(255,255,255,.18)';
-    b.style.background  = isActive ? 'var(--gold)' : 'transparent';
-    b.style.color       = isActive ? '#fff' : 'rgba(255,255,255,.55)';
+    b.classList.toggle('active', isActive);
+    b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
   });
 
   // Featured article
   if (featured) {
-    featured.style.display = (cat === 'All' || featured.dataset.cat === cat) ? 'grid' : 'none';
+    var showFeat = (cat === 'All' || featured.dataset.cat === cat);
+    featured.style.display = showFeat ? '' : 'none';
   }
 
+  var visibleCount = 0;
   cards.forEach(function(card) {
     var match = cat === 'All' || card.dataset.cat === cat;
-    card.style.display = match ? 'flex' : 'none';
+    card.style.display = match ? '' : 'none';
+    if (match) visibleCount++;
   });
+
+  // Show empty state if no articles match
+  var empty = document.getElementById('insightsEmpty');
+  if (empty) empty.style.display = visibleCount === 0 ? 'block' : 'none';
 }
 </script>
 `
 
-  return c.html(layout('Insights & Research', content, {
-    description: 'India Gully Insights — thought leadership, market research and sector analysis across hospitality, real estate, retail, entertainment, HORECA, and debt & special situations advisory.'
+  return c.html(layout('Insights & Research — India Gully', content, {
+    description: 'India Gully Insights \u2014 thought leadership, market research and sector analysis across hospitality, real estate, retail, entertainment, HORECA, and debt & special situations advisory.',
+    canonical: 'https://india-gully.pages.dev/insights',
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: 'Insights & Research \u2014 India Gully',
+      description: 'Thought leadership and market research from India Gully\u2019s advisory practice.',
+      url: 'https://india-gully.pages.dev/insights',
+      publisher: { '@type': 'Organization', name: 'India Gully', url: 'https://india-gully.pages.dev' }
+    }
   }))
 })
 
@@ -962,6 +1014,35 @@ ${relatedArticles.length ? `
   return c.html(layout(article.title, content, {
     description: article.excerpt,
     ogImage: CAT_IMAGES[article.category],
+    canonical: `https://india-gully.pages.dev/insights/${article.id}`,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'Article',
+          headline: article.title,
+          description: article.excerpt,
+          image: CAT_IMAGES[article.category],
+          datePublished: article.date,
+          author: { '@type': 'Organization', name: 'India Gully Research', url: 'https://india-gully.pages.dev' },
+          publisher: {
+            '@type': 'Organization', name: 'India Gully',
+            logo: { '@type': 'ImageObject', url: 'https://india-gully.pages.dev/assets/logo-white.png' }
+          },
+          mainEntityOfPage: { '@type': 'WebPage', '@id': `https://india-gully.pages.dev/insights/${article.id}` },
+          keywords: article.tags.join(', '),
+          articleSection: article.category,
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://india-gully.pages.dev/' },
+            { '@type': 'ListItem', position: 2, name: 'Insights', item: 'https://india-gully.pages.dev/insights' },
+            { '@type': 'ListItem', position: 3, name: article.title, item: `https://india-gully.pages.dev/insights/${article.id}` },
+          ]
+        }
+      ]
+    }
   }))
 })
 

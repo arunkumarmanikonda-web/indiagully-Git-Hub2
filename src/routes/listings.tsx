@@ -601,6 +601,28 @@ ${ndaModal}
   return c.html(layout(listing.title, content, {
     description: `${listing.title}, ${listing.location}, ${listing.value}, India Gully exclusive transaction advisory mandate.`,
     ogImage: listing.images?.[0],
+    canonical: `https://india-gully.pages.dev/listings/${listing.id}`,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'RealEstateListing',
+          name: listing.title,
+          description: `${listing.type} — ${listing.location} — ${listing.value}`,
+          address: { '@type': 'PostalAddress', addressLocality: listing.location, addressCountry: 'IN' },
+          url: `https://india-gully.pages.dev/listings/${listing.id}`,
+          image: listing.images?.[0] || 'https://india-gully.pages.dev/static/og.jpg',
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://india-gully.pages.dev/' },
+            { '@type': 'ListItem', position: 2, name: 'Mandates', item: 'https://india-gully.pages.dev/listings' },
+            { '@type': 'ListItem', position: 3, name: listing.title, item: `https://india-gully.pages.dev/listings/${listing.id}` },
+          ]
+        }
+      ]
+    }
   }))
 })
 
