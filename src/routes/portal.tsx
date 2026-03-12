@@ -786,7 +786,7 @@ app.get('/client/dashboard', (c) => {
           <tbody>
             <tr><td style="font-size:.85rem;font-weight:500;">Retail Leasing, Mumbai</td><td style="font-size:.8rem;color:var(--ink-muted);">Real Estate</td><td><span class="badge b-gr">Active</span></td><td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹2,100 Cr</td></tr>
             <tr><td style="font-size:.85rem;font-weight:500;">Hotel Pre-Opening PMC</td><td style="font-size:.8rem;color:var(--ink-muted);">Hospitality</td><td><span class="badge b-g">In Progress</span></td><td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹45 Cr</td></tr>
-            <tr><td style="font-size:.85rem;font-weight:500;">Entertainment Feasibility</td><td style="font-size:.8rem;color:var(--ink-muted);">Entertainment</td><td><span class="badge b-bl">Review</span></td><td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹4,500 Cr</td></tr>
+            <tr><td style="font-size:.85rem;font-weight:500;">Hospitality Advisory — Chandigarh</td><td style="font-size:.8rem;color:var(--ink-muted);">Hospitality</td><td><span class="badge b-bl">Active</span></td><td style="font-family:'DM Serif Display',Georgia,serif;color:var(--gold);">₹70 Cr</td></tr>
           </tbody>
         </table>
       </div>
@@ -827,8 +827,8 @@ app.get('/client/mandates', (c) => {
           milestones:[{done:true,label:'Engagement Signed'},{done:true,label:'Site Survey'},{done:true,label:'Shortlisting'},{done:false,label:'LOI Exchange'},{done:false,label:'Execution'}] },
         { id:'MND-002', name:'Hotel Pre-Opening PMC',         sector:'Hospitality',   value:'₹45 Cr',    advisor:'Arun Manikonda', start:'15 Feb 2026', status:'In Progress', cls:'b-g',  progress:45,
           milestones:[{done:true,label:'Scope Finalised'},{done:true,label:'Team Deployed'},{done:false,label:'Pre-opening Check'},{done:false,label:'Staff Training'},{done:false,label:'Soft Opening'}] },
-        { id:'MND-003', name:'Entertainment Feasibility',     sector:'Entertainment', value:'₹4,500 Cr', advisor:'Arun Manikonda', start:'01 Mar 2026', status:'Review',      cls:'b-bl', progress:20,
-          milestones:[{done:true,label:'NDA Executed'},{done:false,label:'Site Visits'},{done:false,label:'Feasibility Study'},{done:false,label:'Report'},{done:false,label:'Activation'}] },
+        { id:'MND-003', name:'Hotel Rajshree & Spa — Chandigarh', sector:'Hospitality', value:'₹70 Cr', advisor:'Amit Jhingan', start:'01 Mar 2026', status:'Active', cls:'b-bl', progress:35,
+          milestones:[{done:true,label:'NDA Executed'},{done:true,label:'Site Visit'},{done:false,label:'LOI Exchange'},{done:false,label:'Due Diligence'},{done:false,label:'Transaction Close'}] },
       ].map((m,mi) => `
       <div style="background:#fff;border:1px solid var(--border);">
         <div style="padding:1.25rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;">

@@ -89,7 +89,7 @@ const ARTICLES = [
     body: `
 <h2>Introduction</h2>
 <p>India's entertainment real estate sector — encompassing theme parks, family entertainment centres (FECs), waterparks, gaming zones, multiplex-anchored destination retail, and integrated entertainment destinations — operates at the intersection of <strong>six distinct regulatory frameworks</strong>. Navigating this complexity is one of the primary risks for promoters and investors.</p>
-<p>India Gully, as transaction advisor and development consultant on entertainment mandates exceeding ₹6,000 Cr in aggregate, has developed a proprietary regulatory mapping framework that we outline in this article.</p>
+<p>India Gully, as transaction advisor and development consultant across hospitality, real estate, and entertainment mandates, has developed a proprietary regulatory mapping framework that we outline in this article.</p>
 
 <h2>The Six Regulatory Layers</h2>
 <h3>Layer 1: Town Planning & Land Use</h3>
@@ -112,7 +112,7 @@ const ARTICLES = [
 <p>IP-anchored entertainment (licensed characters, branded experiences) requires formal licensing agreements from IP holders. These are increasingly international transactions requiring RBI FEMA compliance for royalty payments.</p>
 
 <h2>State-Wise Regulatory Environment</h2>
-<p><strong>Maharashtra</strong>: Most progressive policy environment. D-MRT entertainment zones, streamlined clearances via Single Window. India Gully's ₹4,500 Cr entertainment destination mandate is in Maharashtra partly for this reason.</p>
+<p><strong>Maharashtra</strong>: Most progressive policy environment. D-MRT entertainment zones, streamlined clearances via Single Window. Maharashtra is a priority market for entertainment destination investment given its regulatory maturity and consumer base.</p>
 <p><strong>Uttar Pradesh</strong>: Strong political will for entertainment investment. YEIDA (Yamuna Expressway Authority) proactively allocates land for entertainment destinations. Our active mandate includes coordination with YEIDA for land designation.</p>
 <p><strong>Rajasthan</strong>: Tourism-led entertainment policy. Heritage-experiential entertainment is a designated priority sector. Faster clearances via RIPS 2022.</p>
 <p><strong>Delhi NCR</strong>: Most complex. Multiple authorities (DDA, GNIDA, Haryana DGTCP) with overlapping jurisdiction. Recommend 18-month regulatory buffer for any new entertainment project.</p>
@@ -415,7 +415,7 @@ const ARTICLES = [
     readTime: '12 min read',
     body: `
 <h2>A Transformational Moment</h2>
-<p>India's entertainment real estate sector is at an inflection point. After decades of incremental development — standalone multiplex complexes, small FECs, single-ride attractions — the country is entering an era of large-format, capital-intensive, experience-led entertainment destinations. India Gully is at the centre of this transformation, with an entertainment advisory pipeline exceeding ₹6,000 Cr.</p>
+<p>India's entertainment real estate sector is at an inflection point. After decades of incremental development — standalone multiplex complexes, small FECs, single-ride attractions — the country is entering an era of large-format, capital-intensive, experience-led entertainment destinations. India Gully is actively engaged across hospitality and mixed-use entertainment advisory mandates at the centre of this transformation.</p>
 
 <h2>The Structural Drivers</h2>
 <p>Four structural forces are converging to create this opportunity:</p>
@@ -426,8 +426,8 @@ const ARTICLES = [
   <li><strong>State government competition</strong>: At least 8 state governments have announced entertainment destination promotion policies in 2023–24, including Maharashtra, UP, Rajasthan, Tamil Nadu, and Karnataka.</li>
 </ul>
 
-<h2>The ₹4,500 Cr Maharashtra Mandate</h2>
-<p>India Gully's marquee entertainment advisory mandate — a 200+ acre integrated entertainment destination in Maharashtra — is India's most significant entertainment real estate transaction of the decade. The project encompasses a world-class theme park, luxury hotel, premium retail mall, and F&B destination. Phase 1 approvals are secured; India Gully holds exclusive transaction advisory rights.</p>
+<h2>India Gully's Entertainment Advisory Approach</h2>
+<p>India Gully's entertainment advisory practice focuses on integrated destination mandates that combine hospitality, retail, F&B, and experience components. Our team advises on site selection, regulatory clearances, operator identification, and capital structuring for large-format entertainment destinations across India's key entertainment real estate corridors.</p>
 
 <h2>Investment Considerations</h2>
 <p>Entertainment real estate requires a different risk-return framework than conventional commercial or hospitality real estate. Key considerations:</p>
@@ -684,7 +684,7 @@ app.get('/', (c) => {
       ${[
         { n: '12', l: 'In-Depth Articles' },
         { n: '6',  l: 'Sectors Covered' },
-        { n: '₹6,000 Cr+', l: 'Advisory Mandates' },
+        { n: '₹1,165 Cr+', l: 'Active Pipeline' },
         { n: '2024–26', l: 'Research Period' },
       ].map(s => `<div class="ins-stat"><div class="ins-stat__n">${s.n}</div><div class="ins-stat__l">${s.l}</div></div>`).join('')}
     </div>

@@ -2295,10 +2295,10 @@ app.post('/leave/apply', async (c) => {
   } catch { return c.json({ success: false, error: 'Leave application failed' }, 500) }
 })
 
-app.get('/mandates',           (c) => c.json({ total:3, active:2, pipeline_value:'₹6,645 Cr', mandates:[
-  { id:'MND-001', title:'Retail Leasing — Mumbai', sector:'Real Estate', value:'₹2,100 Cr', status:'Active', progress:75 },
-  { id:'MND-002', title:'Hotel Pre-Opening PMC',   sector:'Hospitality', value:'₹45 Cr',    status:'In Progress', progress:45 },
-  { id:'MND-003', title:'Entertainment Feasibility',sector:'Entertainment',value:'₹4,500 Cr',status:'Review', progress:20 },
+app.get('/mandates',           (c) => c.json({ total:3, active:3, pipeline_value:'₹615 Cr', mandates:[
+  { id:'MND-001', title:'Retail Leasing — Mumbai',          sector:'Real Estate', value:'₹2,100 Cr', status:'Active',      progress:75 },
+  { id:'MND-002', title:'Hotel Pre-Opening PMC',            sector:'Hospitality', value:'₹45 Cr',    status:'In Progress', progress:45 },
+  { id:'MND-003', title:'Hotel Rajshree & Spa — Chandigarh',sector:'Hospitality', value:'₹70 Cr',    status:'Active',      progress:35 },
 ]}))
 
 app.get('/invoices', requireAnyAuth(),           (c) => c.json({ total:3, total_billed:750160, total_paid:250160, total_due:500000, invoices:[

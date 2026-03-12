@@ -478,7 +478,7 @@ app.get('/dashboard', (c) => {
           {time:'08:55 AM', user:'pavan',      action:'Edited Home Page hero content',            mod:'CMS',     ok:true},
           {time:'Yesterday',user:'Unknown',    action:'2 Failed login attempts blocked',          mod:'Auth',    ok:false},
           {time:'Yesterday',user:'demo',       action:'Client portal login',                      mod:'Auth',    ok:true},
-          {time:'2d ago',   user:'akm',        action:'New mandate: Entertainment ₹4,500 Cr added', mod:'Listings',ok:true},
+          {time:'2d ago',   user:'akm',        action:'New mandate: Hotel Rajshree Chandigarh added', mod:'Listings',ok:true},
           {time:'2d ago',   user:'pavan',      action:'Board pack uploaded for BM-2026-03',       mod:'Govern.', ok:true},
           {time:'3d ago',   user:'emp',        action:'Leave application LV-2026-101 submitted',  mod:'HR',      ok:true},
         ].map(r=>`
@@ -5793,7 +5793,7 @@ app.get('/governance', (c) => {
         <div style="padding:.875rem;">
           ${[
             {doc:'Board Resolution — Q4 Financials',   signers:['Arun Manikonda','Pavan Manikonda'],   due:'10 Mar 2025', signed:0},
-            {doc:'Advisory Agreement — EVL (MND-003)',  signers:['Arun Manikonda'],                     due:'12 Mar 2026', signed:1},
+            {doc:'Advisory Agreement — Hotel Rajshree (MND-003)',  signers:['Amit Jhingan'],                       due:'12 Mar 2026', signed:1},
             {doc:'Annual Return MGT-7 (FY 2024-25)',   signers:['Arun Manikonda','Pavan Manikonda'],   due:'30 Sep 2025', signed:0},
             {doc:'Financial Statements (AOC-4)',        signers:['Arun Manikonda','Pavan Manikonda'],   due:'30 Oct 2025', signed:0},
           ].map(d=>`<div style="border:1px solid var(--border);padding:.875rem;margin-bottom:.5rem;background:var(--parch-dk);">
@@ -14416,11 +14416,11 @@ window.igKpiViewDetail = function(kpiName){
 // ── MANDATE RISK SCORING (/admin/risk) ────────────────────────────────────────
 app.get('/risk', (c) => {
   const mandates = [
-    { id:'MND-001', name:'Entertainment Destination — Maharashtra', sector:'Entertainment', value:'₹4,500 Cr', score:72, factors:{regulatory:65,counterparty:80,timeline:70,financial:72,legal:75}, trend:'stable',   assigned:'Arun Manikonda' },
+    { id:'MND-001', name:'Hotel Rajshree & Spa — Chandigarh', sector:'Hospitality', value:'₹70 Cr',    score:83, factors:{regulatory:85,counterparty:88,timeline:82,financial:82,legal:78}, trend:'stable',   assigned:'Amit Jhingan' },
     { id:'MND-002', name:'Retail Leasing — Mumbai MMR',             sector:'Real Estate',   value:'₹2,100 Cr', score:88, factors:{regulatory:90,counterparty:85,timeline:95,financial:88,legal:82}, trend:'improving', assigned:'Amit Jhingan' },
     { id:'MND-003', name:'Heritage Hotel Portfolio — Rajasthan',    sector:'Hospitality',   value:'₹620 Cr',   score:61, factors:{regulatory:70,counterparty:55,timeline:60,financial:62,legal:58}, trend:'declining', assigned:'Arun Manikonda' },
     { id:'MND-004', name:'Luxury Resort Rollout — Rajasthan+Goa',   sector:'Hospitality',   value:'₹350 Cr',   score:79, factors:{regulatory:82,counterparty:78,timeline:75,financial:80,legal:80}, trend:'stable',    assigned:'Amit Jhingan' },
-    { id:'MND-005', name:'Entertainment City — Delhi NCR',           sector:'Entertainment', value:'₹1,200 Cr', score:55, factors:{regulatory:45,counterparty:60,timeline:55,financial:58,legal:58}, trend:'declining', assigned:'Arun Manikonda' },
+    { id:'MND-005', name:'Maple Resort — Chail, HP',               sector:'Hospitality',   value:'₹30 Cr',    score:76, factors:{regulatory:80,counterparty:75,timeline:72,financial:78,legal:74}, trend:'stable',    assigned:'Amit Jhingan' },
     { id:'MND-006', name:'Desi Brand — Retail Expansion',           sector:'Retail',        value:'₹45 Cr',    score:91, factors:{regulatory:95,counterparty:90,timeline:92,financial:88,legal:90}, trend:'improving', assigned:'Pavan Manikonda' },
   ]
   const riskBand = (s: number) => s>=80?{label:'Low Risk',c:'#16a34a'}:s>=65?{label:'Medium',c:'#d97706'}:{label:'High Risk',c:'#dc2626'}

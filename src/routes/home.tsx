@@ -183,9 +183,12 @@ app.get('/', (c) => {
         const img = l.images?.[0] || ''
         const ss = { active: { bg:'rgba(184,150,12,.12)', text:'#B8960C', border:'rgba(184,150,12,.3)' }, negotiation: { bg:'rgba(37,99,235,.1)', text:'#1d4ed8', border:'rgba(37,99,235,.25)' }, feasibility: { bg:'rgba(22,163,74,.08)', text:'#15803d', border:'rgba(22,163,74,.2)' } }[l.statusType] || { bg:'rgba(184,150,12,.12)', text:'#B8960C', border:'rgba(184,150,12,.3)' }
         return `
-      <a href="/listings/${l.id}" style="display:block;background:#fff;border:1px solid var(--border);overflow:hidden;transition:all .3s;text-decoration:none;" onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 16px 50px rgba(0,0,0,.1)';this.querySelector('img').style.transform='scale(1.04)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none';this.querySelector('img').style.transform='scale(1)'">
+      <a href="/listings/${l.id}" style="display:block;background:#fff;border:1px solid var(--border);overflow:hidden;transition:all .3s;text-decoration:none;" onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 16px 50px rgba(0,0,0,.1)';var im=this.querySelector('img');if(im)im.style.transform='scale(1.04)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none';var im=this.querySelector('img');if(im)im.style.transform='scale(1)'">
         <div style="height:230px;overflow:hidden;position:relative;background:#1a1a1a;">
-          <img src="${img}" alt="${l.title}" style="width:100%;height:100%;object-fit:cover;transition:transform 6s ease;" loading="lazy">
+          ${img
+            ? `<img src="${img}" alt="${l.title}" style="width:100%;height:100%;object-fit:cover;transition:transform 6s ease;" loading="lazy">`
+            : `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;"><i class="fas fa-lock" style="color:#B8960C;font-size:1.75rem;opacity:.8;"></i><span style="font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);">Images Under NDA</span></div>`
+          }
           <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,rgba(0,0,0,.1) 60%,transparent 100%);"></div>
           <div style="position:absolute;top:1rem;left:1rem;">
             <span style="background:${l.sectorColor};color:#fff;font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.25rem .65rem;">${l.sector}</span>
