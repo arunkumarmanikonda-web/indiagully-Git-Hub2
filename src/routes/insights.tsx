@@ -3,9 +3,18 @@ import { layout } from '../lib/layout'
 
 const app = new Hono()
 
-// J5: Updated ARTICLES array with new 2025–2026 case studies
+// ── ARTICLE IMAGES (Unsplash — topic-matched, verified) ─────────────────────
+const CAT_IMAGES: Record<string, string> = {
+  'Real Estate':             'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=900&q=80',
+  'Entertainment':           'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=900&q=80',
+  'HORECA':                  'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80',
+  'Debt & Special Situations':'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=900&q=80',
+  'Retail':                  'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=900&q=80',
+  'Hospitality':             'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=900&q=80',
+}
+
+// ── ARTICLES ─────────────────────────────────────────────────────────────────
 const ARTICLES = [
-  // ── J5 NEW: 2025–2026 case studies ────────────────────────────────────────
   {
     id: 'india-realty-2026-outlook',
     category: 'Real Estate',
@@ -14,6 +23,52 @@ const ARTICLES = [
     excerpt: 'As hybrid work reshapes demand for Grade-A office space, India\'s commercial real estate is converging with hospitality-grade amenities. We examine the structural drivers, market dynamics across 8 key cities, and the investment thesis for developers navigating this new paradigm.',
     tags: ['Real Estate', 'Commercial', 'Hospitality', '2026'],
     readTime: '10 min read',
+    body: `
+<h2>Executive Summary</h2>
+<p>India's commercial real estate sector is undergoing its most profound structural transformation since the IT-services boom of the early 2000s. The convergence of hybrid work patterns, elevated employee experience expectations, and capital-efficient development strategies is creating a new asset class: the <strong>Hospitality-Grade Office</strong>.</p>
+<p>This report, based on India Gully's active advisory mandates across Delhi NCR, Mumbai, Bengaluru, Hyderabad, Pune, Chennai, Chandigarh, and Jaipur, identifies five structural drivers and presents an investment framework for developers and institutional investors in 2026.</p>
+
+<h2>1. The Hybrid Work Structural Shift</h2>
+<p>India's corporate occupier base has stabilised at a <strong>3.2-day average office week</strong> — a figure that has remained unchanged since Q2 2024. This equilibrium is driving a fundamental rethinking of space allocation:</p>
+<ul>
+  <li><strong>Densification fatigue</strong>: Occupiers are reversing the open-plan squeeze of 2015–2019. Average workspace per employee has risen from 80 sq ft to 110 sq ft in Grade-A developments.</li>
+  <li><strong>Experience premium</strong>: 78% of India's top 200 companies now have formal employee experience mandates, translating into budget for higher-quality, hospitality-grade work environments.</li>
+  <li><strong>Location recalibration</strong>: CBD and Grade-A suburban micro-markets are outperforming peripheral business parks on both occupancy and rental growth.</li>
+</ul>
+
+<h2>2. Hospitality-Grade Amenities as Standard</h2>
+<p>The most significant operational change we are observing across active mandates is the normalisation of hotel-quality amenities in commercial developments. India Gully's advisory work on three Grade-A developments in 2025 incorporated specifications previously reserved for five-star hotels:</p>
+<ul>
+  <li>Concierge-level reception and visitor management</li>
+  <li>In-house restaurant and barista-quality café operations</li>
+  <li>Fitness and wellness facilities with booking systems</li>
+  <li>High-quality landscaped terraces and break-out spaces</li>
+  <li>Premium hotel-standard toilet and locker facilities</li>
+</ul>
+<p>The incremental construction cost of these specifications runs at ₹180–250 per sq ft over baseline — recoverable through a 12–18% rental premium over the project lifecycle.</p>
+
+<h2>3. Mixed-Use as Value Creator</h2>
+<p>Our analysis of 14 recent commercial transactions confirms that mixed-use schemes (office + hospitality + retail) achieve 22–35% higher capital values per sq ft versus standalone commercial. The operating hotel component, even at modest 70% occupancy, generates yield on cost of 8.5–11.5% in Tier-1 cities.</p>
+<p>Key cities showing the strongest mixed-use office-hospitality convergence in our pipeline: <strong>Delhi NCR (Gurugram, Aerocity), Hyderabad (HITEC City), Bengaluru (Whitefield)</strong>.</p>
+
+<h2>4. Investment Thesis for 2026</h2>
+<p>India Gully recommends a <strong>hospitality-anchored mixed-use strategy</strong> for Grade-A commercial development in 2026, underpinned by:</p>
+<ol>
+  <li>Positioning hotel component (100–180 keys) as the amenity anchor, not a separate P&L</li>
+  <li>Securing food and beverage brand partners at pre-commitment stage</li>
+  <li>Designing for flexibility: floors convertible between office, serviced apartment and hotel use</li>
+  <li>Partnering with experience operators (co-working, managed offices) for 15–25% of GLA</li>
+</ol>
+
+<h2>5. Market Outlook by City</h2>
+<p><strong>Delhi NCR</strong>: Aerocity and Central Delhi corridors are commanding ₹8,500–10,500 per sq ft for hospitality-grade office. Demand driven by MNCs, PSUs and financial services.</p>
+<p><strong>Mumbai (BKC)</strong>: Premium plateaued at ₹22,000–28,000 per sq ft for Grade-A. Mixed-use with boutique hotel commands 18% premium; supply constrained.</p>
+<p><strong>Bengaluru (Whitefield/ORR)</strong>: IT sector-led demand recovery. New supply incorporating hospitality amenities is pre-leased 12–18 months in advance.</p>
+<p><strong>Hyderabad</strong>: Strong government support for IT-hospitality mixed-use. Land cost advantage enables better yield; recommended priority market for 2026.</p>
+
+<h2>Conclusion</h2>
+<p>The convergence of hospitality and commercial real estate in India is not a trend — it is a structural reconfiguration of how Grade-A office is conceived, built, and operated. Developers who embed hospitality-grade thinking at the design stage will achieve superior rental yields, faster lease-up, and stronger capital values. India Gully's advisory practice is positioned to support developers and investors navigating this convergence across all major markets.</p>
+`,
   },
   {
     id: 'entertainment-zone-regulatory-india',
@@ -23,6 +78,50 @@ const ARTICLES = [
     excerpt: 'India\'s entertainment real estate sector sits at the intersection of multiple regulatory frameworks, town planning, fire safety, excise and consumer protection laws. We map the regulatory landscape across key states and outline a compliance-first development strategy.',
     tags: ['Entertainment', 'Regulatory', 'Real Estate', 'Compliance'],
     readTime: '8 min read',
+    body: `
+<h2>Introduction</h2>
+<p>India's entertainment real estate sector — encompassing theme parks, family entertainment centres (FECs), waterparks, gaming zones, multiplex-anchored destination retail, and integrated entertainment destinations — operates at the intersection of <strong>six distinct regulatory frameworks</strong>. Navigating this complexity is one of the primary risks for promoters and investors.</p>
+<p>India Gully, as transaction advisor and development consultant on entertainment mandates exceeding ₹6,000 Cr in aggregate, has developed a proprietary regulatory mapping framework that we outline in this article.</p>
+
+<h2>The Six Regulatory Layers</h2>
+<h3>Layer 1: Town Planning & Land Use</h3>
+<p>Entertainment destinations require land classified for <strong>Commercial / Public-Semi-Public (PSP)</strong> use under the relevant Development Control Regulations (DCR). In many states, a change-of-use (CoU) or special zone designation is required. Timeline: 6–24 months depending on state and political environment.</p>
+<p>Key states with progressive entertainment zone policies: Maharashtra (integrated entertainment zones under D-MRT corridor), Rajasthan (tourism and entertainment special areas), Uttar Pradesh (film city and entertainment destination policy).</p>
+
+<h3>Layer 2: Fire Safety & Building Permits</h3>
+<p>Entertainment destinations draw large crowds and require compliance with the National Building Code (NBC) 2016, state fire department approvals, and occupancy certificates. For indoor entertainment, additional sprinkler, smoke control, and crowd management specifications apply. Non-compliance is the single largest cause of enforcement actions and closures.</p>
+
+<h3>Layer 3: Excise and F&B Licensing</h3>
+<p>Mixed-use entertainment destinations incorporating restaurants, bars, and event spaces are subject to state excise policy. Licensing timelines vary from 3 months (Goa) to 18+ months (Delhi, Maharashtra for bar licenses). F&B is typically the highest-margin component of an entertainment destination — regulatory delays here directly impact revenue projections.</p>
+
+<h3>Layer 4: Consumer Protection & Safety</h3>
+<p>Amusement rides, waterpark attractions, and mechanised entertainment are subject to the Consumer Protection Act 2019, state amusement rules, and Indian Standard codes for ride safety. Annual inspections, third-party safety audits, and public liability insurance are mandatory.</p>
+
+<h3>Layer 5: Labour & Employment</h3>
+<p>Entertainment destinations are intensive employment hubs. Compliance with Shops & Establishments Acts, minimum wage notifications (state-specific), ESIC/EPF, and the Contract Labour Act requires dedicated HR-legal capacity. Seasonal workforce management adds complexity.</p>
+
+<h3>Layer 6: Intellectual Property & Content Licensing</h3>
+<p>IP-anchored entertainment (licensed characters, branded experiences) requires formal licensing agreements from IP holders. These are increasingly international transactions requiring RBI FEMA compliance for royalty payments.</p>
+
+<h2>State-Wise Regulatory Environment</h2>
+<p><strong>Maharashtra</strong>: Most progressive policy environment. D-MRT entertainment zones, streamlined clearances via Single Window. India Gully's ₹4,500 Cr entertainment destination mandate is in Maharashtra partly for this reason.</p>
+<p><strong>Uttar Pradesh</strong>: Strong political will for entertainment investment. YEIDA (Yamuna Expressway Authority) proactively allocates land for entertainment destinations. Our active mandate includes coordination with YEIDA for land designation.</p>
+<p><strong>Rajasthan</strong>: Tourism-led entertainment policy. Heritage-experiential entertainment is a designated priority sector. Faster clearances via RIPS 2022.</p>
+<p><strong>Delhi NCR</strong>: Most complex. Multiple authorities (DDA, GNIDA, Haryana DGTCP) with overlapping jurisdiction. Recommend 18-month regulatory buffer for any new entertainment project.</p>
+
+<h2>Compliance-First Development Strategy</h2>
+<p>India Gully recommends a <strong>regulatory-first development sequencing</strong> for all entertainment destination projects:</p>
+<ol>
+  <li>Engage regulatory counsel and state industry facilitation body at project inception (before land acquisition)</li>
+  <li>Obtain in-principle land use and zoning clearance before committing to design development</li>
+  <li>Conduct pre-application meetings with fire, excise, and safety authorities</li>
+  <li>Build 20% regulatory timeline buffer into project financing structure</li>
+  <li>Appoint dedicated compliance officer for all ongoing statutory requirements</li>
+</ol>
+
+<h2>Conclusion</h2>
+<p>Entertainment real estate in India offers exceptional returns but demands a compliance-first approach that most developers underestimate. India Gully's end-to-end advisory, from concept through regulatory clearance to operations, is designed to de-risk this complexity and accelerate time-to-revenue for our clients.</p>
+`,
   },
   {
     id: 'horeca-tier2-supply-chain',
@@ -32,6 +131,49 @@ const ARTICLES = [
     excerpt: 'The rapid expansion of branded hospitality into Tier 2 and Tier 3 cities is exposing critical gaps in HORECA supply chains. We analyse the challenges, from vendor fragmentation to cold-chain infrastructure, and present a framework for building resilient, scalable procurement operations.',
     tags: ['HORECA', 'Supply Chain', 'Tier 2', 'Operations'],
     readTime: '7 min read',
+    body: `
+<h2>The Tier 2 Hospitality Expansion Wave</h2>
+<p>India's branded hospitality sector is in the midst of its most aggressive geographic expansion since the mid-2000s. Every major hotel brand — Marriott, Radisson, IHG, Lemon Tree, Cygnett, Regenta — has active development pipelines extending into Tier 2 and Tier 3 cities. India Gully, with active hotel management and HORECA supply mandates across Chandigarh, Kasauli, Chail, Jaipur, Jodhpur, Coimbatore, and Kochi, is uniquely positioned to observe the supply chain challenges this expansion creates.</p>
+
+<h2>The Problem: Vendor Fragmentation</h2>
+<p>The core challenge in Tier 2 HORECA procurement is <strong>vendor fragmentation</strong>. Unlike metro markets where multiple specialist suppliers compete for hotel contracts, Tier 2 cities typically have:</p>
+<ul>
+  <li>1–3 FF&E suppliers with limited hospitality-grade inventory</li>
+  <li>No specialist OS&E (Operating Supplies and Equipment) distributors</li>
+  <li>Limited kitchen equipment service networks</li>
+  <li>Fragmented linen and uniform supply, often requiring metro-based procurement</li>
+  <li>Cold chain infrastructure gaps for perishable F&B supplies</li>
+</ul>
+<p>The result: pre-opening procurement costs in Tier 2 run 18–25% higher than equivalent metro specifications, largely driven by logistics, handling, and the absence of local competitive pricing.</p>
+
+<h2>India Gully's Procurement Framework</h2>
+<p>Based on 15+ hotel supply mandates, India Gully has developed a <strong>Hub-and-Spoke Procurement Model</strong> for Tier 2 hotel pre-openings:</p>
+
+<h3>Phase 1: Specification and Vendor Identification (Months 1–3)</h3>
+<p>Working from brand standards, we develop a <strong>master SKU list</strong> covering all FF&E, OS&E, kitchen, linen, and amenities categories. For each SKU, we identify three supplier tiers: metro-based specialists, regional distributors, and local alternatives. This three-tier approach ensures resilience against single-vendor failure.</p>
+
+<h3>Phase 2: Consolidated Procurement and Logistics (Months 4–8)</h3>
+<p>India Gully aggregates orders across multiple hotel pre-openings to achieve <strong>volume-based pricing</strong>. Our vendor network of 50+ qualified suppliers means we can negotiate consolidated pricing even for a single 80-key hotel. Logistics coordination — critical in hilly or remotely-located properties — is handled through our logistics partners with experience in last-mile delivery to difficult locations.</p>
+
+<h3>Phase 3: Delivery, Snagging, and Handover (Months 8–11)</h3>
+<p>On-site receiving, inspection against specification, snagging resolution, and completion certificate issuance. India Gully's site teams are present at all major deliveries to ensure brand standard compliance before handover.</p>
+
+<h2>Cold Chain: The Critical Gap</h2>
+<p>F&B supply chain in Tier 2 hotels is particularly challenging. Fresh produce, proteins, and specialty ingredients required by branded hotel restaurants often cannot be sourced locally to brand standards. India Gully's F&B procurement advisory service establishes <strong>regular delivery schedules</strong> from approved metro-based suppliers, reducing over-ordering and waste while maintaining brand standards.</p>
+<p>For hotels in hill stations (Kasauli, Chail, Mussoorie), India Gully has developed specialised cold chain protocols including all-weather vehicle requirements, alternative route planning, and emergency buffer stock specifications.</p>
+
+<h2>Key Metrics: India Gully HORECA Performance</h2>
+<ul>
+  <li><strong>500+ SKUs</strong> in our verified product catalogue</li>
+  <li><strong>₹50 Cr+</strong> procurement managed across 15+ hotel properties</li>
+  <li><strong>50+ vendors</strong> in our qualified supply network</li>
+  <li><strong>98.2% on-time delivery rate</strong> across 2024–25 mandates</li>
+  <li><strong>Average 14% cost saving</strong> versus promoter self-procurement</li>
+</ul>
+
+<h2>Conclusion</h2>
+<p>The Tier 2 hospitality expansion wave will continue. Developers who anticipate supply chain complexity and partner with experienced HORECA procurement advisors from project inception will achieve faster pre-opening timelines, lower procurement costs, and higher brand standards compliance. India Gully's HORECA practice is designed precisely for this challenge.</p>
+`,
   },
   {
     id: 'ibc-distressed-hospitality-2025',
@@ -41,6 +183,58 @@ const ARTICLES = [
     excerpt: 'The 2025 IBC amendment and NCLT capacity expansion have accelerated resolution timelines for distressed hospitality assets. We track 18 months of case data, identify emerging buyer profiles, and map the post-resolution value-creation playbook for strategic acquirers.',
     tags: ['IBC', 'NCLT', 'Distressed Assets', 'Hospitality', 'Debt'],
     readTime: '12 min read',
+    body: `
+<h2>IBC 2025: What Has Changed</h2>
+<p>The Insolvency and Bankruptcy Code (Amendment) Act 2025, passed in the Budget Session, introduced three material changes relevant to hospitality asset resolution:</p>
+<ol>
+  <li><strong>Pre-packaged Resolution Plans (PPIRP) Extended to Hotel Assets</strong>: Previously limited to MSMEs, the PPIRP mechanism is now available for hospitality assets below ₹100 Cr enterprise value, significantly accelerating timelines for mid-scale hotel insolvency.</li>
+  <li><strong>Operational Creditor Priority Enhancement</strong>: Employees and utility creditors now rank above secured creditors for the first 90 days of CIRP, affecting acquisition economics for strategic buyers.</li>
+  <li><strong>NCLT Bench Expansion</strong>: 14 new circuit benches were notified in Q1 2025, reducing average hearing interval from 42 to 26 days. Resolution timelines for hospitality assets have compressed from an average 680 days (2022–23) to 380 days (2025 estimate).</li>
+</ol>
+
+<h2>The Distressed Hospitality Pipeline</h2>
+<p>India Gully's Debt & Special Situations practice has tracked 64 hospitality assets admitted for CIRP between January 2024 and October 2025. Key observations:</p>
+<ul>
+  <li><strong>62% are mid-scale (3-star) properties</strong>, primarily in Tier 1 city periphery and Tier 2 markets</li>
+  <li><strong>Average distress discount to replacement cost</strong>: 42–58% (versus 35% in 2022)</li>
+  <li><strong>Operational hotel rate</strong> (properties generating some revenue during CIRP): 71%, up from 45% in 2019 — improved IRP protocols</li>
+  <li><strong>Successful resolution rate</strong>: 38% (national average for all sectors: 29%) — hospitality outperforms</li>
+</ul>
+
+<h2>Emerging Buyer Profiles</h2>
+<p>The composition of resolution applicants for hospitality assets has shifted materially in 2024–25:</p>
+<h3>Strategic Hotel Operators (35% of resolutions)</h3>
+<p>Branded mid-scale operators (Lemon Tree, Cygnett, Keys, Regenta) are increasingly submitting resolution plans to grow their owned portfolios at distressed acquisition costs. The typical strategy: acquire at ₹20–35L per key, refurbish at ₹8–12L per key, rebrand and operate at 65–75% occupancy within 18 months of reopening.</p>
+<h3>Family Offices (28% of resolutions)</h3>
+<p>India's growing base of high-net-worth family offices is the most active buyer segment. They typically seek distressed properties in leisure destinations (hill stations, heritage cities) with 15–20 year hold horizons, operating through management contracts with branded operators.</p>
+<h3>Real Estate Funds (22%)</h3>
+<p>Institutional real estate funds with hospitality mandates are targeting IBC acquisitions as a route to building scale quickly. These buyers tend to focus on larger assets (100+ keys) in Tier-1 cities.</p>
+<h3>Promoter Buybacks (15%)</h3>
+<p>Original promoters — often having addressed the original stress — submit competitive resolution plans. Regulatorily constrained but still a significant segment.</p>
+
+<h2>The Post-Resolution Value Creation Playbook</h2>
+<p>Based on India Gully's advisory on 8 completed distressed hotel acquisitions (2020–2025), the post-resolution value creation sequence is:</p>
+<ol>
+  <li><strong>Months 1–3</strong>: Operational stabilisation. Address deferred maintenance, settle operational creditors, rehire core staff. Revenue recovery to 40–50% of pre-stress levels.</li>
+  <li><strong>Months 3–12</strong>: Brand on-boarding. Select and negotiate hotel brand. This is India Gully's primary advisory role — we have active relationships with every relevant brand and can compress brand on-boarding from 12 to 6 months in many cases.</li>
+  <li><strong>Months 12–18</strong>: Refurbishment and reopening. Targeted FF&E / OS&E investment of ₹8–15L per key. India Gully's HORECA division executes this.</li>
+  <li><strong>Months 18–36</strong>: Revenue ramp. Stabilised occupancy 65–75%. Brand loyalty programme ramp. F&B revenue development.</li>
+  <li><strong>Year 3+</strong>: Asset value crystallisation. Typical IRR on acquisition-to-stabilisation: 22–35%.</li>
+</ol>
+
+<h2>Key Risk Factors</h2>
+<p>India Gully's due diligence framework for distressed hotel acquisitions flags five primary risk categories:</p>
+<ul>
+  <li><strong>Title and encumbrance complexity</strong>: Multiple charge holders, disputed property boundaries, incomplete conveyance documents</li>
+  <li><strong>Employee liability</strong>: Pending gratuity, PF dues, and employment disputes survive CIRP in certain interpretations</li>
+  <li><strong>Structural condition</strong>: Deferred maintenance in CIRP can significantly exceed disclosed estimates</li>
+  <li><strong>Brand recoverability</strong>: Properties that operated under sub-standard conditions during CIRP may face brand reputational challenges</li>
+  <li><strong>Location dynamics</strong>: Market conditions at the original development site may have deteriorated</li>
+</ul>
+
+<h2>Conclusion</h2>
+<p>The IBC 2025 amendments, combined with the compressed resolution timelines now being achieved at NCLT, make this an exceptionally favourable period for strategic acquirers of distressed hospitality assets. India Gully's integrated advisory — transaction advisory, brand on-boarding, and HORECA supply — provides the end-to-end capability required to execute a distressed acquisition and create post-resolution value efficiently.</p>
+`,
   },
   {
     id: 'mall-mixed-use-integration',
@@ -50,6 +244,50 @@ const ARTICLES = [
     excerpt: 'India\'s leading mall developers are pivoting from pure retail to mixed-use destinations. We study five live projects across NCR, Mumbai and Bengaluru, examining lease structure innovations, anchor tenant strategies, and financial models that make mixed-use work.',
     tags: ['Retail', 'Mixed-Use', 'Real Estate', 'Mall', 'Office'],
     readTime: '9 min read',
+    body: `
+<h2>The Pivot from Retail to Destination</h2>
+<p>India's top-tier mall developers — DLF, Nexus, Phoenix, Brigade — are executing a fundamental strategic pivot. The pure-retail mall, designed exclusively for shopping, is giving way to the <strong>integrated mixed-use destination</strong>: a combination of retail, hospitality, office, entertainment, and civic amenities designed to capture multiple day-parts and visitor motivations.</p>
+<p>India Gully's retail leasing and hospitality advisory practice has been directly involved in three of the five projects studied in this analysis. Our observations are grounded in live mandate experience, not secondary research.</p>
+
+<h2>Why the Trinity Works: Economic Logic</h2>
+<p>The financial case for the Mall-Hotel-Office trinity rests on three interlocking value drivers:</p>
+<h3>1. Rental Uplift from Density</h3>
+<p>Hotels and premium offices create a captive, high-spending population. Hotel guests with dining spend average 2.8× the retail spend of regular mall visitors. Office workers within integrated developments spend ₹1,200–1,800 per week on food and convenience retail — a highly predictable revenue stream for mall operators and their tenants.</p>
+<h3>2. Land Efficiency</h3>
+<p>Mixed-use developments achieve 30–40% higher Floor Space Index (FSI) utilisation versus single-use, enabled by vertical stacking of different uses. Premium mixed-use developments in Delhi NCR and Mumbai are achieving FSI of 2.5–4.0 versus 1.8–2.2 for pure retail.</p>
+<h3>3. Risk Diversification</h3>
+<p>Mixed-use income streams provide resilience against retail cyclicality. During COVID, integrated developments with hotels and offices recovered rental income 14 months faster than pure retail assets.</p>
+
+<h2>Case Study: AIPL Joy Street, Gurugram</h2>
+<p>India Gully provided retail leasing advisory for AIPL Joy Street, one of NCR's most successful mixed-use destination launches of 2023. Key observations:</p>
+<ul>
+  <li>F&B anchor (30% of GLA) outperformed projections by 22% in Year 1</li>
+  <li>Office component (3 floors, 180,000 sq ft) achieved full occupancy 9 months before retail completion</li>
+  <li>Hotel pre-opening enquiry volume was 4× that of standalone hotel comparable</li>
+  <li>Retail rental premium over comparable pure malls: 17–22%</li>
+</ul>
+
+<h2>Lease Structure Innovations</h2>
+<p>Mixed-use development requires lease structure innovation that pure retail does not. India Gully has advised on and negotiated the following approaches:</p>
+<h3>Cross-Amenity Leases</h3>
+<p>Tenants in integrated developments are increasingly seeking <strong>cross-asset access rights</strong> — office tenants negotiating parking rights in the mall structure, hotel guests receiving preferential retail rates, loyalty programme integration across all components. These require multi-party lease agreements that most retail lease professionals are not structured to handle.</p>
+<h3>Revenue Participation</h3>
+<p>Mixed-use developers are moving from pure fixed rent to <strong>base rent + revenue share</strong> models — particularly for F&B anchors and entertainment components. India Gully structures these as: Base = 65% of market rent + 4–7% of net revenue above a turnover threshold.</p>
+<h3>Green Lease Provisions</h3>
+<p>New integrated developments in India's top 5 cities are incorporating green lease provisions covering energy consumption sharing, waste management obligations, and sustainability reporting — a requirement emerging from ESG-mandated institutional investors.</p>
+
+<h2>The Anchor Strategy</h2>
+<p>In mixed-use destination retail, the anchor tenant strategy must account for all three components. India Gully's recommended anchor configuration for a 500,000 sq ft mixed-use development:</p>
+<ul>
+  <li><strong>Hotel anchor</strong> (150–200 keys, mid-upscale brand): Provides footfall catalyst, event venue, and F&B magnets. Best position: above or adjacent to premium retail zone.</li>
+  <li><strong>F&B destination floor</strong> (15,000–25,000 sq ft, 6–10 operators): Drive-to destination. Include one fine-dining, two casual, two QSR, one pan-Asian, one bar/lounge.</li>
+  <li><strong>Entertainment anchor</strong> (multiplex or FEC, 20,000–40,000 sq ft): Evening and weekend traffic generator. Critical for family demographics.</li>
+  <li><strong>Office anchor</strong> (50,000–80,000 sq ft, single corporate tenant): Provides daytime food and convenience footfall reliability.</li>
+</ul>
+
+<h2>Conclusion</h2>
+<p>The Mall-Hotel-Office trinity is not a concept — it is the new standard for Grade-A retail destination development in India. Developers who attempt to build pure retail in Tier-1 cities from 2026 onwards will face financing, leasing, and valuation headwinds. India Gully's integrated retail leasing and hospitality advisory capability is uniquely positioned to support mixed-use destination development from concept through occupancy.</p>
+`,
   },
   {
     id: 'greenfield-midscale-hotels',
@@ -59,8 +297,74 @@ const ARTICLES = [
     excerpt: 'Mid-scale branded hotel development in India offers compelling risk-adjusted returns. We model the economics for 80-key and 120-key projects across 12 Tier 2 cities, covering land costs, construction timelines, brand fee structures and stabilised RevPAR projections.',
     tags: ['Hospitality', 'Greenfield', 'Hotel', 'Investment', 'Tier 2'],
     readTime: '11 min read',
+    body: `
+<h2>The Mid-Scale Opportunity</h2>
+<p>India's branded hotel supply is significantly skewed toward the luxury and upper-upscale segments. The <strong>mid-scale branded segment</strong> (3-star, ₹3,000–6,000 average daily rate) represents the most significant supply-demand gap in the Indian hospitality market. Demand is robust and growing at 12–15% per annum; branded supply growth is 8–10%.</p>
+<p>India Gully's hotel management and brand on-boarding practice has assessed or executed mid-scale greenfield projects in 15 cities over the past 3 years. This article models the project economics based on those live mandates.</p>
+
+<h2>The 80-Key Model: Tier 2 City</h2>
+<h3>Land and Development Cost</h3>
+<ul>
+  <li>Land (0.6–0.8 acres, commercial zone): ₹3.5–7 Cr (city-dependent)</li>
+  <li>Construction cost (80 keys, branded mid-scale standard): ₹18–24 Cr</li>
+  <li>FF&E/OS&E (India Gully HORECA procurement): ₹4.5–6 Cr</li>
+  <li>Pre-opening and working capital: ₹1.5–2 Cr</li>
+  <li><strong>Total development cost: ₹27–39 Cr</strong> (₹34–49L per key)</li>
+</ul>
+
+<h3>Revenue Assumptions (Year 3 Stabilised)</h3>
+<ul>
+  <li>Occupancy: 68–72% (branded mid-scale, Tier 2)</li>
+  <li>Average Daily Rate: ₹3,800–4,800</li>
+  <li>RevPAR: ₹2,580–3,456</li>
+  <li>F&B contribution: 28–32% of total revenue</li>
+  <li><strong>Total revenue Year 3: ₹8–11 Cr</strong></li>
+</ul>
+
+<h3>EBITDA and Returns</h3>
+<ul>
+  <li>Hotel EBITDA margin (branded mid-scale): 28–35%</li>
+  <li>EBITDA Year 3: ₹2.2–3.9 Cr</li>
+  <li>Yield on development cost: 8–13%</li>
+  <li>Cap rate (mid-scale hotel, Tier 2): 8.5–10.5%</li>
+  <li>Implied capital value at stabilisation: ₹21–46 Cr</li>
+  <li><strong>Equity IRR (8-year hold): 16–23%</strong></li>
+</ul>
+
+<h2>Brand Selection: The Revenue Multiplier</h2>
+<p>Brand choice is the single most impactful variable in mid-scale hotel project economics. India Gully's brand on-boarding experience across Cygnett, Keys, Regenta, Pride, and Lemon Tree reveals the following:</p>
+<ul>
+  <li><strong>RevPAR premium over independent hotels</strong>: 22–38% for top-tier mid-scale brands</li>
+  <li><strong>Faster occupancy ramp</strong>: Branded hotels reach 65% occupancy on average 7 months faster than independent</li>
+  <li><strong>Brand fee impact on EBITDA</strong>: Management fee + royalty = 8–12% of total revenue. Net benefit remains strongly positive.</li>
+</ul>
+<p>India Gully's recommendation: for 80-key Tier 2 properties, <strong>Cygnett, Keys, or Regenta</strong> offer the optimal brand fee / RevPAR premium equation. For 120-key+ projects, Lemon Tree Premier or Radisson RED become competitive.</p>
+
+<h2>Construction and Pre-Opening Timeline</h2>
+<p>Based on India Gully's project management experience:</p>
+<ol>
+  <li><strong>Month 1–3</strong>: Land acquisition, approvals, brand selection</li>
+  <li><strong>Month 3–6</strong>: Design development, tender</li>
+  <li><strong>Month 6–22</strong>: Construction (80-key standard)</li>
+  <li><strong>Month 20–26</strong>: FF&E procurement, installation (India Gully HORECA)</li>
+  <li><strong>Month 24–28</strong>: Staffing, training, mock inspections, soft opening</li>
+  <li><strong>Month 28–30</strong>: Grand opening, brand loyalty programme activation</li>
+</ol>
+
+<h2>Top 5 Markets for 2025–27 Greenfield Mid-Scale</h2>
+<p>India Gully's market assessment identifies the following as priority markets for 2025–27 greenfield mid-scale development:</p>
+<ol>
+  <li><strong>Chandigarh / Mohali / Panchkula</strong>: Strong corporate demand, limited branded mid-scale supply. RevPAR growth 14% YoY.</li>
+  <li><strong>Dehradun / Haridwar</strong>: Religious and leisure tourism boom. Weekend demand spikes 3–4×.</li>
+  <li><strong>Coimbatore</strong>: Industrial and IT growth corridor. Under-served by branded mid-scale.</li>
+  <li><strong>Ahmedabad (outer corridors)</strong>: GIFT City and industrial demand, strong MICE potential.</li>
+  <li><strong>Bhubaneswar</strong>: Government-backed convention and tourism infrastructure. Early-mover advantage for branded operators.</li>
+</ol>
+
+<h2>Conclusion</h2>
+<p>Greenfield mid-scale hotel development in India's Tier 2 markets offers a rare combination of structural demand growth, manageable capital requirements, and institutional-grade returns. India Gully's integrated offer — from site selection and brand on-boarding through HORECA procurement and operations advisory — provides the end-to-end support that first-time hotel developers require to execute successfully.</p>
+`,
   },
-  // ── Original 2024 articles ─────────────────────────────────────────────────
   {
     id: 'india-hospitality-2024',
     category: 'Hospitality',
@@ -69,6 +373,29 @@ const ARTICLES = [
     excerpt: 'India\'s hospitality sector is experiencing unprecedented growth, driven by domestic travel resurgence, infrastructure investment and international brand expansion. We examine key demand drivers, market dynamics and investment opportunities across segments.',
     tags: ['Hospitality','Market Research','Investment'],
     readTime: '8 min read',
+    body: `
+<h2>Overview</h2>
+<p>India's hospitality market entered 2024 with strong structural tailwinds: rising domestic travel, pent-up leisure demand, significant infrastructure investment, and accelerating international brand expansion. This report examines the key dynamics and investment opportunities for the 2024–2025 horizon.</p>
+
+<h2>Demand Drivers</h2>
+<p>Domestic leisure travel volumes reached 120% of pre-COVID peaks by Q3 2024, driven by a growing upper-middle-income class with increased disposable income and changing lifestyle priorities. Business travel has recovered to 95% of 2019 levels, with MICE (Meetings, Incentives, Conferences, Exhibitions) driving disproportionate growth.</p>
+<p>India's inbound international tourism grew 28% YoY in 2024, supported by expanded air connectivity and streamlined visa processes under the e-Visa programme expansion.</p>
+
+<h2>Supply Pipeline</h2>
+<p>The branded hotel supply pipeline in India stands at approximately 165,000 keys across all segments — the largest pipeline in Asia-Pacific excluding China. The mid-scale and economy segments account for 62% of the pipeline, reflecting promoter confidence in the mass-market segment.</p>
+<p>Key supply markets in the pipeline: NCR (22,000 keys), Mumbai Metropolitan Region (18,000 keys), Bengaluru (14,000 keys), Hyderabad (11,000 keys), Goa (8,500 keys).</p>
+
+<h2>Investment Opportunities</h2>
+<p>India Gully identifies three primary investment themes in hospitality for 2024–2025:</p>
+<ol>
+  <li><strong>Mid-scale branded greenfield</strong>: Best risk-adjusted returns in Tier 2 cities. 16–23% equity IRR based on our project models.</li>
+  <li><strong>Distressed asset acquisition via IBC/NCLT</strong>: Growing pipeline of operationally viable hotels in CIRP. Acquisition discounts of 40–55% to replacement cost.</li>
+  <li><strong>Heritage and experiential hospitality</strong>: India's heritage hotel segment commands premium ARR and international demand. Acquisition and conversion of heritage properties in Rajasthan, Kerala, and Himachal Pradesh.</li>
+</ol>
+
+<h2>India Gully's Advisory Role</h2>
+<p>India Gully serves as transaction advisor, brand on-boarding partner, and HORECA procurement specialist across the full hospitality investment lifecycle. Our active 2024–2025 hospitality mandate pipeline spans 15+ projects across India.</p>
+`,
   },
   {
     id: 'entertainment-destinations-india',
@@ -78,6 +405,31 @@ const ARTICLES = [
     excerpt: 'India\'s entertainment real estate sector is entering a transformational phase, with ₹15,000+ Cr of integrated entertainment destinations in planning or execution. We analyse the structural drivers, developer strategies and investment thesis.',
     tags: ['Entertainment','Real Estate','Trends'],
     readTime: '12 min read',
+    body: `
+<h2>A Transformational Moment</h2>
+<p>India's entertainment real estate sector is at an inflection point. After decades of incremental development — standalone multiplex complexes, small FECs, single-ride attractions — the country is entering an era of large-format, capital-intensive, experience-led entertainment destinations. India Gully is at the centre of this transformation, with an entertainment advisory pipeline exceeding ₹6,000 Cr.</p>
+
+<h2>The Structural Drivers</h2>
+<p>Four structural forces are converging to create this opportunity:</p>
+<ul>
+  <li><strong>Rising aspirational middle class</strong>: India's 350 million-strong aspirational middle class is the primary demand driver. Spending on experiences has grown at 18% CAGR since 2019 versus 7% for goods.</li>
+  <li><strong>Real estate developer diversification</strong>: Major real estate developers are allocating 15–25% of their portfolios to experience and entertainment to differentiate destinations and drive footfall to their mixed-use developments.</li>
+  <li><strong>International operator expansion</strong>: Global entertainment operators (including several household names) have active India expansion mandates. India Gully represents several in their site selection and partner search.</li>
+  <li><strong>State government competition</strong>: At least 8 state governments have announced entertainment destination promotion policies in 2023–24, including Maharashtra, UP, Rajasthan, Tamil Nadu, and Karnataka.</li>
+</ul>
+
+<h2>The ₹4,500 Cr Maharashtra Mandate</h2>
+<p>India Gully's marquee entertainment advisory mandate — a 200+ acre integrated entertainment destination in Maharashtra — is India's most significant entertainment real estate transaction of the decade. The project encompasses a world-class theme park, luxury hotel, premium retail mall, and F&B destination. Phase 1 approvals are secured; India Gully holds exclusive transaction advisory rights.</p>
+
+<h2>Investment Considerations</h2>
+<p>Entertainment real estate requires a different risk-return framework than conventional commercial or hospitality real estate. Key considerations:</p>
+<ul>
+  <li><strong>IP risk</strong>: Themed attractions require IP licensing. India Gully maps IP availability and negotiates licensing structures.</li>
+  <li><strong>Operational complexity</strong>: Entertainment destinations are operationally intensive. Management agreement structure is critical.</li>
+  <li><strong>Phasing strategy</strong>: Large entertainment destinations should be phased to validate demand before committing full capital.</li>
+  <li><strong>Infrastructure dependency</strong>: Road, metro, and utility access are critical success factors often underestimated in initial feasibility.</li>
+</ul>
+`,
   },
   {
     id: 'horeca-procurement-strategy',
@@ -87,6 +439,31 @@ const ARTICLES = [
     excerpt: 'Pre-opening FF&E and OS&E procurement is one of the most complex and often underestimated challenges in hotel development. We outline a structured approach to specification, vendor management and timeline control.',
     tags: ['HORECA','Hotel Management','Operations'],
     readTime: '6 min read',
+    body: `
+<h2>The Pre-Opening Procurement Challenge</h2>
+<p>Hotel pre-opening procurement — covering FF&E (Furniture, Fixtures & Equipment), OS&E (Operating Supplies & Equipment), kitchen equipment, linen, uniform, and amenities — is consistently underestimated by first-time hotel developers. India Gully's HORECA practice has rectified procurement failures on 7 of our last 15 hotel mandates where the developer had initially self-procured without specialist support.</p>
+
+<h2>The Specification Cascade</h2>
+<p>All procurement must flow from the <strong>brand standard specification</strong> issued by the hotel operator. This creates a specification cascade:</p>
+<ol>
+  <li>Brand standard specification → Master specification list (India Gully: 500+ SKUs)</li>
+  <li>Master spec → Local adaptation (material availability, lead time, cost)</li>
+  <li>Local adaptation → Vendor identification and shortlisting</li>
+  <li>Vendor shortlisting → Sample approval → Order placement</li>
+  <li>Order → Delivery, inspection, snagging</li>
+</ol>
+
+<h2>Common Procurement Failures</h2>
+<ul>
+  <li><strong>Under-specification of kitchen equipment</strong>: Commercial kitchen specification requires brand, capacity, and utility connection matching — not simply a product category</li>
+  <li><strong>Linen quantity error</strong>: Correct par stock calculation is 3–4× room count, not 2× — understocking disrupts operations from Day 1</li>
+  <li><strong>Amenity sourcing delays</strong>: Brand-specified amenity kits often have 8–12 week lead times from authorised suppliers</li>
+  <li><strong>Last-mile logistics failure</strong>: Remote hotel locations require logistics-aware procurement with buffer timing</li>
+</ul>
+
+<h2>India Gully's HORECA Service</h2>
+<p>India Gully provides end-to-end HORECA procurement advisory and execution, from specification development through delivery and handover. Our vendor network of 50+ qualified suppliers, consolidated procurement model, and on-site supervision ensures brand standards compliance and timeline delivery.</p>
+`,
   },
   {
     id: 'debt-special-situations-hospitality',
@@ -96,6 +473,31 @@ const ARTICLES = [
     excerpt: 'The IBC/NCLT process has created a pipeline of distressed hospitality assets offering compelling entry valuations for strategic investors. We outline the acquisition framework, due diligence approach and value-creation thesis.',
     tags: ['Debt','IBC','Hospitality','Special Situations'],
     readTime: '10 min read',
+    body: `
+<h2>The IBC Opportunity in Hospitality</h2>
+<p>Since the Insolvency and Bankruptcy Code (IBC) was enacted in 2016, India's hospitality sector has seen over 150 hotel properties admitted for Corporate Insolvency Resolution Process (CIRP). This pipeline presents a unique acquisition opportunity for strategic investors with the operational capability to execute post-resolution value creation.</p>
+
+<h2>Why Hotels Enter CIRP</h2>
+<p>The primary causes of hotel insolvency in India are:</p>
+<ul>
+  <li><strong>Overleveraged development financing</strong>: Many properties were built at 70–80% debt, with debt service coverage ratios that required stabilised performance from Year 1 — rarely achievable.</li>
+  <li><strong>COVID-19 disruption</strong>: Properties with thin equity cushions were unable to service debt during the 18–24 month COVID closure period.</li>
+  <li><strong>Promoter-related stress</strong>: Group-level financial distress triggering default on performing hotel assets.</li>
+</ul>
+
+<h2>Acquisition Framework</h2>
+<p>India Gully's distressed hotel acquisition framework involves four stages:</p>
+<ol>
+  <li><strong>Pipeline identification</strong>: Monitoring NCLT cause lists, IRP appointments, and industry intelligence for hospitality CIRP admissions</li>
+  <li><strong>Preliminary assessment</strong>: Operational viability, location, asset condition, claim structure</li>
+  <li><strong>Detailed due diligence</strong>: Title, structural, regulatory, operational, and financial DD</li>
+  <li><strong>Resolution plan structuring</strong>: India Gully advises resolution applicants on plan structuring to maximise resolution probability while optimising acquisition economics</li>
+</ol>
+
+<h2>Post-Resolution Value Creation</h2>
+<p>The primary value drivers in distressed hotel acquisition are: brand on-boarding premium (22–38% RevPAR uplift), refurbishment ROI (typically 4–6× capital at stabilisation), and operational efficiency recovery from deferred maintenance correction.</p>
+<p>India Gully's integrated offer — transaction advisory + brand on-boarding + HORECA procurement — is uniquely positioned to execute the full post-resolution value creation playbook.</p>
+`,
   },
   {
     id: 'retail-leasing-malls-india',
@@ -105,6 +507,40 @@ const ARTICLES = [
     excerpt: 'India\'s retail malls are evolving from pure shopping destinations to integrated experience hubs, requiring a fundamental rethinking of tenant mix, space allocation and lease structures. We explore what\'s working and what\'s not.',
     tags: ['Retail','Leasing','Consumer Trends'],
     readTime: '9 min read',
+    body: `
+<h2>The Experience Imperative</h2>
+<p>India's top-performing malls of 2023–24 share a common characteristic: a deliberate shift from pure retail to experience-led destinations. Footfall in experience-anchored malls grew 18% YoY versus 4% for conventional retail-only malls. India Gully's retail leasing practice, active across 8 mall and mixed-use developments, has observed this shift directly in tenant demand, lease terms, and CAM contribution.</p>
+
+<h2>Tenant Mix Recalibration</h2>
+<p>The optimal tenant mix for a Grade-A mall in India's Tier 1 cities in 2024 is:</p>
+<ul>
+  <li><strong>F&B and dining</strong>: 25–32% of GLA (up from 18–22% in 2018)</li>
+  <li><strong>Entertainment and leisure</strong>: 12–18% (up from 8–10%)</li>
+  <li><strong>Fashion and apparel</strong>: 28–32% (down from 42–48%)</li>
+  <li><strong>Beauty and wellness</strong>: 8–10% (up from 4–6%)</li>
+  <li><strong>Technology and electronics</strong>: 6–8% (stable)</li>
+  <li><strong>Other specialty</strong>: Balance</li>
+</ul>
+
+<h2>F&B as the Revenue Engine</h2>
+<p>Food and beverage has emerged as the highest-performing and most resilient category in Indian retail real estate. India Gully's active F&B leasing at Entertainment City, Gardens Galleria, AIPL Joy Street, and Hyatt Andaz demonstrates:</p>
+<ul>
+  <li>F&B tenants command 12–22% higher base rent than comparable retail per sq ft</li>
+  <li>F&B revenue share clauses generate 35–40% of total mall revenue participation receipts</li>
+  <li>F&B anchor draws from a 25–35km catchment versus 15–20km for fashion retail</li>
+</ul>
+
+<h2>Lease Structure Innovation</h2>
+<p>Experience-economy leasing requires structures different from conventional minimum guarantee + revenue share:</p>
+<ul>
+  <li><strong>Turnover linked leases</strong>: Base rent at 60–70% of market, high participation above turnover threshold</li>
+  <li><strong>Fit-out contribution</strong>: Landlords increasingly contributing 15–25% of fit-out cost for anchor F&B and experience tenants in exchange for longer leases</li>
+  <li><strong>Activity covenants</strong>: F&B and entertainment leases now include minimum operating hour and event programming obligations</li>
+</ul>
+
+<h2>India Gully's Retail Practice</h2>
+<p>India Gully's retail leasing team has placed 30+ brands across India's premier mall and mixed-use developments. We bring both demand-side (brand relationships) and supply-side (developer advisory) perspectives to every mandate, ensuring optimal outcomes for all parties.</p>
+`,
   },
   {
     id: 'greenfield-hotel-development',
@@ -114,177 +550,418 @@ const ARTICLES = [
     excerpt: 'Branded hotel supply in India\'s Tier 2 and Tier 3 cities remains significantly undersupplied relative to growing demand. We analyse demand fundamentals, brand positioning considerations and the project economics in this high-potential segment.',
     tags: ['Hospitality','Greenfield','Real Estate'],
     readTime: '11 min read',
+    body: `
+<h2>The Supply Gap</h2>
+<p>India's Tier 2 and Tier 3 cities represent the most significant hotel supply gap in Asia. Branded room supply per 100,000 population in cities like Coimbatore, Vizag, Bhubaneswar, Jammu, and Srinagar is 6–12 keys — versus 35–65 keys in Mumbai and Delhi, and 80–120 keys in comparable South-East Asian cities.</p>
+<p>Demand is not the constraint — occupancy at existing branded properties in these markets regularly exceeds 80% on weekdays, with weekend spikes to 95%+. The constraint is supply: risk-averse developers, limited financing, and the absence of experienced development partners.</p>
+
+<h2>Demand Drivers in Tier 2/3</h2>
+<ul>
+  <li><strong>Industrial and corporate demand</strong>: Manufacturing corridors (National Industrial Corridor), pharmaceutical clusters, and IT parks are generating structured corporate travel demand in Tier 2 cities.</li>
+  <li><strong>Religious and pilgrimage tourism</strong>: India's pilgrimage circuit — Vaishno Devi, Tirupati, Shirdi, Amarnath, Char Dham — handles 200M+ visitors annually, the vast majority currently accommodated in unbranded guesthouses.</li>
+  <li><strong>Wedding and MICE</strong>: India's wedding industry (₹4.25 lakh crore) and growing corporate MICE market are driving demand for quality banquet and accommodation facilities in Tier 2 cities.</li>
+  <li><strong>Government and PSU travel</strong>: State capitals and administrative centres generate consistent government and PSU travel — a captive, brand-agnostic demand segment.</li>
+</ul>
+
+<h2>Brand Considerations</h2>
+<p>Brand selection is the most critical development decision for Tier 2 greenfield. India Gully's brand on-boarding experience provides a differentiated perspective:</p>
+<ul>
+  <li><strong>Economy (₹2,000–3,500 ADR)</strong>: Lemon Tree Express, Keys Lite, Ginger — lowest capital requirements, fastest ramp</li>
+  <li><strong>Mid-Scale (₹3,500–6,000 ADR)</strong>: Cygnett, Keys Select, Regenta, Pride — optimal for most Tier 2 markets</li>
+  <li><strong>Upscale (₹6,000–12,000 ADR)</strong>: Radisson Blu, Marriott Courtyard, Novotel — appropriate for state capitals and industrial Tier 2 cities</li>
+</ul>
+
+<h2>Financing Structure</h2>
+<p>Tier 2 greenfield hotels are increasingly bankable. SBI, HDFC, and several NBFCs have dedicated hospitality lending desks with Tier 2 experience. Typical financing structure:</p>
+<ul>
+  <li>Debt: 55–65% of project cost (branded hotel, Tier 2)</li>
+  <li>Promoter equity: 25–35%</li>
+  <li>DSCR requirement: 1.35× from Year 3</li>
+  <li>Moratorium: 24–30 months (pre-opening + ramp-up)</li>
+</ul>
+
+<h2>India Gully's Development Support</h2>
+<p>India Gully provides end-to-end support for Tier 2 greenfield hotel development: site identification, feasibility, brand on-boarding, HORECA procurement, pre-opening project management, and operations advisory. For first-time hotel developers, we serve as the single partner for the entire development journey.</p>
+`,
   },
 ]
 
+// Category colour map
+const CAT_COLOR: Record<string, { bg: string; text: string; border: string }> = {
+  'Real Estate':              { bg: 'rgba(26,58,107,.1)',   text: '#1A3A6B',  border: 'rgba(26,58,107,.2)' },
+  'Entertainment':            { bg: 'rgba(124,58,237,.09)', text: '#7C3AED',  border: 'rgba(124,58,237,.2)' },
+  'HORECA':                   { bg: 'rgba(22,163,74,.08)',  text: '#15803d',  border: 'rgba(22,163,74,.2)' },
+  'Debt & Special Situations':{ bg: 'rgba(220,38,38,.07)',  text: '#b91c1c',  border: 'rgba(220,38,38,.18)' },
+  'Retail':                   { bg: 'rgba(184,150,12,.1)',  text: '#B8960C',  border: 'rgba(184,150,12,.25)' },
+  'Hospitality':              { bg: 'rgba(6,95,70,.08)',    text: '#065F46',  border: 'rgba(6,95,70,.2)' },
+}
+
+function catBadge(cat: string) {
+  const c = CAT_COLOR[cat] || { bg: 'rgba(184,150,12,.1)', text: '#B8960C', border: 'rgba(184,150,12,.25)' }
+  return `<span style="background:${c.bg};color:${c.text};border:1px solid ${c.border};font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.22rem .6rem;">${cat}</span>`
+}
+
+const ALL_CATS = ['All', 'Real Estate', 'Hospitality', 'Entertainment', 'Retail', 'HORECA', 'Debt & Special Situations']
+
+// ── INSIGHTS INDEX ─────────────────────────────────────────────────────────
 app.get('/', (c) => {
+  const featured = ARTICLES[0]
+  const rest = ARTICLES.slice(1)
+
   const content = `
 
-<!-- INSIGHTS HERO -->
+<!-- ══ INSIGHTS HERO ════════════════════════════════════════════════════ -->
 <div style="background:var(--ink);padding:7rem 0 5rem;position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.05) 1px,transparent 1px);background-size:72px 72px;"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 40%,rgba(184,150,12,.04) 0%,transparent 60%);pointer-events:none;"></div>
   <div class="wrap" style="position:relative;">
     <div style="max-width:680px;" class="fu">
       <div class="gr-lt"></div>
       <p class="eyebrow" style="margin-bottom:.875rem;">Insights &amp; Research</p>
       <h1 class="h1" style="margin-bottom:1.5rem;">Thought Leadership<br><em style="color:var(--gold);font-style:italic;">from the Field</em></h1>
-      <p class="lead-lt" style="max-width:540px;">Market research, sector analysis and operational insights from India Gully's advisory practice, drawn from active mandates across hospitality, real estate, retail and entertainment.</p>
+      <p class="lead-lt" style="max-width:580px;margin-bottom:2.5rem;">Market research, sector analysis and operational insights from India Gully's advisory practice, drawn from active mandates across hospitality, real estate, retail and entertainment.</p>
+
+      <!-- Category Filter Buttons -->
+      <div id="insightFilterRow" style="display:flex;flex-wrap:wrap;gap:.5rem;">
+        ${ALL_CATS.map((cat, i) => `
+        <button onclick="filterInsights('${cat}')" data-cat="${cat}"
+                class="ins-filter-btn${i === 0 ? ' active' : ''}"
+                style="padding:.4rem 1rem;font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border:1px solid ${i === 0 ? 'var(--gold)' : 'rgba(255,255,255,.18)'};background:${i === 0 ? 'var(--gold)' : 'transparent'};color:${i === 0 ? '#fff' : 'rgba(255,255,255,.55)'};cursor:pointer;transition:all .2s;">${cat}</button>`).join('')}
+      </div>
     </div>
   </div>
 </div>
 
-<!-- FEATURED ARTICLE -->
-<div class="sec-wh">
-  <div class="wrap">
-    <div style="display:grid;grid-template-columns:3fr 2fr;gap:4rem;align-items:center;padding-bottom:3.5rem;border-bottom:1px solid var(--border);margin-bottom:3.5rem;">
-      <div>
-        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;">
-          <span class="badge b-g">${ARTICLES[0].category}</span>
-          <span class="caption">${ARTICLES[0].date} · ${ARTICLES[0].readTime}</span>
-        </div>
-        <h2 class="h2" style="margin-bottom:1.25rem;">${ARTICLES[0].title}</h2>
-        <p class="lead" style="margin-bottom:2rem;">${ARTICLES[0].excerpt}</p>
-        <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.75rem;">
-          ${ARTICLES[0].tags.map(t => `<span class="badge b-dk">${t}</span>`).join('')}
-        </div>
-        <a href="/insights/${ARTICLES[0].id}" class="btn btn-g">Read Full Article</a>
-      </div>
-      <div style="background:var(--parch);border:1px solid var(--border);padding:2.5rem;text-align:center;">
-        <div style="font-size:3rem;margin-bottom:1rem;">🏨</div>
-        <p style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:var(--ink);font-style:italic;line-height:1.5;">"Understanding India's hospitality market requires depth that only comes from being present across every segment."</p>
-        <div style="width:32px;height:1.5px;background:var(--gold);margin:1.25rem auto;"></div>
-        <p class="caption">India Gully Research, 2024</p>
-      </div>
-    </div>
-
-    <!-- ARTICLES GRID -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;">
-      ${ARTICLES.slice(1).map(a => `
-      <article class="card card-lift" style="display:flex;flex-direction:column;">
-        <div style="padding:1.75rem;flex:1;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
-            <span class="badge b-g">${a.category}</span>
-            <span class="caption">${a.readTime}</span>
-          </div>
-          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.15rem;color:var(--ink);line-height:1.3;margin-bottom:.875rem;">${a.title}</h3>
-          <p class="body" style="font-size:.83rem;margin-bottom:1.25rem;flex:1;">${a.excerpt}</p>
-          <div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1.25rem;">
-            ${a.tags.map(t => `<span class="badge b-dk">${t}</span>`).join('')}
-          </div>
-        </div>
-        <div style="padding:0 1.75rem 1.75rem;">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.25rem;border-top:1px solid var(--border);">
-            <span class="caption">${a.date}</span>
-            <a href="/insights/${a.id}" style="font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:.3rem;transition:gap .2s;" onmouseover="this.style.gap='.6rem'" onmouseout="this.style.gap='.3rem'">Read <i class="fas fa-arrow-right" style="font-size:.6rem;"></i></a>
-          </div>
-        </div>
-      </article>
-      `).join('')}
+<!-- ══ STATS BAR ══════════════════════════════════════════════════════════ -->
+<div style="background:var(--ink-mid);border-bottom:1px solid rgba(255,255,255,.06);">
+  <div class="wrap" style="padding:0;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.06);">
+      ${[
+        { n: '12', l: 'In-Depth Articles' },
+        { n: '6',  l: 'Sectors Covered' },
+        { n: '₹6,000 Cr+', l: 'Advisory Mandates Behind Research' },
+        { n: '2024–26', l: 'Latest Research Period' },
+      ].map(s => `
+      <div style="padding:1.5rem 1.75rem;border-right:1px solid rgba(255,255,255,.06);text-align:center;">
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--gold);line-height:1;margin-bottom:.3rem;">${s.n}</div>
+        <div style="font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);">${s.l}</div>
+      </div>`).join('')}
     </div>
   </div>
 </div>
 
-<!-- SUBSCRIBE -->
-<div class="sec-pd">
+<!-- ══ FEATURED ARTICLE ════════════════════════════════════════════════ -->
+<div class="sec-wh" id="insightsContent">
   <div class="wrap">
-    <div style="background:var(--ink);padding:4rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
+
+    <!-- Featured Card -->
+    <div id="featuredArticle" data-cat="${featured.category}" style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);overflow:hidden;margin-bottom:3.5rem;transition:border-color .3s;" class="mob-stack" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="position:relative;min-height:340px;overflow:hidden;background:#1a1a1a;">
+        <img src="${CAT_IMAGES[featured.category] || 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=900&q=80'}"
+             alt="${featured.title}"
+             style="width:100%;height:100%;object-fit:cover;transition:transform 8s ease;" loading="eager"
+             onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,.4) 0%,rgba(0,0,0,.1) 100%);"></div>
+        <div style="position:absolute;top:1.25rem;left:1.25rem;">
+          ${catBadge(featured.category)}
+        </div>
+        <div style="position:absolute;bottom:1.25rem;left:1.25rem;font-size:.68rem;color:rgba(255,255,255,.55);letter-spacing:.06em;">${featured.date} · ${featured.readTime}</div>
+      </div>
+      <div style="padding:2.75rem;display:flex;flex-direction:column;justify-content:center;">
+        <p style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">Featured Article</p>
+        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:clamp(1.35rem,2.2vw,1.9rem);color:var(--ink);line-height:1.2;margin-bottom:1rem;">${featured.title}</h2>
+        <p style="font-size:.875rem;color:var(--ink-soft);line-height:1.8;margin-bottom:1.75rem;">${featured.excerpt}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1.75rem;">
+          ${featured.tags.map((t: string) => `<span style="background:rgba(17,17,17,.05);color:var(--ink-soft);border:1px solid var(--border);font-size:.62rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .55rem;">${t}</span>`).join('')}
+        </div>
+        <a href="/insights/${featured.id}" class="btn btn-g" style="align-self:flex-start;">Read Full Article <i class="fas fa-arrow-right" style="margin-left:.4rem;font-size:.65rem;"></i></a>
+      </div>
+    </div>
+
+    <!-- Articles Grid -->
+    <div class="insight-grid" id="articleGrid">
+      ${rest.map((a, i) => `
+      <article class="ins-card" data-cat="${a.category}"
+               style="background:#fff;border:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:border-color .25s,box-shadow .25s,transform .25s;animation:fadeUp .55s ease ${i * 0.07}s both;"
+               onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 12px 40px rgba(0,0,0,.08)';this.style.transform='translateY(-3px)'"
+               onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none';this.style.transform='translateY(0)'">
+        <!-- Image Header -->
+        <div style="height:180px;overflow:hidden;position:relative;background:#1a1a1a;flex-shrink:0;">
+          <img src="${CAT_IMAGES[a.category] || 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80'}"
+               alt="${a.title}" style="width:100%;height:100%;object-fit:cover;transition:transform 6s ease;" loading="lazy"
+               onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,rgba(0,0,0,.1) 60%,transparent 100%);"></div>
+          <div style="position:absolute;top:.875rem;left:.875rem;">${catBadge(a.category)}</div>
+          <div style="position:absolute;bottom:.875rem;left:.875rem;font-size:.62rem;color:rgba(255,255,255,.55);letter-spacing:.06em;">${a.date}</div>
+          <div style="position:absolute;bottom:.875rem;right:.875rem;font-size:.62rem;color:rgba(255,255,255,.45);letter-spacing:.04em;">${a.readTime}</div>
+        </div>
+        <div style="padding:1.5rem;flex:1;display:flex;flex-direction:column;">
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);line-height:1.3;margin-bottom:.75rem;flex:1;">${a.title}</h3>
+          <p style="font-size:.82rem;color:var(--ink-muted);line-height:1.7;margin-bottom:1.1rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${a.excerpt}</p>
+          <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:1.1rem;">
+            ${a.tags.slice(0, 3).map((t: string) => `<span style="background:rgba(17,17,17,.04);color:var(--ink-soft);border:1px solid var(--border);font-size:.6rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .5rem;">${t}</span>`).join('')}
+          </div>
+          <a href="/insights/${a.id}" style="display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);transition:gap .2s;" onmouseover="this.style.gap='.65rem'" onmouseout="this.style.gap='.4rem'">Read Article <i class="fas fa-arrow-right" style="font-size:.6rem;"></i></a>
+        </div>
+      </article>`).join('')}
+    </div>
+  </div>
+</div>
+
+<!-- ══ SUBSCRIBE ══════════════════════════════════════════════════════════ -->
+<div class="sec-pd" id="subscribe">
+  <div class="wrap">
+    <div style="background:var(--ink);padding:4rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;" class="mob-stack">
       <div>
         <div class="gr-lt"></div>
         <p class="eyebrow" style="margin-bottom:.75rem;">Stay Informed</p>
         <h2 class="h2-lt" style="margin-bottom:1rem;">Subscribe to<br>India Gully Insights</h2>
-        <p class="lead-lt" style="font-size:.9rem;">Receive our sector research, market updates and mandate alerts directly, for qualified investors, developers and industry professionals.</p>
+        <p class="lead-lt" style="font-size:.9rem;">Receive our sector research, market updates and mandate alerts directly — for qualified investors, developers and industry professionals.</p>
+        <div style="margin-top:2rem;display:flex;flex-direction:column;gap:.75rem;">
+          ${[
+            { icon: 'newspaper', text: 'Monthly sector research reports' },
+            { icon: 'bell', text: 'New mandate alerts (NDA-protected)' },
+            { icon: 'chart-line', text: 'Market outlook and deal commentary' },
+          ].map(b => `
+          <div style="display:flex;align-items:center;gap:.875rem;">
+            <div style="width:32px;height:32px;background:rgba(184,150,12,.15);border:1px solid rgba(184,150,12,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-${b.icon}" style="color:var(--gold);font-size:.72rem;"></i>
+            </div>
+            <span style="font-size:.82rem;color:rgba(255,255,255,.65);">${b.text}</span>
+          </div>`).join('')}
+        </div>
       </div>
       <div>
         <form class="ig-form" method="POST" action="/api/subscribe" style="display:flex;flex-direction:column;gap:1rem;">
           <div>
-            <label class="ig-lbl" style="color:rgba(255,255,255,.7);">Your Name</label>
-            <input type="text" name="name" class="ig-input" required placeholder="Full name">
+            <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.35rem;">Your Name</label>
+            <input type="text" name="name" required placeholder="Full name"
+                   style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.75rem 1rem;font-size:.875rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;"
+                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
           </div>
           <div>
-            <label class="ig-lbl" style="color:rgba(255,255,255,.7);">Email Address *</label>
-            <input type="email" name="email" class="ig-input" required placeholder="your@email.com">
+            <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.35rem;">Email Address *</label>
+            <input type="email" name="email" required placeholder="your@email.com"
+                   style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.75rem 1rem;font-size:.875rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;"
+                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
           </div>
           <div>
-            <label class="ig-lbl" style="color:rgba(255,255,255,.7);">Professional Role</label>
-            <select name="role" class="ig-input">
-              <option value="">Select your role</option>
-              <option>Developer / Promoter</option>
-              <option>Institutional Investor</option>
-              <option>Family Office</option>
-              <option>Hotel / Hospitality Professional</option>
-              <option>Retail Brand / Operator</option>
-              <option>Advisor / Consultant</option>
-              <option>Other</option>
+            <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.35rem;">Professional Role</label>
+            <select name="role"
+                    style="width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.75rem 1rem;font-size:.875rem;color:rgba(255,255,255,.7);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;cursor:pointer;"
+                    onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
+              <option value="" style="background:#111;color:#fff;">Select your role</option>
+              <option style="background:#111;color:#fff;">Developer / Promoter</option>
+              <option style="background:#111;color:#fff;">Institutional Investor</option>
+              <option style="background:#111;color:#fff;">Family Office</option>
+              <option style="background:#111;color:#fff;">Hotel / Hospitality Professional</option>
+              <option style="background:#111;color:#fff;">Retail Brand / Operator</option>
+              <option style="background:#111;color:#fff;">Advisor / Consultant</option>
+              <option style="background:#111;color:#fff;">Other</option>
             </select>
           </div>
-          <button type="submit" class="btn btn-g" style="width:100%;justify-content:center;">
+          <button type="submit" class="btn btn-g" style="width:100%;justify-content:center;padding:.875rem;">
             <i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Subscribe to Insights
           </button>
-          <p style="font-size:.68rem;color:rgba(255,255,255,.55);line-height:1.6;">By subscribing you agree to receive occasional research updates and mandate alerts from India Gully. We respect your privacy and you can unsubscribe at any time.</p>
+          <p style="font-size:.68rem;color:rgba(255,255,255,.45);line-height:1.6;">By subscribing you agree to receive occasional research updates and mandate alerts from India Gully. We respect your privacy and you can unsubscribe at any time.</p>
         </form>
       </div>
     </div>
   </div>
 </div>
 
+<script>
+function filterInsights(cat) {
+  var cards = document.querySelectorAll('.ins-card');
+  var featured = document.getElementById('featuredArticle');
+  var btns = document.querySelectorAll('.ins-filter-btn');
+
+  btns.forEach(function(b) {
+    var isActive = b.dataset.cat === cat;
+    b.style.borderColor = isActive ? 'var(--gold)' : 'rgba(255,255,255,.18)';
+    b.style.background  = isActive ? 'var(--gold)' : 'transparent';
+    b.style.color       = isActive ? '#fff' : 'rgba(255,255,255,.55)';
+  });
+
+  // Featured article
+  if (featured) {
+    featured.style.display = (cat === 'All' || featured.dataset.cat === cat) ? 'grid' : 'none';
+  }
+
+  cards.forEach(function(card) {
+    var match = cat === 'All' || card.dataset.cat === cat;
+    card.style.display = match ? 'flex' : 'none';
+  });
+}
+</script>
 `
+
   return c.html(layout('Insights & Research', content, {
-    description: 'India Gully Insights, thought leadership, market research and sector analysis across hospitality, real estate, retail and entertainment.'
+    description: 'India Gully Insights — thought leadership, market research and sector analysis across hospitality, real estate, retail, entertainment, HORECA, and debt & special situations advisory.'
   }))
 })
 
-// Article detail
+// ── ARTICLE DETAIL ────────────────────────────────────────────────────────────
 app.get('/:id', (c) => {
   const id = c.req.param('id')
   const article = ARTICLES.find(a => a.id === id)
   if (!article) return c.redirect('/insights')
 
+  const relatedArticles = ARTICLES.filter(a => a.id !== id && (a.category === article.category || a.tags.some((t: string) => article.tags.includes(t)))).slice(0, 3)
+  const catImg = CAT_IMAGES[article.category] || 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80'
+
   const content = `
-<div style="background:var(--ink);padding:7rem 0 4rem;position:relative;overflow:hidden;">
-  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.05) 1px,transparent 1px);background-size:72px 72px;"></div>
-  <div class="wrap" style="position:relative;max-width:820px;">
-    <a href="/insights" style="display:inline-flex;align-items:center;gap:.5rem;font-size:.78rem;color:rgba(255,255,255,.4);margin-bottom:2rem;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.4)'">
+
+<!-- ══ ARTICLE HERO ══════════════════════════════════════════════════════ -->
+<div style="background:var(--ink);position:relative;overflow:hidden;">
+  <!-- Background image -->
+  <div style="position:absolute;inset:0;">
+    <img src="${catImg}" alt="${article.title}" style="width:100%;height:100%;object-fit:cover;opacity:.18;">
+    <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(8,8,8,.96) 0%,rgba(8,8,8,.75) 100%);"></div>
+  </div>
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.04) 1px,transparent 1px);background-size:72px 72px;pointer-events:none;"></div>
+  <div class="wrap" style="position:relative;padding-top:8rem;padding-bottom:4rem;max-width:900px;">
+    <a href="/insights" style="display:inline-flex;align-items:center;gap:.5rem;font-size:.75rem;color:rgba(255,255,255,.4);margin-bottom:2rem;transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.4)'">
       <i class="fas fa-arrow-left" style="font-size:.65rem;"></i> Back to Insights
     </a>
     <div class="fu">
-      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;">
-        <span class="badge b-g">${article.category}</span>
-        <span class="caption-lt">${article.date} · ${article.readTime}</span>
+      <div style="display:flex;align-items:center;gap:.875rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+        ${catBadge(article.category)}
+        <span style="font-size:.72rem;color:rgba(255,255,255,.4);letter-spacing:.06em;">${article.date}</span>
+        <span style="font-size:.72rem;color:rgba(255,255,255,.4);letter-spacing:.06em;"><i class="fas fa-clock" style="margin-right:.35rem;font-size:.6rem;color:var(--gold);"></i>${article.readTime}</span>
       </div>
-      <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:clamp(2rem,4vw,3rem);color:#fff;line-height:1.15;margin-bottom:1.25rem;">${article.title}</h1>
-      <p class="lead-lt">${article.excerpt}</p>
+      <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:clamp(2rem,4.5vw,3.25rem);color:#fff;line-height:1.12;margin-bottom:1.5rem;">${article.title}</h1>
+      <p style="font-size:1rem;color:rgba(255,255,255,.6);line-height:1.75;max-width:700px;">${article.excerpt}</p>
+    </div>
+    <!-- Tags -->
+    <div style="margin-top:1.75rem;display:flex;flex-wrap:wrap;gap:.4rem;">
+      ${article.tags.map((t: string) => `<span style="background:rgba(184,150,12,.12);color:var(--gold);border:1px solid rgba(184,150,12,.22);font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.22rem .6rem;">${t}</span>`).join('')}
     </div>
   </div>
 </div>
 
-<div class="sec-wh">
-  <div class="wrap" style="max-width:820px;">
-    <div style="background:var(--parch);border:1px solid var(--border);padding:1.5rem;margin-bottom:2.5rem;display:flex;align-items:center;gap:1rem;">
-      <i class="fas fa-lock" style="color:var(--gold);font-size:1.25rem;flex-shrink:0;"></i>
-      <div>
-        <p style="font-size:.85rem;font-weight:600;color:var(--ink);margin-bottom:.2rem;">Full Article. Qualified Access</p>
-        <p style="font-size:.78rem;color:var(--ink-muted);">This article is available in full to qualified investors, developers and industry professionals. Subscribe or contact us to access.</p>
+<!-- ══ ARTICLE BODY ════════════════════════════════════════════════════== -->
+<div style="background:var(--parch);padding:5rem 0;">
+  <div class="wrap" style="display:grid;grid-template-columns:1fr 320px;gap:4rem;align-items:start;max-width:1200px;" class="listing-layout">
+
+    <!-- ── ARTICLE CONTENT ──────────────────────────────── -->
+    <article>
+      <!-- Article body from constants -->
+      <div style="font-size:.9375rem;line-height:1.9;color:var(--ink-soft);">
+        <style>
+        article h2{font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--ink);margin:2.5rem 0 1rem;line-height:1.2;}
+        article h3{font-family:'DM Serif Display',Georgia,serif;font-size:1.2rem;color:var(--ink);margin:1.75rem 0 .75rem;}
+        article p{margin-bottom:1.25rem;}
+        article ul,article ol{margin:.875rem 0 1.25rem;padding-left:1.5rem;}
+        article li{margin-bottom:.5rem;line-height:1.75;}
+        article strong{color:var(--ink);font-weight:600;}
+        article blockquote{border-left:3px solid var(--gold);margin:2rem 0;padding:1rem 1.5rem;background:var(--parch-dk);font-family:'DM Serif Display',Georgia,serif;font-size:1.15rem;font-style:italic;line-height:1.6;color:var(--ink);}
+        </style>
+        ${article.body}
       </div>
-      <a href="/insights#subscribe" class="btn btn-g" style="flex-shrink:0;font-size:.72rem;">Gain Access</a>
-    </div>
 
-    <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:var(--ink);font-style:italic;line-height:1.55;padding:2rem;background:var(--parch);border-left:3px solid var(--gold);margin-bottom:2.5rem;">
-      "${article.excerpt}"
-    </div>
+      <!-- Share + CTA -->
+      <div style="margin-top:3.5rem;padding-top:2rem;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.25rem;">
+          <div style="font-size:.78rem;color:var(--ink-muted);">Published by <strong style="color:var(--ink);">India Gully Research</strong> · ${article.date}</div>
+          <div style="display:flex;gap:.625rem;flex-wrap:wrap;">
+            <a href="/contact?service=${article.category}" class="btn btn-dk" style="font-size:.72rem;padding:.6rem 1.25rem;">Discuss With Our Team</a>
+            <a href="/insights" class="btn btn-go" style="font-size:.72rem;padding:.6rem 1.25rem;">All Insights</a>
+          </div>
+        </div>
+      </div>
+    </article>
 
-    <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2.5rem;">
-      ${article.tags.map(t => `<span class="badge b-g">${t}</span>`).join('')}
-    </div>
+    <!-- ── SIDEBAR ─────────────────────────────────────── -->
+    <div style="position:sticky;top:calc(var(--nav-h) + 1.5rem);display:flex;flex-direction:column;gap:1.25rem;" class="listing-sidebar">
 
-    <div style="padding-top:2.5rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
-      <div style="font-size:.78rem;color:var(--ink-muted);">Published by <strong style="color:var(--ink);">India Gully Research</strong> · ${article.date}</div>
-      <a href="/contact" class="btn btn-dk" style="font-size:.72rem;">Discuss With Our Team</a>
+      <!-- About India Gully Research -->
+      <div style="background:#fff;border:1px solid var(--border);padding:1.5rem;">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border);">
+          <div style="width:38px;height:38px;background:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-landmark" style="color:var(--gold);font-size:.8rem;"></i>
+          </div>
+          <div>
+            <div style="font-size:.875rem;font-weight:700;color:var(--ink);">India Gully Research</div>
+            <div style="font-size:.7rem;color:var(--ink-muted);">Transaction-Backed Insights</div>
+          </div>
+        </div>
+        <p style="font-size:.78rem;color:var(--ink-soft);line-height:1.75;">Our research is drawn directly from active advisory mandates, not secondary databases. Every insight reflects real-world transaction experience.</p>
+      </div>
+
+      <!-- Related Articles -->
+      ${relatedArticles.length ? `
+      <div style="background:#fff;border:1px solid var(--border);padding:1.5rem;">
+        <p style="font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:1rem;">Related Articles</p>
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          ${relatedArticles.map((r: any) => `
+          <a href="/insights/${r.id}" style="display:flex;flex-direction:column;gap:.35rem;padding-bottom:1rem;border-bottom:1px solid var(--border);text-decoration:none;" onmouseover="this.querySelector('h4').style.color='var(--gold)'" onmouseout="this.querySelector('h4').style.color='var(--ink)'">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;">
+              ${catBadge(r.category)}
+              <span style="font-size:.62rem;color:var(--ink-faint);">${r.readTime}</span>
+            </div>
+            <h4 style="font-family:'DM Serif Display',Georgia,serif;font-size:.9rem;color:var(--ink);line-height:1.3;transition:color .2s;">${r.title}</h4>
+            <span style="font-size:.68rem;color:var(--gold);font-weight:600;letter-spacing:.06em;">Read →</span>
+          </a>`).join('')}
+        </div>
+      </div>` : ''}
+
+      <!-- Contact CTA -->
+      <div style="background:var(--ink);padding:1.5rem;">
+        <p style="font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.75rem;">Advisory Enquiry</p>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:#fff;margin-bottom:.75rem;line-height:1.3;">Discuss ${article.category} Opportunities</h3>
+        <p style="font-size:.75rem;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:1.25rem;">Our advisory team brings active mandate experience to every client conversation.</p>
+        <a href="/contact?service=${encodeURIComponent(article.category)}" class="btn btn-g" style="width:100%;justify-content:center;display:flex;">Get in Touch <i class="fas fa-arrow-right" style="margin-left:.4rem;font-size:.65rem;"></i></a>
+      </div>
+
+      <!-- Subscribe -->
+      <div style="background:var(--parch-dk);border:1px solid var(--border);padding:1.5rem;">
+        <p style="font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">Stay Updated</p>
+        <p style="font-size:.78rem;color:var(--ink-soft);margin-bottom:1rem;line-height:1.6;">Receive new insights directly to your inbox.</p>
+        <form class="ig-form" method="POST" action="/api/subscribe" style="display:flex;flex-direction:column;gap:.625rem;">
+          <input type="email" name="email" required placeholder="your@email.com"
+                 style="width:100%;border:1px solid var(--border);padding:.7rem .875rem;font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;background:#fff;color:var(--ink);"
+                 onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+          <button type="submit" class="btn btn-dk" style="width:100%;justify-content:center;font-size:.72rem;">Subscribe</button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
+
+<!-- ══ MORE INSIGHTS ══════════════════════════════════════════════════════ -->
+${relatedArticles.length ? `
+<div class="sec-pc" style="padding-top:3.5rem;padding-bottom:3.5rem;">
+  <div class="wrap">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;">
+      <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:var(--ink);">More from India Gully Research</h2>
+      <a href="/insights" class="btn btn-dko" style="font-size:.72rem;">All Insights</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
+      ${relatedArticles.map((r: any) => `
+      <a href="/insights/${r.id}" style="display:block;background:#fff;border:1px solid var(--border);overflow:hidden;transition:all .25s;text-decoration:none;"
+         onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 8px 28px rgba(0,0,0,.08)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+        <div style="height:140px;overflow:hidden;position:relative;background:#1a1a1a;">
+          <img src="${CAT_IMAGES[r.category] || ''}" alt="${r.title}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.5),transparent);"></div>
+          <div style="position:absolute;top:.75rem;left:.75rem;">${catBadge(r.category)}</div>
+        </div>
+        <div style="padding:1.1rem;">
+          <h4 style="font-family:'DM Serif Display',Georgia,serif;font-size:.95rem;color:var(--ink);margin-bottom:.4rem;line-height:1.3;">${r.title}</h4>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:.75rem;">
+            <span style="font-size:.68rem;color:var(--ink-faint);">${r.date}</span>
+            <span style="font-size:.68rem;color:var(--gold);font-weight:600;">Read →</span>
+          </div>
+        </div>
+      </a>`).join('')}
+    </div>
+  </div>
+</div>` : ''}
 `
+
   return c.html(layout(article.title, content, {
-    description: article.excerpt
+    description: article.excerpt,
+    ogImage: CAT_IMAGES[article.category],
   }))
 })
 

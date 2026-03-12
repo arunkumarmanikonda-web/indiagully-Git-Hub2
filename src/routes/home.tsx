@@ -126,8 +126,37 @@ app.get('/', (c) => {
         { n:'Pan-India',   l:'Operations Reach' },
       ].map((s,i) => `
       <div style="padding:2rem 1.5rem;text-align:center;${i<4?'border-right:1px solid var(--border);':''}">
-        <div class="stat-n">${s.n}</div>
+        <div class="stat-n count-up" data-target="${s.n}">${s.n}</div>
         <div style="font-size:.66rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-top:.45rem;">${s.l}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>
+
+<!-- ══ WHY INDIA GULLY ══════════════════════════════════════════════════════ -->
+<div class="sec-pc" style="padding-top:4.5rem;padding-bottom:4.5rem;">
+  <div class="wrap">
+    <div style="text-align:center;max-width:640px;margin:0 auto 3rem;">
+      <div class="gr-c"></div>
+      <p class="eyebrow" style="margin-bottom:.75rem;">Why India Gully</p>
+      <h2 class="h2">The Advisory Partner<br>Built for India</h2>
+      <p class="lead" style="margin-top:1rem;">20+ years of boots-on-the-ground execution across every vertical — not just strategy, but delivery.</p>
+    </div>
+    <div class="why-grid">
+      ${[
+        { icon:'trophy',         color:'#B8960C', title:'₹2,000+ Cr Transacted',       desc:'Landmark transactions including joint advisory with EY for the ₹1,350 Cr+ divestment of Entertainment City Limited.' },
+        { icon:'hotel',          color:'#065F46', title:'15+ Hotels On-Boarded',        desc:'Hotel brand selection, pre-opening management and PMC across Marriott, Radisson, Cygnett, Regenta and more.' },
+        { icon:'store',          color:'#1A3A6B', title:'1,40,000+ Sq Ft Leased',       desc:'Premium F&B and retail leasing at Gardens Galleria, Hyatt Andaz, AIPL Joy Street and Entertainment City.' },
+        { icon:'utensils',       color:'#B8960C', title:'HORECA to 15+ Properties',     desc:'End-to-end supply of FF&E, OS&E, kitchen equipment and amenities for Mahindra Holidays, Accor, CGH Earth and more.' },
+        { icon:'handshake',      color:'#7C3AED', title:'Co-Advisory with EY & CBRE',   desc:'Trusted by India\'s top professional service firms as co-advisor on complex, multi-party institutional transactions.' },
+        { icon:'map-marked-alt', color:'#B8960C', title:'Pan-India Presence',           desc:'Active mandates in Delhi NCR, Chandigarh, Kasauli, Chail, Jaipur, Noida, Gurugram, Bengaluru, Mumbai and Kerala.' },
+      ].map((w,wi) => `
+      <div class="why-card reveal" style="animation-delay:${wi*0.08}s;">
+        <div style="width:48px;height:48px;background:${w.color==='#B8960C'?'rgba(184,150,12,.1)':w.color==='#065F46'?'rgba(6,95,70,.1)':w.color==='#1A3A6B'?'rgba(26,58,107,.1)':w.color==='#7C3AED'?'rgba(124,58,237,.1)':'rgba(184,150,12,.1)'};display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+          <i class="fas fa-${w.icon}" style="color:${w.color};font-size:1rem;"></i>
+        </div>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.05rem;color:var(--ink);margin-bottom:.5rem;">${w.title}</h3>
+        <p class="body">${w.desc}</p>
       </div>`).join('')}
     </div>
   </div>
@@ -149,7 +178,7 @@ app.get('/', (c) => {
     </div>
 
     <!-- Featured 3-column grid with images -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:1.5rem;">
+    <div id="featuredMandates" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:1.5rem;">
       ${LISTINGS.filter((l: any) => l.highlight).slice(0,3).map((l: any) => {
         const img = l.images?.[0] || ''
         const ss = { active: { bg:'rgba(184,150,12,.12)', text:'#B8960C', border:'rgba(184,150,12,.3)' }, negotiation: { bg:'rgba(37,99,235,.1)', text:'#1d4ed8', border:'rgba(37,99,235,.25)' }, feasibility: { bg:'rgba(22,163,74,.08)', text:'#15803d', border:'rgba(22,163,74,.2)' } }[l.statusType] || { bg:'rgba(184,150,12,.12)', text:'#B8960C', border:'rgba(184,150,12,.3)' }
@@ -213,7 +242,7 @@ app.get('/', (c) => {
 <!-- ══ ADVISORY VERTICALS ═════════════════════════════════════════════════ -->
 <div class="sec-wh">
   <div class="wrap">
-    <div style="display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start;margin-bottom:3.5rem;">
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:4rem;align-items:start;margin-bottom:3.5rem;" class="mob-stack">
       <div>
         <div class="gr"></div>
         <p class="eyebrow" style="margin-bottom:.75rem;">Advisory Verticals</p>
@@ -398,7 +427,7 @@ app.get('/', (c) => {
 <!-- ══ LEADERSHIP ════════════════════════════════════════════════════════ -->
 <div class="sec-wh" style="padding-top:5rem;">
   <div class="wrap">
-    <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:4.5rem;align-items:start;">
+    <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:4.5rem;align-items:start;" class="mob-stack">
       <div>
         <div class="gr"></div>
         <p class="eyebrow" style="margin-bottom:.75rem;">Leadership</p>
@@ -442,16 +471,50 @@ app.get('/', (c) => {
     <h2 class="h2-lt" style="margin-bottom:1.25rem;">Ready to Work<br>With India Gully?</h2>
     <p class="lead-lt" style="max-width:560px;margin:0 auto 2.5rem;">Whether you are a developer, investor, brand or operator, we bring the advisory depth, network and execution capability to deliver results.</p>
     <div style="display:flex;flex-wrap:wrap;gap:.875rem;justify-content:center;">
-      <a href="/contact"  class="btn btn-g">Submit a Mandate Enquiry</a>
-      <a href="/listings" class="btn btn-ghost-g">View Active Mandates</a>
-      <a href="/horeca"   class="btn btn-ghost">HORECA Supply Enquiry</a>
+      <div class="cta-flex" style="display:flex;flex-wrap:wrap;gap:.875rem;justify-content:center;">
+        <a href="/contact"  class="btn btn-g">Submit a Mandate Enquiry</a>
+        <a href="/listings" class="btn btn-ghost-g">View Active Mandates</a>
+        <a href="/horeca"   class="btn btn-ghost">HORECA Supply Enquiry</a>
+      </div>
     </div>
   </div>
 </div>
 
 `
   return c.html(layout('Home', content, {
-    description: "India Gully. Celebrating Desiness. India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions. ₹10,000 Cr+ advisory pipeline."
+    description: "India Gully. Celebrating Desiness. India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions. ₹10,000 Cr+ advisory pipeline.",
+    canonical: 'https://india-gully.pages.dev/',
+    jsonLd: JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://india-gully.pages.dev/#organization",
+          "name": "India Gully",
+          "legalName": "Vivacious Entertainment and Hospitality Pvt. Ltd.",
+          "url": "https://india-gully.pages.dev",
+          "logo": "https://india-gully.pages.dev/assets/logo-white.png",
+          "description": "India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions.",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "New Delhi",
+            "addressCountry": "IN"
+          },
+          "telephone": "+918988988988",
+          "email": "info@indiagully.com",
+          "sameAs": ["https://indiagully.com"],
+          "foundingDate": "2017",
+          "knowsAbout": ["Real Estate Advisory","Hospitality Management","Retail Leasing","Entertainment Advisory","HORECA Procurement","Debt & Special Situations"]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://india-gully.pages.dev/#website",
+          "url": "https://india-gully.pages.dev",
+          "name": "India Gully",
+          "publisher": { "@id": "https://india-gully.pages.dev/#organization" }
+        }
+      ]
+    })
   }))
 })
 

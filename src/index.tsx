@@ -164,6 +164,80 @@ app.get('/legal/disclaimer', (c) => c.html(legalPage('Disclaimer', `
 <p>For legal queries: <strong>Vivacious Entertainment and Hospitality Pvt. Ltd.</strong>, New Delhi, <a href="mailto:info@indiagully.com" style="color:var(--gold);">info@indiagully.com</a></p>
 `)))
 
+// ── SEO: sitemap.xml ─────────────────────────────────────────────────────────
+app.get('/sitemap.xml', (c) => {
+  const BASE = 'https://india-gully.pages.dev'
+  const now = new Date().toISOString().split('T')[0]
+
+  const staticPages = [
+    { url: '/',         priority: '1.0', freq: 'daily'   },
+    { url: '/about',    priority: '0.8', freq: 'monthly' },
+    { url: '/services', priority: '0.9', freq: 'monthly' },
+    { url: '/horeca',   priority: '0.85',freq: 'monthly' },
+    { url: '/listings', priority: '0.95',freq: 'daily'   },
+    { url: '/works',    priority: '0.8', freq: 'monthly' },
+    { url: '/insights', priority: '0.9', freq: 'weekly'  },
+    { url: '/contact',  priority: '0.8', freq: 'monthly' },
+    { url: '/legal/privacy',    priority: '0.3', freq: 'yearly' },
+    { url: '/legal/terms',      priority: '0.3', freq: 'yearly' },
+    { url: '/legal/disclaimer', priority: '0.3', freq: 'yearly' },
+  ]
+
+  const listingIds = [
+    'prism-tower-gurgaon','belcibo-hospitality','hotel-rajshree-chandigarh',
+    'welcomheritage-santa-roza','heritage-hotel-jaipur','maple-resort-chail',
+    'ambience-tower-north-delhi','sawasdee-jlg-noida','entertainment-city-ncr',
+    'entertainment-maharashtra',
+  ]
+
+  const insightIds = [
+    'india-realty-2026-outlook','entertainment-zone-regulatory-india','horeca-tier2-supply-chain',
+    'ibc-distressed-hospitality-2025','mall-mixed-use-integration','greenfield-midscale-hotels',
+    'india-hospitality-2024','entertainment-destinations-india','horeca-procurement-strategy',
+    'debt-special-situations-hospitality','retail-leasing-malls-india','greenfield-hotel-development',
+  ]
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${staticPages.map(p => `  <url>
+    <loc>${BASE}${p.url}</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>${p.freq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`).join('\n')}
+${listingIds.map(id => `  <url>
+    <loc>${BASE}/listings/${id}</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>`).join('\n')}
+${insightIds.map(id => `  <url>
+    <loc>${BASE}/insights/${id}</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>`).join('\n')}
+</urlset>`
+
+  return c.text(xml, 200, { 'Content-Type': 'application/xml; charset=utf-8' })
+})
+
+// ── SEO: robots.txt ──────────────────────────────────────────────────────────
+app.get('/robots.txt', (c) => {
+  const BASE = 'https://india-gully.pages.dev'
+  return c.text(
+    `User-agent: *\nAllow: /\nDisallow: /portal/\nDisallow: /admin/\nDisallow: /api/\n\nSitemap: ${BASE}/sitemap.xml\n`,
+    200,
+    { 'Content-Type': 'text/plain; charset=utf-8' }
+  )
+})
+
+// ── SEO: humans.txt ──────────────────────────────────────────────────────────
+app.get('/humans.txt', (c) => c.text(
+  `/* TEAM */\nIndia Gully Advisory — Vivacious Entertainment and Hospitality Pvt. Ltd.\nNew Delhi, India\ninfo@indiagully.com\n\n/* SITE */\nLast update: ${new Date().toISOString().split('T')[0]}\nLanguage: English\nDoctype: HTML5\n`,
+  200, { 'Content-Type': 'text/plain; charset=utf-8' }
+))
+
 // ── AUDIT REPORT ─────────────────────────────────────────────────────────────
 import auditRoute from './routes/audit'
 app.route('/audit', auditRoute)

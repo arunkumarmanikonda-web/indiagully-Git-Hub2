@@ -8,6 +8,8 @@ export function layout(title: string, content: string, opts?: {
   noNav?: boolean
   noFooter?: boolean
   cspNonce?: string       // kept for API compatibility; CSP now uses unsafe-inline + CDN allowlist
+  jsonLd?: string         // optional JSON-LD structured data blob
+  canonical?: string      // optional canonical URL override
 }) {
   const desc = opts?.description || "India Gully — Celebrating Desiness. India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions."
   const ogImg = opts?.ogImage || 'https://india-gully.pages.dev/static/og.jpg'
@@ -27,7 +29,9 @@ export function layout(title: string, content: string, opts?: {
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <title>${title} — India Gully</title>
+${opts?.canonical ? `<link rel="canonical" href="${opts.canonical}">` : ''}
 <!-- FAVICON: hologram asset — locked, no AI, no optimisation, lossless only -->
+${opts?.jsonLd ? `<script type="application/ld+json">${opts.jsonLd}</script>` : ''}
 <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
 <link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon-64.png">
 <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
@@ -330,6 +334,180 @@ textarea.ig-input{resize:vertical;min-height:130px}
 /* ── DIVIDER ────────────────────────────────── */
 .divider{height:1px;background:var(--border)}
 .divider-dk{height:1px;background:rgba(255,255,255,.07)}
+
+/* ══════════════════════════════════════════════
+   MOBILE-FIRST RESPONSIVE SYSTEM
+   Breakpoints: xs<480 sm<640 md<768 lg<1024 xl<1280
+══════════════════════════════════════════════ */
+
+/* ── Section padding tighten on mobile ──────── */
+@media(max-width:768px){
+  .sec,.sec-sm,.sec-dk,.sec-md,.sec-wh,.sec-pc,.sec-pd{padding:3.25rem 0}
+  .wrap{padding:0 1rem}
+  .wrap-sm{padding:0 1rem}
+}
+@media(max-width:480px){
+  .sec,.sec-sm,.sec-dk,.sec-md,.sec-wh,.sec-pc,.sec-pd{padding:2.5rem 0}
+}
+
+/* ── Two-col → single col stacks ────────────── */
+@media(max-width:768px){
+  .mob-stack{display:flex!important;flex-direction:column!important;gap:2rem!important;}
+  .mob-stack>*{width:100%!important;}
+  /* grid overrides */
+  [style*="grid-template-columns:2fr 1fr"],
+  [style*="grid-template-columns:3fr 2fr"],
+  [style*="grid-template-columns:1fr 1fr"],
+  [style*="grid-template-columns:repeat(2,1fr)"],
+  [style*="grid-template-columns:repeat(3,1fr)"],
+  [style*="grid-template-columns:repeat(4,1fr)"]{
+    grid-template-columns:1fr!important;
+  }
+  /* stat bar: 4-col → 2-col */
+  [style*="grid-template-columns:repeat(4,1fr)"]{
+    grid-template-columns:repeat(2,1fr)!important;
+  }
+}
+@media(max-width:480px){
+  [style*="grid-template-columns:repeat(4,1fr)"]{
+    grid-template-columns:repeat(2,1fr)!important;
+  }
+  [style*="grid-template-columns:repeat(2,1fr)"]{
+    grid-template-columns:1fr!important;
+  }
+}
+
+/* ── Mandate grid: 3-col → 2-col → 1-col ────── */
+#mandatesGrid{grid-template-columns:repeat(3,1fr)!important;}
+@media(max-width:900px){#mandatesGrid{grid-template-columns:repeat(2,1fr)!important;}}
+@media(max-width:560px){#mandatesGrid{grid-template-columns:1fr!important;}}
+
+/* ── Works track record grid ────────────────── */
+.works-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+@media(max-width:900px){.works-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.works-grid{grid-template-columns:1fr;}}
+
+/* ── Hero carousel: min-height on mobile ────── */
+@media(max-width:768px){
+  .car{height:90vh;min-height:520px;max-height:760px;}
+  .car-arr{display:none;} /* hide arrows; swipe available */
+  .car-ct{display:none;}
+}
+
+/* ── Listing detail: sidebar below on mobile ── */
+@media(max-width:900px){
+  .listing-layout{display:flex!important;flex-direction:column!important;gap:2rem!important;}
+  .listing-sidebar{position:static!important;width:100%!important;}
+}
+
+/* ── Hero text sizing ────────────────────────── */
+@media(max-width:640px){
+  .h1{font-size:clamp(2rem,8vw,3.5rem)!important;}
+  .h2{font-size:clamp(1.65rem,6vw,2.5rem)!important;}
+  .lead,.lead-lt{font-size:.9375rem!important;}
+}
+
+/* ── Buttons: full-width on mobile ──────────── */
+@media(max-width:480px){
+  .btn-stack-mob{display:flex;flex-direction:column;gap:.625rem;width:100%;}
+  .btn-stack-mob .btn{justify-content:center;}
+}
+
+/* ── Table horizontal scroll ────────────────── */
+@media(max-width:768px){
+  .ig-tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .ig-tbl,.ig-table{min-width:540px;}
+}
+
+/* ── Filter buttons wrap ────────────────────── */
+.filter-row{display:flex;flex-wrap:wrap;gap:.5rem;}
+
+/* ── Vertical grid mobile ───────────────────── */
+@media(max-width:640px){
+  .vg{grid-template-columns:1fr!important;}
+  .vg-cell:nth-child(3n){border-right:1px solid var(--border)!important;}
+  .vg-cell:nth-child(odd){border-right:none!important;}
+}
+
+/* ── Footer mobile ──────────────────────────── */
+@media(max-width:768px){
+  .footer-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:2rem!important;}
+}
+@media(max-width:480px){
+  .footer-grid{grid-template-columns:1fr!important;}
+}
+
+/* ── Ticker pause on reduced motion ─────────── */
+@media(prefers-reduced-motion:reduce){
+  .ticker-tr{animation:none!important;}
+}
+
+/* ── Image: contain on mobile ───────────────── */
+@media(max-width:640px){
+  .mob-img-full{width:100%!important;height:220px!important;object-fit:cover!important;}
+}
+
+/* ── Sticky section heading on mobile ──────── */
+@media(max-width:768px){
+  .stat-n{font-size:2rem!important;}
+  .eyebrow{letter-spacing:.14em!important;}
+}
+
+/* ── Mobile CTA flex stack ──────────────────── */
+@media(max-width:560px){
+  .cta-flex{flex-direction:column!important;align-items:stretch!important;}
+  .cta-flex .btn{text-align:center;justify-content:center;}
+}
+
+/* ── Insight cards: 3→2→1 ───────────────────── */
+.insight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+@media(max-width:900px){.insight-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.insight-grid{grid-template-columns:1fr;}}
+
+/* ── Team cards: 3→1 ────────────────────────── */
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem;}
+@media(max-width:860px){.team-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.team-grid{grid-template-columns:1fr;}}
+
+/* ── Track record vertical sections ─────────── */
+.tr-section-grid{display:grid;grid-template-columns:280px 1fr;gap:0;}
+@media(max-width:860px){
+  .tr-section-grid{grid-template-columns:1fr!important;display:block!important;}
+  .tr-section-sidebar{border-right:none!important;border-bottom:1px solid rgba(255,255,255,.07)!important;padding-bottom:1.5rem!important;margin-bottom:1.5rem!important;}
+}
+
+/* ── Mobile hamburger animation ──────────────── */
+#mobileBtn.open .fa-bars::before{content:"\f00d";}
+
+/* ── Prevent horizontal scroll ───────────────── */
+body{overflow-x:hidden;}
+
+/* ── Animated counter ────────────────────────── */
+.count-up{display:inline-block;transition:transform .1s;}
+
+/* ── Logo marquee ────────────────────────────── */
+.marquee-wrap{overflow:hidden;position:relative;}
+.marquee-track{display:flex;gap:3rem;align-items:center;animation:marquee 35s linear infinite;white-space:nowrap;will-change:transform;}
+.marquee-track:hover{animation-play-state:paused;}
+.marquee-track img{height:36px;width:auto;object-fit:contain;filter:grayscale(1) opacity(.55);transition:filter .3s;}
+.marquee-track img:hover{filter:grayscale(0) opacity(1);}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── Why India Gully cards ───────────────────── */
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+@media(max-width:860px){.why-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.why-grid{grid-template-columns:1fr;}}
+.why-card{background:#fff;border:1px solid var(--border);padding:2rem 1.75rem;transition:border-color .25s,box-shadow .25s,transform .25s;}
+.why-card:hover{border-color:var(--gold);box-shadow:0 12px 40px rgba(0,0,0,.08);transform:translateY(-3px);}
+
+/* ── Scroll-reveal ────────────────────────────── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ── Back-to-top ─────────────────────────────── */
+#btt{position:fixed;bottom:1.5rem;right:1.5rem;z-index:400;width:40px;height:40px;background:var(--gold);color:#fff;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:.8rem;box-shadow:0 4px 16px rgba(184,150,12,.4);transition:opacity .3s,transform .3s;}
+#btt:hover{transform:translateY(-3px);}
+#btt.show{display:flex;}
 </style>
 </head>
 <body class="${opts?.bodyClass || ''}">
@@ -339,6 +517,10 @@ ${opts?.noNav ? '' : NAV}
 ${content}
 </main>
 ${opts?.noFooter ? '' : FOOTER}
+<!-- BACK TO TOP -->
+<button id="btt" aria-label="Back to top" title="Back to top">
+  <i class="fas fa-chevron-up"></i>
+</button>
 ${SCRIPTS(opts?.cspNonce)}
 </body>
 </html>`
@@ -442,7 +624,7 @@ const NAV = `
 // ── FOOTER ──────────────────────────────────────────────────────────────────
 const FOOTER = `
 <footer style="background:#080808;border-top:1px solid rgba(184,150,12,.12);">
-  <div class="wrap" style="padding-top:5rem;padding-bottom:2.5rem;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;">
+  <div class="wrap footer-grid" style="padding-top:4rem;padding-bottom:2.5rem;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;">
 
     <!-- Brand -->
     <div>
@@ -531,7 +713,63 @@ const SCRIPTS = (_nonce?: string) => `
   /* MOBILE MENU */
   var mb = document.getElementById('mobileBtn');
   var mm = document.getElementById('mobileMenu');
-  if(mb && mm) mb.addEventListener('click', function(){ mm.style.display = mm.style.display === 'block' ? 'none' : 'block'; });
+  if(mb && mm) mb.addEventListener('click', function(){
+    var open = mm.style.display === 'block';
+    mm.style.display = open ? 'none' : 'block';
+    mb.classList.toggle('open', !open);
+  });
+
+  /* CLOSE MOBILE MENU ON LINK CLICK */
+  if(mm){ mm.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ mm.style.display='none'; mb && mb.classList.remove('open'); });
+  });}
+
+  /* BACK-TO-TOP */
+  var btt = document.getElementById('btt');
+  if(btt){
+    window.addEventListener('scroll', function(){
+      btt.classList.toggle('show', window.scrollY > 400);
+    },{passive:true});
+    btt.addEventListener('click', function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+  }
+
+  /* SCROLL-REVEAL */
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!els.length) return;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }});
+    },{threshold:0.12});
+    els.forEach(function(el){ io.observe(el); });
+  })();
+
+  /* ANIMATED COUNTERS */
+  (function(){
+    function animCount(el){
+      var raw = el.getAttribute('data-target') || el.textContent;
+      var prefix = raw.match(/^[₹$€£]*/)[0];
+      var suffix = raw.replace(/^[₹$€£\d,.\s]+/,'');
+      var num = parseFloat(raw.replace(/[^0-9.]/g,'')) || 0;
+      if(!num){ return; }
+      var start = 0, dur = 1600, step = 16;
+      var t = setInterval(function(){
+        start += step;
+        var p = Math.min(start/dur, 1);
+        var ease = 1 - Math.pow(1-p, 3);
+        var cur = Math.round(ease * num * 10) / 10;
+        el.textContent = prefix + (Number.isInteger(cur) ? cur.toLocaleString('en-IN') : cur.toLocaleString('en-IN')) + suffix;
+        if(p >= 1){ el.textContent = raw; clearInterval(t); }
+      }, step);
+    }
+    var counters = document.querySelectorAll('.count-up');
+    if(!counters.length) return;
+    var io2 = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ animCount(e.target); io2.unobserve(e.target); }
+      });
+    },{threshold:0.5});
+    counters.forEach(function(c){ io2.observe(c); });
+  })();
 
   /* HERO CAROUSEL */
   var track = document.querySelector('.car-track');
