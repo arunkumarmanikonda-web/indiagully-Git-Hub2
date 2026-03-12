@@ -47,7 +47,7 @@ app.get('/', (c) => {
 <!-- ══ PIPELINE STATS ═══════════════════════════════════════════════════ -->
 <div style="background:var(--ink-mid);border-bottom:1px solid rgba(255,255,255,.06);">
   <div class="wrap" style="padding-top:0;padding-bottom:0;">
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.06);">
+    <div id="pipelineStats">
       ${[
         { n:'₹1,165 Cr+', l:'Total Pipeline Value' },
         { n:'8',           l:'Active Mandates' },
@@ -266,8 +266,9 @@ ${ndaModal}
       ${(l.images || []).map((img: string, i: number) => `
       <div style="flex:0 0 100%;position:relative;overflow:hidden;">
         <img src="${img}" alt="${l.title}, image ${i+1}"
-             style="width:100%;height:100%;object-fit:cover;transform:scale(1.04);transition:transform 10s ease-out;"
-             class="detail-img" loading="${i === 0 ? 'eager' : 'lazy'}">
+             style="width:100%;height:100%;object-fit:cover;transform:scale(1.04);transition:transform 10s ease-out;cursor:zoom-in;"
+             class="detail-img" loading="${i === 0 ? 'eager' : 'lazy'}"
+             onclick="igLightboxOpen(${JSON.stringify(l.images)}, ${i})">
         <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,.7) 0%,rgba(0,0,0,.3) 50%,rgba(0,0,0,.15) 100%);"></div>
         <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,transparent 50%);"></div>
       </div>`).join('')}
@@ -320,7 +321,27 @@ ${ndaModal}
 <!-- ══ DETAIL BODY ════════════════════════════════════════════════════════ -->
 <div class="sec-pd" style="padding-top:3rem;">
   <div class="wrap">
-    <div style="display:grid;grid-template-columns:1fr 380px;gap:3.5rem;align-items:start;">
+
+    <!-- Breadcrumb + Actions bar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:.75rem;">
+      <nav aria-label="Breadcrumb" style="display:flex;align-items:center;gap:.4rem;font-size:.72rem;color:var(--ink-muted);">
+        <a href="/" style="color:var(--ink-muted);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'">Home</a>
+        <i class="fas fa-chevron-right" style="font-size:.5rem;opacity:.4;"></i>
+        <a href="/listings" style="color:var(--ink-muted);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'">Mandates</a>
+        <i class="fas fa-chevron-right" style="font-size:.5rem;opacity:.4;"></i>
+        <span style="color:var(--ink-soft);">${l.title}</span>
+      </nav>
+      <div style="display:flex;gap:.625rem;align-items:center;">
+        <button onclick="window.print()" class="no-print" style="display:inline-flex;align-items:center;gap:.4rem;padding:.38rem .875rem;font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--border);background:#fff;color:var(--ink-muted);cursor:pointer;transition:all .2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--ink-muted)'">
+          <i class="fas fa-print" style="font-size:.6rem;"></i>Print / Save PDF
+        </button>
+        <button onclick="navigator.share ? navigator.share({title:'${l.title}',url:window.location.href}) : navigator.clipboard.writeText(window.location.href).then(()=>igToast('Link copied!','success'))" class="no-print" style="display:inline-flex;align-items:center;gap:.4rem;padding:.38rem .875rem;font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--border);background:#fff;color:var(--ink-muted);cursor:pointer;transition:all .2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--ink-muted)'">
+          <i class="fas fa-share-alt" style="font-size:.6rem;"></i>Share
+        </button>
+      </div>
+    </div>
+
+    <div class="listing-detail-grid">
 
       <!-- ── LEFT COLUMN ──────────────────────────────────── -->
       <div>
@@ -334,7 +355,7 @@ ${ndaModal}
         </div>
 
         <!-- 4-metric highlights -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin-bottom:2.5rem;">
+        <div class="highlights-grid">
           ${l.highlights.map((h: any) => `
           <div style="background:#fff;padding:1.5rem 1.25rem;text-align:center;">
             <div style="width:36px;height:36px;background:var(--ink);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;">
@@ -346,7 +367,7 @@ ${ndaModal}
         </div>
 
         <!-- Full spec sheet. Sotheby's style table -->
-        <div style="margin-bottom:2.5rem;">
+        <div style="margin-bottom:2.5rem;" id="specSheet">
           <p style="font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.875rem;padding-bottom:.625rem;border-bottom:1px solid var(--border);">Full Specifications</p>
           <table style="width:100%;border-collapse:collapse;">
             ${Object.entries(l.specs || {}).map(([key, val]: [string, any], i: number) => `
@@ -366,7 +387,7 @@ ${ndaModal}
       </div>
 
       <!-- ── RIGHT SIDEBAR ────────────────────────────────── -->
-      <div style="position:sticky;top:calc(var(--nav-h) + 1.5rem);display:flex;flex-direction:column;gap:1.25rem;">
+      <div class="listing-detail-sidebar">
 
         <!-- Express Interest Form -->
         <div style="background:var(--ink);overflow:hidden;">

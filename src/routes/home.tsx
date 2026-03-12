@@ -115,17 +115,17 @@ app.get('/', (c) => {
 </div>
 
 <!-- ══ STATS BAR ══════════════════════════════════════════════════════════ -->
-<div class="sec-wh" style="padding:3.5rem 0;border-bottom:1px solid var(--border);">
+<div class="sec-wh" style="padding:3.5rem 0;border-bottom:1px solid var(--border);" id="homeStatsSection">
   <div class="wrap">
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--border);">
+    <div id="homeStats">
       ${[
         { n:'₹10,000 Cr+', l:'Advisory Pipeline' },
         { n:'15+',         l:'Hotel Projects' },
         { n:'30+',         l:'Retail Brand Partners' },
         { n:'20+',         l:'Hospitality Brands' },
         { n:'Pan-India',   l:'Operations Reach' },
-      ].map((s,i) => `
-      <div style="padding:2rem 1.5rem;text-align:center;${i<4?'border-right:1px solid var(--border);':''}">
+      ].map((s) => `
+      <div class="home-stat-cell">
         <div class="stat-n count-up" data-target="${s.n}">${s.n}</div>
         <div style="font-size:.66rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-top:.45rem;">${s.l}</div>
       </div>`).join('')}
@@ -178,7 +178,7 @@ app.get('/', (c) => {
     </div>
 
     <!-- Featured 3-column grid with images -->
-    <div id="featuredMandates" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:1.5rem;">
+    <div id="featuredMandates">
       ${LISTINGS.filter((l: any) => l.highlight).slice(0,3).map((l: any) => {
         const img = l.images?.[0] || ''
         const ss = { active: { bg:'rgba(184,150,12,.12)', text:'#B8960C', border:'rgba(184,150,12,.3)' }, negotiation: { bg:'rgba(37,99,235,.1)', text:'#1d4ed8', border:'rgba(37,99,235,.25)' }, feasibility: { bg:'rgba(22,163,74,.08)', text:'#15803d', border:'rgba(22,163,74,.2)' } }[l.statusType] || { bg:'rgba(184,150,12,.12)', text:'#B8960C', border:'rgba(184,150,12,.3)' }
@@ -272,14 +272,14 @@ app.get('/', (c) => {
       <p class="eyebrow-lt" style="margin-bottom:.75rem;">Our Proposition</p>
       <h2 class="h2-lt">The India Gully Difference</h2>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid rgba(255,255,255,.07);">
+    <div class="diff-grid">
       ${[
         { icon:'flag',      title:'India-Deep Expertise',    desc:'Born in India. We understand local markets, regulations, culture and consumer behaviour at granular depth across Tier 1, 2 and 3 cities.' },
         { icon:'handshake', title:'20+ Brand Relationships', desc:'Deep relationships with every major hotel brand. We know which brand fits which project and navigate negotiations with authority.' },
         { icon:'utensils',  title:'HORECA End-to-End',       desc:'One of the few consultants who also procure and supply, giving clients a single accountable partner from strategy to FF&E delivery.' },
         { icon:'bolt',      title:'Execution-Led',           desc:'We stay involved through implementation, not just advisory. Turnkey delivery and hands-on project management is our differentiator.' },
       ].map((d,i) => `
-      <div style="padding:2.75rem 2.25rem;border-right:1px solid rgba(255,255,255,.07);${i===3?'border-right:none;':''}transition:background .25s;" onmouseover="this.style.background='rgba(255,255,255,.03)'" onmouseout="this.style.background='transparent'">
+      <div class="diff-cell">
         <div style="width:44px;height:44px;border:1px solid rgba(184,150,12,.35);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;transition:background .22s;" onmouseover="this.style.background='var(--gold)'" onmouseout="this.style.background='transparent'">
           <i class="fas fa-${d.icon}" style="color:var(--gold);font-size:.85rem;"></i>
         </div>
@@ -301,7 +301,7 @@ app.get('/', (c) => {
     </div>
 
     <!-- Logo grid with fallback text logos -->
-    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);margin-bottom:2.5rem;">
+    <div class="brand-grid" style="margin-bottom:2.5rem;">
       ${HOSPITALITY_BRANDS.map((b: any) => `
       <div style="background:#fff;padding:1.25rem .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90px;gap:.5rem;transition:background .2s;cursor:default;" onmouseover="this.style.background='var(--parch)'" onmouseout="this.style.background='#fff'">
         <img src="${b.svg}" alt="${b.name}" style="width:100px;height:40px;object-fit:contain;display:block;"
@@ -329,7 +329,7 @@ app.get('/', (c) => {
       <p class="lead" style="margin-top:1rem;">30+ active retail brand relationships spanning anchor tenants, fashion, food & beverage and entertainment across malls and mixed-use destinations.</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);margin-bottom:2.5rem;">
+    <div class="brand-grid" style="margin-bottom:2.5rem;">
       ${RETAIL_BRANDS.map((b: any) => `
       <div style="background:#fff;padding:1.25rem .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90px;gap:.5rem;transition:background .2s;cursor:default;" onmouseover="this.style.background='var(--parch)'" onmouseout="this.style.background='#fff'">
         <img src="${b.svg}" alt="${b.name}" style="width:100px;height:40px;object-fit:contain;display:block;"
@@ -357,7 +357,7 @@ app.get('/', (c) => {
         <h2 class="h2">Our Advisory<br>Partners</h2>
         <p class="lead" style="margin-top:1.25rem;">India Gully collaborates with globally recognised advisory and consulting firms, bringing institutional credibility, financial rigour and sector depth to complex mandates.</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+      <div class="partners-grid">
         ${ADVISORY_PARTNERS.slice(0,4).map((p: any) => `
         <div style="border:1px solid var(--border);padding:1.5rem;text-align:center;background:#fff;transition:border-color .25s,box-shadow .25s;" onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 8px 24px rgba(0,0,0,.07)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
           <div style="display:flex;align-items:center;justify-content:center;margin-bottom:.875rem;min-height:48px;">
@@ -402,7 +402,7 @@ app.get('/', (c) => {
       </div>
       <a href="/works" class="btn btn-dko">View All Completed Works</a>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
+    <div id="trackRecord">
       ${[
         { title:'Entertainment City Limited — Landmark Divestment',  loc:'Joint Advisory with EY · Noida',      icon:'🏆', type:'Transaction Advisory', desc:'Served as Joint Transaction Advisors alongside EY for the 100% divestment of Entertainment City Limited. Managed end-to-end advisory for this ₹1,350+ Crore landmark transaction.' },
         { title:'Worlds of Wonder — Post-COVID Re-opening',          loc:'10-Acre Waterpark · Noida',           icon:'🎡', type:'Operational Revival',  desc:"Orchestrated the strategic re-opening of India's premier waterpark following COVID-19 closure. Managed lease negotiations and operational revival for this 10-acre world-class attraction." },

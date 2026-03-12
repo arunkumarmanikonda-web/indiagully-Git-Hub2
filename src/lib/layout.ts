@@ -40,6 +40,8 @@ ${opts?.jsonLd ? `<script type="application/ld+json">${opts.jsonLd}</script>` : 
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://images.unsplash.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -328,8 +330,19 @@ textarea.ig-input{resize:vertical;min-height:130px}
   .r-2{grid-template-columns:1fr 1fr!important;}
 }
 
-/* ── PRINT ──────────────────────────────────── */
-@media print{#mainNav,footer,.no-print{display:none!important}}
+/* ── PRINT ──────────────────────────────────────────────────────────────────── */
+@media print{
+  #mainNav,footer,.no-print,#btt,#stickyStats,#ig-lightbox,#nda-gate,.car-arr,.car-dots,.car-pb,.car-ct{display:none!important}
+  body{background:#fff!important;color:#111!important;font-size:11pt;}
+  .wrap{max-width:100%!important;padding:0!important;}
+  .listing-detail-grid{display:block!important;}
+  .listing-detail-sidebar{display:none!important;}
+  #specSheet{display:block!important;page-break-inside:avoid;}
+  .detail-car{height:300px!important;}
+  h1,h2,h3{color:#111!important;page-break-after:avoid;}
+  a{color:#111!important;text-decoration:none!important;}
+  .sec-pd,.sec-wh,.sec-dk,.sec-pc{background:#fff!important;padding:1rem 0!important;}
+}
 
 /* ── DIVIDER ────────────────────────────────── */
 .divider{height:1px;background:var(--border)}
@@ -500,6 +513,69 @@ body{overflow-x:hidden;}
 .why-card{background:#fff;border:1px solid var(--border);padding:2rem 1.75rem;transition:border-color .25s,box-shadow .25s,transform .25s;}
 .why-card:hover{border-color:var(--gold);box-shadow:0 12px 40px rgba(0,0,0,.08);transform:translateY(-3px);}
 
+/* ── Home stats bar: 5-col → 3-col → 2-col ──── */
+#homeStats{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--border);}
+@media(max-width:900px){#homeStats{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:560px){#homeStats{grid-template-columns:repeat(2,1fr);}}
+.home-stat-cell{padding:1.75rem 1.25rem;text-align:center;border-right:1px solid var(--border);}
+.home-stat-cell:last-child{border-right:none;}
+@media(max-width:900px){.home-stat-cell:nth-child(3){border-right:none;}.home-stat-cell:nth-child(4){border-right:1px solid var(--border);}}
+@media(max-width:560px){.home-stat-cell:nth-child(2n){border-right:none;}.home-stat-cell:nth-child(2n+1):not(:last-child){border-right:1px solid var(--border);}}
+
+/* ── Brand logo grid: 6→4→3→2 ───────────────── */
+.brand-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);}
+@media(max-width:900px){.brand-grid{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:560px){.brand-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:360px){.brand-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* ── Advisory partners grid: 2×2 → stack ────── */
+.partners-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+@media(max-width:560px){.partners-grid{grid-template-columns:1fr;}}
+
+/* ── Featured mandates: 3→2→1 ───────────────── */
+#featuredMandates{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:1.5rem;}
+@media(max-width:900px){#featuredMandates{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){#featuredMandates{grid-template-columns:1fr;}}
+
+/* ── Track record grid: 3→2→1 ───────────────── */
+#trackRecord{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+@media(max-width:900px){#trackRecord{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){#trackRecord{grid-template-columns:1fr;}}
+
+/* ── Listing detail: 2-col → stack on 900 ─── */
+.listing-detail-grid{display:grid;grid-template-columns:1fr 380px;gap:3.5rem;align-items:start;}
+@media(max-width:900px){.listing-detail-grid{display:flex;flex-direction:column;gap:2rem;}}
+.listing-detail-sidebar{position:sticky;top:calc(var(--nav-h) + 1.5rem);display:flex;flex-direction:column;gap:1.25rem;}
+@media(max-width:900px){.listing-detail-sidebar{position:static;width:100%;}}
+
+/* ── Highlights 4-grid → 2-grid on mobile ──── */
+.highlights-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin-bottom:2.5rem;}
+@media(max-width:640px){.highlights-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* ── India Gully difference: 4→2→1 ─────────── */
+.diff-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid rgba(255,255,255,.07);}
+@media(max-width:860px){.diff-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.diff-grid{grid-template-columns:1fr;}}
+.diff-cell{padding:2.75rem 2.25rem;border-right:1px solid rgba(255,255,255,.07);transition:background .25s;}
+.diff-cell:hover{background:rgba(255,255,255,.03);}
+@media(max-width:860px){.diff-cell:nth-child(2n){border-right:none;}.diff-cell:nth-child(1),.diff-cell:nth-child(2){border-bottom:1px solid rgba(255,255,255,.07);}}
+@media(max-width:480px){.diff-cell{border-right:none!important;border-bottom:1px solid rgba(255,255,255,.07);}.diff-cell:last-child{border-bottom:none;}}
+
+/* ── Pipeline stats: 4→2 ────────────────────── */
+#pipelineStats{display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.06);}
+@media(max-width:640px){#pipelineStats{grid-template-columns:repeat(2,1fr);}}
+
+/* ── Lightbox ────────────────────────────────── */
+#ig-lightbox{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.95);align-items:center;justify-content:center;}
+#ig-lightbox.open{display:flex;}
+#ig-lightbox img{max-width:92vw;max-height:90vh;object-fit:contain;display:block;}
+#ig-lightbox-close{position:absolute;top:1.25rem;right:1.5rem;background:none;border:none;color:#fff;font-size:1.5rem;cursor:pointer;opacity:.7;transition:opacity .2s;}
+#ig-lightbox-close:hover{opacity:1;}
+#ig-lightbox-prev,#ig-lightbox-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:background .2s;}
+#ig-lightbox-prev{left:1.25rem;}#ig-lightbox-next{right:1.25rem;}
+#ig-lightbox-prev:hover,#ig-lightbox-next:hover{background:var(--gold);border-color:var(--gold);}
+#ig-lightbox-caption{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);font-size:.75rem;color:rgba(255,255,255,.6);letter-spacing:.08em;}
+
 /* ── Scroll-reveal ────────────────────────────── */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease;}
 .reveal.visible{opacity:1;transform:translateY(0);}
@@ -508,6 +584,14 @@ body{overflow-x:hidden;}
 #btt{position:fixed;bottom:1.5rem;right:1.5rem;z-index:400;width:40px;height:40px;background:var(--gold);color:#fff;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:.8rem;box-shadow:0 4px 16px rgba(184,150,12,.4);transition:opacity .3s,transform .3s;}
 #btt:hover{transform:translateY(-3px);}
 #btt.show{display:flex;}
+
+/* ── Sticky stats bar ────────────────────────── */
+#stickyStats{position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;transform:translateY(-100%);transition:transform .35s ease;background:rgba(10,10,10,.97);backdrop-filter:blur(16px);border-bottom:1px solid rgba(184,150,12,.18);}
+#stickyStats.visible{transform:translateY(0);}
+.sticky-stat{display:flex;align-items:center;gap:.5rem;padding:.55rem 1.25rem;}
+.sticky-stat-n{font-family:"DM Serif Display",Georgia,serif;font-size:1rem;color:var(--gold);line-height:1;}
+.sticky-stat-l{font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);}
+@media(max-width:640px){#stickyStats{display:none;}}
 </style>
 </head>
 <body class="${opts?.bodyClass || ''}">
@@ -521,6 +605,29 @@ ${opts?.noFooter ? '' : FOOTER}
 <button id="btt" aria-label="Back to top" title="Back to top">
   <i class="fas fa-chevron-up"></i>
 </button>
+<!-- LIGHTBOX -->
+<div id="ig-lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button id="ig-lightbox-close" aria-label="Close image viewer" onclick="igLightboxClose()"><i class="fas fa-times"></i></button>
+  <button id="ig-lightbox-prev" aria-label="Previous image" onclick="igLightboxNav(-1)"><i class="fas fa-chevron-left"></i></button>
+  <img id="ig-lightbox-img" src="" alt="">
+  <button id="ig-lightbox-next" aria-label="Next image" onclick="igLightboxNav(1)"><i class="fas fa-chevron-right"></i></button>
+  <div id="ig-lightbox-caption"></div>
+</div>
+<!-- STICKY STATS -->
+<div id="stickyStats" aria-hidden="true">
+  <div class="wrap" style="padding-top:0;padding-bottom:0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;overflow-x:auto;gap:0;">
+      ${[
+        {n:'₹10,000 Cr+',l:'Pipeline'},
+        {n:'15+',        l:'Hotels'},
+        {n:'30+',        l:'Retail Brands'},
+        {n:'20+',        l:'HB Partners'},
+        {n:'Pan-India',  l:'Reach'},
+      ].map(s=>`<div class="sticky-stat"><div class="sticky-stat-n">${s.n}</div><div class="sticky-stat-l">${s.l}</div></div>`).join('<div style="width:1px;height:32px;background:rgba(255,255,255,.07);flex-shrink:0;"></div>')}
+      <a href="/listings" style="margin-left:auto;flex-shrink:0;padding:.4rem 1rem;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--gold);color:#fff;white-space:nowrap;">View Mandates</a>
+    </div>
+  </div>
+</div>
 ${SCRIPTS(opts?.cspNonce)}
 </body>
 </html>`
@@ -1277,6 +1384,59 @@ const SCRIPTS = (_nonce?: string) => `
     window.igTourStep = showStep;
     showStep(0);
   };
+
+  /* ── LIGHTBOX ─────────────────────────────────────────────────────────── */
+  (function(){
+    var lb = document.getElementById('ig-lightbox');
+    var lbImg = document.getElementById('ig-lightbox-img');
+    var lbCap = document.getElementById('ig-lightbox-caption');
+    var lbImages = [];
+    var lbCurrent = 0;
+
+    window.igLightboxOpen = function(images, index, captions){
+      lbImages = images || [];
+      lbCurrent = index || 0;
+      if(!lb || !lbImg) return;
+      lbImg.src = lbImages[lbCurrent] || '';
+      if(lbCap) lbCap.textContent = captions ? captions[lbCurrent] || '' : (lbCurrent+1)+' / '+lbImages.length;
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    };
+    window.igLightboxClose = function(){
+      if(lb) lb.classList.remove('open');
+      document.body.style.overflow = '';
+    };
+    window.igLightboxNav = function(dir){
+      lbCurrent = ((lbCurrent + dir) % lbImages.length + lbImages.length) % lbImages.length;
+      if(lbImg) lbImg.src = lbImages[lbCurrent];
+      if(lbCap) lbCap.textContent = (lbCurrent+1)+' / '+lbImages.length;
+    };
+    // Keyboard nav
+    document.addEventListener('keydown', function(e){
+      if(!lb || !lb.classList.contains('open')) return;
+      if(e.key==='Escape') window.igLightboxClose();
+      if(e.key==='ArrowLeft') window.igLightboxNav(-1);
+      if(e.key==='ArrowRight') window.igLightboxNav(1);
+    });
+    // Click outside image
+    if(lb) lb.addEventListener('click', function(e){
+      if(e.target === lb) window.igLightboxClose();
+    });
+  })();
+
+  /* ── STICKY STATS ─────────────────────────────────────────────────────── */
+  (function(){
+    var ss = document.getElementById('stickyStats');
+    var hs = document.getElementById('homeStats');
+    if(!ss || !hs) return;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        ss.classList.toggle('visible', !e.isIntersecting);
+        ss.setAttribute('aria-hidden', e.isIntersecting ? 'true' : 'false');
+      });
+    },{threshold:0, rootMargin:'-80px 0px 0px 0px'});
+    io.observe(hs);
+  })();
 
 })();
 </script>`
