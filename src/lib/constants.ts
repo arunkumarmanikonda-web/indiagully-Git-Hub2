@@ -172,10 +172,10 @@ export const LISTINGS = [
     desc: 'Institutional-grade mixed-use commercial building on Gurgaon-Faridabad Road, part of a 4-star hotel property. 312 keys. Located within 10 km of Sikanderpur Metro with excellent road connectivity. REIT-listing potential.',
     longDesc: `100% Asset Acquisition Opportunity — Institutional-grade mixed-use commercial building on Gurgaon-Faridabad Road, forming part of a 4-star hotel property complex in Gwalpahari, Gurugram.\n\nThe asset is located within 10 km of Sikanderpur Metro Station with excellent road connectivity to all major Gurugram micro-markets. 5-star hotels, hospitals, and malls are within a 2 km radius. The property offers multiple exit strategies including REIT listing potential or a strata sale model.\n\nIdeal for institutional investors seeking core+ returns. India Gully is advising on the acquisition process and due diligence. Currently at the reference transaction – due diligence stage.`,
     images: [
-      'https://sspark.genspark.ai/cfimages?u1=ZktQqSJf5dTqAjc%2BBdjN%2B4xc%2FchahjnJjF1MqZbhPO2VZaIV2eQlYCPi3u5LkWAVB2yZU%2FcYQ8UDhwJNQxWeTh4ia5bDEA7B4elZHu6JFrs90MZCdbgBrKubIOSZx9I1QBCttPH9cEMxgJiBDgC5Qx%2FfK5PJ5G%2B27kaz11%2Bh94VPJXE%3D&u2=m1vvXA%2BAJfqSa0Pf&width=2560',
-      'https://sspark.genspark.ai/cfimages?u1=Ixk7jx06z7k52HCAVTVrK0hspbSDsxFdFHJjZDodcxMisV7dOSNYen1O4PxpYbpSaXs%2Bqn4URffiosxshzVJ23W20oE3wnyVWWQlES6LAgxAfhubp96XLTqNeozreYlUL0NbzdtVaVfp%2Bfpw0rmCpRRHCcHjfhqceGEOhykwE7us&u2=YvdaIP7lFN88kz9S&width=2560',
       'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80',
       'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80',
+      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80',
+      'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80',
     ],
     specs: {
       'Entity': 'Confidential (JLL Listed)',
@@ -220,10 +220,10 @@ export const LISTINGS = [
     desc: 'Scalable multi-brand F&B platform operating across Delhi NCR and Goa. Growth equity mandate seeking strategic capital partner for pan-India rollout. Strong unit economics with proven operational playbook.',
     longDesc: `Growth Equity Investment Opportunity — Belcibo Hospitality is a scalable multi-brand F&B platform operating across Delhi NCR and Goa markets. The group operates 15+ outlets across its branded portfolio including Begam, Imperfecto, and other F&B concepts.\n\nThe platform is seeking a strategic capital partner to accelerate brand portfolio expansion. Strong unit economics with a proven operational playbook are ready for pan-India rollout. The company has demonstrated consistent same-store growth and expansion capability across multiple formats.\n\nIndia Gully is advising on the fundraise and is seeking institutional investors, family offices or strategic partners willing to co-invest at growth equity stage.`,
     images: [
-      'https://sspark.genspark.ai/cfimages?u1=T02Vc908fo%2BnT602U2KR%2FPckiNCymP%2Fpnw5nfrY%2FArsDYTCijP0%2BJUEYbcflINvwNhG3P7hpfJPOPFyi5CDUN5AOEPd1vKS1tuVmOXdi2hjmWS5ZweIW%2FznZjaoUcoYvof3XqbLJldHRQjOw5DI8Hc%2BmQsKo9g0wliCMTI7Wx2A%2B2t652hLc386jsAytP7Nndl0mrhNvUwv4FyIee9qrL7YTIExWELjKQ18mohNC1N%2BMJByXzQrEWXRdVXDDHEgJVdYnnblPTy06MvtYWfB3p6wxgxmlbmNPFsl7vCnOj8YLkA%3D%3D&u2=0tcIQD1bvSwK%2BaQ8&width=2560',
-      'https://sspark.genspark.ai/cfimages?u1=fC75tPEOrI72D8QevDIqZdKYxe%2BSyqUk1BpEVO2Z%2FIv02grLxkGtK9IMrrCyCY0l2uaR3%2BYtDNqkaP%2BB39Atx9KeO1ndKRDC8XGX2V9G99XgJbJdscJRZ8siSHQ3%2BbN26sjBhoDiPA%3D%3D&u2=X27Ko8U9gmTf3DFp&width=2560',
-      'https://sspark.genspark.ai/cfimages?u1=sfl3s3dWUNvQWuHFHWq%2Bguu9oEEOMTbbzylJr2vZTEJVyw0SgbckABFLXKDCjYLBGSXB3Gf8AbvHH6JYZlNiB3BHERH8S3wSYdQ2zjUteZN%2BPdpd%2BD7b%2FKIbgtMUqiJGfVjtrUi0c933RL4%2FlY%2BD4kf%2Bz9O2M7A%3D&u2=T8pWCzmyoGPlEBXO&width=2560',
       'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80',
+      'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80',
+      'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=1200&q=80',
+      'https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=1200&q=80',
     ],
     specs: {
       'Platform': 'Multi-Brand F&B Platform',
@@ -266,10 +266,10 @@ export const LISTINGS = [
     desc: "Fully operational boutique hotel & spa in Chandigarh's prime Industrial Area Phase I, near Tribune Chowk. 41 keys. Full amenities including premium spa, restaurant, bar & conference. Strong RevPAR with brand affiliation upside.",
     longDesc: `Stabilised Asset Sale — Rajshree Hotels Pvt. Ltd. is offering this fully operational boutique hotel and spa in Chandigarh's prime Industrial Area Phase I, conveniently located near Tribune Chowk.\n\nThe property features 41 well-appointed rooms including Super Deluxe, Family Suites, and Honeymoon Suites. Full amenities include a premium spa, in-house restaurant, bar, conference facilities, free WiFi, and complimentary parking.\n\nThe hotel demonstrates strong RevPAR performance with significant potential for brand affiliation upgrade. Attractive entry point for investors seeking cash-yielding hospitality assets with wellness positioning. India Gully holds the seller mandate and is actively marketing to qualified buyers.`,
     images: [
-      'https://sspark.genspark.ai/cfimages?u1=fG3Yt6NpeBR0n6cnUpio7OKh%2FcGYKS6G9gCCz3XepXElvrSovpYOT07EbHPOpE9QJeGrU2kgyap86XEhXz%2Fs3dJmeBWO%2B%2B%2Fn7cMp9G1rQqI51VI7qds%3D&u2=RycAnGY8poqf03mZ&width=2560',
-      'https://sspark.genspark.ai/cfimages?u1=lWqH6proYZ7TxWTNhXfCcwFghkCkno%2FdgE7UMrfQn2b5YN%2BDI69NtxTCelDuMW8E%2BoqgSlTCl9u9bUnqqzSkgGEh0zaNiK41YUVHJHQNKVXPdXhwAByNfjURzljUcjiObFHe&u2=WM0p0urjHI%2BS9kAg&width=2560',
-      'https://sspark.genspark.ai/cfimages?u1=ktk7MvJWHTxMBJ%2Fn%2B6CHawEPJGTqF2wwQLwxYuNSTK5NHuqPNbMYP0WPyE8kpRu%2FO0iAaSaftI5%2FTc99tZLfvROSYMNHDS7YjHOaLBj7GRpGa%2BA5Mkik1cTQzWiU1CgaTHa65kL1k9QttH7vWDejeVaMeoxP3s0WXOlJW9t24A%3D%3D&u2=uo3K%2BYLTFr2mafZ9&width=2560',
-      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&q=80',
+      'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/IMG_1157-1-scaled-1.webp',
+      'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/Hotel-Rajshree-5-scaled-e1765525431558.webp',
+      'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/facade-1024x585.webp',
+      'https://hotelrajshreechandigarh.com/wp-content/uploads/2026/01/IMG_6649-Copy-1024x768.webp',
     ],
     specs: {
       'Entity': 'Rajshree Hotels Pvt. Ltd.',
@@ -313,10 +313,10 @@ export const LISTINGS = [
     desc: "Established luxury heritage resort under ITC WelcomHeritage brand across 2 acres in scenic Kasauli at pine forest elevation. Victorian-themed architecture. 44 keys. Nirvana restaurant, Aviary bar, spa & plunge pool.",
     longDesc: `Heritage Asset Divestiture — WelcomHeritage Santa Roza is an established luxury heritage resort under the ITC WelcomHeritage brand, sprawled across 2 acres in scenic Kasauli at pine forest elevation with Victorian-themed architecture and British-era charm.\n\nRoom categories include Deluxe (280 sq.ft.), Suites (340 sq.ft.), Cottages (420 sq.ft.), and Family Suites (1,180 sq.ft.). Premium amenities include Nirvana multi-cuisine restaurant, Aviary bar with woodland views, Milo's garden café, state-of-the-art fitness centre, spa, and plunge pool.\n\nBenefits from Himachal Pradesh tourism incentives and tax subsidies. Located 15–16 km from Mall Road and local attractions. India Gully holds the seller mandate on behalf of ITC WelcomHeritage.`,
     images: [
-      'https://sspark.genspark.ai/cfimages?u1=xQO3jnDZKfqUHXUSq7PqsAoADizR%2F8XpA2%2BEKe11Jp2sNp8i2bZk8EAMEM73Iz6KqN%2FIZOUgB5R6bkW3hd%2BDekUhlF4B4UxPiVMDr5wkw%2BonnLawiY%2BSvRn9tV4oF4U%2BpbF%2Fr4c0fAuIqQNt6VxBm3E1OMzAvEWvWUOvo4S4HKK7ljfx9XNYPaUvG%2Fp5HCLrpahvn8%2BFapIoAqbF1Qgx&u2=ub2yp216PTBOwANw&width=2560',
-      'https://sspark.genspark.ai/cfimages?u1=85AHBel9v8iC9CaihdhOTu05kb56hyn7gPLoT2GJq6R8nRFQHkA%2FsuJ4f54DSucYNhjbXqR2c%2Fsimqd53aWuaw%2B9n1cI1KQg6gaOw8CY6fMFYpDbfldhEYhL95dRai%2FySB2RgF4%3D&u2=jEkjcXfSXBkv%2FlNG&width=2560',
-      'https://sspark.genspark.ai/cfimages?u1=9Xu4bNAFA0MOW5rLysOUBvHhlzlO1opRV1n%2FJta1WcDlOB2OozS8VpUxt6TtZuQYhVbUvJBWNQBMHbzRvyVhi3Oe67IGJj%2BBpoR1A4Jshl8VhO6BEgs%3D&u2=gBP8L7XF91VMiWYY&width=2560',
-      'https://sspark.genspark.ai/cfimages?u1=091TTywqIVjogYAyCZo2H3I%2FaGMKlxzD0ZLzGb0kHigawiantooNtLwGLE5L%2F71p5Lr3CxUdVtM%2FuBBOvTw%2FfKMyT1aWlbk40jLmdWhbq3FoINNju3mhePc2Aw9RGIAofqp9SUmMyrXLDRuO%2BQ8RtYyVEUAcTifRflKKw%2B4zTlqJORSYcViMCFhgVXk3CiGEdG%2B0SEOKjdhwzw%3D%3D&u2=BCrATmhTNhQBh2it&width=2560',
+      'https://www.welcomheritagehotels.in/app/uploaded_files/hotel_gallery/-web Banner 245527.jpg',
+      'https://www.welcomheritagehotels.in/app/uploaded_files/hotel_gallery/-Internal banner86510.jpg',
+      'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80',
+      'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&q=80',
     ],
     specs: {
       'Entity': 'ITC WelcomHeritage – Santa Roza',
@@ -363,9 +363,9 @@ export const LISTINGS = [
     longDesc: `Structure Sale Opportunity — A 43-key hospitality structure in Jaipur's tourism corridor that is construction-complete and ready for interior fit-out. This represents a significant cost-saving entry point versus ground-up development.\n\nThe structure is suitable for operators or investors seeking quick market entry in Rajasthan's heritage tourism market — one of India's most resilient and high-ADR leisure segments.\n\nIndia Gully (represented by Belcibo) holds the sale mandate and is seeking hospitality operators, boutique hotel brands, or asset-light operators who can quickly mobilise fit-out and commence operations.`,
     images: [
       'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80',
-      'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1200&q=80',
-      'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1200&q=80',
-      'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&q=80',
+      'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1200&q=80',
+      'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=1200&q=80',
+      'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=1200&q=80',
     ],
     specs: {
       'Entity': 'Belcibo (Proprietary Sourcing)',
@@ -409,10 +409,10 @@ export const LISTINGS = [
     desc: 'Premium boutique mountain resort with 30 keys perched at 2,515 metres. Pine and maple forests with panoramic mountain views. Near Chail Palace, historic cricket ground & Kali Ka Tibba. Immediate cash flows.',
     longDesc: `Operational Leisure Asset — Maple Resort Chail is a premium boutique mountain resort with 30 keys (Suites, Executive, and Super Deluxe rooms) perched at 2,515 metres in the Himalayas. Surrounded by pine and maple forests with panoramic mountain views.\n\nFull amenities include a multi-cuisine restaurant, private balconies, free WiFi, parking, elevator, mini bar, AC/heating, and a pet-friendly policy. Strategically located near Chail Palace (4 km), the historic cricket ground (highest in the world), and Kali Ka Tibba temple.\n\nThe property has an established guest base with strong leisure and wellness tourism demand. Offers immediate cash flows with upside potential from brand affiliation or digital OTA growth. India Gully advises on behalf of the owner.`,
     images: [
-      'https://sspark.genspark.ai/cfimages?u1=ZaMk%2F1QD6zCCuTG8sYSUUAW83%2Fn5QTDAPkuvILLzs%2FfWLfK915IXSJrNDy6770UZOopJuj74LRvAR9FoaeWLNaVUnQ%3D%3D&u2=0B97E3QeYEFoUscx&width=2560',
-      'https://sspark.genspark.ai/cfimages?u1=K4zHr%2Bi%2BccIIStjm6LuXtRmpHE0hO%2BPXRtK6Ng0UfFBZ9HDu4XLWlVpAvKdldJe6ESK4FkFm47NDW2v%2BSGMR4s0RoXULBtBQ3y0iMw%3D%3D&u2=FmNXlH5cutUpW260&width=2560',
-      'https://sspark.genspark.ai/cfimages?u1=%2Bk8NIP5LYTUctbnWmM%2FwgsguQC97jK54FLX8ebjdjDZfKf6Yc77t1aWXkM0YGbIU1ESAdAcCLMCHnOzYAhv3E08%3D&u2=yOKzNx6ocWImdrf3&width=2560',
-      'https://sspark.genspark.ai/cfimages?u1=wTrNDUpbcPPnFSoiYm7%2BQNDw3gmIreW9YKLxNQwYymD1wVbv5l76kJWvWAr%2BFFW6W1jDO4CeDWz7LuFlkLn57remvEtfE10%3D&u2=qdxQbxoA2VZj34HH&width=2560',
+      'https://www.mapleresorts.in/img/about/new-left1.jpg',
+      'https://www.mapleresorts.in/img/about/new-right1.jpg',
+      'https://www.mapleresorts.in/img/executive-new.jpg',
+      'https://www.mapleresorts.in/img/family-1-new.jpg',
     ],
     specs: {
       'Entity': 'Mapple Resorts Pvt. Ltd.',

@@ -19,7 +19,7 @@ app.get('/', (c) => {
       summary: '₹2,000+ Cr in transactions across South Delhi, Jaipur, Noida & Lutyens\' Delhi.',
       images: [
         'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80',
-        'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
       ],
     },
     {
@@ -47,7 +47,7 @@ app.get('/', (c) => {
       summary: '9 PMC & signage projects across Noida, Jim Corbett, Gurugram, Tamil Nadu & Aerocity.',
       images: [
         'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80',
-        'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80',
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
       ],
     },
     {
@@ -61,7 +61,7 @@ app.get('/', (c) => {
       summary: '₹1,350+ Cr transactions including Adlabs Imagica due diligence & ECL divestment with EY.',
       images: [
         'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&q=80',
-        'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80',
+        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
       ],
     },
     {
@@ -162,10 +162,31 @@ app.get('/', (c) => {
         </div>
       </div>
 
+      <!-- Vertical Banner Image -->
+      ${v.images && v.images.length > 0 ? `
+      <div style="position:relative;height:220px;overflow:hidden;margin-bottom:2rem;border:1px solid ${v.border};">
+        <img src="${v.images[0]}" alt="${v.name} vertical"
+             style="width:100%;height:100%;object-fit:cover;transition:transform 6s ease;"
+             onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'"
+             loading="lazy">
+        <div style="position:absolute;inset:0;background:linear-gradient(to right,${v.color}cc 0%,${v.color}33 60%,transparent 100%);"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.5) 0%,transparent 50%);"></div>
+        <div style="position:absolute;bottom:1.5rem;left:1.5rem;">
+          <div style="font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:.3rem;">Completed Track Record</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;line-height:1.1;">${v.name}</div>
+        </div>
+        <div style="position:absolute;top:1rem;right:1rem;background:rgba(0,0,0,.4);backdrop-filter:blur(8px);padding:.4rem .9rem;">
+          <span style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;">${v.data.length} Projects</span>
+        </div>
+      </div>` : ''}
+
       <!-- Project cards grid -->
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;">
         ${v.data.map((p: any, idx: number) => `
-        <div class="card" style="padding:1.5rem;animation:fadeUp .5s ease ${idx * 0.06}s both;">
+        <div class="card" style="overflow:hidden;animation:fadeUp .5s ease ${idx * 0.06}s both;">
+          <!-- Card image strip using vertical images cycling -->
+          <div style="height:6px;background:${v.color};opacity:.7;"></div>
+          <div style="padding:1.5rem;">
           <!-- Type badge -->
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;flex-wrap:wrap;gap:.3rem;">
             <span style="background:${v.bg};color:${v.color};border:1px solid ${v.border};font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .6rem;">${p.type}</span>
@@ -184,6 +205,7 @@ app.get('/', (c) => {
           <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.875rem;">
             ${p.tags.slice(0,3).map((t: string) => `<span style="background:rgba(17,17,17,.04);color:var(--ink-soft);border:1px solid var(--border);font-size:.58rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .45rem;">${t}</span>`).join('')}
           </div>` : ''}
+          </div>
         </div>`).join('')}
       </div>
     </div>`).join('')}
