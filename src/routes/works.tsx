@@ -17,10 +17,7 @@ app.get('/', (c) => {
       border: 'rgba(26,58,107,.2)',
       data: TRACK_RECORD.realEstate,
       summary: '₹2,000+ Cr in transactions across South Delhi, Jaipur, Noida & Lutyens\' Delhi.',
-      images: [
-        'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80',
-        'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
-      ],
+      images: [],
     },
     {
       id: 'retail-leasing',
@@ -31,10 +28,7 @@ app.get('/', (c) => {
       border: 'rgba(184,150,12,.2)',
       data: TRACK_RECORD.retailLeasing,
       summary: '1,40,000+ sq ft leased across premium destinations in Noida, Delhi & Gurugram.',
-      images: [
-        'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80',
-        'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800&q=80',
-      ],
+      images: [],
     },
     {
       id: 'hospitality',
@@ -46,8 +40,8 @@ app.get('/', (c) => {
       data: TRACK_RECORD.hospitality,
       summary: '9 PMC & signage projects across Noida, Jim Corbett, Gurugram, Tamil Nadu & Aerocity.',
       images: [
-        'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80',
-        'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
+        // Maple Resort Chail — official website images (real project)
+        'https://www.mapleresorts.in/img/about/new-left1.jpg',
       ],
     },
     {
@@ -59,10 +53,7 @@ app.get('/', (c) => {
       border: 'rgba(124,58,237,.2)',
       data: TRACK_RECORD.entertainment,
       summary: '₹1,350+ Cr transactions including Adlabs Imagica due diligence & ECL divestment with EY.',
-      images: [
-        'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&q=80',
-        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
-      ],
+      images: [],
     },
     {
       id: 'debt',
@@ -73,9 +64,7 @@ app.get('/', (c) => {
       border: 'rgba(146,64,14,.2)',
       data: TRACK_RECORD.debt,
       summary: '₹1,350+ Cr structured advisory including joint divestment with EY.',
-      images: [
-        'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80',
-      ],
+      images: [],
     },
     {
       id: 'horeca',
@@ -86,10 +75,7 @@ app.get('/', (c) => {
       border: 'rgba(194,65,12,.2)',
       data: TRACK_RECORD.horeca,
       summary: '9 major HORECA supply mandates including Mahindra Holidays, Accor, Regenta & Cygnett.',
-      images: [
-        'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
-        'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=800&q=80',
-      ],
+      images: [],
     },
   ]
 

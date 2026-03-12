@@ -153,7 +153,7 @@ export const ADVISORY_PARTNERS = [
 
 // ── LISTINGS ────────────────────────────────────────────────────────────────
 // Updated 10 March 2026 — sourced from Hospitality Mandates Portfolio Excel
-// Each listing: id, title, location, sector, value, status, images[], specs{}, highlights[], tags[]
+// IMAGES: Only original project images from source URLs. NO generic stock photos.
 export const LISTINGS = [
   // ── 1. Prism Tower, Gurgaon (JLL Listed) ─────────────────────────────────
   {
@@ -162,21 +162,23 @@ export const LISTINGS = [
     subtitle: 'Grade-A Mixed-Use · Part of 4-Star Hotel Property · Gurugram',
     location: 'Gurgaon-Faridabad Road, Gwalpahari, Gurugram',
     locationShort: 'Gwalpahari, Gurugram',
-    sector: 'Hospitality',
-    sectorColor: '#065F46',
+    sector: 'Real Estate',
+    sectorColor: '#1A3A6B',
     value: '₹400 Cr',
     valueUSD: 'USD ~48 Mn',
     status: 'Reference Transaction – Due Diligence Stage',
     statusType: 'negotiation',
     mandateType: 'Asset Acquisition Advisory',
+    entity: 'Confidential (JLL Listed)',
+    source: 'https://property.jll.co.in/listings/prism-tower-gurgaon-faridabad-road-baliawas-bandhwari',
     desc: 'Institutional-grade mixed-use commercial building on Gurgaon-Faridabad Road, part of a 4-star hotel property. 312 keys. Located within 10 km of Sikanderpur Metro with excellent road connectivity. REIT-listing potential.',
     longDesc: `100% Asset Acquisition Opportunity — Institutional-grade mixed-use commercial building on Gurgaon-Faridabad Road, forming part of a 4-star hotel property complex in Gwalpahari, Gurugram.\n\nThe asset is located within 10 km of Sikanderpur Metro Station with excellent road connectivity to all major Gurugram micro-markets. 5-star hotels, hospitals, and malls are within a 2 km radius. The property offers multiple exit strategies including REIT listing potential or a strata sale model.\n\nIdeal for institutional investors seeking core+ returns. India Gully is advising on the acquisition process and due diligence. Currently at the reference transaction – due diligence stage.`,
     images: [
-      'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80',
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80',
-      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80',
-      'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80',
+      // Source: JLL Listing — property.jll.co.in (Prism Tower, Gurgaon-Faridabad Road)
+      // Images served via Akamai-protected JLL CDN — available only after NDA execution
+      // No images shown publicly; full gallery accessible post-NDA
     ],
+    coverImage: null,
     specs: {
       'Entity': 'Confidential (JLL Listed)',
       'Location': 'Gurgaon-Faridabad Road, Gwalpahari, Gurugram',
@@ -217,17 +219,19 @@ export const LISTINGS = [
     status: 'Open for Investment – Active Fundraise',
     statusType: 'active',
     mandateType: 'Growth Equity Advisory',
-    desc: 'Scalable multi-brand F&B platform operating across Delhi NCR and Goa. Growth equity mandate seeking strategic capital partner for pan-India rollout. Strong unit economics with proven operational playbook.',
-    longDesc: `Growth Equity Investment Opportunity — Belcibo Hospitality is a scalable multi-brand F&B platform operating across Delhi NCR and Goa markets. The group operates 15+ outlets across its branded portfolio including Begam, Imperfecto, and other F&B concepts.\n\nThe platform is seeking a strategic capital partner to accelerate brand portfolio expansion. Strong unit economics with a proven operational playbook are ready for pan-India rollout. The company has demonstrated consistent same-store growth and expansion capability across multiple formats.\n\nIndia Gully is advising on the fundraise and is seeking institutional investors, family offices or strategic partners willing to co-invest at growth equity stage.`,
+    entity: 'Belcibo Hospitality',
+    source: 'Proprietary Sourcing — India Gully',
+    desc: 'Scalable multi-brand F&B platform operating across Delhi NCR and Goa. Growth equity mandate seeking strategic capital partner for pan-India rollout. Brands include Informal, Imperfecto, Khubani, Habibi, Begum, Noor, Imperfecto Boutique.',
+    longDesc: `Growth Equity Investment Opportunity — Belcibo Hospitality is a scalable multi-brand F&B platform operating across Delhi NCR and Goa markets. The group operates 15+ outlets across its branded portfolio.\n\nBrands include: Informal, Imperfecto, Imperfecto Boutique, Khubani, Habibi, Begum, and Noor — covering the full spectrum from casual dining to premium experiential F&B.\n\nThe platform is seeking a strategic capital partner to accelerate brand portfolio expansion. Strong unit economics with a proven operational playbook ready for pan-India rollout. India Gully is the exclusive growth equity advisor.`,
     images: [
-      'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80',
-      'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80',
-      'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=1200&q=80',
-      'https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=1200&q=80',
+      // Source: Belcibo brand portfolio — Imperfecto, Informal, Khubani, Habibi, Begum, Noor
+      // Proprietary brand imagery — shared exclusively under NDA
+      // Full brand gallery and portfolio deck provided post-NDA execution
     ],
     specs: {
-      'Platform': 'Multi-Brand F&B Platform',
+      'Platform': 'Belcibo Hospitality',
       'Markets': 'Delhi NCR & Goa',
+      'Brands': 'Informal, Imperfecto, Khubani, Habibi, Begum, Noor, Imperfecto Boutique',
       'Outlets': '15+ Operating Outlets',
       'Asset Classification': 'Multi-Brand F&B Platform',
       'Transaction Type': 'Growth Equity Investment',
@@ -246,7 +250,7 @@ export const LISTINGS = [
     contact: 'akm@indiagully.com',
     contactName: 'Arun Manikonda',
     contactPhone: '+91 98108 89134',
-    nda: false,
+    nda: true,
   },
 
   // ── 3. Hotel Rajshree & Spa, Chandigarh ──────────────────────────────────
@@ -263,13 +267,19 @@ export const LISTINGS = [
     status: 'Asset Sale – Actively Marketing',
     statusType: 'active',
     mandateType: 'Asset Sale Advisory',
+    entity: 'Rajshree Hotels Pvt. Ltd.',
+    source: 'https://hotelrajshreechandigarh.com/',
     desc: "Fully operational boutique hotel & spa in Chandigarh's prime Industrial Area Phase I, near Tribune Chowk. 41 keys. Full amenities including premium spa, restaurant, bar & conference. Strong RevPAR with brand affiliation upside.",
     longDesc: `Stabilised Asset Sale — Rajshree Hotels Pvt. Ltd. is offering this fully operational boutique hotel and spa in Chandigarh's prime Industrial Area Phase I, conveniently located near Tribune Chowk.\n\nThe property features 41 well-appointed rooms including Super Deluxe, Family Suites, and Honeymoon Suites. Full amenities include a premium spa, in-house restaurant, bar, conference facilities, free WiFi, and complimentary parking.\n\nThe hotel demonstrates strong RevPAR performance with significant potential for brand affiliation upgrade. Attractive entry point for investors seeking cash-yielding hospitality assets with wellness positioning. India Gully holds the seller mandate and is actively marketing to qualified buyers.`,
     images: [
+      // Source: hotelrajshreechandigarh.com — official hotel website images
       'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/IMG_1157-1-scaled-1.webp',
       'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/Hotel-Rajshree-5-scaled-e1765525431558.webp',
       'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/facade-1024x585.webp',
       'https://hotelrajshreechandigarh.com/wp-content/uploads/2026/01/IMG_6649-Copy-1024x768.webp',
+      'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/super-deluxe-room-768x1024.webp',
+      'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/Family-Suite-768x1024.webp',
+      'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/IMG_6565-1-1024x768.webp',
     ],
     specs: {
       'Entity': 'Rajshree Hotels Pvt. Ltd.',
@@ -310,13 +320,17 @@ export const LISTINGS = [
     status: 'Asset Sale – Seller Mandated',
     statusType: 'active',
     mandateType: 'Asset Sale Advisory',
+    entity: 'ITC WelcomHeritage – Santa Roza',
+    source: 'https://www.welcomheritagehotels.in/hotel-details/santa-roza-kasauli/',
     desc: "Established luxury heritage resort under ITC WelcomHeritage brand across 2 acres in scenic Kasauli at pine forest elevation. Victorian-themed architecture. 44 keys. Nirvana restaurant, Aviary bar, spa & plunge pool.",
     longDesc: `Heritage Asset Divestiture — WelcomHeritage Santa Roza is an established luxury heritage resort under the ITC WelcomHeritage brand, sprawled across 2 acres in scenic Kasauli at pine forest elevation with Victorian-themed architecture and British-era charm.\n\nRoom categories include Deluxe (280 sq.ft.), Suites (340 sq.ft.), Cottages (420 sq.ft.), and Family Suites (1,180 sq.ft.). Premium amenities include Nirvana multi-cuisine restaurant, Aviary bar with woodland views, Milo's garden café, state-of-the-art fitness centre, spa, and plunge pool.\n\nBenefits from Himachal Pradesh tourism incentives and tax subsidies. Located 15–16 km from Mall Road and local attractions. India Gully holds the seller mandate on behalf of ITC WelcomHeritage.`,
     images: [
-      'https://www.welcomheritagehotels.in/app/uploaded_files/hotel_gallery/-web Banner 245527.jpg',
-      'https://www.welcomheritagehotels.in/app/uploaded_files/hotel_gallery/-Internal banner86510.jpg',
-      'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80',
-      'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&q=80',
+      // Source: welcomheritagehotels.in — official ITC WelcomHeritage hotel website images
+      'https://www.welcomheritagehotels.in/app/uploaded_files/hotel_gallery/-web%20Banner%20245527.jpg',
+      'https://www.welcomheritagehotels.in/app/uploaded_files/hotel_gallery/-Internal%20banner86510.jpg',
+      'https://www.welcomheritagehotels.in/app/uploaded_files/hotel_room/-Deluxe%20Room30613.jpg',
+      'https://www.welcomheritagehotels.in/app/uploaded_files/hotel_room/-Suite%20Bedroom21608.jpg',
+      'https://www.welcomheritagehotels.in/app/uploaded_files/hotel_room/-Suite%20Living%20Room34714.jpg',
     ],
     specs: {
       'Entity': 'ITC WelcomHeritage – Santa Roza',
@@ -324,10 +338,11 @@ export const LISTINGS = [
       'Asset Classification': 'Luxury Heritage Resort',
       'Land Area': '2 Acres',
       'Room Inventory': '44 Keys',
-      'Room Types': 'Deluxe, Suites, Cottages, Family Suites',
-      'Amenities': 'Restaurant, Bar, Garden Café, Spa, Plunge Pool, Fitness',
+      'Room Types': 'Deluxe (280 sqft), Suites (340 sqft), Cottages (420 sqft), Family Suites (1,180 sqft)',
+      'Amenities': 'Nirvana Restaurant, Aviary Bar, Milo\'s Café, Spa, Plunge Pool, Fitness Centre',
       'Investment Scale': '₹45 Crore',
       'HP Tourism Benefits': 'Tax Incentives & Subsidies Applicable',
+      'Distance': '15–16 km from Mall Road, Kasauli',
       'Deal Status': 'Asset Sale – Seller Mandated',
       'IG Contact': 'Amit Jhingan',
     },
@@ -359,13 +374,13 @@ export const LISTINGS = [
     status: 'Structure Sale – Ready for Fit-Out',
     statusType: 'feasibility',
     mandateType: 'Structure Sale Advisory',
+    entity: 'Belcibo (Proprietary Sourcing)',
+    source: 'Proprietary Sourcing — India Gully / Belcibo',
     desc: "43-key hospitality structure in Jaipur's tourism corridor. Construction-complete and ready for interior fit-out. Significant cost savings versus greenfield development. Quick market entry in Rajasthan's heritage tourism sector.",
-    longDesc: `Structure Sale Opportunity — A 43-key hospitality structure in Jaipur's tourism corridor that is construction-complete and ready for interior fit-out. This represents a significant cost-saving entry point versus ground-up development.\n\nThe structure is suitable for operators or investors seeking quick market entry in Rajasthan's heritage tourism market — one of India's most resilient and high-ADR leisure segments.\n\nIndia Gully (represented by Belcibo) holds the sale mandate and is seeking hospitality operators, boutique hotel brands, or asset-light operators who can quickly mobilise fit-out and commence operations.`,
+    longDesc: `Structure Sale Opportunity — A 43-key hospitality structure in Jaipur's tourism corridor that is construction-complete and ready for interior fit-out. This represents a significant cost-saving entry point versus ground-up development.\n\nThe structure is suitable for operators or investors seeking quick market entry in Rajasthan's heritage tourism market — one of India's most resilient and high-ADR leisure segments.\n\nIndia Gully (represented by Belcibo) holds the sale mandate. Suitable for hospitality operators, boutique hotel brands, or asset-light operators seeking swift fit-out and operations commencement.`,
     images: [
-      'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80',
-      'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1200&q=80',
-      'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=1200&q=80',
-      'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=1200&q=80',
+      // Source: Proprietary — Jaipur hospitality structure (Belcibo portfolio)
+      // Structure images are shared under NDA only — available post-NDA execution
     ],
     specs: {
       'Entity': 'Belcibo (Proprietary Sourcing)',
@@ -375,6 +390,7 @@ export const LISTINGS = [
       'Construction Status': 'Complete – Ready for Interior Fit-Out',
       'Investment Scale': '₹20 Crore',
       'Opportunity Type': 'Significant Cost Saving vs Greenfield',
+      'Tourism Market': 'Rajasthan Heritage Tourism Corridor',
       'Deal Status': 'Structure Sale – Ready for Fit-Out',
       'IG Contact': 'Amit Jhingan',
     },
@@ -406,13 +422,19 @@ export const LISTINGS = [
     status: 'Asset Sale – Owner Direct',
     statusType: 'active',
     mandateType: 'Asset Sale Advisory',
+    entity: 'Mapple Resorts Pvt. Ltd.',
+    source: 'https://www.mapleresorts.in/',
     desc: 'Premium boutique mountain resort with 30 keys perched at 2,515 metres. Pine and maple forests with panoramic mountain views. Near Chail Palace, historic cricket ground & Kali Ka Tibba. Immediate cash flows.',
-    longDesc: `Operational Leisure Asset — Maple Resort Chail is a premium boutique mountain resort with 30 keys (Suites, Executive, and Super Deluxe rooms) perched at 2,515 metres in the Himalayas. Surrounded by pine and maple forests with panoramic mountain views.\n\nFull amenities include a multi-cuisine restaurant, private balconies, free WiFi, parking, elevator, mini bar, AC/heating, and a pet-friendly policy. Strategically located near Chail Palace (4 km), the historic cricket ground (highest in the world), and Kali Ka Tibba temple.\n\nThe property has an established guest base with strong leisure and wellness tourism demand. Offers immediate cash flows with upside potential from brand affiliation or digital OTA growth. India Gully advises on behalf of the owner.`,
+    longDesc: `Operational Leisure Asset — Maple Resort Chail is a premium boutique mountain resort with 30 keys (Suites, Executive, and Super Deluxe rooms) perched at 2,515 metres in the Himalayas. Surrounded by pine and maple forests with panoramic mountain views.\n\nFull amenities include a multi-cuisine restaurant, private balconies, free WiFi, parking, elevator, mini bar, AC/heating, and a pet-friendly policy. Strategically located near Chail Palace (4 km), the historic Chail Cricket Ground (highest in the world), and Kali Ka Tibba temple.\n\nThe property has an established guest base with strong leisure and wellness tourism demand. Offers immediate cash flows with upside potential from brand affiliation or digital OTA growth. India Gully advises on behalf of the owner.`,
     images: [
+      // Source: mapleresorts.in — official Maple Resort Chail website images
       'https://www.mapleresorts.in/img/about/new-left1.jpg',
       'https://www.mapleresorts.in/img/about/new-right1.jpg',
-      'https://www.mapleresorts.in/img/executive-new.jpg',
+      'https://www.mapleresorts.in/img/about/Refined-left1.jpg',
+      'https://www.mapleresorts.in/img/about/Refined-left2.jpg',
       'https://www.mapleresorts.in/img/family-1-new.jpg',
+      'https://www.mapleresorts.in/img/executive-new.jpg',
+      'https://www.mapleresorts.in/img/deluxe-1-new.jpg',
     ],
     specs: {
       'Entity': 'Mapple Resorts Pvt. Ltd.',
@@ -420,9 +442,9 @@ export const LISTINGS = [
       'Altitude': '2,515 metres above sea level',
       'Asset Classification': 'Boutique Mountain Resort',
       'Room Inventory': '30 Keys',
-      'Room Types': 'Suites, Executive, Super Deluxe',
-      'Amenities': 'Restaurant, Private Balconies, WiFi, Elevator, Mini Bar, Pet-Friendly',
-      'Nearby Attractions': 'Chail Palace (4km), Historic Cricket Ground, Kali Ka Tibba',
+      'Room Types': 'Suites, Executive Rooms, Super Deluxe Rooms',
+      'Amenities': 'Multi-Cuisine Restaurant, Private Balconies, WiFi, Elevator, Mini Bar, Pet-Friendly',
+      'Nearby Attractions': 'Chail Palace (4km), Historic Cricket Ground, Kali Ka Tibba Temple',
       'Investment Scale': '₹30 Crore',
       'Deal Status': 'Asset Sale – Owner Direct',
       'IG Contact': 'Amit Jhingan',
@@ -455,19 +477,20 @@ export const LISTINGS = [
     status: 'Conversion Opportunity – Technical Feasibility Complete',
     statusType: 'feasibility',
     mandateType: 'Adaptive Reuse Advisory',
-    desc: "Grade-A commercial tower by Ambience Group in Rohini, North Delhi. 0.6 km from Rohini West Metro Station. Conversion-ready for hospitality or hybrid hotel-office use. Technical feasibility complete. REIT-grade repositioning opportunity.",
-    longDesc: `Adaptive Reuse Opportunity — Ambience Tower is a Grade-A commercial tower developed by Ambience Pvt Ltd in Rohini, North Delhi. With excellent metro connectivity at just 0.6 km from Rohini West Metro Station, the asset enjoys strong accessibility to all major Delhi NCR micro-markets.\n\n5-star hotels, hospitals, and malls are within a 2–5 km radius. The asset is conversion-ready for hospitality or hybrid hotel-office use, with technical feasibility already completed.\n\nIdeal for developers or hotel operators seeking a value-add repositioning play in an established North Delhi location. Strong ROI potential through hospitality conversion or mixed hotel-serviced apartment format. India Gully advises on behalf of JLL (co-listed).`,
+    entity: 'Ambience Group (JLL Listed)',
+    source: 'https://property.jll.co.in/listings/ambience-tower-shalimar-bagh-plot-no-10-b-block-community-centre',
+    desc: "Grade-A commercial tower by Ambience Group in Rohini, North Delhi. 0.6 km from Rohini West Metro Station. Conversion-ready for hospitality or hybrid hotel-office use. Technical feasibility complete.",
+    longDesc: `Adaptive Reuse Opportunity — Ambience Tower is a Grade-A commercial tower developed by Ambience Pvt Ltd in Rohini, North Delhi. With excellent metro connectivity at just 0.6 km from Rohini West Metro Station, the asset enjoys strong accessibility to all major Delhi NCR micro-markets.\n\n5-star hotels, hospitals, and malls are within a 2–5 km radius. The asset is conversion-ready for hospitality or hybrid hotel-office use, with technical feasibility already completed.\n\nIdeal for developers or hotel operators seeking a value-add repositioning play in an established North Delhi location. India Gully advises on behalf of the vendor (JLL co-listed mandate).`,
     images: [
-      'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80',
-      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80',
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&q=80',
-      'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80',
+      // Source: JLL Listed Property — Ambience Tower, Shalimar Bagh, Rohini, North Delhi
+      // JLL CDN Akamai-protected — images available post-NDA execution only
     ],
     specs: {
       'Entity': 'Ambience Group (JLL Listed)',
       'Location': 'Shalimar Bagh, Rohini, North Delhi',
       'Asset Classification': 'Grade-A Commercial Tower (Adaptive Reuse)',
       'Metro Connectivity': '0.6 km from Rohini West Metro Station',
+      'Nearby Infrastructure': '5-Star Hotels, Hospitals, Malls within 2–5 km',
       'Conversion Use': 'Hospitality / Hybrid Hotel-Office',
       'Technical Feasibility': 'Complete',
       'Investment Scale': '₹350 Crore',
@@ -502,13 +525,13 @@ export const LISTINGS = [
     status: 'Outright Sale – Negotiation Ready',
     statusType: 'active',
     mandateType: 'Transaction Advisory',
+    entity: 'Sawasdee JLG Galleria',
+    source: 'Proprietary Sourcing — India Gully',
     desc: "Structure-ready 114-key hotel integrated with retail mall in Noida's commercial corridor. Independent access and operational flexibility. Multiple revenue streams from hospitality-retail integrated development.",
     longDesc: `Mixed-Use Development Opportunity — Sawasdee JLG Galleria is a structure-ready 114-key hotel integrated with a retail mall in Noida's commercial corridor. The development offers independent access and operational flexibility for the hotel component.\n\nThe asset represents an attractive entry for investors seeking integrated hospitality-retail assets with multiple revenue streams. The hotel and mall components are separately operable, providing flexibility in operation or management of each vertical.\n\nProprietary sourcing by India Gully. The asset is negotiation-ready for qualified buyers. Suitable for hospitality operators, retail developers, or institutional investors seeking mixed-use integrated assets in NCR.`,
     images: [
-      'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200&q=80',
-      'https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=1200&q=80',
-      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&q=80',
-      'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=1200&q=80',
+      // Source: Proprietary — Sawasdee JLG Galleria, Noida (India Gully mandate)
+      // Proprietary project images — shared under NDA only
     ],
     specs: {
       'Entity': 'Sawasdee JLG Galleria',
@@ -516,6 +539,7 @@ export const LISTINGS = [
       'Asset Classification': 'Mall + Hotel (Integrated)',
       'Room Inventory': '114 Keys',
       'Development Status': 'Structure-Ready',
+      'Hotel Access': 'Independent Access from Mall Component',
       'Investment Scale': '₹150 Crore',
       'Deal Status': 'Outright Sale – Negotiation Ready',
       'IG Contact': 'Arun Manikonda',
@@ -531,52 +555,6 @@ export const LISTINGS = [
     contact: 'akm@indiagully.com',
     contactName: 'Arun Manikonda',
     contactPhone: '+91 98108 89134',
-    nda: true,
-  },
-
-  // ── Retained: Entertainment City NCR (flagship) ───────────────────────────
-  {
-    id: 'entertainment-ncr-bhutani',
-    title: 'Entertainment City — Delhi NCR',
-    subtitle: '1.5 Mn sq ft GLA · Entertainment City Limited · Noida',
-    location: 'Noida, Delhi NCR',
-    locationShort: 'Noida, NCR',
-    sector: 'Entertainment',
-    sectorColor: '#7C3AED',
-    value: '₹1,200 Cr+',
-    valueUSD: 'USD ~144 Mn+',
-    status: 'Co-Advisory · Exclusive',
-    statusType: 'active',
-    mandateType: 'Co-Advisory (Exclusive)',
-    desc: '1.5 Mn sq ft entertainment city in Noida NCR co-advised with Entertainment City Limited. High-footfall location adjacent to upcoming metro corridor. Largest entertainment-led mixed-use in NCR.',
-    longDesc: `India Gully co-advises with Entertainment City Limited on this landmark 1.5 million square foot entertainment city in Noida, Delhi NCR, positioned as the region's largest entertainment-led mixed-use development.\n\nThe site sits adjacent to an upcoming metro corridor, giving it exceptional connectivity to Delhi NCR's 22 million+ population catchment. The development integrates indoor and outdoor entertainment, a multiplex, F&B destination, branded hotels and a curated retail component.\n\nInvestment is sought from entertainment-sector operators, international attraction brands, hospitality companies and co-development PE capital. Entertainment City Limited brings a strong developer pedigree and balance sheet to the partnership.`,
-    images: [
-      'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200&q=80',
-      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&q=80',
-      'https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=1200&q=80',
-      'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1200&q=80',
-    ],
-    specs: {
-      'GLA': '1.5 Million sq ft',
-      'Location': 'Noida, Delhi NCR',
-      'Project Partner': 'Entertainment City Limited',
-      'Investment Scale': '₹1,200 Crore+ (USD ~144 Mn+)',
-      'Components': 'Entertainment + Multiplex + Hotel + Retail',
-      'Connectivity': 'Adjacent to Upcoming Metro Corridor',
-      'Mandate': 'Co-Advisory (Exclusive)',
-      'Population Catchment': 'Delhi NCR — 22 Mn+',
-    },
-    highlights: [
-      { icon: 'building', value: '1.5 Mn', label: 'Sq Ft GLA' },
-      { icon: 'handshake', value: 'ECL', label: 'Project Partner' },
-      { icon: 'subway', value: 'Metro', label: 'Adjacent Corridor' },
-      { icon: 'users', value: '22 Mn+', label: 'NCR Catchment' },
-    ],
-    tags: ['Entertainment City', 'Delhi NCR', 'Entertainment City Limited', 'Mixed-Use', 'Metro Connectivity'],
-    highlight: true,
-    contact: 'amit.jhingan@indiagully.com',
-    contactName: 'Amit Jhingan',
-    contactPhone: '+91 98999 93543',
     nda: true,
   },
 ]

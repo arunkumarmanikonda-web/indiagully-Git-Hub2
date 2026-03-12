@@ -184,10 +184,9 @@ app.get('/sitemap.xml', (c) => {
   ]
 
   const listingIds = [
-    'prism-tower-gurgaon','belcibo-hospitality','hotel-rajshree-chandigarh',
-    'welcomheritage-santa-roza','heritage-hotel-jaipur','maple-resort-chail',
-    'ambience-tower-north-delhi','sawasdee-jlg-noida','entertainment-city-ncr',
-    'entertainment-maharashtra',
+    'prism-tower-gurgaon','belcibo-hospitality-platform','hotel-rajshree-chandigarh',
+    'welcomheritage-santa-roza-kasauli','heritage-hotel-jaipur','maple-resort-chail',
+    'ambience-tower-north-delhi','sawasdee-jlg-noida',
   ]
 
   const insightIds = [
