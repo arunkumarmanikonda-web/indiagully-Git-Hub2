@@ -1165,6 +1165,34 @@ body{overflow-x:hidden;}
 @media(max-width:860px){.team-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:560px){.team-grid{grid-template-columns:1fr;}}
 
+/* ── HORECA category grid ────────────────────── */
+.horeca-cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);}
+@media(max-width:900px){.horeca-cat-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.horeca-cat-grid{grid-template-columns:1fr;}}
+.horeca-cat-cell{background:#fff;padding:2rem 1.5rem;transition:all .25s;position:relative;overflow:hidden;cursor:default;}
+.horeca-cat-cell:hover{background:var(--parch);box-shadow:0 8px 32px rgba(0,0,0,.06);}
+.horeca-cat-cell:hover .horeca-cat-top{opacity:1;}
+.horeca-cat-top{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0;transition:opacity .25s;}
+
+/* ── ig-callout-gold (premium gold CTA box) ─── */
+.ig-callout-gold{background:linear-gradient(135deg,rgba(184,150,12,.08) 0%,rgba(184,150,12,.04) 100%);border:1px solid rgba(184,150,12,.25);padding:2.5rem;position:relative;overflow:hidden;}
+.ig-callout-gold::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-lt),transparent);}
+
+/* ── ig-step (numbered step) ────────────────── */
+.ig-step{display:flex;gap:1.5rem;align-items:flex-start;padding:1.75rem 0;border-bottom:1px solid var(--border);}
+.ig-step:last-child{border-bottom:none;}
+.ig-step-num{width:48px;height:48px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:#fff;flex-shrink:0;}
+.ig-step-body{}
+.ig-step-title{font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);margin-bottom:.4rem;}
+.ig-step-desc{font-size:.85rem;color:var(--ink-muted);line-height:1.8;}
+
+/* ── ig-properties-grid ──────────────────────── */
+.ig-prop-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);}
+@media(max-width:900px){.ig-prop-grid{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:560px){.ig-prop-grid{grid-template-columns:repeat(2,1fr);}}
+.ig-prop-cell{background:#fff;padding:1.25rem 1rem;text-align:center;font-size:.7rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted);line-height:1.4;transition:background .2s;}
+.ig-prop-cell:hover{background:var(--gold-pale);}
+
 /* ── Track record vertical sections ─────────── */
 .tr-section-grid{display:grid;grid-template-columns:280px 1fr;gap:0;}
 @media(max-width:860px){

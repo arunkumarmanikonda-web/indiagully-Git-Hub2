@@ -2231,38 +2231,149 @@ app.get('/finance/msme-vendors', (c) => {
 // EXISTING ENDPOINTS (unchanged) — preserved for backward compatibility
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ── PRODUCTION-GRADE ENQUIRY HANDLER ─────────────────────────────────────────
+// Validates input, generates ref ID, stores in KV if available, returns JSON.
+function validateEmail(e: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e.trim())
+}
+function validatePhone(p: string): boolean {
+  return /^[+\d\s\-().]{7,20}$/.test(p.trim())
+}
+function sanitiseStr(s: string, max = 200): string {
+  return String(s || '').trim().slice(0, max).replace(/[<>]/g, '')
+}
+
 app.post('/enquiry', async (c) => {
   try {
-    let name: string | undefined, email: string | undefined
+    let data: Record<string, string> = {}
     const ct = c.req.header('Content-Type') || ''
     if (ct.includes('application/json')) {
-      const j = await c.req.json() as Record<string, string>
-      name = j.name; email = j.email
+      data = await c.req.json() as Record<string, string>
     } else {
       const body = await c.req.parseBody()
-      name = (body as any).name; email = (body as any).email
+      data = body as Record<string, string>
     }
-    if (!name || !email) return c.json({ success: false, error: 'Name and email are required' }, 400)
-    return c.json({ success: true, message: 'Enquiry received. Our team will respond within 24 business hours.', ref: `IG-ENQ-${Date.now()}` })
-  } catch { return c.json({ success: false, error: 'Failed to process enquiry' }, 500) }
+
+    const name    = sanitiseStr(data.name, 120)
+    const email   = sanitiseStr(data.email, 120)
+    const phone   = sanitiseStr(data.phone, 30)
+    const org     = sanitiseStr(data.org || data.company || '', 200)
+    const message = sanitiseStr(data.message || '', 2000)
+    const type    = sanitiseStr(data.type || 'general', 80)
+    const mandate = sanitiseStr(data.mandate || '', 120)
+
+    if (!name || name.length < 2) return c.json({ success: false, error: 'Full name is required (min 2 characters).' }, 400)
+    if (!email || !validateEmail(email)) return c.json({ success: false, error: 'A valid email address is required.' }, 400)
+
+    const ref = `IG-ENQ-${Date.now()}-${Math.random().toString(36).slice(2,6).toUpperCase()}`
+    const ts  = new Date().toISOString()
+
+    // Store in KV if available (fire-and-forget, no failure on miss)
+    try {
+      const env = (c as any).env
+      if (env && env.KV) {
+        await env.KV.put(`enquiry:${ref}`, JSON.stringify({
+          ref, type, name, email, phone, org, message, mandate, ts, source: 'website'
+        }), { expirationTtl: 60 * 60 * 24 * 365 }) // 1 year
+      }
+    } catch (_) { /* KV not available in dev — silent */ }
+
+    return c.json({
+      success: true,
+      ref,
+      message: type === 'nda_acceptance'
+        ? `NDA acceptance recorded for ${mandate}. India Gully team notified.`
+        : 'Enquiry received. Our leadership team will respond within 24 business hours.',
+      ts
+    })
+  } catch (e) {
+    return c.json({ success: false, error: 'Failed to process enquiry. Please try again or email info@indiagully.com' }, 500)
+  }
 })
 
 app.post('/horeca-enquiry', async (c) => {
   try {
-    const body = await c.req.parseBody()
-    const { name, email } = body as Record<string, string>
-    if (!name || !email) return c.json({ success: false, error: 'Name and email are required' }, 400)
-    return c.json({ success: true, message: 'HORECA enquiry received. Procurement team will respond within 48 hours.', ref: `IG-HORECA-${Date.now()}` })
-  } catch { return c.json({ success: false, error: 'Failed to process HORECA enquiry' }, 500) }
+    let data: Record<string, string> = {}
+    const ct = c.req.header('Content-Type') || ''
+    if (ct.includes('application/json')) {
+      data = await c.req.json() as Record<string, string>
+    } else {
+      const body = await c.req.parseBody()
+      data = body as Record<string, string>
+    }
+
+    const name     = sanitiseStr(data.name, 120)
+    const email    = sanitiseStr(data.email, 120)
+    const phone    = sanitiseStr(data.phone || '', 30)
+    const property = sanitiseStr(data.property || data.company || '', 200)
+    const category = sanitiseStr(data.category || 'General', 80)
+    const budget   = sanitiseStr(data.budget || '', 80)
+    const message  = sanitiseStr(data.message || '', 2000)
+
+    if (!name || name.length < 2) return c.json({ success: false, error: 'Full name is required.' }, 400)
+    if (!email || !validateEmail(email)) return c.json({ success: false, error: 'A valid email address is required.' }, 400)
+
+    const ref = `IG-HORECA-${Date.now()}-${Math.random().toString(36).slice(2,6).toUpperCase()}`
+    const ts  = new Date().toISOString()
+
+    try {
+      const env = (c as any).env
+      if (env && env.KV) {
+        await env.KV.put(`horeca_enquiry:${ref}`, JSON.stringify({
+          ref, name, email, phone, property, category, budget, message, ts, source: 'horeca_form'
+        }), { expirationTtl: 60 * 60 * 24 * 365 })
+      }
+    } catch (_) { /* KV not available in dev — silent */ }
+
+    return c.json({
+      success: true,
+      ref,
+      message: 'HORECA enquiry received. Our procurement team will respond within 48 business hours with a detailed quotation.',
+      ts
+    })
+  } catch (e) {
+    return c.json({ success: false, error: 'Failed to process HORECA enquiry. Please try again or email info@indiagully.com' }, 500)
+  }
 })
 
 app.post('/subscribe', async (c) => {
   try {
-    const body = await c.req.parseBody()
-    const { email } = body as Record<string, string>
-    if (!email) return c.json({ success: false, error: 'Email required' }, 400)
-    return c.json({ success: true, message: 'Subscribed to India Gully Research Bulletin.' })
-  } catch { return c.json({ success: false, error: 'Subscription failed' }, 500) }
+    let data: Record<string, string> = {}
+    const ct = c.req.header('Content-Type') || ''
+    if (ct.includes('application/json')) {
+      data = await c.req.json() as Record<string, string>
+    } else {
+      const body = await c.req.parseBody()
+      data = body as Record<string, string>
+    }
+
+    const email = sanitiseStr(data.email, 120)
+    const name  = sanitiseStr(data.name || '', 120)
+    const role  = sanitiseStr(data.role || '', 80)
+
+    if (!email || !validateEmail(email)) return c.json({ success: false, error: 'A valid email address is required.' }, 400)
+
+    const ref = `IG-SUB-${Date.now()}`
+    const ts  = new Date().toISOString()
+
+    try {
+      const env = (c as any).env
+      if (env && env.KV) {
+        await env.KV.put(`subscriber:${email}`, JSON.stringify({
+          ref, email, name, role, ts, source: 'insights_subscribe', active: true
+        }), { expirationTtl: 60 * 60 * 24 * 365 * 3 }) // 3 years
+      }
+    } catch (_) { /* KV not available in dev — silent */ }
+
+    return c.json({
+      success: true,
+      ref,
+      message: 'Subscribed to India Gully Research Bulletin. Welcome! You will receive sector research and mandate alerts.',
+      ts
+    })
+  } catch (e) {
+    return c.json({ success: false, error: 'Subscription failed. Please try again or email info@indiagully.com' }, 500)
+  }
 })
 
 app.get('/listings', (c) => c.json({ total: 8, pipeline_value: '₹1,165 Cr', listings: [

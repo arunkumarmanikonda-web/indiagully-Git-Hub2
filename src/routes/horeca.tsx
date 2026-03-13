@@ -15,8 +15,10 @@ app.get('/', (c) => {
   const content = `
 
 <!-- HORECA HERO -->
-<div style="background:var(--ink);padding:7rem 0 5rem;position:relative;overflow:hidden;">
-  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.05) 1px,transparent 1px);background-size:72px 72px;"></div>
+<div class="hero-dk">
+  <div class="hero-dk-grid"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 65% at 25% 50%,rgba(184,150,12,.06) 0%,transparent 55%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(to bottom,transparent,var(--ink));pointer-events:none;"></div>
   <div class="wrap" style="position:relative;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
       <div class="fu">
@@ -31,14 +33,16 @@ app.get('/', (c) => {
       </div>
       <div class="fu2" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.07);">
         ${[
-          { n:'500+',    l:'SKUs in Catalogue' },
-          { n:'₹50 Cr+', l:'Procurement Managed' },
-          { n:'50+',     l:'Vendor Network' },
-          { n:'15+',     l:'Hotels Supplied' },
+          { n:'500+',    l:'SKUs in Catalogue',   icon:'th-list' },
+          { n:'₹50 Cr+', l:'Procurement Managed', icon:'rupee-sign' },
+          { n:'50+',     l:'Vendor Network',       icon:'handshake' },
+          { n:'15+',     l:'Hotels Supplied',      icon:'hotel' },
         ].map(s => `
-        <div style="padding:2rem 1.5rem;background:rgba(255,255,255,.03);text-align:center;">
-          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.25rem;color:var(--gold);line-height:1;margin-bottom:.4rem;">${s.n}</div>
-          <div style="font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);">${s.l}</div>
+        <div style="padding:2rem 1.5rem;background:rgba(255,255,255,.03);text-align:center;transition:background .22s;position:relative;overflow:hidden;" onmouseover="this.style.background='rgba(184,150,12,.06)'" onmouseout="this.style.background='rgba(255,255,255,.03)'">
+          <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,150,12,.3),transparent);"></div>
+          <i class="fas fa-\${s.icon}" style="font-size:.75rem;color:rgba(184,150,12,.45);margin-bottom:.625rem;display:block;"></i>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.25rem;color:var(--gold);line-height:1;margin-bottom:.4rem;">\${s.n}</div>
+          <div style="font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);">\${s.l}</div>
         </div>
         `).join('')}
       </div>
@@ -60,6 +64,39 @@ app.get('/', (c) => {
   </div>
 </div>
 
+
+<!-- ══ SUPPLY CATEGORIES ════════════════════════════════════════════════ -->
+<div class="sec-wh" style="padding-top:6rem;padding-bottom:6rem;">
+  <div class="wrap">
+    <div style="text-align:center;max-width:600px;margin:0 auto 3.5rem;">
+      <div class="gr-c"></div>
+      <p class="eyebrow" style="margin-bottom:.75rem;">8 Supply Categories</p>
+      <h2 class="h2">Complete HORECA<br>Procurement Coverage</h2>
+      <p class="lead" style="margin-top:1rem;">From kitchen equipment to guest amenities — India Gully sources, specifies and delivers across every supply category for hotel pre-openings and renovations.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);">
+      ${[
+        { icon:'chair',          name:'FF&E',                  desc:'Furniture, Fixtures & Equipment to brand standard. Guest rooms, lobby, restaurant, spa.',       color:'rgba(26,58,107,.1)' },
+        { icon:'utensils',       name:'OS&E',                  desc:'Operating Supplies & Equipment. Tableware, glassware, silverware, kitchen smallwares.',         color:'rgba(184,150,12,.08)' },
+        { icon:'fire-alt',       name:'Kitchen Equipment',     desc:'Commercial kitchen — ranges, ovens, refrigeration, warewashing to FSSAI and brand standards.',  color:'rgba(220,38,38,.07)' },
+        { icon:'bed',            name:'Linen & Towelling',     desc:'Room linen, bath towels, pool towels to brand par stock specification (3–4× room count).',     color:'rgba(6,95,70,.07)' },
+        { icon:'tshirt',         name:'Uniforms',              desc:'Staff uniforms across all departments. Design, procurement, tailoring, branding and logistics.',  color:'rgba(124,58,237,.07)' },
+        { icon:'gift',           name:'Guest Amenities',       desc:'Brand-approved bathroom amenities, room stationery, in-room guest kits and branded items.',    color:'rgba(146,64,14,.07)' },
+        { icon:'tools',          name:'SPA & Wellness',        desc:'Spa equipment, treatment beds, wellness product ranges, fitness equipment and AV systems.',    color:'rgba(22,163,74,.07)' },
+        { icon:'clipboard-list', name:'Turnkey Packages',      desc:'Complete turnkey procurement from single vendor. Full project management and delivery.',        color:'rgba(184,150,12,.06)' },
+      ].map(cat => `
+      <div style="background:#fff;padding:2rem 1.5rem;transition:all .25s;position:relative;overflow:hidden;cursor:default;" onmouseover="this.style.background='var(--parch)';this.style.boxShadow='0 8px 32px rgba(0,0,0,.06)'" onmouseout="this.style.background='#fff';this.style.boxShadow='none'">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0;transition:opacity .25s;" class="cat-top"></div>
+        <div style="width:52px;height:52px;background:\${cat.color};border:1px solid rgba(184,150,12,.15);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+          <i class="fas fa-\${cat.icon}" style="color:var(--gold);font-size:1.1rem;"></i>
+        </div>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.05rem;color:var(--ink);margin-bottom:.625rem;">\${cat.name}</h3>
+        <p style="font-size:.8rem;color:var(--ink-muted);line-height:1.7;">\${cat.desc}</p>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>
+
 <!-- PROCUREMENT PROCESS -->
 <div class="sec-pd">
   <div class="wrap">
@@ -68,15 +105,19 @@ app.get('/', (c) => {
       <p class="eyebrow" style="margin-bottom:.75rem;">How It Works</p>
       <h2 class="h2">4-Step Procurement<br>Process</h2>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;">
-      <div style="position:absolute;top:2.25rem;left:12.5%;right:12.5%;height:1px;background:var(--border);z-index:0;"></div>
-      ${STEPS.map(step => `
-      <div style="padding:0 1.5rem;text-align:center;position:relative;z-index:1;">
-        <div style="width:46px;height:46px;background:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:#fff;font-weight:700;">${step.n}</div>
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.05rem;color:var(--ink);margin-bottom:.625rem;">${step.title}</h3>
-        <p class="body" style="font-size:.8rem;">${step.desc}</p>
+    <!-- Desktop step connector line -->
+    <div style="position:relative;">
+      <div style="position:absolute;top:1.5rem;left:calc(12.5% + 24px);right:calc(12.5% + 24px);height:1px;background:var(--border);z-index:0;display:none;" class="step-line"></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;z-index:1;">
+        ${STEPS.map(step => `
+        <div style="padding:0 1.5rem;text-align:center;position:relative;">
+          <div style="width:48px;height:48px;background:var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:#fff;font-weight:700;border:3px solid #fff;box-shadow:0 0 0 1px var(--border);position:relative;z-index:1;">${step.n}</div>
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.05rem;color:var(--ink);margin-bottom:.625rem;">${step.title}</h3>
+          <p class="body" style="font-size:.8rem;">${step.desc}</p>
+        </div>
+        `).join('')}
       </div>
-      `).join('')}
+      <style>@media(min-width:640px){.step-line{display:block!important;}}</style>
     </div>
   </div>
 </div>
@@ -89,11 +130,9 @@ app.get('/', (c) => {
       <p class="eyebrow" style="margin-bottom:.75rem;">Properties We've Supplied</p>
       <h2 class="h2">Trusted by Leading<br>Hotel Groups</h2>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);">
-      ${['Marriott','Radisson','Cygnett Hotels','Regenta / Royal Orchid','IHG Hotels','Park Inn','Bijolai Palace','Lemon Tree','Park Inn by Radisson','Taj Hotels','Villa Hotel, Corbett','100-Room Hotel, Hosur'].map(b => `
-      <div style="background:#fff;padding:1.25rem 1rem;text-align:center;transition:background .2s;" onmouseover="this.style.background='var(--gold-pale)'" onmouseout="this.style.background='#fff'">
-        <div style="font-size:.7rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted);line-height:1.4;">${b}</div>
-      </div>
+    <div class="ig-prop-grid">
+      ${['Marriott International','Radisson Hotels','Cygnett Hotels','Regenta / Royal Orchid','IHG Hotels','Park Inn by Radisson','Bijolai Palace','Lemon Tree Hotels','Taj Hotels','Accor Hotels','Mahindra Holidays','CGH Earth Hotels'].map(b => `
+      <div class="ig-prop-cell">${b}</div>
       `).join('')}
     </div>
   </div>

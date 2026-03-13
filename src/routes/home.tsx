@@ -54,6 +54,18 @@ const SLIDES = [
     img: 'https://www.mapleresorts.in/img/about/new-right1.jpg',
     label: 'Mountain Boutique Resort',
   },
+  {
+    bg: '#040408',
+    tag: 'HORECA Solutions · Pan-India · 500+ SKUs',
+    h1a: 'Complete Supply',
+    h1b: 'Chain.',
+    h1c: 'Hotels & F&B Operators.',
+    sub: "India Gully's HORECA division delivers FF&E, OS&E, kitchen equipment, linen, uniforms and guest amenities across 15+ hotel properties, on spec and on schedule.",
+    cta1: { text: 'Explore HORECA Services', href: '/horeca' },
+    cta2: { text: 'Request a Quote', href: '/horeca#enquiry' },
+    img: 'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/IMG_1157-1-scaled-1.webp',
+    label: 'HORECA Procurement',
+  },
 ]
 
 app.get('/', (c) => {

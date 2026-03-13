@@ -266,39 +266,71 @@ app.notFound((c) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>404, Page Not Found | India Gully</title>
+  <meta name="robots" content="noindex,nofollow">
+  <title>404 — Page Not Found | India Gully</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
   <style>
-    :root{--ink:#1a1a2e;--gold:#B8960C;}
+    :root{--ink:#111111;--ink-mid:#1E1E1E;--gold:#B8960C;--gold-lt:#D4AE2A;--parch:#FAF8F3;--border:#E4DECE;}
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter',sans-serif;background:#fafaf6;color:var(--ink);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
-    .container{max-width:520px;text-align:center;}
-    .badge{display:inline-block;background:var(--gold);color:#fff;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .8rem;margin-bottom:1.5rem;}
-    h1{font-family:'DM Serif Display',Georgia,serif;font-size:5rem;color:var(--ink);line-height:1;margin-bottom:.5rem;}
-    h2{font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:var(--ink);margin-bottom:1rem;}
-    p{color:#555;line-height:1.7;margin-bottom:1.5rem;font-size:.9rem;}
-    .path{background:#f0ede5;padding:.3rem .7rem;border-radius:3px;font-family:monospace;font-size:.8rem;color:#666;display:inline-block;margin-bottom:1.5rem;}
-    .links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
-    a.btn{display:inline-block;padding:.65rem 1.5rem;text-decoration:none;font-size:.82rem;font-weight:500;border-radius:3px;transition:opacity .2s;}
-    a.btn-primary{background:var(--ink);color:#fff;}
-    a.btn-outline{border:1px solid var(--ink);color:var(--ink);}
-    a.btn:hover{opacity:.8;}
+    body{font-family:'DM Sans',sans-serif;background:var(--ink);color:#fff;min-height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+    .bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(184,150,12,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.025) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;}
+    .bg-glow{position:fixed;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 40%,rgba(184,150,12,.05) 0%,transparent 65%);pointer-events:none;}
+    .page{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem;position:relative;z-index:1;}
+    .container{max-width:680px;text-align:center;}
+    .ig-logo{display:inline-flex;align-items:center;gap:.5rem;margin-bottom:3rem;}
+    .ig-logo img{height:32px;width:auto;filter:brightness(0) invert(1);}
+    .ig-logo-txt{font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:#fff;letter-spacing:.04em;}
+    .badge-404{display:inline-flex;align-items:center;gap:.4rem;background:rgba(184,150,12,.12);border:1px solid rgba(184,150,12,.3);color:var(--gold);font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:.3rem .8rem;margin-bottom:2rem;}
+    .num-404{font-family:'DM Serif Display',Georgia,serif;font-size:clamp(5rem,15vw,9rem);color:transparent;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-lt) 50%,rgba(184,150,12,.3) 100%);-webkit-background-clip:text;background-clip:text;line-height:.9;margin-bottom:1rem;letter-spacing:-.04em;}
+    h2{font-family:'DM Serif Display',Georgia,serif;font-size:clamp(1.4rem,3vw,2rem);color:#fff;margin-bottom:1rem;font-weight:400;}
+    .path-box{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);padding:.4rem .875rem;font-family:monospace;font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:1.5rem;}
+    p{color:rgba(255,255,255,.45);line-height:1.8;margin-bottom:2rem;font-size:.9rem;max-width:480px;margin-left:auto;margin-right:auto;}
+    .links{display:flex;gap:.875rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem;}
+    a.btn-primary{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;text-decoration:none;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--gold);color:#fff;transition:background .2s;}
+    a.btn-primary:hover{background:var(--gold-lt);}
+    a.btn-outline{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;text-decoration:none;font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);transition:all .2s;}
+    a.btn-outline:hover{border-color:rgba(184,150,12,.5);color:#fff;}
+    .quick-links{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;}
+    .ql{color:rgba(255,255,255,.35);font-size:.72rem;text-decoration:none;padding:.22rem .5rem;border:1px solid rgba(255,255,255,.06);transition:all .2s;}
+    .ql:hover{color:var(--gold);border-color:rgba(184,150,12,.3);}
+    .footer-bar{padding:1.25rem 2rem;border-top:1px solid rgba(255,255,255,.05);text-align:center;font-size:.65rem;color:rgba(255,255,255,.2);position:relative;z-index:1;}
+    @media(max-width:480px){.links{flex-direction:column;align-items:center;}.num-404{font-size:5rem;}}
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="badge">India Gully</div>
-    <h1>404</h1>
-    <h2>Page Not Found</h2>
-    <div class="path">${path}</div>
-    <p>The page you're looking for doesn't exist or has been moved.<br>
-    Please check the URL or navigate back to the homepage.</p>
-    <div class="links">
-      <a href="/" class="btn btn-primary">← Back to Home</a>
-      <a href="/contact" class="btn btn-outline">Contact Us</a>
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+  <main class="page">
+    <div class="container">
+      <a href="/" class="ig-logo">
+        <span class="ig-logo-txt">India Gully</span>
+      </a>
+      <div class="badge-404"><i class="fas fa-exclamation-triangle" style="font-size:.55rem;"></i>Page Not Found</div>
+      <div class="num-404">404</div>
+      <h2>This page has gone off the map.</h2>
+      <div class="path-box"><i class="fas fa-map-marker-alt" style="color:var(--gold);font-size:.65rem;"></i>${path}</div>
+      <p>The page you're looking for doesn't exist, has been moved, or requires authentication. Check the URL and try again, or navigate to one of our key pages below.</p>
+      <div class="links">
+        <a href="/" class="btn-primary"><i class="fas fa-home" style="font-size:.7rem;"></i>Return Home</a>
+        <a href="/listings" class="btn-outline"><i class="fas fa-folder-open" style="font-size:.7rem;"></i>View Mandates</a>
+        <a href="/contact" class="btn-outline"><i class="fas fa-envelope" style="font-size:.7rem;"></i>Contact Us</a>
+      </div>
+      <div class="quick-links">
+        <a href="/about" class="ql">About</a>
+        <a href="/services" class="ql">Advisory Services</a>
+        <a href="/works" class="ql">Track Record</a>
+        <a href="/insights" class="ql">Insights</a>
+        <a href="/horeca" class="ql">HORECA</a>
+        <a href="/legal/privacy" class="ql">Privacy Policy</a>
+      </div>
     </div>
-  </div>
+  </main>
+  <footer class="footer-bar">
+    &copy; 2026 Vivacious Entertainment and Hospitality Pvt. Ltd. &middot; India Gully &middot;
+    <a href="mailto:info@indiagully.com" style="color:rgba(184,150,12,.5);text-decoration:none;">info@indiagully.com</a>
+  </footer>
 </body>
 </html>`, 404)
 })
