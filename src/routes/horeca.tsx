@@ -147,16 +147,56 @@ app.get('/', (c) => {
         <p class="eyebrow" style="margin-bottom:.75rem;">Get a Quote</p>
         <h2 class="h2" style="margin-bottom:1.25rem;">HORECA Supply<br>Enquiry</h2>
         <p class="lead" style="margin-bottom:2.5rem;">Fill in the form and our HORECA team will respond with a detailed specification and quote within 5 business days.</p>
-        <form class="ig-form" method="POST" action="/api/horeca-enquiry" style="display:flex;flex-direction:column;gap:1.25rem;">
+
+        <!-- SUCCESS PANEL (hidden until submission) -->
+        <div id="horeca-success" style="display:none;background:linear-gradient(135deg,#f0fdf4 0%,#ecfdf5 100%);border:1px solid #a7f3d0;padding:2.5rem 2rem;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#065F46,transparent);"></div>
+          <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.25rem;">
+            <div style="width:64px;height:64px;background:#065F46;display:flex;align-items:center;justify-content:center;border-radius:50%;">
+              <i class="fas fa-check" style="color:#fff;font-size:1.5rem;"></i>
+            </div>
+            <div>
+              <p style="font-size:.6rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:#065F46;margin-bottom:.5rem;">Enquiry Submitted</p>
+              <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.6rem;color:#111;margin-bottom:.625rem;">Your HORECA enquiry has been received.</h3>
+              <p style="font-size:.85rem;color:#555;line-height:1.75;max-width:440px;">Pavan Manikonda and our HORECA procurement team will respond within <strong>48 business hours</strong> with a detailed specification and quotation.</p>
+            </div>
+            <div style="background:#fff;border:1px solid #a7f3d0;padding:1rem 2rem;width:100%;max-width:360px;">
+              <p style="font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#065F46;margin-bottom:.3rem;">Your Reference Number</p>
+              <div id="horeca-success-ref" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.2rem;color:#111;letter-spacing:.04em;"></div>
+            </div>
+            <div style="width:100%;max-width:420px;border:1px solid #e4dece;padding:1.25rem 1.5rem;text-align:left;">
+              <p style="font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#888;margin-bottom:.75rem;">Your HORECA Contact</p>
+              <div style="display:flex;gap:.75rem;align-items:center;">
+                <div style="width:42px;height:42px;background:#111;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Serif Display',Georgia,serif;font-size:.9rem;color:var(--gold);">PM</div>
+                <div>
+                  <div style="font-size:.9rem;font-weight:600;color:#111;">Pavan Manikonda</div>
+                  <div style="font-size:.72rem;color:#888;">Executive Director, HORECA Solutions</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:1.25rem;margin-top:.875rem;flex-wrap:wrap;">
+                <a href="tel:+916282556067" style="font-size:.8rem;color:#065F46;display:flex;align-items:center;gap:.4rem;text-decoration:none;"><i class="fas fa-phone" style="font-size:.65rem;"></i>+91 62825 56067</a>
+                <a href="mailto:pavan@indiagully.com" style="font-size:.8rem;color:#065F46;display:flex;align-items:center;gap:.4rem;text-decoration:none;"><i class="fas fa-envelope" style="font-size:.65rem;"></i>pavan@indiagully.com</a>
+              </div>
+            </div>
+            <div style="display:flex;gap:.875rem;flex-wrap:wrap;">
+              <a href="/horeca/catalogue" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;background:var(--gold);color:#fff;text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;"><i class="fas fa-th-list" style="font-size:.62rem;"></i>Browse Full Catalogue</a>
+              <a href="/horeca" onclick="document.getElementById('horeca-success').style.display='none';document.getElementById('horeca-form-wrap').style.display='block';return false;" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;border:1px solid var(--border);color:var(--ink-soft);text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:#fff;"><i class="fas fa-redo" style="font-size:.62rem;"></i>Submit Another Enquiry</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORM WRAPPER -->
+        <div id="horeca-form-wrap">
+        <form id="horeca-form" class="ig-form" style="display:flex;flex-direction:column;gap:1.25rem;">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
-            <div><label class="ig-lbl">Full Name *</label><input type="text" name="name" class="ig-inp" required placeholder="Your full name"></div>
-            <div><label class="ig-lbl">Company / Property *</label><input type="text" name="company" class="ig-inp" required placeholder="Hotel or company name"></div>
+            <div><label class="ig-lbl">Full Name *</label><input id="hf-name" type="text" name="name" class="ig-inp" required placeholder="Your full name"></div>
+            <div><label class="ig-lbl">Company / Property *</label><input id="hf-company" type="text" name="company" class="ig-inp" required placeholder="Hotel or company name"></div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
-            <div><label class="ig-lbl">Email Address *</label><input type="email" name="email" class="ig-inp" required placeholder="your@email.com"></div>
-            <div><label class="ig-lbl">Phone Number</label><input type="tel" name="phone" class="ig-inp" placeholder="+91 XXXXX XXXXX"></div>
+            <div><label class="ig-lbl">Email Address *</label><input id="hf-email" type="email" name="email" class="ig-inp" required placeholder="your@email.com"></div>
+            <div><label class="ig-lbl">Phone Number</label><input id="hf-phone" type="tel" name="phone" class="ig-inp" placeholder="+91 XXXXX XXXXX"></div>
           </div>
-          <div><label class="ig-lbl">Property Location *</label><input type="text" name="location" class="ig-inp" required placeholder="City, State"></div>
+          <div><label class="ig-lbl">Property Location *</label><input id="hf-location" type="text" name="location" class="ig-inp" required placeholder="City, State"></div>
           <div>
             <label class="ig-lbl">Supply Categories Required *</label>
             <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin-top:.35rem;">
@@ -169,7 +209,7 @@ app.get('/', (c) => {
           </div>
           <div>
             <label class="ig-lbl">Budget Envelope (INR)</label>
-            <select name="budget" class="ig-inp">
+            <select id="hf-budget" name="budget" class="ig-inp">
               <option value="">Select range</option>
               <option>Below ₹25 Lakhs</option>
               <option>₹25L to ₹1 Crore</option>
@@ -178,9 +218,54 @@ app.get('/', (c) => {
               <option>Above ₹25 Crore</option>
             </select>
           </div>
-          <div><label class="ig-lbl">Additional Requirements</label><textarea name="message" class="ig-inp" placeholder="Describe your requirements, timeline, brand standards or any specific product preferences…"></textarea></div>
-          <button type="submit" class="btn btn-g" style="width:100%;justify-content:center;padding:1rem;"><i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Submit HORECA Enquiry</button>
+          <div><label class="ig-lbl">Additional Requirements</label><textarea id="hf-message" name="message" class="ig-inp" placeholder="Describe your requirements, timeline, brand standards or any specific product preferences…"></textarea></div>
+          <!-- Error -->
+          <div id="hf-err" style="display:none;background:#fef2f2;border:1px solid #fecaca;padding:.625rem .875rem;font-size:.75rem;color:#dc2626;"><i class="fas fa-exclamation-circle" style="margin-right:.4rem;"></i><span id="hf-err-msg">Please fill all required fields.</span></div>
+          <button type="button" id="hf-submit" onclick="igSubmitHORECA()" class="btn btn-g" style="width:100%;justify-content:center;padding:1rem;"><i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Submit HORECA Enquiry</button>
         </form>
+        </div>
+
+        <script>
+        function igSubmitHORECA() {
+          var name = (document.getElementById('hf-name')||{}).value||'';
+          var company = (document.getElementById('hf-company')||{}).value||'';
+          var email = (document.getElementById('hf-email')||{}).value||'';
+          var phone = (document.getElementById('hf-phone')||{}).value||'';
+          var location = (document.getElementById('hf-location')||{}).value||'';
+          var budget = (document.getElementById('hf-budget')||{}).value||'';
+          var message = (document.getElementById('hf-message')||{}).value||'';
+          var cats = Array.from(document.querySelectorAll('input[name="categories"]:checked')).map(function(el){return el.value;}).join(', ');
+          var errEl = document.getElementById('hf-err');
+          var errMsg = document.getElementById('hf-err-msg');
+          function showErr(m){if(errMsg)errMsg.textContent=m;if(errEl)errEl.style.display='block';}
+          name=name.trim();company=company.trim();email=email.trim();location=location.trim();
+          if(!name||name.length<2){showErr('Please enter your full name.');return;}
+          if(!email||!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email)){showErr('Please enter a valid email address.');return;}
+          if(!company||company.length<2){showErr('Please enter your company or property name.');return;}
+          if(!location||location.length<2){showErr('Please enter the property location.');return;}
+          if(errEl)errEl.style.display='none';
+          var btn=document.getElementById('hf-submit');
+          if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin" style="margin-right:.5rem;"></i>Submitting…';}
+          fetch('/api/horeca-enquiry',{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({name:name,email:email,phone:phone,company:company,location:location,categories:cats,budget:budget,message:message})
+          })
+          .then(function(r){return r.json();})
+          .then(function(d){
+            var wrap=document.getElementById('horeca-form-wrap');
+            var succ=document.getElementById('horeca-success');
+            var refEl=document.getElementById('horeca-success-ref');
+            if(wrap)wrap.style.display='none';
+            if(succ)succ.style.display='block';
+            if(refEl)refEl.textContent=d.ref||('IG-HORECA-'+Date.now());
+            if(succ)succ.scrollIntoView({behavior:'smooth',block:'start'});
+          })
+          .catch(function(){
+            if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Submit HORECA Enquiry';}
+            showErr('Network error. Please email pavan@indiagully.com or call +91 62825 56067.');
+          });
+        }
+        </script>
       </div>
       <div style="display:flex;flex-direction:column;gap:1.25rem;">
         <div style="background:var(--ink);padding:2rem;">
@@ -237,11 +322,14 @@ app.get('/catalogue', (c) => {
         </p>
       </div>
       <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
-        <button onclick="igCatDownloadCSV()" style="background:var(--gold);color:#fff;border:none;padding:.65rem 1.25rem;font-size:.78rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;letter-spacing:.04em;">
-          <i class="fas fa-file-csv"></i>Download CSV
+        <button onclick="igCatDownloadPDF()" style="background:var(--gold);color:#fff;border:none;padding:.65rem 1.25rem;font-size:.78rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;letter-spacing:.04em;">
+          <i class="fas fa-file-pdf"></i>PDF Brochure
         </button>
-        <button onclick="igCatDownloadPDF()" style="background:#fff;color:var(--ink);border:none;padding:.65rem 1.25rem;font-size:.78rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;">
-          <i class="fas fa-file-pdf" style="color:#dc2626;"></i>Download PDF
+        <button onclick="igCatDownloadBOQ()" style="background:#065F46;color:#fff;border:none;padding:.65rem 1.25rem;font-size:.78rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;">
+          <i class="fas fa-file-excel"></i>Excel BOQ
+        </button>
+        <button onclick="igCatDownloadCSV()" style="background:#fff;color:var(--ink);border:none;padding:.65rem 1.25rem;font-size:.78rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;">
+          <i class="fas fa-file-csv" style="color:#16a34a;"></i>Download CSV
         </button>
         <a href="/horeca#enquiry" style="background:none;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.2);padding:.65rem 1.25rem;font-size:.78rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;">
           <i class="fas fa-paper-plane"></i>Request Quote
@@ -326,17 +414,20 @@ app.get('/catalogue', (c) => {
         <div style="background:var(--gold-pale);border:1px solid rgba(184,150,12,.3);margin-top:1rem;padding:1rem;">
           <p style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.625rem;">Download Catalogue</p>
           <div style="display:flex;flex-direction:column;gap:.5rem;">
-            <button onclick="igCatDownloadCSV()" style="background:var(--gold);color:#fff;border:none;padding:.5rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">
-              <i class="fas fa-file-csv"></i>Full Catalogue CSV
+            <button onclick="igCatDownloadPDF()" style="background:var(--gold);color:#fff;border:none;padding:.5rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">
+              <i class="fas fa-file-pdf"></i>Printable PDF Brochure
             </button>
-            <button onclick="igCatDownloadPDF()" style="background:#fff;color:var(--ink);border:1px solid var(--border);padding:.5rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">
-              <i class="fas fa-file-pdf" style="color:#dc2626;"></i>Full Catalogue PDF
+            <button onclick="igCatDownloadBOQ()" style="background:#065F46;color:#fff;border:none;padding:.5rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">
+              <i class="fas fa-file-excel"></i>Excel BOQ (Bill of Qty)
+            </button>
+            <button onclick="igCatDownloadCSV()" style="background:#fff;color:var(--ink);border:1px solid var(--border);padding:.5rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">
+              <i class="fas fa-file-csv" style="color:#16a34a;"></i>Full Catalogue CSV
             </button>
             <button onclick="igCatDownloadFiltered()" style="background:#fff;color:var(--ink);border:1px solid var(--border);padding:.5rem;font-size:.72rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;" id="btn-dl-filtered" style="display:none;">
               <i class="fas fa-filter" style="color:#2563eb;"></i>Download Filtered CSV
             </button>
           </div>
-          <p style="font-size:.62rem;color:var(--ink-muted);margin-top:.5rem;line-height:1.5;">Includes SKU, name, category, price, GST, HSN, brand &amp; description.</p>
+          <p style="font-size:.62rem;color:var(--ink-muted);margin-top:.5rem;line-height:1.5;">PDF: professional A4 brochure. Excel: BOQ with quantity columns for procurement planning.</p>
         </div>
       </div>
 
@@ -711,59 +802,163 @@ function igCatDownloadFiltered() {
 }
 
 function igCatDownloadPDF() {
-  igShowToast('Preparing printable PDF catalogue…', 'info');
-  // Build a print-friendly page in a new window
+  igShowToast('Preparing premium PDF brochure…', 'info');
   var products = _igCatProducts.filter(function(p){ return p.active !== false; });
   if (_igCatActiveCategory) products = products.filter(function(p){ return p.category === _igCatActiveCategory; });
   if (products.length === 0) { igShowToast('No products to export', 'warn'); return; }
 
-  var rows = products.map(function(p, i) {
-    return '<tr style="background:' + (i%2===0?'#fff':'#f8f9fa') + ';page-break-inside:avoid;">'
-      + '<td style="padding:5px 8px;font-family:monospace;font-size:9px;color:#0d9488;white-space:nowrap;">' + p.sku + '</td>'
-      + '<td style="padding:5px 8px;font-size:10px;font-weight:600;max-width:200px;">' + p.name + '</td>'
-      + '<td style="padding:5px 8px;font-size:9px;color:#475569;">' + p.category + '</td>'
-      + '<td style="padding:5px 8px;font-size:9px;">' + (p.unit||'Piece') + '</td>'
-      + '<td style="padding:5px 8px;font-size:10px;font-weight:700;color:#B8960C;text-align:right;">₹' + (p.price||0).toLocaleString('en-IN') + '</td>'
-      + '<td style="padding:5px 8px;font-size:9px;text-align:center;">' + (p.gst_rate||18) + '%</td>'
-      + '<td style="padding:5px 8px;font-size:9px;font-family:monospace;">' + (p.hsn||'—') + '</td>'
-      + '<td style="padding:5px 8px;font-size:9px;color:#64748b;">' + (p.brand||'—') + '</td>'
-      + '<td style="padding:5px 8px;font-size:10px;text-align:center;color:' + (p.stock===0?'#dc2626':p.stock<=p.reorder?'#d97706':'#16a34a') + ';font-weight:600;">' + (p.stock||0) + '</td>'
-      + '</tr>';
+  // Group by category
+  var catMap = {};
+  products.forEach(function(p){
+    if (!catMap[p.category]) catMap[p.category] = [];
+    catMap[p.category].push(p);
+  });
+
+  var catSections = Object.keys(catMap).map(function(cat) {
+    var rows = catMap[cat].map(function(p, i) {
+      var stockColor = p.stock===0?'#dc2626':(p.stock<=p.reorder?'#d97706':'#16a34a');
+      return '<tr style="background:' + (i%2===0?'#fff':'#fafaf7') + ';page-break-inside:avoid;">'
+        + '<td style="padding:5px 8px;font-family:monospace;font-size:8px;color:#0d9488;white-space:nowrap;border-bottom:1px solid #ede8df;">' + p.sku + '</td>'
+        + '<td style="padding:5px 8px;border-bottom:1px solid #ede8df;"><div style="font-size:9.5px;font-weight:700;color:#111;">' + p.name + '</div>' + (p.brand?'<div style="font-size:7.5px;color:#94a3b8;margin-top:1px;">'+p.brand+'</div>':'') + '</td>'
+        + '<td style="padding:5px 8px;font-size:8px;color:#475569;border-bottom:1px solid #ede8df;">' + (p.unit||'Piece') + '</td>'
+        + '<td style="padding:5px 8px;font-size:10px;font-weight:700;color:#B8960C;text-align:right;border-bottom:1px solid #ede8df;">₹' + (p.price||0).toLocaleString('en-IN') + '</td>'
+        + '<td style="padding:5px 8px;font-size:8px;text-align:center;border-bottom:1px solid #ede8df;">' + (p.gst_rate||18) + '%</td>'
+        + '<td style="padding:5px 8px;font-size:8px;font-family:monospace;border-bottom:1px solid #ede8df;">' + (p.hsn||'—') + '</td>'
+        + '<td style="padding:5px 8px;text-align:center;border-bottom:1px solid #ede8df;"><span style="font-size:9px;font-weight:700;color:'+stockColor+';">' + (p.stock||0) + '</span></td>'
+        + '</tr>';
+    }).join('');
+    return '<tr style="page-break-inside:avoid;"><td colspan="7" style="padding:10px 8px 4px;background:#1A3A6B;"><span style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;">' + cat + '</span><span style="font-size:8px;color:rgba(255,255,255,.5);margin-left:8px;">' + catMap[cat].length + ' products</span></td></tr>'
+      + rows;
   }).join('');
 
-  var catTitle = _igCatActiveCategory ? (' — ' + _igCatActiveCategory) : '';
+  var date = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
   var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
-    + '<title>India Gully HORECA Catalogue' + catTitle + '</title>'
+    + '<title>India Gully HORECA Product Catalogue</title>'
     + '<style>'
-    + '@page{margin:15mm;size:A4 landscape;}'
-    + 'body{font-family:Arial,sans-serif;margin:0;color:#111;}'
+    + '@page{margin:15mm 12mm;size:A4 landscape;}'
+    + 'body{font-family:Arial,Helvetica,sans-serif;margin:0;color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'
     + 'table{width:100%;border-collapse:collapse;}'
-    + 'th{background:#1E1E1E;color:#fff;padding:6px 8px;font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-align:left;}'
-    + 'tr{border-bottom:1px solid #e8e0d0;}'
-    + '.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #B8960C;}'
-    + '.logo{font-family:Georgia,serif;font-size:18px;font-weight:700;}'
-    + '.logo span{color:#B8960C;}'
-    + '.meta{font-size:9px;color:#64748b;text-align:right;}'
-    + '</style>'
-    + '</head><body>'
-    + '<div class="header">'
-    + '<div><div class="logo">India <span>Gully</span> HORECA</div><div style="font-size:9px;color:#475569;margin-top:2px;">Product Catalogue' + catTitle + ' · ' + products.length + ' Products</div></div>'
-    + '<div class="meta">Generated: ' + new Date().toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'}) + '<br>pavan@indiagully.com · +91 62825 56067<br>All prices in INR (excl. GST)</div>'
-    + '</div>'
+    + 'th{background:#111;color:#fff;padding:6px 8px;font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-align:left;}'
+    + '.page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;padding-bottom:10px;border-bottom:3px solid #B8960C;}'
+    + '.cover{background:linear-gradient(135deg,#0a1628,#1A3A6B);padding:24px;margin-bottom:20px;}'
+    + '.badge-row{display:flex;gap:8px;margin:10px 0;}'
+    + '.badge{background:rgba(184,150,12,.15);border:1px solid rgba(184,150,12,.3);padding:3px 10px;font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#B8960C;}'
+    + '@media print{.no-print{display:none!important;}tr{page-break-inside:avoid;}}'
+    + '</style></head><body>'
+    + '<div class="no-print" style="text-align:center;padding:12px;background:#f0fdf4;border:1px solid #a7f3d0;font-size:13px;font-family:Arial;margin-bottom:12px;">'
+    + '✅ &nbsp;PDF brochure ready — click <strong>Print / Save as PDF</strong> in your browser to save. <button onclick="window.print()" style="margin-left:12px;background:#B8960C;color:#fff;border:none;padding:6px 16px;cursor:pointer;font-size:13px;font-weight:700;">🖨 Print / Save PDF</button></div>'
+    + '<div class="cover"><div style="display:flex;justify-content:space-between;align-items:flex-start;">'
+    + '<div><div style="font-size:8px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(184,150,12,.7);margin-bottom:6px;">India Gully · HORECA Solutions Division</div>'
+    + '<div style="font-family:Georgia,serif;font-size:26px;color:#fff;line-height:1.15;margin-bottom:4px;">HORECA Product<br>Catalogue</div>'
+    + '<div style="font-size:9px;color:rgba(255,255,255,.5);">Kitchen Equipment · FF&E · OS&E · Linen · Uniforms · Guest Amenities</div>'
+    + '<div class="badge-row"><span class="badge">' + products.length + ' Products</span><span class="badge">' + Object.keys(catMap).length + ' Categories</span><span class="badge">GST Inclusive</span></div></div>'
+    + '<div style="text-align:right;"><div style="font-size:9px;color:rgba(255,255,255,.5);">Generated: ' + date + '</div>'
+    + '<div style="font-size:9px;color:rgba(255,255,255,.5);margin-top:4px;">Pavan Manikonda — HORECA Division</div>'
+    + '<div style="font-size:9px;color:rgba(255,255,255,.5);">pavan@indiagully.com</div>'
+    + '<div style="font-size:9px;color:rgba(255,255,255,.5);">+91 62825 56067</div>'
+    + '<div style="font-size:8px;color:rgba(255,255,255,.35);margin-top:6px;">Vivacious Entertainment &amp; Hospitality Pvt. Ltd.<br>GSTIN: 07AAGCV0867P1ZN</div></div></div></div>'
     + '<table><thead><tr>'
-    + '<th>SKU</th><th>Product Name</th><th>Category</th><th>Unit</th><th style="text-align:right;">Price ₹</th><th style="text-align:center;">GST%</th><th>HSN</th><th>Brand</th><th style="text-align:center;">Stock</th>'
-    + '</tr></thead><tbody>' + rows + '</tbody></table>'
-    + '<div style="margin-top:10px;font-size:8px;color:#94a3b8;text-align:center;">India Gully Enterprise Platform · india-gully.pages.dev · GST: 27AAGCV0867P1ZN · All prices exclusive of GST</div>'
-    + '</body></html>';
+    + '<th style="width:80px;">SKU</th><th>Product Name</th><th style="width:70px;">Unit</th><th style="width:90px;text-align:right;">Price (INR)</th><th style="width:50px;text-align:center;">GST%</th><th style="width:70px;">HSN Code</th><th style="width:50px;text-align:center;">Stock</th>'
+    + '</tr></thead><tbody>' + catSections + '</tbody></table>'
+    + '<div style="margin-top:14px;padding-top:8px;border-top:1px solid #e4dece;display:flex;justify-content:space-between;align-items:center;">'
+    + '<div style="font-size:7.5px;color:#94a3b8;">All prices in INR exclusive of GST · Prices subject to change without notice · For latest pricing contact Pavan Manikonda</div>'
+    + '<div style="font-size:7.5px;color:#94a3b8;">india-gully.pages.dev/horeca · pavan@indiagully.com · +91 62825 56067</div>'
+    + '</div></body></html>';
 
-  var w = window.open('', '_blank', 'width=1200,height=800');
+  var w = window.open('', '_blank', 'width=1200,height=900');
   if (w) {
     w.document.write(html);
     w.document.close();
-    setTimeout(function(){ w.print(); }, 800);
   } else {
     igShowToast('Pop-up blocked. Please allow pop-ups and try again.', 'warn');
   }
+}
+
+// ── Excel/BOQ Export ──────────────────────────────────────────────────────────
+function igCatDownloadBOQ() {
+  var products = _igCatProducts.filter(function(p){ return p.active !== false; });
+  if (_igCatActiveCategory) products = products.filter(function(p){ return p.category === _igCatActiveCategory; });
+  if (products.length === 0) { igShowToast('No products to export', 'warn'); return; }
+  igShowToast('Building BOQ Excel…', 'info');
+
+  // Group by category for BOQ sections
+  var catMap = {};
+  products.forEach(function(p){
+    if (!catMap[p.category]) catMap[p.category] = [];
+    catMap[p.category].push(p);
+  });
+
+  var date = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+
+  // Build HTML-based Excel (XLS-compatible HTML table)
+  var rows = '';
+  var rowNum = 1;
+  Object.keys(catMap).forEach(function(cat) {
+    // Category header row
+    rows += '<tr style="background:#1A3A6B;">'
+      + '<td colspan="13" style="font-size:11pt;font-weight:bold;color:#fff;padding:6px 8px;letter-spacing:.1em;text-transform:uppercase;">' + cat.toUpperCase() + ' (' + catMap[cat].length + ' items)</td>'
+      + '</tr>';
+    catMap[cat].forEach(function(p, i) {
+      var price = p.price || 0;
+      var gst = p.gst_rate || 18;
+      var priceIncGst = Math.round(price * (1 + gst/100));
+      rows += '<tr style="background:' + (i%2===0?'#fff':'#fafaf7') + ';">'
+        + '<td style="padding:5px 6px;font-size:9pt;color:#555;">' + rowNum + '</td>'
+        + '<td style="padding:5px 6px;font-size:8pt;font-family:monospace;color:#0d9488;">' + p.sku + '</td>'
+        + '<td style="padding:5px 6px;font-size:9pt;font-weight:bold;">' + p.name + '</td>'
+        + '<td style="padding:5px 6px;font-size:8pt;color:#555;">' + p.category + '</td>'
+        + '<td style="padding:5px 6px;font-size:8pt;color:#666;">' + (p.brand||'—') + '</td>'
+        + '<td style="padding:5px 6px;font-size:8pt;text-align:center;">' + (p.unit||'Piece') + '</td>'
+        + '<td style="padding:5px 6px;font-size:9pt;text-align:right;font-weight:bold;color:#B8960C;">₹' + price.toLocaleString('en-IN') + '</td>'
+        + '<td style="padding:5px 6px;font-size:8pt;text-align:center;">' + gst + '%</td>'
+        + '<td style="padding:5px 6px;font-size:9pt;text-align:right;">₹' + priceIncGst.toLocaleString('en-IN') + '</td>'
+        + '<td style="padding:5px 6px;font-size:8pt;text-align:center;font-family:monospace;">' + (p.hsn||'—') + '</td>'
+        + '<td style="padding:5px 6px;font-size:9pt;text-align:center;font-weight:bold;color:' + (p.stock===0?'#dc2626':(p.stock<=p.reorder?'#d97706':'#16a34a')) + ';">' + (p.stock||0) + '</td>'
+        + '<td style="padding:5px 6px;font-size:8pt;color:#888;"><!-- Qty --></td>'
+        + '<td style="padding:5px 6px;font-size:8pt;color:#888;"><!-- Remarks --></td>'
+        + '</tr>';
+      rowNum++;
+    });
+  });
+
+  var html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">'
+    + '<head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
+    + '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>HORECA BOQ</x:Name>'
+    + '<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->'
+    + '<style>td,th{border:1px solid #e4dece;}</style></head><body>'
+    + '<table>'
+    // Title rows
+    + '<tr><td colspan="13" style="background:#0a1628;color:#B8960C;font-size:16pt;font-weight:bold;font-family:Georgia,serif;padding:10px 12px;">India Gully HORECA — Bill of Quantities (BOQ)</td></tr>'
+    + '<tr style="background:#f8f6f1;"><td colspan="13" style="font-size:9pt;color:#555;padding:6px 12px;">Generated: ' + date + ' · Vivacious Entertainment &amp; Hospitality Pvt. Ltd. · GSTIN: 07AAGCV0867P1ZN · Contact: pavan@indiagully.com · +91 62825 56067</td></tr>'
+    + '<tr><td colspan="13" style="padding:4px;background:#fff;"></td></tr>'
+    // Column headers
+    + '<tr style="background:#111;">'
+    + '<th style="padding:6px 8px;font-size:9pt;color:#fff;text-align:center;">S.No</th>'
+    + '<th style="padding:6px 8px;font-size:9pt;color:#fff;">SKU</th>'
+    + '<th style="padding:6px 8px;font-size:10pt;color:#fff;">Product Name</th>'
+    + '<th style="padding:6px 8px;font-size:9pt;color:#fff;">Category</th>'
+    + '<th style="padding:6px 8px;font-size:9pt;color:#fff;">Brand</th>'
+    + '<th style="padding:6px 8px;font-size:9pt;color:#fff;text-align:center;">Unit</th>'
+    + '<th style="padding:6px 8px;font-size:9pt;color:#fff;text-align:right;">Unit Price (Ex-GST)</th>'
+    + '<th style="padding:6px 8px;font-size:9pt;color:#fff;text-align:center;">GST Rate</th>'
+    + '<th style="padding:6px 8px;font-size:9pt;color:#fff;text-align:right;">Price (Inc-GST)</th>'
+    + '<th style="padding:6px 8px;font-size:9pt;color:#fff;">HSN Code</th>'
+    + '<th style="padding:6px 8px;font-size:9pt;color:#fff;text-align:center;">Stock Qty</th>'
+    + '<th style="padding:6px 8px;font-size:9pt;color:#B8960C;text-align:center;">Required Qty</th>'
+    + '<th style="padding:6px 8px;font-size:9pt;color:#B8960C;">Remarks / Specs</th>'
+    + '</tr>'
+    + rows
+    + '<tr><td colspan="13" style="padding:12px;background:#f8f6f1;font-size:8.5pt;color:#888;">* Prices are indicative and subject to change. Final pricing confirmed on Purchase Order. All prices in INR. India Gully HORECA Division · pavan@indiagully.com</td></tr>'
+    + '</table></body></html>';
+
+  var blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'india-gully-horeca-boq-' + new Date().toISOString().slice(0,10) + '.xls';
+  a.click();
+  URL.revokeObjectURL(url);
+  igShowToast('BOQ Excel downloaded — ' + products.length + ' products, ready to fill quantities', 'success');
 }
 
 function igCatEnquire(e, sku, name) {

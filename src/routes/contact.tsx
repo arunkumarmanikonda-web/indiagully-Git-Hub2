@@ -43,7 +43,30 @@ app.get('/', (c) => {
         <p class="eyebrow" style="margin-bottom:.75rem;">Submit an Enquiry</p>
         <h2 class="h2" style="margin-bottom:1.75rem;">Mandate &amp; Advisory<br>Enquiry Form</h2>
 
-        <form class="ig-form" method="POST" action="/api/enquiry" style="display:flex;flex-direction:column;gap:1.25rem;">
+        <!-- SUCCESS PANEL (hidden until submission) -->
+        <div id="contact-success" style="display:none;background:linear-gradient(135deg,#0a1628 0%,#0f2040 100%);border:1px solid rgba(184,150,12,.25);padding:3rem 2.5rem;position:relative;overflow:hidden;margin-bottom:2rem;">
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);"></div>
+          <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.5rem;">
+            <div style="width:72px;height:72px;background:rgba(184,150,12,.15);border:2px solid rgba(184,150,12,.4);display:flex;align-items:center;justify-content:center;border-radius:50%;">
+              <i class="fas fa-check" style="color:var(--gold);font-size:1.75rem;"></i>
+            </div>
+            <div>
+              <p style="font-size:.58rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:rgba(184,150,12,.65);margin-bottom:.5rem;">Enquiry Submitted Successfully</p>
+              <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.7rem;color:#fff;line-height:1.15;margin-bottom:.75rem;">Your enquiry has been received.</h3>
+              <p style="font-size:.85rem;color:rgba(255,255,255,.55);line-height:1.75;max-width:480px;">India Gully's leadership team reviews all submissions within <strong style="color:#fff;">24 business hours</strong>. A confirmation email has been sent to your inbox.</p>
+            </div>
+            <div style="background:rgba(184,150,12,.08);border:1px solid rgba(184,150,12,.25);padding:1.1rem 2rem;width:100%;max-width:380px;">
+              <p style="font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(184,150,12,.5);margin-bottom:.4rem;">Reference Number</p>
+              <div id="contact-success-ref" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.3rem;color:var(--gold);letter-spacing:.04em;"></div>
+            </div>
+            <div style="display:flex;gap:.875rem;flex-wrap:wrap;justify-content:center;">
+              <a href="/listings" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;background:var(--gold);color:#fff;text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;"><i class="fas fa-folder-open" style="font-size:.62rem;"></i>View Active Mandates</a>
+              <a href="/insights" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.65);text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,255,255,.04);"><i class="fas fa-newspaper" style="font-size:.62rem;"></i>Sector Insights</a>
+            </div>
+          </div>
+        </div>
+
+        <form class="ig-form" id="contact-form" style="display:flex;flex-direction:column;gap:1.25rem;">
           ${mandate ? `<input type="hidden" name="mandate_ref" value="${mandate}">` : ''}
           ${service ? `<input type="hidden" name="service_ref" value="${service}">` : ''}
 
@@ -116,7 +139,7 @@ app.get('/', (c) => {
             </label>
           </div>
 
-          <button type="submit" class="btn btn-g" style="width:100%;justify-content:center;padding:1rem;font-size:.82rem;">
+          <button type="button" id="contact-submit-btn" onclick="igContactAjax()" class="btn btn-g" style="width:100%;justify-content:center;padding:1rem;font-size:.82rem;">
             <i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Submit Mandate Enquiry
           </button>
 
@@ -124,128 +147,79 @@ app.get('/', (c) => {
         </form>
 
 <script>
+/* Contact form — AJAX submission with inline confirmation */
+function igContactAjax() {
+  var form = document.getElementById('contact-form');
+  if (!form) return;
+  var fName  = (form.querySelector('[name=first_name]')||{}).value||'';
+  var lName  = (form.querySelector('[name=last_name]')||{}).value||'';
+  var email  = (form.querySelector('[name=email]')||{}).value||'';
+  var phone  = (form.querySelector('[name=phone]')||{}).value||'';
+  var company= (form.querySelector('[name=company]')||{}).value||'';
+  var eType  = (form.querySelector('[name=enquiry_type]')||{}).value||'';
+  var location=(form.querySelector('[name=location]')||{}).value||'';
+  var scale  = (form.querySelector('[name=scale]')||{}).value||'';
+  var message= (form.querySelector('[name=message]')||{}).value||'';
+  var nda    = form.querySelector('[name=nda_consent]');
+  fName=fName.trim();lName=lName.trim();email=email.trim();phone=phone.trim();message=message.trim();
+  var name   = (fName+' '+lName).trim();
+
+  function showErr(msg){
+    var el=document.getElementById('contact-global-err');
+    if(!el){el=document.createElement('div');el.id='contact-global-err';el.style.cssText='background:#fef2f2;border:1px solid #fecaca;padding:.75rem 1rem;font-size:.78rem;color:#dc2626;margin-bottom:.5rem;';form.insertBefore(el,form.querySelector('#contact-submit-btn'));}
+    el.innerHTML='<i class="fas fa-exclamation-circle" style="margin-right:.4rem;"></i>'+msg;
+    el.style.display='block';
+  }
+  var errEl=document.getElementById('contact-global-err');if(errEl)errEl.style.display='none';
+
+  if(!fName||fName.length<2){showErr('Please enter your first name.');return;}
+  if(!lName||lName.length<2){showErr('Please enter your last name.');return;}
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){showErr('Please enter a valid email address.');return;}
+  var cleaned=phone.replace(/[\s\-().]/g,'');
+  if(!phone||(!(/^(\+91|0)?[6-9]\d{9}$/.test(cleaned))&&!(/^\+\d{7,15}$/.test(cleaned)))){showErr('Enter a valid Indian mobile (+91 XXXXX XXXXX) or international number.');return;}
+  if(!message||message.length<20){showErr('Please provide at least 20 characters in your message.');return;}
+  if(!nda||!nda.checked){showErr('Please confirm the confidentiality consent.');return;}
+
+  var btn=document.getElementById('contact-submit-btn');
+  if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin" style="margin-right:.5rem;"></i>Submitting…';}
+
+  fetch('/api/enquiry',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({name:name,email:email,phone:phone,org:company,
+      type:eType||'general',location:location,scale:scale,message:message,source:'contact_form'})
+  })
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(form)form.style.display='none';
+    var succ=document.getElementById('contact-success');
+    var refEl=document.getElementById('contact-success-ref');
+    if(succ)succ.style.display='block';
+    if(refEl)refEl.textContent=d.ref||('IG-ENQ-'+Date.now());
+    if(succ)succ.scrollIntoView({behavior:'smooth',block:'start'});
+  })
+  .catch(function(){
+    if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Submit Mandate Enquiry';}
+    showErr('Network error. Please email info@indiagully.com or call +91 8988 988 988.');
+  });
+}
+
 /* G5: Client-side form validation — phone format + spam protection */
 (function(){
   var form = document.querySelector('.ig-form');
   if(!form) return;
-
-  /* Inline error helper */
-  function showErr(input, msg){
-    var id = 'err-'+input.name;
-    var existing = document.getElementById(id);
-    if(existing) existing.remove();
-    var el = document.createElement('p');
-    el.id = id;
-    el.style.cssText = 'font-size:.72rem;color:#dc2626;margin-top:.25rem;';
-    el.innerHTML = '<i class="fas fa-exclamation-circle" style="margin-right:.25rem;"></i>' + msg;
-    input.parentNode.appendChild(el);
-    input.style.borderColor = '#dc2626';
-  }
-  function clearErr(input){
-    var el = document.getElementById('err-'+input.name);
-    if(el) el.remove();
-    input.style.borderColor = '';
-  }
-
   /* Phone validation: Indian mobile (+91 or 0, 10 digits) or international */
   function validatePhone(val){
-    var cleaned = val.replace(/[\\s\\-().]/g,'');
-    return /^(\\+91|0)?[6-9]\\d{9}$/.test(cleaned) || /^\\+\\d{7,15}$/.test(cleaned);
+    var cleaned = val.replace(/[\s\-().]/g,'');
+    return /^(\+91|0)?[6-9]\d{9}$/.test(cleaned) || /^\+\d{7,15}$/.test(cleaned);
   }
-
-  /* Honeypot field (spam protection) — hidden by CSS */
-  var hp = document.createElement('input');
-  hp.type = 'text'; hp.name = 'ig_hp'; hp.tabIndex = -1; hp.autocomplete = 'off';
-  hp.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;';
-  form.appendChild(hp);
-
-  /* Submission rate-limit: max 3 attempts per 10 min */
-  var submitKey = 'ig_contact_submits';
-  var submitWindowKey = 'ig_contact_window';
-
-  form.addEventListener('submit', function(e){
-    var valid = true;
-    var submitBtn = form.querySelector('button[type=submit]');
-
-    /* Honeypot check */
-    if(hp.value){ e.preventDefault(); return; }
-
-    /* Rate limiting */
-    var now = Date.now();
-    var windowStart = parseInt(localStorage.getItem(submitWindowKey)||'0');
-    var submits = parseInt(localStorage.getItem(submitKey)||'0');
-    if(now - windowStart > 10*60*1000){ submits = 0; localStorage.setItem(submitWindowKey, String(now)); }
-    if(submits >= 3){
-      e.preventDefault();
-      var existingRateErr = document.getElementById('rate-limit-err');
-      if(!existingRateErr){
-        var rateEl = document.createElement('div');
-        rateEl.id = 'rate-limit-err';
-        rateEl.style.cssText = 'background:#fef2f2;border:1px solid #fecaca;padding:.75rem 1rem;font-size:.78rem;color:#991b1b;margin-bottom:.5rem;';
-        rateEl.innerHTML = '<i class="fas fa-ban" style="margin-right:.4rem;"></i>Too many submissions. Please wait 10 minutes before trying again.';
-        form.insertBefore(rateEl, submitBtn);
-      }
-      return;
-    }
-
-    /* Name validation */
-    ['first_name','last_name'].forEach(function(n){
-      var inp = form.querySelector('[name='+n+']');
-      if(!inp) return;
-      clearErr(inp);
-      var v = inp.value.trim();
-      if(v.length < 2){ showErr(inp, 'Please enter at least 2 characters.'); valid = false; }
-      else if(/[<>&"'\\\\]/.test(v)){ showErr(inp, 'Special characters not allowed.'); valid = false; }
-    });
-
-    /* Email validation */
-    var emailInp = form.querySelector('[name=email]');
-    if(emailInp){
-      clearErr(emailInp);
-      if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(emailInp.value.trim())){
-        showErr(emailInp, 'Please enter a valid email address (e.g. you@example.com).'); valid = false;
-      }
-    }
-
-    /* Phone validation */
-    var phoneInp = form.querySelector('[name=phone]');
-    if(phoneInp && phoneInp.value.trim()){
-      clearErr(phoneInp);
-      if(!validatePhone(phoneInp.value.trim())){
-        showErr(phoneInp, 'Enter a valid Indian mobile (+91 XXXXX XXXXX) or international number.'); valid = false;
-      }
-    }
-
-    /* Message minimum length */
-    var msgInp = form.querySelector('[name=message]');
-    if(msgInp){
-      clearErr(msgInp);
-      if(msgInp.value.trim().length < 20){
-        showErr(msgInp, 'Please provide at least 20 characters in your message.'); valid = false;
-      }
-    }
-
-    if(!valid){ e.preventDefault(); return; }
-
-    /* Increment submit counter */
-    localStorage.setItem(submitKey, String(submits + 1));
-
-    /* Loading state */
-    if(submitBtn){
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="margin-right:.5rem;"></i>Submitting…';
-    }
-  });
-
   /* Real-time phone hint */
   var phoneInp2 = form.querySelector('[name=phone]');
   if(phoneInp2){
     phoneInp2.addEventListener('blur', function(){
-      if(phoneInp2.value.trim() && !validatePhone(phoneInp2.value.trim())){
-        showErr(phoneInp2, 'Enter a valid Indian mobile (+91 XXXXX XXXXX) or international number.');
-      } else {
-        clearErr(phoneInp2);
-      }
+      var errId='err-phone';var existing=document.getElementById(errId);
+      if(phoneInp2.value.trim()&&!validatePhone(phoneInp2.value.trim())){
+        if(!existing){var el=document.createElement('p');el.id=errId;el.style.cssText='font-size:.72rem;color:#dc2626;margin-top:.25rem;';el.innerHTML='<i class="fas fa-exclamation-circle" style="margin-right:.25rem;"></i>Enter a valid Indian mobile or international number.';phoneInp2.parentNode.appendChild(el);}
+      } else {if(existing)existing.remove();}
     });
   }
 })();

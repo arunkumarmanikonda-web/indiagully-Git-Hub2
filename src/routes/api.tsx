@@ -2243,6 +2243,161 @@ function sanitiseStr(s: string, max = 200): string {
   return String(s || '').trim().slice(0, max).replace(/[<>]/g, '')
 }
 
+// ─── EMAIL NOTIFICATION HELPERS ───────────────────────────────────────────────
+// Send email via SendGrid API (fire-and-forget; never throws)
+async function sendEmail(env: any, opts: {
+  to: string; toName?: string; subject: string; html: string; replyTo?: string
+}): Promise<void> {
+  try {
+    const apiKey = env?.SENDGRID_API_KEY || env?.SMTP_USER || ''
+    if (!apiKey) return // SendGrid not configured — skip silently
+    await fetch('https://api.sendgrid.com/v3/mail/send', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        personalizations: [{ to: [{ email: opts.to, name: opts.toName || opts.to }] }],
+        from: { email: 'no-reply@indiagully.com', name: 'India Gully Advisory' },
+        reply_to: opts.replyTo ? { email: opts.replyTo } : undefined,
+        subject: opts.subject,
+        content: [{ type: 'text/html', value: opts.html }],
+      })
+    })
+  } catch (_) { /* Silent — email is best-effort */ }
+}
+
+function emailBaseStyle() {
+  return `font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#f4f1eb;padding:0;margin:0;`
+}
+
+// Notification email to listing owner / team when NDA or EOI is submitted
+function buildOwnerNotificationEmail(opts: {
+  type: 'nda_acceptance' | 'eoi' | 'general'
+  ref: string; ts: string
+  mandateTitle: string; mandateId: string; mandateValue: string
+  name: string; email: string; phone: string; org: string
+  ticketSize?: string; investorType?: string; message?: string
+  ownerName: string
+}): string {
+  const typeLabel = opts.type === 'nda_acceptance' ? 'NDA Acceptance' : opts.type === 'eoi' ? 'Expression of Interest' : 'Mandate Enquiry'
+  const bgColor   = opts.type === 'eoi' ? '#B8960C' : '#1A3A6B'
+  const ist = new Date(opts.ts).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'full', timeStyle: 'short' })
+  return `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="${emailBaseStyle()}">
+<div style="max-width:600px;margin:32px auto;background:#fff;border:1px solid #e4dece;">
+  <div style="background:${bgColor};padding:24px 32px;display:flex;align-items:center;gap:16px;">
+    <img src="https://india-gully.pages.dev/static/ig-logo-white.png" alt="India Gully" style="height:36px;" onerror="this.style.display='none'">
+    <div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:2px;">India Gully Advisory Platform</div>
+      <div style="font-size:20px;font-family:Georgia,serif;color:#fff;">${typeLabel} — Action Required</div>
+    </div>
+  </div>
+  <div style="padding:28px 32px;">
+    <p style="font-size:14px;color:#333;margin:0 0 20px;">Hi ${opts.ownerName},</p>
+    <p style="font-size:14px;color:#333;margin:0 0 24px;">A new <strong>${typeLabel}</strong> has been submitted for the mandate below. Please review and respond within the SLA window.</p>
+
+    <!-- Mandate Banner -->
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-left:4px solid #B8960C;padding:16px 20px;margin-bottom:24px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#92400e;margin-bottom:4px;">Mandate</div>
+      <div style="font-size:18px;font-family:Georgia,serif;color:#111;margin-bottom:4px;">${opts.mandateTitle}</div>
+      <div style="font-size:13px;color:#78350f;">${opts.mandateValue} · Ref: ${opts.ref}</div>
+    </div>
+
+    <!-- Submitter Details -->
+    <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+      <tr style="background:#f9f7f2;"><td colspan="2" style="padding:10px 14px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#666;border-bottom:1px solid #e4dece;">Submitter Details</td></tr>
+      ${[
+        ['Full Name', opts.name],
+        ['Email', `<a href="mailto:${opts.email}" style="color:#B8960C;">${opts.email}</a>`],
+        ['Phone / WhatsApp', `<a href="tel:${opts.phone}" style="color:#B8960C;">${opts.phone || '—'}</a>`],
+        ['Organisation / Fund', opts.org || '—'],
+        ...(opts.ticketSize  ? [['Ticket Size', opts.ticketSize]] : []),
+        ...(opts.investorType ? [['Investor Type', opts.investorType]] : []),
+        ['Submitted (IST)', ist],
+      ].map(([k,v]) => `<tr style="border-bottom:1px solid #f0ece2;"><td style="padding:9px 14px;font-size:12px;font-weight:600;color:#555;width:38%;">${k}</td><td style="padding:9px 14px;font-size:13px;color:#111;">${v}</td></tr>`).join('')}
+    </table>
+
+    ${opts.message ? `<div style="background:#f9f7f2;border:1px solid #e4dece;border-left:3px solid #B8960C;padding:14px 18px;margin-bottom:24px;"><p style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;margin:0 0 6px;">Note / Interest Statement</p><p style="font-size:13px;color:#333;line-height:1.7;margin:0;">${opts.message}</p></div>` : ''}
+
+    <div style="display:flex;gap:12px;margin-bottom:24px;">
+      <a href="mailto:${opts.email}?subject=Re: ${encodeURIComponent(opts.mandateTitle)} — ${typeLabel} ${opts.ref}" style="display:inline-block;background:#B8960C;color:#fff;text-decoration:none;padding:11px 22px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">Reply to Investor</a>
+      <a href="https://india-gully.pages.dev/listings/${opts.mandateId}" style="display:inline-block;background:#111;color:#fff;text-decoration:none;padding:11px 22px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">View Mandate</a>
+    </div>
+
+    <p style="font-size:12px;color:#888;border-top:1px solid #e4dece;padding-top:16px;margin:0;">This is an automated notification from India Gully Advisory Platform. Reference: ${opts.ref}. Do not reply directly to this message — use the "Reply to Investor" button above.</p>
+  </div>
+  <div style="background:#111;padding:16px 32px;text-align:center;">
+    <p style="font-size:11px;color:rgba(255,255,255,.4);margin:0;">India Gully · Vivacious Entertainment and Hospitality Pvt. Ltd. · CIN U74999DL2017PTC323237 · New Delhi, India</p>
+  </div>
+</div>
+</body></html>`
+}
+
+// Confirmation email to the submitter (investor/buyer)
+function buildSubmitterConfirmationEmail(opts: {
+  type: 'nda_acceptance' | 'eoi' | 'general'
+  ref: string; ts: string
+  mandateTitle: string; mandateId: string; mandateValue: string
+  name: string; advisorName: string; advisorPhone: string; advisorEmail: string
+}): string {
+  const ist = new Date(opts.ts).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'full', timeStyle: 'short' })
+  const typeLabel = opts.type === 'nda_acceptance' ? 'NDA Acceptance' : opts.type === 'eoi' ? 'Expression of Interest' : 'Enquiry'
+  const nextSteps = opts.type === 'eoi'
+    ? ['Our advisory team will review your investor profile and credentials.',
+       'Qualified investors receive the full Information Memorandum within 24–48 business hours.',
+       'Shortlisted investors are invited to a management presentation and site visit.']
+    : opts.type === 'nda_acceptance'
+    ? ['Your NDA acceptance has been recorded and timestamped.',
+       'The Information Memorandum will be shared by our advisory team within 24 business hours.',
+       'Submit your Expression of Interest via the mandate page to proceed further.']
+    : ['Our leadership team will review your enquiry.',
+       'You will receive a personalised response within 24 business hours.',
+       'Save this email for reference purposes.']
+  return `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="${emailBaseStyle()}">
+<div style="max-width:600px;margin:32px auto;background:#fff;border:1px solid #e4dece;">
+  <div style="background:linear-gradient(135deg,#0a1628 0%,#1A3A6B 100%);padding:28px 32px;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px;">India Gully Advisory</div>
+    <div style="font-size:22px;font-family:Georgia,serif;color:#fff;margin-bottom:4px;">${typeLabel} Confirmed</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.5);">Reference: <strong style="color:#B8960C;">${opts.ref}</strong></div>
+  </div>
+  <div style="background:#fffbeb;border-bottom:2px solid #B8960C;padding:14px 32px;">
+    <p style="font-size:13px;color:#78350f;margin:0;">Thank you, <strong>${opts.name}</strong>. Your ${typeLabel.toLowerCase()} for <strong>${opts.mandateTitle}</strong> has been received and recorded.</p>
+  </div>
+  <div style="padding:28px 32px;">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:24px;background:#f9f7f2;border:1px solid #e4dece;">
+      <tr><td style="padding:10px 16px;font-size:12px;color:#666;">Mandate</td><td style="padding:10px 16px;font-size:13px;font-weight:600;color:#111;">${opts.mandateTitle}</td></tr>
+      <tr style="background:#fff;"><td style="padding:10px 16px;font-size:12px;color:#666;">Value</td><td style="padding:10px 16px;font-size:13px;color:#B8960C;font-weight:700;">${opts.mandateValue}</td></tr>
+      <tr><td style="padding:10px 16px;font-size:12px;color:#666;">Reference</td><td style="padding:10px 16px;font-size:13px;font-family:monospace;color:#111;">${opts.ref}</td></tr>
+      <tr style="background:#fff;"><td style="padding:10px 16px;font-size:12px;color:#666;">Submitted</td><td style="padding:10px 16px;font-size:13px;color:#333;">${ist} IST</td></tr>
+    </table>
+
+    <p style="font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:12px;">What Happens Next</p>
+    <ol style="padding-left:20px;margin:0 0 24px;">
+      ${nextSteps.map(s => `<li style="font-size:13px;color:#333;margin-bottom:8px;line-height:1.6;">${s}</li>`).join('')}
+    </ol>
+
+    <div style="background:#111;padding:20px 24px;margin-bottom:24px;">
+      <p style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:0 0 10px;">Your Advisory Contact</p>
+      <p style="font-size:15px;font-family:Georgia,serif;color:#fff;margin:0 0 4px;">${opts.advisorName}</p>
+      <p style="font-size:12px;color:rgba(255,255,255,.5);margin:0 0 12px;">Transaction Advisory, India Gully</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <a href="tel:${opts.advisorPhone}" style="font-size:12px;color:#B8960C;text-decoration:none;">📞 ${opts.advisorPhone}</a>
+        <a href="mailto:${opts.advisorEmail}" style="font-size:12px;color:#B8960C;text-decoration:none;">✉ ${opts.advisorEmail}</a>
+      </div>
+    </div>
+
+    <a href="https://india-gully.pages.dev/listings/${opts.mandateId}" style="display:inline-block;background:#B8960C;color:#fff;text-decoration:none;padding:12px 28px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">View Mandate Page →</a>
+  </div>
+  <div style="background:#111;padding:16px 32px;text-align:center;">
+    <p style="font-size:11px;color:rgba(255,255,255,.4);margin:0;">India Gully · Vivacious Entertainment and Hospitality Pvt. Ltd. · CIN U74999DL2017PTC323237</p>
+    <p style="font-size:11px;color:rgba(255,255,255,.3);margin:4px 0 0;">This is an automated confirmation. Please do not reply — contact your advisor directly using the details above.</p>
+  </div>
+</div>
+</body></html>`
+}
+
 app.post('/enquiry', async (c) => {
   try {
     let data: Record<string, string> = {}
@@ -2254,13 +2409,20 @@ app.post('/enquiry', async (c) => {
       data = body as Record<string, string>
     }
 
-    const name    = sanitiseStr(data.name, 120)
-    const email   = sanitiseStr(data.email, 120)
-    const phone   = sanitiseStr(data.phone, 30)
-    const org     = sanitiseStr(data.org || data.company || '', 200)
-    const message = sanitiseStr(data.message || '', 2000)
-    const type    = sanitiseStr(data.type || 'general', 80)
-    const mandate = sanitiseStr(data.mandate || '', 120)
+    const name          = sanitiseStr(data.name, 120)
+    const email         = sanitiseStr(data.email, 120)
+    const phone         = sanitiseStr(data.phone, 30)
+    const org           = sanitiseStr(data.org || data.company || '', 200)
+    const message       = sanitiseStr(data.message || '', 2000)
+    const type          = sanitiseStr(data.type || 'general', 80) as 'nda_acceptance' | 'eoi' | 'general'
+    const mandate       = sanitiseStr(data.mandate || '', 120)
+    const mandateTitle  = sanitiseStr(data.mandateTitle || mandate, 200)
+    const mandateValue  = sanitiseStr(data.mandateValue || '', 80)
+    const mandateContact     = sanitiseStr(data.mandateContact || 'akm@indiagully.com', 120)
+    const mandateContactName = sanitiseStr(data.mandateContactName || 'Arun Manikonda', 120)
+    const mandateContactPhone = sanitiseStr(data.mandateContactPhone || '+91 98108 89134', 40)
+    const ticketSize    = sanitiseStr(data.ticketSize || '', 80)
+    const investorType  = sanitiseStr(data.investorType || '', 80)
 
     if (!name || name.length < 2) return c.json({ success: false, error: 'Full name is required (min 2 characters).' }, 400)
     if (!email || !validateEmail(email)) return c.json({ success: false, error: 'A valid email address is required.' }, 400)
@@ -2268,23 +2430,71 @@ app.post('/enquiry', async (c) => {
     const ref = `IG-ENQ-${Date.now()}-${Math.random().toString(36).slice(2,6).toUpperCase()}`
     const ts  = new Date().toISOString()
 
+    const env = (c as any).env
+
     // Store in KV if available (fire-and-forget, no failure on miss)
     try {
-      const env = (c as any).env
       if (env && env.KV) {
         await env.KV.put(`enquiry:${ref}`, JSON.stringify({
-          ref, type, name, email, phone, org, message, mandate, ts, source: 'website'
+          ref, type, name, email, phone, org, message, mandate, mandateTitle, mandateValue,
+          ticketSize, investorType, ts, source: 'website'
         }), { expirationTtl: 60 * 60 * 24 * 365 }) // 1 year
       }
     } catch (_) { /* KV not available in dev — silent */ }
 
+    // ── SEND NOTIFICATION EMAILS (fire-and-forget) ─────────────────────────
+    // 1. Notify listing owner / advisory team
+    if (type === 'eoi' || type === 'nda_acceptance') {
+      sendEmail(env, {
+        to: mandateContact,
+        toName: mandateContactName,
+        subject: `[India Gully] ${type === 'eoi' ? 'New EOI' : 'NDA Acceptance'} — ${mandateTitle} · ${ref}`,
+        html: buildOwnerNotificationEmail({
+          type, ref, ts,
+          mandateTitle, mandateId: mandate, mandateValue,
+          name, email, phone, org, ticketSize, investorType, message,
+          ownerName: mandateContactName,
+        }),
+        replyTo: email,
+      })
+      // 2. CC: info@indiagully.com always gets a copy
+      sendEmail(env, {
+        to: 'info@indiagully.com',
+        toName: 'India Gully Team',
+        subject: `[CC] ${type === 'eoi' ? 'EOI' : 'NDA'} — ${mandateTitle} — ${name} · ${ref}`,
+        html: buildOwnerNotificationEmail({
+          type, ref, ts,
+          mandateTitle, mandateId: mandate, mandateValue,
+          name, email, phone, org, ticketSize, investorType, message,
+          ownerName: 'India Gully Team',
+        }),
+      })
+      // 3. Confirmation to submitter
+      sendEmail(env, {
+        to: email, toName: name,
+        subject: `Your ${type === 'eoi' ? 'Expression of Interest' : 'NDA'} — ${mandateTitle} · Ref ${ref}`,
+        html: buildSubmitterConfirmationEmail({
+          type, ref, ts,
+          mandateTitle, mandateId: mandate, mandateValue,
+          name, advisorName: mandateContactName,
+          advisorPhone: mandateContactPhone, advisorEmail: mandateContact,
+        }),
+        replyTo: mandateContact,
+      })
+    }
+
     return c.json({
       success: true,
       ref,
+      mandate_id: mandate,
       message: type === 'nda_acceptance'
-        ? `NDA acceptance recorded for ${mandate}. India Gully team notified.`
+        ? `NDA acceptance recorded for ${mandateTitle}. India Gully team notified.`
+        : type === 'eoi'
+        ? `Expression of Interest submitted for ${mandateTitle}. Advisory team notified.`
         : 'Enquiry received. Our leadership team will respond within 24 business hours.',
-      ts
+      submitted_at: ts,
+      response_eta: '24 hours',
+      status: 'Submitted',
     })
   } catch (e) {
     return c.json({ success: false, error: 'Failed to process enquiry. Please try again or email info@indiagully.com' }, 500)
@@ -2302,34 +2512,113 @@ app.post('/horeca-enquiry', async (c) => {
       data = body as Record<string, string>
     }
 
-    const name     = sanitiseStr(data.name, 120)
-    const email    = sanitiseStr(data.email, 120)
-    const phone    = sanitiseStr(data.phone || '', 30)
-    const property = sanitiseStr(data.property || data.company || '', 200)
-    const category = sanitiseStr(data.category || 'General', 80)
-    const budget   = sanitiseStr(data.budget || '', 80)
-    const message  = sanitiseStr(data.message || '', 2000)
+    const name       = sanitiseStr(data.name, 120)
+    const email      = sanitiseStr(data.email, 120)
+    const phone      = sanitiseStr(data.phone || '', 30)
+    const property   = sanitiseStr(data.property || data.company || '', 200)
+    const location   = sanitiseStr(data.location || '', 120)
+    const categories = sanitiseStr(data.categories || data.category || 'General', 200)
+    const budget     = sanitiseStr(data.budget || '', 80)
+    const message    = sanitiseStr(data.message || '', 2000)
 
     if (!name || name.length < 2) return c.json({ success: false, error: 'Full name is required.' }, 400)
     if (!email || !validateEmail(email)) return c.json({ success: false, error: 'A valid email address is required.' }, 400)
 
     const ref = `IG-HORECA-${Date.now()}-${Math.random().toString(36).slice(2,6).toUpperCase()}`
     const ts  = new Date().toISOString()
+    const ist = new Date(ts).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'full', timeStyle: 'short' })
+
+    const env = (c as any).env
 
     try {
-      const env = (c as any).env
       if (env && env.KV) {
         await env.KV.put(`horeca_enquiry:${ref}`, JSON.stringify({
-          ref, name, email, phone, property, category, budget, message, ts, source: 'horeca_form'
+          ref, name, email, phone, property, location, categories, budget, message, ts, source: 'horeca_form'
         }), { expirationTtl: 60 * 60 * 24 * 365 })
       }
     } catch (_) { /* KV not available in dev — silent */ }
+
+    // ── NOTIFICATION EMAILS (fire-and-forget) ──────────────────────────────
+    // HORECA enquiries ALWAYS go to Pavan Manikonda (unless admin changes)
+    const ownerHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="${emailBaseStyle()}">
+<div style="max-width:600px;margin:32px auto;background:#fff;border:1px solid #e4dece;">
+  <div style="background:linear-gradient(135deg,#065F46 0%,#064e3b 100%);padding:24px 32px;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:4px;">India Gully HORECA Solutions</div>
+    <div style="font-size:20px;font-family:Georgia,serif;color:#fff;">New HORECA Enquiry — Action Required</div>
+  </div>
+  <div style="background:#f0fdf4;border-bottom:2px solid #065F46;padding:14px 32px;">
+    <p style="font-size:13px;color:#065F46;margin:0;">Hi Pavan, a new HORECA procurement enquiry has been submitted. Please respond within 48 business hours.</p>
+  </div>
+  <div style="padding:28px 32px;">
+    <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+      ${[
+        ['Full Name', name],
+        ['Email', `<a href="mailto:${email}" style="color:#B8960C;">${email}</a>`],
+        ['Phone / WhatsApp', phone ? `<a href="tel:${phone}" style="color:#B8960C;">${phone}</a>` : '—'],
+        ['Property / Company', property || '—'],
+        ['Location', location || '—'],
+        ['Categories Required', categories || '—'],
+        ['Budget Envelope', budget || '—'],
+        ['Submitted (IST)', ist],
+        ['Reference', ref],
+      ].map(([k,v]) => `<tr style="border-bottom:1px solid #f0ece2;"><td style="padding:9px 14px;font-size:12px;font-weight:600;color:#555;width:38%;background:#f9f7f2;">${k}</td><td style="padding:9px 14px;font-size:13px;color:#111;">${v}</td></tr>`).join('')}
+    </table>
+    ${message ? `<div style="background:#f9f7f2;border-left:3px solid #B8960C;padding:14px 18px;margin-bottom:20px;"><p style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;margin:0 0 6px;">Additional Requirements</p><p style="font-size:13px;color:#333;line-height:1.7;margin:0;">${message}</p></div>` : ''}
+    <a href="mailto:${email}?subject=Re: HORECA Enquiry — ${ref}" style="display:inline-block;background:#B8960C;color:#fff;text-decoration:none;padding:11px 22px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">Reply to Client</a>
+  </div>
+  <div style="background:#111;padding:14px 32px;text-align:center;"><p style="font-size:11px;color:rgba(255,255,255,.4);margin:0;">India Gully · HORECA Solutions · Ref: ${ref}</p></div>
+</div></body></html>`
+
+    const clientHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="${emailBaseStyle()}">
+<div style="max-width:600px;margin:32px auto;background:#fff;border:1px solid #e4dece;">
+  <div style="background:linear-gradient(135deg,#065F46 0%,#064e3b 100%);padding:24px 32px;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:4px;">India Gully HORECA Solutions</div>
+    <div style="font-size:20px;font-family:Georgia,serif;color:#fff;">HORECA Enquiry Received</div>
+  </div>
+  <div style="padding:28px 32px;">
+    <p style="font-size:14px;color:#333;margin:0 0 16px;">Dear ${name},</p>
+    <p style="font-size:14px;color:#333;margin:0 0 24px;">Thank you for your HORECA procurement enquiry. Our team will prepare a detailed specification and quotation and respond within <strong>48 business hours</strong>.</p>
+    <table style="width:100%;border-collapse:collapse;background:#f9f7f2;border:1px solid #e4dece;margin-bottom:24px;">
+      <tr><td style="padding:10px 16px;font-size:12px;color:#666;">Property / Company</td><td style="padding:10px 16px;font-size:13px;color:#111;">${property || '—'}</td></tr>
+      <tr style="background:#fff;"><td style="padding:10px 16px;font-size:12px;color:#666;">Reference</td><td style="padding:10px 16px;font-size:13px;font-family:monospace;color:#B8960C;">${ref}</td></tr>
+      <tr><td style="padding:10px 16px;font-size:12px;color:#666;">Submitted</td><td style="padding:10px 16px;font-size:13px;color:#333;">${ist} IST</td></tr>
+    </table>
+    <div style="background:#111;padding:20px 24px;margin-bottom:24px;">
+      <p style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:0 0 10px;">Your HORECA Contact</p>
+      <p style="font-size:15px;font-family:Georgia,serif;color:#fff;margin:0 0 4px;">Pavan Manikonda</p>
+      <p style="font-size:12px;color:rgba(255,255,255,.5);margin:0 0 12px;">Executive Director, HORECA Solutions</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <a href="tel:+916282556067" style="font-size:12px;color:#B8960C;text-decoration:none;">📞 +91 62825 56067</a>
+        <a href="mailto:pavan@indiagully.com" style="font-size:12px;color:#B8960C;text-decoration:none;">✉ pavan@indiagully.com</a>
+      </div>
+    </div>
+    <a href="https://india-gully.pages.dev/horeca" style="display:inline-block;background:#B8960C;color:#fff;text-decoration:none;padding:12px 28px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">View HORECA Catalogue →</a>
+  </div>
+  <div style="background:#111;padding:14px 32px;text-align:center;"><p style="font-size:11px;color:rgba(255,255,255,.4);margin:0;">India Gully · Vivacious Entertainment and Hospitality Pvt. Ltd. · CIN U74999DL2017PTC323237</p></div>
+</div></body></html>`
+
+    sendEmail(env, {
+      to: 'pavan@indiagully.com', toName: 'Pavan Manikonda',
+      subject: `[India Gully HORECA] New Enquiry — ${property || name} · ${ref}`,
+      html: ownerHtml, replyTo: email,
+    })
+    sendEmail(env, {
+      to: 'info@indiagully.com', toName: 'India Gully Team',
+      subject: `[CC HORECA] ${name} · ${property || '—'} · ${ref}`,
+      html: ownerHtml,
+    })
+    sendEmail(env, {
+      to: email, toName: name,
+      subject: `HORECA Enquiry Received — Reference ${ref} · India Gully`,
+      html: clientHtml, replyTo: 'pavan@indiagully.com',
+    })
 
     return c.json({
       success: true,
       ref,
       message: 'HORECA enquiry received. Our procurement team will respond within 48 business hours with a detailed quotation.',
-      ts
+      submitted_at: ts,
+      status: 'Submitted',
     })
   } catch (e) {
     return c.json({ success: false, error: 'Failed to process HORECA enquiry. Please try again or email info@indiagully.com' }, 500)

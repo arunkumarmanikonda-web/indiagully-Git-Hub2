@@ -100,6 +100,11 @@ app.get('/', (c) => {
           <div style="position:absolute;top:1.1rem;left:1.1rem;">
             <span style="background:${l.sectorColor};color:#fff;font-size:.57rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.26rem .7rem;">${l.sector}</span>
           </div>
+          <!-- NDA badge (always shown for NDA mandates) -->
+          ${l.nda ? `<div style="position:absolute;top:1.1rem;right:1.1rem;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);padding:.2rem .6rem;display:flex;align-items:center;gap:.35rem;border:1px solid rgba(184,150,12,.35);">
+            <i class="fas fa-lock" style="font-size:.48rem;color:var(--gold);"></i>
+            <span style="font-size:.56rem;color:rgba(255,255,255,.8);letter-spacing:.08em;font-weight:700;text-transform:uppercase;">NDA</span>
+          </div>` : ''}
           <!-- Value overlay (images only) -->
           ${hasImages ? `
           <div style="position:absolute;bottom:1.1rem;left:1.1rem;right:1.1rem;display:flex;align-items:flex-end;justify-content:space-between;">
@@ -107,9 +112,9 @@ app.get('/', (c) => {
               <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.9rem;color:#fff;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.7);">${l.value}</div>
               ${l.valueUSD ? `<div style="font-size:.58rem;color:rgba(255,255,255,.5);margin-top:.1rem;">${l.valueUSD}</div>` : ''}
             </div>
-            ${l.nda ? `<div style="background:rgba(0,0,0,.45);backdrop-filter:blur(6px);padding:.2rem .55rem;display:flex;align-items:center;gap:.3rem;border:1px solid rgba(184,150,12,.22);">
-              <i class="fas fa-lock" style="font-size:.48rem;color:var(--gold);"></i>
-              <span style="font-size:.56rem;color:rgba(255,255,255,.7);letter-spacing:.06em;">NDA</span>
+            ${hasImages ? `<div style="background:rgba(0,0,0,.4);backdrop-filter:blur(6px);padding:.2rem .55rem;display:flex;align-items:center;gap:.3rem;border:1px solid rgba(255,255,255,.15);">
+              <i class="fas fa-images" style="font-size:.48rem;color:rgba(255,255,255,.5);"></i>
+              <span style="font-size:.56rem;color:rgba(255,255,255,.6);letter-spacing:.06em;">${l.images.length} photos · NDA required for detail</span>
             </div>` : ''}
           </div>` : ''}
         </div>
@@ -146,7 +151,7 @@ app.get('/', (c) => {
               <i class="fas fa-file-signature" style="font-size:.6rem;"></i>View Mandate
             </span>
             <div style="display:flex;align-items:center;gap:.35rem;font-size:.6rem;color:var(--ink-faint);">
-              ${l.nda ? `<i class="fas fa-lock" style="font-size:.52rem;color:var(--gold);"></i><span>NDA Required</span>` : `<i class="fas fa-unlock" style="font-size:.52rem;"></i><span>Open</span>`}
+              ${l.nda ? `<i class="fas fa-lock" style="font-size:.52rem;color:var(--gold);"></i><span style="color:var(--gold);font-weight:600;">NDA Required</span>` : `<i class="fas fa-unlock" style="font-size:.52rem;"></i><span>Open Mandate</span>`}
             </div>
           </div>
         </div>
@@ -580,45 +585,123 @@ ${ndaModal}
           </div>
           <p style="font-size:.82rem;color:rgba(255,255,255,.5);line-height:1.75;margin-bottom:1.75rem;">Having accepted the NDA, please submit your Expression of Interest. Our advisory team will review your profile and revert within 24 business hours with the Information Memorandum and next steps for this mandate.</p>
 
-          <form id="eoi-form" class="ig-eoi-form" method="POST" action="/api/enquiry" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-            <input type="hidden" name="type" value="eoi">
-            <input type="hidden" name="mandate" value="${l.id}">
-            <input type="hidden" name="mandateTitle" value="${l.title}">
-            <input type="hidden" name="mandateValue" value="${l.value}">
+          <!-- EOI SUCCESS PANEL (hidden until submission) -->
+          <div id="eoi-success-panel" style="display:none;">
+            <div style="position:relative;overflow:hidden;background:linear-gradient(135deg,#0a1628 0%,#0f2040 50%,#0a1628 100%);border:1px solid rgba(184,150,12,.25);padding:2.5rem 2rem;">
+              <!-- Gold accent line top -->
+              <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold),transparent);"></div>
+              <!-- Radial glow -->
+              <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(184,150,12,.08) 0%,transparent 70%);pointer-events:none;"></div>
 
+              <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.5rem;">
+                <!-- Success icon -->
+                <div style="width:72px;height:72px;background:linear-gradient(135deg,rgba(184,150,12,.2),rgba(184,150,12,.08));border:2px solid rgba(184,150,12,.4);display:flex;align-items:center;justify-content:center;border-radius:50%;position:relative;">
+                  <i class="fas fa-check" style="color:var(--gold);font-size:1.75rem;"></i>
+                  <div style="position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(184,150,12,.15);animation:pulse-ring 2.5s ease-out infinite;"></div>
+                </div>
+
+                <!-- Headline -->
+                <div>
+                  <p style="font-size:.58rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:rgba(184,150,12,.65);margin-bottom:.5rem;">Expression of Interest Received</p>
+                  <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.6rem;color:#fff;line-height:1.15;margin-bottom:.75rem;">Your EOI has been submitted<br>successfully.</h3>
+                  <p style="font-size:.85rem;color:rgba(255,255,255,.55);line-height:1.75;max-width:460px;">India Gully's advisory team has received your Expression of Interest for <strong style="color:#fff;" id="eoi-success-mandate"></strong>. Your reference number is below.</p>
+                </div>
+
+                <!-- Reference card -->
+                <div style="background:rgba(184,150,12,.08);border:1px solid rgba(184,150,12,.25);padding:1.1rem 2rem;width:100%;max-width:380px;">
+                  <p style="font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(184,150,12,.5);margin-bottom:.4rem;">Reference Number</p>
+                  <div id="eoi-success-ref" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.3rem;color:var(--gold);letter-spacing:.04em;"></div>
+                  <p id="eoi-success-ts" style="font-size:.62rem;color:rgba(255,255,255,.3);margin-top:.3rem;"></p>
+                </div>
+
+                <!-- Next steps -->
+                <div style="width:100%;max-width:480px;">
+                  <p style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:1rem;">What happens next</p>
+                  <div style="display:flex;flex-direction:column;gap:.75rem;text-align:left;">
+                    ${[
+                      { step:'01', icon:'envelope', title:'Acknowledgement Email', desc:'A confirmation has been sent to your registered email. Save your reference number.' },
+                      { step:'02', icon:'user-tie', title:'Advisory Review', desc:'Our transaction advisory team reviews your profile and investor credentials within 24 business hours.' },
+                      { step:'03', icon:'file-contract', title:'Information Memorandum', desc:'Qualified investors receive the full IM covering asset details, financials, legal structure, and transaction process.' },
+                      { step:'04', icon:'handshake', title:'Management Presentation', desc:'Short-listed investors are invited to a management presentation and site visit.' },
+                    ].map(s => `
+                    <div style="display:flex;gap:.875rem;align-items:flex-start;padding:.75rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);">
+                      <div style="width:32px;height:32px;background:rgba(184,150,12,.1);border:1px solid rgba(184,150,12,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="fas fa-${s.icon}" style="color:var(--gold);font-size:.65rem;"></i>
+                      </div>
+                      <div>
+                        <div style="font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.2rem;">Step ${s.step} · ${s.title}</div>
+                        <p style="font-size:.78rem;color:rgba(255,255,255,.45);line-height:1.6;margin:0;">${s.desc}</p>
+                      </div>
+                    </div>`).join('')}
+                  </div>
+                </div>
+
+                <!-- Contact details -->
+                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:1.1rem 1.5rem;width:100%;max-width:480px;">
+                  <p style="font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.625rem;">Direct Advisory Contact</p>
+                  <div style="display:flex;flex-wrap:wrap;gap:1.25rem;align-items:center;">
+                    <div style="display:flex;align-items:center;gap:.5rem;">
+                      <i class="fas fa-user-tie" style="color:var(--gold);font-size:.7rem;width:14px;text-align:center;"></i>
+                      <span style="font-size:.82rem;color:rgba(255,255,255,.65);" id="eoi-advisor-name">Arun Manikonda, MD</span>
+                    </div>
+                    <a href="tel:+918988988988" style="display:flex;align-items:center;gap:.5rem;color:rgba(255,255,255,.55);font-size:.78rem;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.55)'">
+                      <i class="fas fa-phone" style="color:var(--gold);font-size:.65rem;width:14px;text-align:center;"></i>+91 8988 988 988
+                    </a>
+                    <a href="mailto:akm@indiagully.com" style="display:flex;align-items:center;gap:.5rem;color:rgba(255,255,255,.55);font-size:.78rem;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.55)'">
+                      <i class="fas fa-envelope" style="color:var(--gold);font-size:.65rem;width:14px;text-align:center;"></i>akm@indiagully.com
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div style="display:flex;gap:.875rem;flex-wrap:wrap;justify-content:center;">
+                  <a href="/listings" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:rgba(255,255,255,.65);text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:all .22s;" onmouseover="this.style.background='rgba(255,255,255,.1)';this.style.borderColor='rgba(255,255,255,.3)'" onmouseout="this.style.background='rgba(255,255,255,.05)';this.style.borderColor='rgba(255,255,255,.15)'">
+                    <i class="fas fa-arrow-left" style="font-size:.62rem;"></i>View More Mandates
+                  </a>
+                  <a href="/insights" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;background:var(--gold);color:#fff;text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:background .22s;" onmouseover="this.style.background='#a37a08'" onmouseout="this.style.background='var(--gold)'">
+                    <i class="fas fa-newspaper" style="font-size:.62rem;"></i>Read Sector Insights
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- EOI FORM -->
+          <div id="eoi-form-wrap">
+          <div id="eoi-form" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
             <div>
               <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.3rem;">Full Name *</label>
-              <input id="eoi-name" type="text" name="name" required placeholder="Your full name"
+              <input id="eoi-name" type="text" placeholder="Your full name" autocomplete="name"
                      style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.72rem .9rem;font-size:.85rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;"
                      onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
             </div>
             <div>
               <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.3rem;">Email Address *</label>
-              <input id="eoi-email" type="email" name="email" required placeholder="your@email.com"
+              <input id="eoi-email" type="email" placeholder="your@email.com" autocomplete="email"
                      style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.72rem .9rem;font-size:.85rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;"
                      onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
             </div>
             <div>
               <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.3rem;">Organisation / Fund *</label>
-              <input id="eoi-org" type="text" name="org" required placeholder="Fund / Family Office / Developer"
+              <input id="eoi-org" type="text" placeholder="Fund / Family Office / Developer" autocomplete="organization"
                      style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.72rem .9rem;font-size:.85rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;"
                      onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
             </div>
             <div>
               <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.3rem;">Phone / WhatsApp *</label>
-              <input id="eoi-phone" type="tel" name="phone" required placeholder="+91 XXXXX XXXXX"
+              <input id="eoi-phone" type="tel" placeholder="+91 XXXXX XXXXX" autocomplete="tel"
                      style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.72rem .9rem;font-size:.85rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;"
                      onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
             </div>
             <div style="grid-column:1/-1;">
               <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.3rem;">Ticket Size / Investment Capacity</label>
-              <input type="text" name="ticketSize" placeholder="e.g. ₹50 Cr – ₹100 Cr"
+              <input id="eoi-ticket" type="text" placeholder="e.g. ₹50 Cr – ₹100 Cr"
                      style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.72rem .9rem;font-size:.85rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;"
                      onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
             </div>
             <div style="grid-column:1/-1;">
               <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.3rem;">Investor Type *</label>
-              <select name="investorType" required
+              <select id="eoi-investor-type"
                       style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.72rem .9rem;font-size:.85rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;appearance:none;"
                       onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
                 <option value="" style="background:#111;color:#fff;">Select investor type</option>
@@ -633,42 +716,97 @@ ${ndaModal}
             </div>
             <div style="grid-column:1/-1;">
               <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.3rem;">Brief Note / Interest Statement</label>
-              <textarea name="message" rows="3" placeholder="Please describe your investment thesis, timeline, and specific interest in this mandate…"
+              <textarea id="eoi-message" rows="3" placeholder="Please describe your investment thesis, timeline, and specific interest in this mandate…"
                         style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.72rem .9rem;font-size:.85rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;resize:vertical;min-height:90px;transition:border-color .2s;"
                         onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'"></textarea>
             </div>
             <div style="grid-column:1/-1;">
               <label style="display:flex;align-items:flex-start;gap:.5rem;cursor:pointer;">
-                <input type="checkbox" name="ndaConfirm" required style="accent-color:var(--gold);margin-top:.15rem;flex-shrink:0;">
+                <input type="checkbox" id="eoi-confirm" style="accent-color:var(--gold);margin-top:.15rem;flex-shrink:0;">
                 <span style="font-size:.72rem;color:rgba(255,255,255,.6);line-height:1.65;">I confirm I have accepted the NDA and understand that this EOI submission does not constitute a binding offer. I authorise India Gully to contact me regarding this mandate. *</span>
               </label>
             </div>
+            <!-- Error message -->
+            <div id="eoi-err" style="display:none;grid-column:1/-1;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);padding:.625rem .875rem;font-size:.75rem;color:#fca5a5;">
+              <i class="fas fa-exclamation-circle" style="margin-right:.4rem;"></i><span id="eoi-err-msg">Please fill all required fields.</span>
+            </div>
             <div style="grid-column:1/-1;">
-              <button type="submit" class="btn btn-g" style="width:100%;justify-content:center;padding:1rem;font-size:.82rem;">
-                <i class="fas fa-paper-plane" style="margin-right:.5rem;font-size:.72rem;"></i>Submit Expression of Interest — ${l.title}
+              <button id="eoi-submit-btn" onclick="igSubmitEOI()"
+                      style="width:100%;display:flex;align-items:center;justify-content:center;gap:.625rem;padding:1rem;background:var(--gold);color:#fff;border:none;cursor:pointer;font-size:.82rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:background .22s;"
+                      onmouseover="this.style.background='#a37a08'" onmouseout="this.style.background='var(--gold)'">
+                <i class="fas fa-paper-plane" style="font-size:.72rem;"></i>Submit Expression of Interest — ${l.title}
               </button>
             </div>
-          </form>
+          </div>
+          </div>
 
           <script>
           (function(){
-            var f = document.getElementById('eoi-form');
-            if(!f) return;
-            function phoneOk(v){ var c=v.replace(/[\\s\\-().]/g,''); return /^(\\+91|0)?[6-9]\\d{9}$/.test(c)||/^\\+\\d{7,15}$/.test(c); }
-            function showE(inp,msg){ var id='eoe-'+inp.name; var e=document.getElementById(id); if(e)e.remove(); var p=document.createElement('p'); p.id=id; p.style.cssText='font-size:.68rem;color:#fca5a5;margin-top:.25rem;'; p.textContent=msg; inp.parentNode.appendChild(p); inp.style.borderColor='#ef4444'; }
-            function clearE(inp){ var e=document.getElementById('eoe-'+inp.name); if(e)e.remove(); inp.style.borderColor='rgba(255,255,255,.1)'; }
-            var hp=document.createElement('input'); hp.type='text'; hp.name='ig_hp3'; hp.tabIndex=-1; hp.style.cssText='position:absolute;left:-9999px;opacity:0;pointer-events:none;'; f.appendChild(hp);
-            f.addEventListener('submit',function(e){
-              if(hp.value){e.preventDefault();return;}
-              var ok=true;
-              var ni=f.querySelector('[name=name]'); if(ni){clearE(ni);if(ni.value.trim().length<2){showE(ni,'Please enter your full name.');ok=false;}}
-              var ei=f.querySelector('[name=email]'); if(ei){clearE(ei);if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(ei.value.trim())){showE(ei,'Please enter a valid email address.');ok=false;}}
-              var oi=f.querySelector('[name=org]'); if(oi){clearE(oi);if(oi.value.trim().length<2){showE(oi,'Please enter your organisation.');ok=false;}}
-              var pi=f.querySelector('[name=phone]'); if(pi&&pi.value.trim()){clearE(pi);if(!phoneOk(pi.value.trim())){showE(pi,'Enter a valid Indian (+91 XXXXXXXXXX) or international number.');ok=false;}}
-              if(!ok){e.preventDefault();return;}
-              var btn=f.querySelector('button[type=submit]'); if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin" style="margin-right:.5rem;"></i>Submitting EOI…';}
-            });
+            var style = document.createElement('style');
+            style.textContent = '@keyframes pulse-ring { 0% { transform: scale(1); opacity: .5; } 100% { transform: scale(1.35); opacity: 0; } }';
+            document.head.appendChild(style);
           })();
+          function igSubmitEOI() {
+            var name = (document.getElementById('eoi-name')||{}).value||'';
+            var email = (document.getElementById('eoi-email')||{}).value||'';
+            var org   = (document.getElementById('eoi-org')||{}).value||'';
+            var phone = (document.getElementById('eoi-phone')||{}).value||'';
+            var ticket = (document.getElementById('eoi-ticket')||{}).value||'';
+            var itype = (document.getElementById('eoi-investor-type')||{}).value||'';
+            var msg   = (document.getElementById('eoi-message')||{}).value||'';
+            var conf  = document.getElementById('eoi-confirm');
+            var errEl = document.getElementById('eoi-err');
+            var errMsg = document.getElementById('eoi-err-msg');
+
+            name = name.trim(); email = email.trim(); org = org.trim(); phone = phone.trim();
+
+            if (!name || name.length < 2) { if(errMsg)errMsg.textContent='Please enter your full name.'; if(errEl)errEl.style.display='block'; return; }
+            if (!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email)) { if(errMsg)errMsg.textContent='Please enter a valid email address.'; if(errEl)errEl.style.display='block'; return; }
+            if (!org || org.length < 2) { if(errMsg)errMsg.textContent='Please enter your organisation or fund name.'; if(errEl)errEl.style.display='block'; return; }
+            if (!conf || !conf.checked) { if(errMsg)errMsg.textContent='Please confirm you have accepted the NDA.'; if(errEl)errEl.style.display='block'; return; }
+            if (errEl) errEl.style.display = 'none';
+
+            var btn = document.getElementById('eoi-submit-btn');
+            if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="font-size:.72rem;"></i>&nbsp;&nbsp;Submitting EOI…'; btn.style.background = 'rgba(184,150,12,.5)'; }
+
+            fetch('/api/enquiry', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                type: 'eoi',
+                mandate: '${l.id}',
+                mandateTitle: '${l.title}',
+                mandateValue: '${l.value}',
+                mandateContact: '${l.contact || 'akm@indiagully.com'}',
+                mandateContactName: '${l.contactName || 'Arun Manikonda'}',
+                name: name, email: email, org: org, phone: phone,
+                ticketSize: ticket, investorType: itype,
+                message: msg,
+                source: 'listing_eoi',
+              })
+            })
+            .then(function(r){ return r.json(); })
+            .then(function(d){
+              // Show premium success panel
+              var formWrap = document.getElementById('eoi-form-wrap');
+              var panel = document.getElementById('eoi-success-panel');
+              var refEl = document.getElementById('eoi-success-ref');
+              var tsEl = document.getElementById('eoi-success-ts');
+              var mandateEl = document.getElementById('eoi-success-mandate');
+              if (formWrap) formWrap.style.display = 'none';
+              if (panel) panel.style.display = 'block';
+              if (refEl) refEl.textContent = d.ref || 'IG-EOI-' + Date.now();
+              if (tsEl) tsEl.textContent = 'Submitted: ' + new Date().toLocaleString('en-IN', {timeZone:'Asia/Kolkata'}) + ' IST';
+              if (mandateEl) mandateEl.textContent = '${l.title}';
+              // Scroll to success panel
+              if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            })
+            .catch(function(){
+              if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane" style="font-size:.72rem;"></i>&nbsp;&nbsp;Submit Expression of Interest — ${l.title}'; btn.style.background = 'var(--gold)'; }
+              if (errMsg) errMsg.textContent = 'Network error. Please email akm@indiagully.com or call +91 8988 988 988.';
+              if (errEl) errEl.style.display = 'block';
+            });
+          }
           </script>
         </div>
 
