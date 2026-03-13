@@ -36,6 +36,24 @@ All portals require credentials provisioned by the system administrator.
 
 ---
 
+## 🚀 Phase 8 — UI Polish, Bug Fixes & Final QA (v19)
+
+**Version: v19 | Build: 3.6 MB | Routes: 20+ all 200 OK | Deploy: https://india-gully.pages.dev**  
+**Commit: fb611a8 | Date: March 2026**
+
+### ✅ Phase 8 Deliverables
+
+| Area | What Changed |
+|------|-------------|
+| **Contact page — Premium Success Panel** | Completely redesigned with dark gradient background, pulse-ring animation on check icon, "What Happens Next" 3-step timeline (Acknowledgement → Team Review → NDA & IM), advisor card (Arun Manikonda with phone/email), WhatsApp follow-up button, View Mandates + Sector Insights CTAs. |
+| **HORECA Enquiry — Premium Success Panel** | Redesigned with dark green/teal gradient, pulse-ring animation, "What Happens Next" 3-step timeline (Acknowledgement → RFQ Review → Quote & Specs), HORECA advisor card (Pavan Manikonda), WhatsApp follow-up button to Pavan's number, Browse Catalogue + Another Enquiry CTAs. |
+| **Contact JS bug fixes** | Fixed broken phone validation regex (`[\s\-()]` → simple `[^0-9+]`); simplified email validation to avoid esbuild-minification issues; both forms now validate correctly in production build. |
+| **HORECA Catalogue Cards** | Enhanced image placeholder with layered radial gradient background, decorative circles, larger category icon, uppercase category label. Consistent 130px image area with smooth hover effects. |
+| **pulse-ring animation** | Added `@keyframes pulse-ring` definition inline on contact and HORECA pages so the animated ring on success icons renders correctly. |
+| **NDA / Listings verification** | Confirmed NDA gate → unlock flow works end-to-end: basic mandate info (sector, location, value, highlights) visible before NDA; full specs, longDesc, images, and EOI form unlock after NDA acceptance stored in sessionStorage. |
+
+---
+
 ## 🚀 Phase 7 — Premium UX Polish, HORECA Catalogue & EOI Redesign (v18)
 
 **Version: v18 | Build: 3.6 MB | Routes: 20+ all 200 OK | Deploy: https://039cca40.india-gully.pages.dev**  
