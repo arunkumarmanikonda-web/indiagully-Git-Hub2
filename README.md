@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://039cca40.india-gully.pages.dev |
+| **Latest Deploy** | https://61b06b68.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
@@ -38,7 +38,7 @@ All portals require credentials provisioned by the system administrator.
 
 ## 🚀 Phase 8 — UI Polish, Bug Fixes & Final QA (v19)
 
-**Version: v19 | Build: 3.6 MB | Routes: 20+ all 200 OK | Deploy: https://india-gully.pages.dev**  
+**Version: v19 | Build: 3.6 MB | Routes: 20+ all 200 OK | Deploy: https://61b06b68.india-gully.pages.dev**  
 **Commit: fb611a8 | Date: March 2026**
 
 ### ✅ Phase 8 Deliverables
