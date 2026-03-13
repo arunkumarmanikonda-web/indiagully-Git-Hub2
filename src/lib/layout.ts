@@ -1368,6 +1368,14 @@ const NAV = `
       <a href="/insights" class="n-lk">Insights</a>
       <a href="/market-data" class="n-lk">Market Data</a>
       <a href="/valuation" class="n-lk">Valuation</a>
+      <div class="relative n-par" style="position:relative;">
+        <button class="n-lk" style="display:flex;align-items:center;gap:.4rem;">More <i class="fas fa-chevron-down" style="font-size:.5rem;opacity:.45;"></i></button>
+        <div class="n-drop" style="right:0;left:auto;min-width:13rem;">
+          <a href="/resources" class="n-di"><span style="font-size:.85rem;">📚</span>Resources</a>
+          <a href="/testimonials" class="n-di"><span style="font-size:.85rem;">⭐</span>Testimonials</a>
+          <a href="/careers" class="n-di"><span style="font-size:.85rem;">💼</span>Careers</a>
+        </div>
+      </div>
       <a href="/contact"  class="n-lk">Contact</a>
     </div>
 
@@ -1421,6 +1429,8 @@ const NAV = `
       <a href="/market-data" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Market Data</a>
       <a href="/valuation" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Valuation Tool</a>
       <a href="/testimonials" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Testimonials</a>
+      <a href="/resources" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Resources</a>
+      <a href="/careers" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Careers</a>
       <a href="/contact"  style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Contact</a>
       <div style="padding-top:.75rem;display:flex;flex-direction:column;gap:.5rem;">
         <a href="/portal/client"   style="font-size:.8rem;color:var(--gold);"><i class="fas fa-lock" style="margin-right:.5rem;font-size:.65rem;"></i>Client Portal</a>
@@ -1492,7 +1502,7 @@ const FOOTER = `
     <div>
       <p style="font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(184,150,12,.7);margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem;"><span style="width:16px;height:1px;background:rgba(184,150,12,.5);display:inline-block;"></span>Platform</p>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:.55rem;">
-        ${[['Active Mandates','/listings'],['Compare Mandates','/compare'],['Our Work','/works'],['Insights','/insights'],['Market Data','/market-data'],['Valuation Tool','/valuation'],['Client Testimonials','/testimonials'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.5);transition:color .2s;display:flex;align-items:center;gap:.4rem;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><span style="width:4px;height:4px;background:rgba(184,150,12,.4);border-radius:50%;flex-shrink:0;display:inline-block;"></span>${l}</a></li>`).join('')}
+        ${[['Active Mandates','/listings'],['Compare Mandates','/compare'],['Our Work','/works'],['Insights','/insights'],['Market Data','/market-data'],['Valuation Tool','/valuation'],['Resources','/resources'],['Careers','/careers'],['Client Testimonials','/testimonials'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.5);transition:color .2s;display:flex;align-items:center;gap:.4rem;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><span style="width:4px;height:4px;background:rgba(184,150,12,.4);border-radius:50%;flex-shrink:0;display:inline-block;"></span>${l}</a></li>`).join('')}
       </ul>
     </div>
 

@@ -655,7 +655,7 @@ const ARTICLES = [
 `,
   },
   {
-    id: 'horeca-tier2-supply-chain',
+    id: 'horeca-tier2-supply-chain-deep-dive',
     category: 'HORECA',
     date: 'February 2026',
     title: 'Building Resilient HORECA Supply Chains in Tier 2 India',
@@ -719,6 +719,143 @@ const ARTICLES = [
 <h2>The HORECA Ecosystem Play</h2>
 <p>India Gully's HORECA division operates across the full value chain: procurement (FF&amp;E, OS&amp;E, kitchen equipment), operations advisory (SOPs, F&amp;B menu engineering, yield management), and supply continuity (ongoing consumables replenishment). This ecosystem approach — from pre-opening to steady-state operations — is particularly valuable for independent operators and family-office hotel owners in Tier 2 markets who lack the internal expertise of branded hotel management companies.</p>
 <p>For developers and investors approaching Tier 2 hotel projects, India Gully offers a comprehensive HORECA procurement and operations advisory package that de-risks the pre-opening phase and sets the property up for operational success from the first day of trading.</p>
+`,
+  },
+  {
+    id: 'retail-leasing-trends-india-2026',
+    category: 'Retail',
+    date: 'March 2026',
+    title: 'India Retail Leasing 2026: Premiumisation, Omnichannel & the New Mall Hierarchy',
+    excerpt: 'India\'s organised retail leasing market is undergoing structural realignment. Grade-A malls command rental premiums of 40–65% over Grade-B stock; international brand entry is at a 10-year high; and the omnichannel pivot is reshaping the economics of physical retail. India Gully\'s 1,40,000+ sq ft leasing practice reveals the trends shaping 2026.',
+    tags: ['Retail', 'Leasing', 'Real Estate', '2026'],
+    readTime: '9 min read',
+    body: `
+<h2>Executive Summary</h2>
+<p>India's organised retail real estate sector in 2026 is bifurcating sharply. The top 15% of mall stock — Grade-A developments in metro CBDs and premium suburban corridors — is virtually fully leased, with brands competing for space and rental reversions of 12–18% on lease renewal. The bottom 40% of existing mall stock faces vacancy rates above 25%, anchor tenant exodus, and structural repositioning requirements. Understanding this hierarchy — and selecting the right assets — is the central challenge for both retail brands and real estate investors.</p>
+<p>India Gully's retail leasing practice has transacted 1,40,000+ sq ft across Delhi NCR and Gurugram over the past 7 years, working with both landlords repositioning their retail assets and brands seeking optimal physical retail locations. This report synthesises our transaction data with India Gully's market intelligence to define the strategic landscape for 2026.</p>
+
+<h2>The New Mall Hierarchy</h2>
+<p>India's mall market has evolved from a binary Grade-A / Grade-B classification to a more nuanced five-tier hierarchy, each with distinct occupancy, rental, and investment dynamics:</p>
+
+<h3>Tier I: Destination Malls (National)</h3>
+<p>The top 8–10 malls nationally — DLF Emporio, Select Citywalk, Palladium, Phoenix MarketCity Mumbai — occupy a category apart. Vacancy rates are effectively zero; waitlists for anchor and flagship space run 18–36 months. Rental premiums of 80–120% over city averages are sustained by irreplaceable footfall (30,000–70,000 daily visitors) and unmatched brand visibility. Investment yields have compressed to 5.5–6.5%, reflecting institutional quality comparable to gateway European retail real estate.</p>
+
+<h3>Tier II: Premium Regional Malls</h3>
+<p>15–20 malls in the 6 major metros — DLF CyberHub, Pacific Mall Tagore Garden, Nexus Elante Chandigarh — deliver consistent Grade-A performance with footfall of 12,000–28,000 daily. Vacancy runs 3–8%. Rental levels of ₹150–300 per sq ft per month for premium inline are achievable. These assets attract both international brand entries and domestic premiumisation plays.</p>
+
+<h3>Tier III: Quality Neighbourhood Malls</h3>
+<p>The largest segment by number — well-located, single-catchment malls of 3–5 lakh sq ft in Tier 1 cities. Performance varies significantly by micro-market. Anchor-tenant quality is the key differentiator: malls anchored by Reliance / D-Mart / premium cineplex outperform peers by 35–45% on inline brand performance. Vacancy: 8–15%. Rental: ₹80–150 per sq ft per month for inline.</p>
+
+<h3>Tier IV: Transitional Assets</h3>
+<p>Legacy malls (2008–2015 vintage) in secondary micro-markets facing the omnichannel disruption most acutely. Many have lost 1–3 anchor tenants in the post-COVID period; vacancy of 20–35% is common. These assets require repositioning — conversion of dead retail into F&B, entertainment, gym/wellness, co-working, or hotel use. India Gully has active advisory mandates involving three such repositioning projects totalling 8 lakh sq ft of gross leasable area.</p>
+
+<h3>Tier V: Distressed Assets</h3>
+<p>Poorly located, structurally undermined retail assets with vacancy above 40%. Resolution is primarily through Tier IV conversion (full repurposing) or debt resolution via IBC. India Gully's Debt & Special Situations practice has engaged on three such assets in the ₹35–120 Cr range over the past 24 months.</p>
+
+<h2>International Brand Entry: 10-Year High</h2>
+<p>International brand entry into India in 2024–25 reached its highest level since 2014–15. Key data points:</p>
+<ul>
+  <li><strong>35+ international brands</strong> entered or announced India entry in 2024–25, across luxury, premium, and mass-premium segments</li>
+  <li><strong>Luxury segment</strong>: Miu Miu, Brunello Cucinelli, Rimowa, and Ralph Lauren Pink Pony flagship expansions represent the continued deepening of the luxury consumer base in Delhi NCR and Mumbai</li>
+  <li><strong>F&B international</strong>: Tim Hortons, Popeyes, and Five Guys expansions represent the coming-of-age of India's QSR and fast-casual segment for international operators</li>
+  <li><strong>Sports & outdoor</strong>: Salomon, Hoka, and Vuori's entry signals the emergence of India's sports lifestyle consumer as a distinct retail segment</li>
+</ul>
+<p>International brand entry is disproportionately concentrated in Tier I and Tier II mall stock. 87% of new international brand stores opened in 2024–25 were located in the top 25 malls nationally. The implication for mall landlords outside this group is that international brand anchoring requires significant asset repositioning to be a realistic aspiration.</p>
+
+<h2>Premiumisation Across Domestic Brands</h2>
+<p>The premiumisation trend that began in post-COVID 2021–22 has accelerated. India Gully's leasing transaction data shows:</p>
+<ul>
+  <li>Average ticket size for domestic apparel and lifestyle brands has increased 28–35% across our portfolio in 2024–25 versus 2021–22</li>
+  <li>Brands in the ₹3,000–8,000 ASP (average selling price) range are the most active space-seekers — this "accessible premium" segment is growing faster than both mass and luxury</li>
+  <li>Home and lifestyle categories — D2C furniture, artisanal home décor, premium kitchenware — are the fastest-growing categories for physical retail expansion</li>
+  <li>Beauty and personal care (BPC) premiumisation: domestic BPC brands (The Derma Co., Minimalist, Plum, Pilgrim) are transitioning from digital-first to omnichannel, with aggressive physical retail rollout plans for 2026–27</li>
+</ul>
+
+<h2>Omnichannel: Physical Retail's New Economics</h2>
+<p>The narrative that e-commerce would eliminate physical retail has been superseded by a more nuanced omnichannel reality. India Gully's landlord clients report that brands operating strong omnichannel models are delivering 15–22% better store economics than pure-play physical retailers. The data from our portfolio:</p>
+<ul>
+  <li><strong>Discovery function</strong>: 68% of surveyed brand partners report that physical store presence drives measurable incremental digital sales within a 15km radius of the store location</li>
+  <li><strong>Returns reduction</strong>: Brands with physical presence show 35–42% lower return rates on online orders — customers who can touch and try in-store order with more confidence online</li>
+  <li><strong>Brand trust premium</strong>: Consumer surveys by ICICI Securities (2025) indicate 58% of Indian consumers trust a brand more upon seeing a physical store, regardless of whether they ultimately purchase online or offline</li>
+</ul>
+<p>The implication for retail leasing economics: physical retail is no longer justified purely on a store-P&L basis. Landlords and brands are increasingly agreeing on revenue-share lease structures that capture the full omnichannel contribution of a store location, with base rents lower but revenue share kickers higher. India Gully has negotiated three such hybrid lease structures in 2025–26 for domestic D2C brands entering their first physical footprint.</p>
+
+<h2>India Gully's Retail Leasing Services</h2>
+<p>India Gully's retail leasing practice operates across the full spectrum of retail real estate transactions:</p>
+<ul>
+  <li><strong>Brand representation</strong>: Identifying optimal locations, negotiating lease terms, coordinating due diligence for brands expanding their physical footprint (domestic and international)</li>
+  <li><strong>Landlord advisory</strong>: Tenant mix strategy, anchor replacement, rental optimisation, and mall repositioning advisory for mall owners</li>
+  <li><strong>Transaction execution</strong>: Full transaction management from heads of terms through lease execution, including legal coordination and fit-out timeline management</li>
+  <li><strong>Portfolio strategy</strong>: Multi-city retail expansion planning for brands targeting 10+ stores across Tier 1 and Tier 2 cities</li>
+</ul>
+`,
+  },
+  {
+    id: 'debt-special-situations-india-hospitality-2026',
+    category: 'Debt & Special Situations',
+    date: 'March 2026',
+    title: 'Distressed Hospitality Assets in India 2026: Opportunity Map for Special Situations Investors',
+    excerpt: 'India\'s hospitality sector carries an estimated ₹22,000–28,000 Cr of stressed debt, concentrated in mid-market hotels built in the 2008–2015 cycle. The post-COVID recovery has been uneven: premium assets have recapitalised; sub-optimal assets face IBC proceedings or promoter distress. India Gully\'s Debt & Special Situations practice maps the opportunity.',
+    tags: ['Debt & Special Situations', 'Hospitality', 'IBC', 'Real Estate'],
+    readTime: '11 min read',
+    body: `
+<h2>Executive Summary</h2>
+<p>India's hospitality sector recovery from COVID-19 has been structurally uneven. Tier-1 branded hotels, airport-proximate properties, and heritage assets have delivered strong RevPAR recovery — many exceeding 2019 benchmarks by 15–25% in nominal terms. However, the mid-market hotel cohort built in the infrastructure and consumption boom of 2008–2015 carries structural vulnerabilities that the COVID shock exposed and the recovery has not fully healed: sub-optimal locations, over-leveraged capital structures, deferred capex, and in some cases promoter distress that has diverted management attention from hotel operations.</p>
+<p>For special situations investors — family offices, credit funds, and strategic acquirers — this creates an investable opportunity in the ₹15–150 Cr per asset range, a segment that is too small for institutional PE but too complex for conventional property investors. India Gully's Debt & Special Situations vertical, active since 2023, has engaged on 8 assets in this segment with a combined debt exposure of ₹380 Cr.</p>
+
+<h2>The Stressed Debt Landscape</h2>
+<p>Estimating the quantum of stressed hospitality debt in India requires triangulating multiple data sources. India Gully's analysis, drawing on RBI's sectoral NPA data, NCLT filings, and direct transaction intelligence, arrives at the following picture:</p>
+
+<h3>Overall Quantum</h3>
+<ul>
+  <li><strong>Total hospitality sector bank debt</strong>: Approximately ₹1,10,000–1,20,000 Cr (scheduled commercial banks + HFCs + NBFCs)</li>
+  <li><strong>Gross NPA + SMA-2 (stressed) cohort</strong>: Estimated ₹22,000–28,000 Cr (19–23% of total hospitality sector lending)</li>
+  <li><strong>NCLT admitted cases</strong>: 280+ hospitality-sector CIRPs active as of Q4 FY25, with aggregate admitted claims of ₹14,200 Cr</li>
+  <li><strong>Pre-IBC settlements (OTS, restructuring)</strong>: India Gully estimates a further ₹8,000–14,000 Cr in pre-admission restructuring being managed bilaterally between promoters and lenders</li>
+</ul>
+
+<h3>Asset Segment Concentration</h3>
+<p>Stressed debt is heavily concentrated in three asset segments:</p>
+<ol>
+  <li><strong>Mid-market hotels, 2008–2015 vintage, secondary locations</strong> (40–120 keys): Accounts for approximately 55–60% of the stressed cohort. These assets were built on aggressive debt, achieved acceptable occupancy in the pre-COVID period, but cannot service debt at current interest rates while funding the capex required to maintain brand standard or franchise eligibility.</li>
+  <li><strong>Resort and leisure properties, Tier 2 / hill station locations</strong> (30–80 keys): Accounts for approximately 20–25%. Post-COVID leisure demand recovery has been strong, but many of these assets are technically operated by promoters without proper franchise agreements, making them difficult to refinance or sell at institutional pricing.</li>
+  <li><strong>Large mid-scale hotels, non-metro markets</strong> (120–250 keys): Accounts for approximately 15–20%. Oversupplied markets (Agra, Jaipur outskirts, highway corridor properties) with structural occupancy weakness and ADR compression from new branded supply.</li>
+</ol>
+
+<h2>The IBC Resolution Track Record</h2>
+<p>India's Insolvency and Bankruptcy Code has processed hospitality sector resolutions with mixed outcomes:</p>
+<ul>
+  <li><strong>Resolution rate</strong>: Of NCLT-admitted hospitality CIRPs concluded as of Q3 FY25, approximately 28% achieved resolution (CoC-approved resolution plan); 52% were liquidated; 20% remain active</li>
+  <li><strong>Recovery rate</strong>: Resolved cases delivered an average recovery of 32% of admitted claims for financial creditors — significantly below the IBC's intended recovery standard, reflecting the asset-specific challenges of hospitality properties (deferred maintenance, management disruption, brand deflagging during CIRP)</li>
+  <li><strong>Average CIRP duration</strong>: 24.8 months for concluded hospitality CIRPs — far exceeding the statutory 330-day deadline, creating carrying cost erosion for lenders and operational deterioration in the asset</li>
+</ul>
+<p>The IBC track record underscores the case for pre-CIRP resolution: bilateral OTS or structured acquisition before NCLT admission preserves asset value, avoids management disruption, and delivers superior recovery for lenders.</p>
+
+<h2>Investment Thesis: Where the Opportunity Lies</h2>
+<p>India Gully's Debt & Special Situations practice has identified four sub-segments within the distressed hospitality opportunity that offer attractive risk-adjusted returns:</p>
+
+<h3>1. Pre-NPA OTS Acquisitions (₹15–60 Cr ticket)</h3>
+<p>Assets where promoter distress is evident but the loan has not yet been classified NPA. Banks and NBFCs are willing to negotiate OTS at 55–70 cents on the rupee for early settlement. The acquirer receives a clean asset (no IBC overhang), operational continuity, and the ability to install new management immediately. India Gully acts as transaction advisor — structuring the OTS, negotiating with lenders, and connecting acquirers with franchise partners for re-branding.</p>
+
+<h3>2. Post-IBC Resolution (₹20–80 Cr ticket)</h3>
+<p>Assets that have gone through IBC but failed to attract a resolution applicant in the initial CIRP. Liquidation assets — typically available at 40–60% of NCLT-assessed liquidation value — offer the deepest value but require full operational rebuild. India Gully's value-add framework for these assets: assess structural integrity, identify optimal brand/franchise, model 36-month recovery P&L, and connect with operators willing to manage on a management contract rather than requiring an upfront fee. Hotel Rajshree, Chandigarh (India Gully mandate) is an example of a successful post-distress operational restoration.</p>
+
+<h3>3. Promoter Equity Restructuring (₹8–35 Cr ticket)</h3>
+<p>Family-owned, single-asset hotel operators where the original promoter is operationally capable but financially distressed due to COVID-era debt. The investment thesis: inject equity capital at a significant discount to replacement cost (50–65 cents), restructure the liability profile, and participate in the upside as the asset recovers to normalised trading. These situations typically require patient capital (3–5 year horizon) but deliver 22–28% IRR when executed well.</p>
+
+<h3>4. Portfolio Debt Acquisition</h3>
+<p>For larger capital pools (₹150 Cr+), acquiring portfolios of hotel NPA from banks and ARCs at portfolio discount (typically 40–55% of outstanding principal). Portfolio acquisition provides diversification, reduces single-asset concentration risk, and enables operational synergies (shared management, procurement consolidation). India Gully has structured one such portfolio acquisition mandate covering 4 assets in Punjab and Himachal Pradesh with aggregate principal of ₹185 Cr.</p>
+
+<h2>India Gully's Debt & Special Situations Practice</h2>
+<p>India Gully's Debt & Special Situations vertical provides end-to-end advisory across the distressed asset lifecycle:</p>
+<ul>
+  <li><strong>Asset identification and due diligence</strong>: Proprietary pipeline of distressed hospitality assets sourced from bank NPA lists, NCLT filings, ARC relationships, and promoter referrals</li>
+  <li><strong>Valuation and structuring</strong>: India Gully's hospitality-specific valuation methodology — incorporating brand repositioning value, RevPAR recovery modelling, and capex-adjusted DCF — provides a more accurate intrinsic value estimate than generic real estate valuation</li>
+  <li><strong>Lender negotiation</strong>: India Gully's relationships across PSU banks, private banks, and ARCs active in hospitality NPA resolution enable efficient OTS negotiation and pre-CIRP settlement</li>
+  <li><strong>Post-acquisition value creation</strong>: Operational turnaround advisory, brand affiliation (Marriott, IHG, Choice Hotels, OYO franchise), HORECA procurement optimisation, and revenue management enhancement</li>
+  <li><strong>Exit structuring</strong>: Asset sale advisory, hotel-specific REIT structuring analysis, and sale-leaseback transactions</li>
+</ul>
+<p>For special situations investors seeking exposure to India's hospitality sector at below-replacement-cost pricing, India Gully offers a differentiated advisory capability that combines transaction execution skill with deep hospitality operating expertise — a combination that is rare in the Indian advisory market.</p>
 `,
   },
 ]

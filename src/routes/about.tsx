@@ -228,6 +228,90 @@ app.get('/', (c) => {
   </div>
 </div>
 
+<!-- ══ BY THE NUMBERS ════════════════════════════════════════════════════ -->\n
+<div style="background:var(--bg);padding:4.5rem 0;border-top:1px solid var(--border);">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:3rem;">
+      <p style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;">Quantified Impact</p>
+      <h2 class="h2" style="margin:0;">India Gully By The Numbers</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;">
+      ${[
+        { n:'₹1,165 Cr+', label:'Active Pipeline', sub:'8 mandates across 5 asset classes', icon:'chart-bar', color:'#B8960C' },
+        { n:'₹2,000 Cr+', label:'Transactions Advised', sub:'Including ₹1,350 Cr+ Entertainment City mandate', icon:'trophy', color:'#1A3A6B' },
+        { n:'1,40,000 sq ft', label:'Retail Leased', sub:'Across Delhi NCR and Gurugram', icon:'store', color:'#15803d' },
+        { n:'15+', label:'Hotel Projects', sub:'PMC, pre-opening & HORECA supply', icon:'hotel', color:'#7C3AED' },
+        { n:'500+ SKUs', label:'HORECA Catalogue', sub:'FF&E, OS&E, kitchen, linen, uniforms', icon:'utensils', color:'#B8960C' },
+        { n:'₹50 Cr+', label:'Procurement Managed', sub:'Cumulative HORECA procurement value', icon:'truck', color:'#065F46' },
+        { n:'30+', label:'Retail Brands', sub:'Brand partnerships in NCR & Gurugram', icon:'tag', color:'#1A3A6B' },
+        { n:'8+', label:'Years', sub:'Established 2017, incorporated in Delhi', icon:'calendar-alt', color:'#B8960C' },
+      ].map(s => `
+      <div class="reveal" style="padding:2rem;border:1px solid var(--border-lt);text-align:center;transition:all .28s;position:relative;overflow:hidden;" onmouseover="this.style.borderColor='rgba(184,150,12,.3)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--border-lt)';this.style.transform='translateY(0)'">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,${s.color},transparent);opacity:0;transition:opacity .3s;" class="num-top"></div>
+        <i class="fas fa-${s.icon}" style="font-size:1.1rem;color:${s.color};margin-bottom:1rem;display:block;"></i>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.85rem;color:${s.color};line-height:1;margin-bottom:.5rem;letter-spacing:-.02em;">${s.n}</div>
+        <div style="font-size:.72rem;font-weight:700;color:var(--ink);letter-spacing:.04em;margin-bottom:.35rem;">${s.label}</div>
+        <p style="font-size:.72rem;color:var(--ink-muted);line-height:1.55;margin:0;">${s.sub}</p>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>
+
+<!-- ══ RECOGNITION & MEDIA ═══════════════════════════════════════════════ -->\n
+<div style="background:#fff;padding:4.5rem 0;border-top:1px solid var(--border);">
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;">
+      <div>
+        <p style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:.875rem;">Recognition</p>
+        <h2 class="h2" style="margin-bottom:2rem;">What Sets India Gully Apart</h2>
+        <div style="display:flex;flex-direction:column;gap:1.25rem;">
+          ${[
+            { icon:'star', color:'#B8960C', title:'India\'s Only Multi-Vertical Boutique', desc:'We operate simultaneously across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA — a breadth matched by no other boutique advisory firm in India.' },
+            { icon:'shield-alt', color:'#1A3A6B', title:'Institutional Rigour, Boutique Service', desc:'Every mandate receives the same financial rigour applied at tier-1 investment banks, combined with the direct personal accountability of a boutique advisor.' },
+            { icon:'hands-helping', color:'#15803d', title:'Source-to-Close Advisory', desc:'From mandate origination through due diligence, NDA management, EOI, IM preparation and deal closing — we own the full process.' },
+            { icon:'map-marked-alt', color:'#7C3AED', title:'Pan-India Network', desc:'From Lutyens\' Delhi to Kasauli, from Chandigarh to Aerocity — India Gully\'s network spans the full geography of Indian hospitality and real estate.' },
+          ].map(s => `
+          <div style="display:flex;gap:1rem;align-items:flex-start;padding:1.25rem;border:1px solid var(--border-lt);transition:all .22s;" onmouseover="this.style.borderColor='rgba(184,150,12,.25)';this.style.background='rgba(184,150,12,.02)'" onmouseout="this.style.borderColor='var(--border-lt)';this.style.background='transparent'">
+            <div style="width:40px;height:40px;background:${s.color}15;border:1px solid ${s.color}25;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <i class="fas fa-${s.icon}" style="color:${s.color};font-size:.85rem;"></i>
+            </div>
+            <div>
+              <div style="font-family:'DM Serif Display',Georgia,serif;font-size:.98rem;color:var(--ink);margin-bottom:.3rem;">${s.title}</div>
+              <p style="font-size:.8rem;color:var(--ink-muted);line-height:1.65;margin:0;">${s.desc}</p>
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <p style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:.875rem;">Marquee Mandates</p>
+        <h2 class="h2" style="margin-bottom:2rem;">Selected Highlights</h2>
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          ${[
+            { value:'₹1,350 Cr+', title:'Entertainment City Limited Divestment', desc:'Joint advisory mandate with EY for India\'s largest entertainment sector transaction — full due diligence, IBC process and asset restructuring advisory.', sector:'Entertainment', color:'#7C3AED' },
+            { value:'₹400 Cr', title:'Prism Tower, Gurugram', desc:'312-key mixed-use hospitality & commercial asset advisory mandate. REIT-grade exit potential. 10 km metro connectivity. Active transaction.', sector:'Real Estate', color:'#1A3A6B' },
+            { value:'₹70 Cr', title:'Hotel Rajshree & Spa, Chandigarh', desc:'41-key boutique hotel — full HORECA procurement refresh, operational enhancement and active asset sale advisory.', sector:'Hospitality', color:'#15803d' },
+            { value:'₹45 Cr', title:'WelcomHeritage Santa Roza, Kasauli', desc:'44-key luxury heritage resort under ITC WelcomHeritage brand. End-to-end transaction advisory and investor outreach.', sector:'Heritage Hospitality', color:'#B8960C' },
+            { value:'₹30 Cr', title:'Maple Resort Chail, Himachal Pradesh', desc:'30-key boutique mountain resort at 2,515 metres. Owner-direct advisory and active buyer outreach for premium mountain hospitality asset.', sector:'Hospitality', color:'#065F46' },
+          ].map(m => `
+          <div style="padding:1.25rem;border:1px solid var(--border-lt);display:flex;gap:1rem;align-items:flex-start;transition:all .22s;" onmouseover="this.style.borderColor='rgba(184,150,12,.25)'" onmouseout="this.style.borderColor='var(--border-lt)'">
+            <div style="flex-shrink:0;text-align:right;min-width:80px;">
+              <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.05rem;color:${m.color};line-height:1;">${m.value}</div>
+              <span style="background:${m.color};color:#fff;font-size:.52rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.15rem .45rem;display:inline-block;margin-top:.3rem;">${m.sector}</span>
+            </div>
+            <div style="flex:1;">
+              <div style="font-family:'DM Serif Display',Georgia,serif;font-size:.9rem;color:var(--ink);margin-bottom:.3rem;line-height:1.2;">${m.title}</div>
+              <p style="font-size:.75rem;color:var(--ink-muted);line-height:1.6;margin:0;">${m.desc}</p>
+            </div>
+          </div>`).join('')}
+          <a href="/listings" style="display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.875rem;background:var(--ink);color:#fff;text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:background .22s;" onmouseover="this.style.background='var(--gold)'" onmouseout="this.style.background='var(--ink)'">
+            <i class="fas fa-folder-open" style="font-size:.65rem;"></i>View All Active Mandates
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 `
   return c.html(layout('About India Gully', content, {
     description: "About India Gully. Celebrating Desiness since 2017. Leadership, vision, values and the story behind India's premier multi-vertical advisory firm."

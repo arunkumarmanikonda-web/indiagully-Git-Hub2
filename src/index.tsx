@@ -19,6 +19,8 @@ import valuationRoute from './routes/valuation'
 import testimonialsRoute from './routes/testimonials'
 import compareRoute from './routes/compare'
 import marketDataRoute from './routes/market-data'
+import resourcesRoute from './routes/resources'
+import careersRoute from './routes/careers'
 import { layout } from './lib/layout'
 
 const app = new Hono()
@@ -186,6 +188,8 @@ app.get('/sitemap.xml', (c) => {
     { url: '/testimonials',  priority: '0.75', freq: 'monthly' },
     { url: '/compare',       priority: '0.8',  freq: 'weekly'  },
     { url: '/market-data',   priority: '0.85', freq: 'weekly'  },
+    { url: '/resources',     priority: '0.85', freq: 'weekly'  },
+    { url: '/careers',       priority: '0.75', freq: 'monthly' },
     { url: '/legal/privacy',    priority: '0.3', freq: 'yearly' },
     { url: '/legal/terms',      priority: '0.3', freq: 'yearly' },
     { url: '/legal/disclaimer', priority: '0.3', freq: 'yearly' },
@@ -199,7 +203,8 @@ app.get('/sitemap.xml', (c) => {
 
   const insightIds = [
     'india-realty-2026-outlook','entertainment-zone-regulatory-india','horeca-tier2-supply-chain',
-    'mall-hotel-office-trinity','ibc-distressed-hospitality-2025','mall-mixed-use-integration',
+    'horeca-tier2-supply-chain-deep-dive','mall-hotel-office-trinity','ibc-distressed-hospitality-2025',
+    'mall-mixed-use-integration','retail-leasing-trends-india-2026','debt-special-situations-india-hospitality-2026',
     'greenfield-midscale-hotels','india-hospitality-2024','entertainment-destinations-india',
     'horeca-procurement-strategy','debt-special-situations-hospitality','retail-leasing-malls-india',
     'greenfield-hotel-development',
@@ -269,6 +274,8 @@ app.route('/valuation', valuationRoute)
 app.route('/testimonials', testimonialsRoute)
 app.route('/compare', compareRoute)
 app.route('/market-data', marketDataRoute)
+app.route('/resources', resourcesRoute)
+app.route('/careers', careersRoute)
 app.route('/api', apiRoute)
 
 // ── 404 NOT FOUND ─────────────────────────────────────────────────────────────
