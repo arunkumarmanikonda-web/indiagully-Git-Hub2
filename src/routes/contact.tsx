@@ -44,25 +44,74 @@ app.get('/', (c) => {
         <h2 class="h2" style="margin-bottom:1.75rem;">Mandate &amp; Advisory<br>Enquiry Form</h2>
 
         <!-- SUCCESS PANEL (hidden until submission) -->
-        <div id="contact-success" style="display:none;background:linear-gradient(135deg,#0a1628 0%,#0f2040 100%);border:1px solid rgba(184,150,12,.25);padding:3rem 2.5rem;position:relative;overflow:hidden;margin-bottom:2rem;">
-          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);"></div>
-          <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.5rem;">
-            <div style="width:72px;height:72px;background:rgba(184,150,12,.15);border:2px solid rgba(184,150,12,.4);display:flex;align-items:center;justify-content:center;border-radius:50%;">
-              <i class="fas fa-check" style="color:var(--gold);font-size:1.75rem;"></i>
+        <style>@keyframes pulse-ring{0%{transform:scale(.9);opacity:.6}50%{transform:scale(1.15);opacity:.2}100%{transform:scale(.9);opacity:.6}}</style>
+        <div id="contact-success" style="display:none;background:linear-gradient(160deg,#08111f 0%,#0d1d35 60%,#0a1628 100%);border:1px solid rgba(184,150,12,.3);position:relative;overflow:hidden;margin-bottom:2rem;">
+          <!-- Gold bar -->
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 0%,var(--gold) 40%,rgba(212,174,42,.4) 100%);"></div>
+          <!-- Subtle radial glow -->
+          <div style="position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(184,150,12,.12) 0%,transparent 70%);pointer-events:none;"></div>
+
+          <!-- Top success header -->
+          <div style="padding:2.5rem 2.5rem 0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.25rem;">
+            <!-- Animated check icon -->
+            <div style="position:relative;width:80px;height:80px;">
+              <div style="position:absolute;inset:0;border-radius:50%;border:2px solid rgba(184,150,12,.25);animation:pulse-ring 2s cubic-bezier(.215,.61,.355,1) infinite;"></div>
+              <div style="width:80px;height:80px;background:linear-gradient(135deg,rgba(184,150,12,.2),rgba(184,150,12,.05));border:2px solid rgba(184,150,12,.5);display:flex;align-items:center;justify-content:center;border-radius:50%;">
+                <i class="fas fa-check" style="color:var(--gold);font-size:1.85rem;"></i>
+              </div>
             </div>
             <div>
-              <p style="font-size:.58rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:rgba(184,150,12,.65);margin-bottom:.5rem;">Enquiry Submitted Successfully</p>
-              <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.7rem;color:#fff;line-height:1.15;margin-bottom:.75rem;">Your enquiry has been received.</h3>
-              <p style="font-size:.85rem;color:rgba(255,255,255,.55);line-height:1.75;max-width:480px;">India Gully's leadership team reviews all submissions within <strong style="color:#fff;">24 business hours</strong>. A confirmation email has been sent to your inbox.</p>
+              <p style="font-size:.58rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:rgba(184,150,12,.7);margin-bottom:.5rem;">Enquiry Submitted Successfully</p>
+              <h3 style="font-family:Georgia,serif;font-size:1.75rem;color:#fff;line-height:1.15;margin-bottom:.75rem;font-weight:400;">Your enquiry has been received.</h3>
+              <p style="font-size:.85rem;color:rgba(255,255,255,.5);line-height:1.8;max-width:460px;">Our leadership team reviews all submissions within <strong style="color:rgba(255,255,255,.85);">24 business hours</strong>. A confirmation email has been sent to your inbox.</p>
             </div>
-            <div style="background:rgba(184,150,12,.08);border:1px solid rgba(184,150,12,.25);padding:1.1rem 2rem;width:100%;max-width:380px;">
-              <p style="font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(184,150,12,.5);margin-bottom:.4rem;">Reference Number</p>
-              <div id="contact-success-ref" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.3rem;color:var(--gold);letter-spacing:.04em;"></div>
+            <!-- Reference box -->
+            <div style="background:rgba(184,150,12,.07);border:1px solid rgba(184,150,12,.28);padding:1.1rem 2.5rem;width:100%;max-width:360px;">
+              <p style="font-size:.55rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:rgba(184,150,12,.55);margin-bottom:.4rem;">Reference Number</p>
+              <div id="contact-success-ref" style="font-family:Georgia,serif;font-size:1.3rem;color:var(--gold);letter-spacing:.05em;"></div>
             </div>
-            <div style="display:flex;gap:.875rem;flex-wrap:wrap;justify-content:center;">
-              <a href="/listings" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;background:var(--gold);color:#fff;text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;"><i class="fas fa-folder-open" style="font-size:.62rem;"></i>View Active Mandates</a>
-              <a href="/insights" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.65);text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,255,255,.04);"><i class="fas fa-newspaper" style="font-size:.62rem;"></i>Sector Insights</a>
+          </div>
+
+          <!-- What happens next -->
+          <div style="padding:1.75rem 2.5rem 0;">
+            <p style="font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:1rem;text-align:center;">What Happens Next</p>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.875rem;">
+              ${[
+                { n:'01', icon:'envelope-open-text', title:'Acknowledgement', desc:'Confirmation email sent within minutes' },
+                { n:'02', icon:'user-tie',           title:'Team Review',    desc:'Leadership reviews your brief & background' },
+                { n:'03', icon:'handshake',          title:'NDA & IM',       desc:'Mutual NDA executed; IM shared within 48h' },
+              ].map(s => `
+              <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);padding:1rem .875rem;text-align:center;">
+                <div style="font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(184,150,12,.5);margin-bottom:.5rem;">${s.n}</div>
+                <div style="width:32px;height:32px;background:rgba(184,150,12,.1);border:1px solid rgba(184,150,12,.25);display:flex;align-items:center;justify-content:center;margin:0 auto .625rem;">
+                  <i class="fas fa-${s.icon}" style="color:var(--gold);font-size:.72rem;"></i>
+                </div>
+                <div style="font-size:.78rem;font-weight:600;color:#fff;margin-bottom:.3rem;">${s.title}</div>
+                <div style="font-size:.7rem;color:rgba(255,255,255,.4);line-height:1.55;">${s.desc}</div>
+              </div>`).join('')}
             </div>
+          </div>
+
+          <!-- Advisor card -->
+          <div style="margin:1.5rem 2.5rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:1.125rem 1.25rem;display:flex;align-items:center;gap:1rem;">
+            <div style="width:44px;height:44px;border-radius:50%;background:rgba(212,174,42,.15);border:2px solid rgba(212,174,42,.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-size:.85rem;font-weight:700;color:var(--gold);">AM</span>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:.82rem;font-weight:600;color:#fff;margin-bottom:.1rem;">Arun Manikonda</div>
+              <div style="font-size:.7rem;color:rgba(255,255,255,.45);">Managing Director · India Gully</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:.35rem;align-items:flex-end;">
+              <a href="tel:+918988988988" style="font-size:.72rem;color:rgba(255,255,255,.5);text-decoration:none;display:flex;align-items:center;gap:.35rem;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><i class="fas fa-phone" style="font-size:.6rem;"></i>+91 8988 988 988</a>
+              <a href="mailto:akm@indiagully.com" style="font-size:.72rem;color:rgba(255,255,255,.5);text-decoration:none;display:flex;align-items:center;gap:.35rem;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><i class="fas fa-envelope" style="font-size:.6rem;"></i>akm@indiagully.com</a>
+            </div>
+          </div>
+
+          <!-- CTA buttons -->
+          <div style="padding:0 2.5rem 2.5rem;display:flex;gap:.875rem;flex-wrap:wrap;justify-content:center;">
+            <a href="/listings" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;background:var(--gold);color:#fff;text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;"><i class="fas fa-folder-open" style="font-size:.62rem;"></i>View Active Mandates</a>
+            <a href="https://wa.me/918988988988?text=Hi%20India%20Gully%2C%20I%20have%20submitted%20a%20mandate%20enquiry%20and%20would%20like%20to%20follow%20up." target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;background:#25D366;color:#fff;text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;"><i class="fab fa-whatsapp" style="font-size:.82rem;"></i>WhatsApp Follow-up</a>
+            <a href="/insights" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,255,255,.04);"><i class="fas fa-newspaper" style="font-size:.62rem;"></i>Sector Insights</a>
           </div>
         </div>
 
@@ -174,9 +223,9 @@ function igContactAjax() {
 
   if(!fName||fName.length<2){showErr('Please enter your first name.');return;}
   if(!lName||lName.length<2){showErr('Please enter your last name.');return;}
-  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){showErr('Please enter a valid email address.');return;}
-  var cleaned=phone.replace(/[\s\-().]/g,'');
-  if(!phone||(!(/^(\+91|0)?[6-9]\d{9}$/.test(cleaned))&&!(/^\+\d{7,15}$/.test(cleaned)))){showErr('Enter a valid Indian mobile (+91 XXXXX XXXXX) or international number.');return;}
+  if(!email||email.indexOf('@')<1||email.split('@')[1].indexOf('.')<0){showErr('Please enter a valid email address.');return;}
+  var cleaned=phone.replace(/[^0-9+]/g,'');
+  if(!phone||cleaned.length<10){showErr('Enter a valid Indian mobile (+91 XXXXX XXXXX) or international number.');return;}
   if(!message||message.length<20){showErr('Please provide at least 20 characters in your message.');return;}
   if(!nda||!nda.checked){showErr('Please confirm the confidentiality consent.');return;}
 
@@ -209,8 +258,8 @@ function igContactAjax() {
   if(!form) return;
   /* Phone validation: Indian mobile (+91 or 0, 10 digits) or international */
   function validatePhone(val){
-    var cleaned = val.replace(/[\s\-().]/g,'');
-    return /^(\+91|0)?[6-9]\d{9}$/.test(cleaned) || /^\+\d{7,15}$/.test(cleaned);
+    var cleaned = val.replace(/[^0-9+]/g,'');
+    return cleaned.length >= 10;
   }
   /* Real-time phone hint */
   var phoneInp2 = form.querySelector('[name=phone]');

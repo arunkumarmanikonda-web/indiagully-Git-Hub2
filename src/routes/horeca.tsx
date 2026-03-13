@@ -149,39 +149,72 @@ app.get('/', (c) => {
         <p class="lead" style="margin-bottom:2.5rem;">Fill in the form and our HORECA team will respond with a detailed specification and quote within 5 business days.</p>
 
         <!-- SUCCESS PANEL (hidden until submission) -->
-        <div id="horeca-success" style="display:none;background:linear-gradient(135deg,#f0fdf4 0%,#ecfdf5 100%);border:1px solid #a7f3d0;padding:2.5rem 2rem;position:relative;overflow:hidden;">
-          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#065F46,transparent);"></div>
-          <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.25rem;">
-            <div style="width:64px;height:64px;background:#065F46;display:flex;align-items:center;justify-content:center;border-radius:50%;">
-              <i class="fas fa-check" style="color:#fff;font-size:1.5rem;"></i>
+        <style>@keyframes pulse-ring{0%{transform:scale(.9);opacity:.6}50%{transform:scale(1.15);opacity:.2}100%{transform:scale(.9);opacity:.6}}</style>
+        <div id="horeca-success" style="display:none;background:linear-gradient(160deg,#08111f 0%,#0a1a1a 60%,#081510 100%);border:1px solid rgba(6,95,70,.5);position:relative;overflow:hidden;">
+          <!-- Green bar -->
+          <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 0%,#34d399 40%,rgba(52,211,153,.3) 100%);"></div>
+          <!-- Radial glow -->
+          <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(52,211,153,.08) 0%,transparent 70%);pointer-events:none;"></div>
+
+          <!-- Header -->
+          <div style="padding:2.5rem 2.5rem 0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.25rem;">
+            <div style="position:relative;width:76px;height:76px;">
+              <div style="position:absolute;inset:0;border-radius:50%;border:2px solid rgba(52,211,153,.2);animation:pulse-ring 2s cubic-bezier(.215,.61,.355,1) infinite;"></div>
+              <div style="width:76px;height:76px;background:linear-gradient(135deg,rgba(52,211,153,.18),rgba(52,211,153,.04));border:2px solid rgba(52,211,153,.45);display:flex;align-items:center;justify-content:center;border-radius:50%;">
+                <i class="fas fa-check" style="color:#34d399;font-size:1.75rem;"></i>
+              </div>
             </div>
             <div>
-              <p style="font-size:.6rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:#065F46;margin-bottom:.5rem;">Enquiry Submitted</p>
-              <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.6rem;color:#111;margin-bottom:.625rem;">Your HORECA enquiry has been received.</h3>
-              <p style="font-size:.85rem;color:#555;line-height:1.75;max-width:440px;">Pavan Manikonda and our HORECA procurement team will respond within <strong>48 business hours</strong> with a detailed specification and quotation.</p>
+              <p style="font-size:.58rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:rgba(52,211,153,.7);margin-bottom:.5rem;">HORECA Enquiry Submitted</p>
+              <h3 style="font-family:Georgia,serif;font-size:1.7rem;color:#fff;line-height:1.15;margin-bottom:.75rem;font-weight:400;">Your enquiry has been received.</h3>
+              <p style="font-size:.85rem;color:rgba(255,255,255,.5);line-height:1.8;max-width:460px;">Pavan Manikonda and our procurement team will respond within <strong style="color:rgba(255,255,255,.85);">48 business hours</strong> with a detailed specification and quotation.</p>
             </div>
-            <div style="background:#fff;border:1px solid #a7f3d0;padding:1rem 2rem;width:100%;max-width:360px;">
-              <p style="font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#065F46;margin-bottom:.3rem;">Your Reference Number</p>
-              <div id="horeca-success-ref" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.2rem;color:#111;letter-spacing:.04em;"></div>
+            <div style="background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.25);padding:1.1rem 2.5rem;width:100%;max-width:360px;">
+              <p style="font-size:.55rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:rgba(52,211,153,.55);margin-bottom:.4rem;">Reference Number</p>
+              <div id="horeca-success-ref" style="font-family:Georgia,serif;font-size:1.25rem;color:#34d399;letter-spacing:.05em;"></div>
             </div>
-            <div style="width:100%;max-width:420px;border:1px solid #e4dece;padding:1.25rem 1.5rem;text-align:left;">
-              <p style="font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#888;margin-bottom:.75rem;">Your HORECA Contact</p>
-              <div style="display:flex;gap:.75rem;align-items:center;">
-                <div style="width:42px;height:42px;background:#111;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Serif Display',Georgia,serif;font-size:.9rem;color:var(--gold);">PM</div>
-                <div>
-                  <div style="font-size:.9rem;font-weight:600;color:#111;">Pavan Manikonda</div>
-                  <div style="font-size:.72rem;color:#888;">Executive Director, HORECA Solutions</div>
+          </div>
+
+          <!-- What happens next -->
+          <div style="padding:1.75rem 2.5rem 0;">
+            <p style="font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:1rem;text-align:center;">What Happens Next</p>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.875rem;">
+              ${[
+                { n:'01', icon:'envelope-open-text', title:'Acknowledgement', desc:'Confirmation email sent within minutes' },
+                { n:'02', icon:'clipboard-list',     title:'RFQ Review',      desc:'HORECA team reviews your requirements' },
+                { n:'03', icon:'file-invoice',       title:'Quote & Specs',   desc:'Detailed quote issued within 48h' },
+              ].map((s: any) => `
+              <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);padding:1rem .875rem;text-align:center;">
+                <div style="font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(52,211,153,.45);margin-bottom:.5rem;">${s.n}</div>
+                <div style="width:32px;height:32px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);display:flex;align-items:center;justify-content:center;margin:0 auto .625rem;">
+                  <i class="fas fa-${s.icon}" style="color:#34d399;font-size:.72rem;"></i>
                 </div>
-              </div>
-              <div style="display:flex;gap:1.25rem;margin-top:.875rem;flex-wrap:wrap;">
-                <a href="tel:+916282556067" style="font-size:.8rem;color:#065F46;display:flex;align-items:center;gap:.4rem;text-decoration:none;"><i class="fas fa-phone" style="font-size:.65rem;"></i>+91 62825 56067</a>
-                <a href="mailto:pavan@indiagully.com" style="font-size:.8rem;color:#065F46;display:flex;align-items:center;gap:.4rem;text-decoration:none;"><i class="fas fa-envelope" style="font-size:.65rem;"></i>pavan@indiagully.com</a>
-              </div>
+                <div style="font-size:.78rem;font-weight:600;color:#fff;margin-bottom:.3rem;">${s.title}</div>
+                <div style="font-size:.7rem;color:rgba(255,255,255,.4);line-height:1.55;">${s.desc}</div>
+              </div>`).join('')}
             </div>
-            <div style="display:flex;gap:.875rem;flex-wrap:wrap;">
-              <a href="/horeca/catalogue" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;background:var(--gold);color:#fff;text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;"><i class="fas fa-th-list" style="font-size:.62rem;"></i>Browse Full Catalogue</a>
-              <a href="/horeca" onclick="document.getElementById('horeca-success').style.display='none';document.getElementById('horeca-form-wrap').style.display='block';return false;" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;border:1px solid var(--border);color:var(--ink-soft);text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:#fff;"><i class="fas fa-redo" style="font-size:.62rem;"></i>Submit Another Enquiry</a>
+          </div>
+
+          <!-- HORECA contact advisor -->
+          <div style="margin:1.5rem 2.5rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:1.125rem 1.25rem;display:flex;align-items:center;gap:1rem;">
+            <div style="width:44px;height:44px;border-radius:50%;background:rgba(52,211,153,.12);border:2px solid rgba(52,211,153,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-size:.85rem;font-weight:700;color:#34d399;">PM</span>
             </div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:.82rem;font-weight:600;color:#fff;margin-bottom:.1rem;">Pavan Manikonda</div>
+              <div style="font-size:.7rem;color:rgba(255,255,255,.4);">Executive Director · HORECA Solutions</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:.35rem;align-items:flex-end;">
+              <a href="tel:+916282556067" style="font-size:.72rem;color:rgba(255,255,255,.5);text-decoration:none;display:flex;align-items:center;gap:.35rem;" onmouseover="this.style.color='#34d399'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><i class="fas fa-phone" style="font-size:.6rem;"></i>+91 62825 56067</a>
+              <a href="mailto:pavan@indiagully.com" style="font-size:.72rem;color:rgba(255,255,255,.5);text-decoration:none;display:flex;align-items:center;gap:.35rem;" onmouseover="this.style.color='#34d399'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><i class="fas fa-envelope" style="font-size:.6rem;"></i>pavan@indiagully.com</a>
+            </div>
+          </div>
+
+          <!-- CTA buttons -->
+          <div style="padding:0 2.5rem 2.5rem;display:flex;gap:.875rem;flex-wrap:wrap;justify-content:center;">
+            <a href="/horeca/catalogue" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;background:var(--gold);color:#fff;text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;"><i class="fas fa-th-list" style="font-size:.62rem;"></i>Browse Full Catalogue</a>
+            <a href="https://wa.me/916282556067?text=Hi%20Pavan%2C%20I%20have%20submitted%20a%20HORECA%20enquiry%20and%20would%20like%20to%20follow%20up." target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;background:#25D366;color:#fff;text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;"><i class="fab fa-whatsapp" style="font-size:.82rem;"></i>WhatsApp Follow-up</a>
+            <a href="/horeca" onclick="document.getElementById('horeca-success').style.display='none';document.getElementById('horeca-form-wrap').style.display='block';return false;" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.25rem;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.55);text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,255,255,.04);"><i class="fas fa-redo" style="font-size:.62rem;"></i>Another Enquiry</a>
           </div>
         </div>
 
@@ -682,9 +715,11 @@ function igCatRenderGrid(products) {
       // Featured banner
       + (p.featured ? '<div style="background:linear-gradient(90deg,var(--gold),#a37a08);color:#fff;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .875rem;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-star" style="font-size:.55rem;"></i>Featured SKU</div>' : '')
       // Image / category icon area
-      + '<div style="height:120px;background:linear-gradient(135deg,' + catColor + '18 0%,' + catColor + '08 100%);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;border-bottom:1px solid rgba(0,0,0,.05);">'
-      + (p.image ? '<img src="' + p.image + '" alt="' + p.name.replace(/"/g,'') + '" style="max-height:100px;max-width:90%;object-fit:contain;" loading="lazy">'
-                 : '<div style="text-align:center;"><div style="width:52px;height:52px;background:' + catColor + '22;border:1px solid ' + catColor + '44;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .5rem;"><i class="fas fa-' + catIcon + '" style="color:' + catColor + ';font-size:1.1rem;"></i></div><span style="font-size:.6rem;color:' + catColor + ';font-weight:600;opacity:.7;">' + (p.category||'').split(' & ')[0] + '</span></div>')
+      + '<div style="height:130px;background:linear-gradient(145deg,' + catColor + '15 0%,' + catColor + '05 100%);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;border-bottom:1px solid rgba(0,0,0,.06);overflow:hidden;">'
+      + '<div style="position:absolute;bottom:-20px;right:-20px;width:90px;height:90px;border-radius:50%;background:' + catColor + '08;"></div>'
+      + '<div style="position:absolute;top:-10px;left:-10px;width:60px;height:60px;border-radius:50%;background:' + catColor + '06;"></div>'
+      + (p.image ? '<img src="' + p.image + '" alt="' + p.name.replace(/"/g,'') + '" style="max-height:110px;max-width:88%;object-fit:contain;position:relative;z-index:1;" loading="lazy">'
+                 : '<div style="text-align:center;position:relative;z-index:1;"><div style="width:58px;height:58px;background:' + catColor + '20;border:1.5px solid ' + catColor + '40;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .5rem;"><i class="fas fa-' + catIcon + '" style="color:' + catColor + ';font-size:1.25rem;"></i></div><span style="font-size:.58rem;color:' + catColor + ';font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.8;">' + (p.category||'').split(' & ')[0] + '</span></div>')
       + '</div>'
       // Content
       + '<div style="padding:1rem 1.1rem;flex:1;display:flex;flex-direction:column;gap:.35rem;">'
