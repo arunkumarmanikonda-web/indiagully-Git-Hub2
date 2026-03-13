@@ -17,6 +17,8 @@ import salesRoute from './routes/sales'
 import worksRoute from './routes/works'
 import valuationRoute from './routes/valuation'
 import testimonialsRoute from './routes/testimonials'
+import compareRoute from './routes/compare'
+import marketDataRoute from './routes/market-data'
 import { layout } from './lib/layout'
 
 const app = new Hono()
@@ -182,6 +184,8 @@ app.get('/sitemap.xml', (c) => {
     { url: '/contact',  priority: '0.8', freq: 'monthly' },
     { url: '/valuation',     priority: '0.85', freq: 'monthly' },
     { url: '/testimonials',  priority: '0.75', freq: 'monthly' },
+    { url: '/compare',       priority: '0.8',  freq: 'weekly'  },
+    { url: '/market-data',   priority: '0.85', freq: 'weekly'  },
     { url: '/legal/privacy',    priority: '0.3', freq: 'yearly' },
     { url: '/legal/terms',      priority: '0.3', freq: 'yearly' },
     { url: '/legal/disclaimer', priority: '0.3', freq: 'yearly' },
@@ -263,6 +267,8 @@ app.route('/sales', salesRoute)
 app.get('/sales', (c) => c.redirect('/sales/dashboard', 302))
 app.route('/valuation', valuationRoute)
 app.route('/testimonials', testimonialsRoute)
+app.route('/compare', compareRoute)
+app.route('/market-data', marketDataRoute)
 app.route('/api', apiRoute)
 
 // ── 404 NOT FOUND ─────────────────────────────────────────────────────────────

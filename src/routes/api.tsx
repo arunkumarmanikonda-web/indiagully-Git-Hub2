@@ -2492,6 +2492,79 @@ app.post('/valuation', async (c) => {
   }
 })
 
+// ── GET /market-data — India real estate & hospitality market intelligence ─
+app.get('/market-data', (c) => {
+  const ts = new Date().toISOString()
+  return c.json({
+    success: true,
+    as_of: 'March 2026',
+    ts,
+    disclaimer: 'All figures are indicative. Sources: JLL, CBRE, ANAROCK, STR, RBI, DPIIT, India Gully Research.',
+    macro: {
+      india_gdp_growth_fy26: '6.8%',
+      domestic_air_pax_fy26: '165 Mn (+14% YoY)',
+      foreign_tourist_arrivals: '9.2 Mn (+22% YoY)',
+      pan_india_hotel_occ_q3fy26: '71.4% (+2.8pp YoY)',
+      pan_india_revpar_q3fy26: '₹4,820 (+9.1% YoY)',
+      grade_a_office_vacancy: '15.8%',
+      office_net_absorption_fy26: '47 Mn sqft (+8% YoY)',
+      retail_mall_vacancy: '8.2%',
+      branded_hotel_pipeline: '1,35,000 keys (FY26-28)',
+      hotel_transaction_h1fy26: '₹4,800 Cr',
+      rbi_repo_rate: '6.25% (Feb 2026 -25bps)',
+      inr_usd: '₹83.4',
+    },
+    cities: [
+      { city:'Delhi NCR',   office_psf:'₹8,500–10,500', hotel_rate:'₹6,200–9,500',  retail_psf:'₹12,000–28,000', occ:'72%', adr:'₹7,200', revpar:'₹5,184', cap_rate:'7.5–9.0%' },
+      { city:'Mumbai BKC',  office_psf:'₹22,000–28,000', hotel_rate:'₹10,500–18,000', retail_psf:'₹35,000–55,000', occ:'78%', adr:'₹12,500', revpar:'₹9,750', cap_rate:'7.0–8.5%' },
+      { city:'Bengaluru',   office_psf:'₹8,000–12,000', hotel_rate:'₹5,500–9,000',  retail_psf:'₹10,000–22,000', occ:'74%', adr:'₹6,800', revpar:'₹5,032', cap_rate:'7.5–9.0%' },
+      { city:'Hyderabad',   office_psf:'₹6,500–9,500',  hotel_rate:'₹4,800–7,500',  retail_psf:'₹8,000–18,000',  occ:'71%', adr:'₹5,900', revpar:'₹4,189', cap_rate:'8.0–10.0%' },
+      { city:'Chandigarh',  office_psf:'₹3,500–5,500',  hotel_rate:'₹3,200–5,500',  retail_psf:'₹6,000–12,000',  occ:'69%', adr:'₹4,800', revpar:'₹3,312', cap_rate:'9.0–11.5%' },
+      { city:'Jaipur',      office_psf:'₹3,000–4,500',  hotel_rate:'₹3,800–6,500',  retail_psf:'₹5,500–11,000',  occ:'67%', adr:'₹5,500', revpar:'₹3,685', cap_rate:'9.5–12.0%' },
+    ],
+    hotel_segments: [
+      { segment:'Luxury (5-star)',   adr_range:'₹14,000–28,000', occ_range:'74–82%', ebitda_mult:'12–16×', cap_rate:'8.0–10.0%' },
+      { segment:'Upper-Upscale',     adr_range:'₹7,000–14,000',  occ_range:'72–79%', ebitda_mult:'9–12×',  cap_rate:'8.5–10.5%' },
+      { segment:'Upscale (Branded)', adr_range:'₹4,500–7,000',   occ_range:'70–77%', ebitda_mult:'7–10×',  cap_rate:'9.0–11.0%' },
+      { segment:'Mid-Scale',         adr_range:'₹2,800–4,500',   occ_range:'68–75%', ebitda_mult:'6–8×',   cap_rate:'10.0–12.0%' },
+      { segment:'Heritage/Boutique', adr_range:'₹5,500–15,000',  occ_range:'65–75%', ebitda_mult:'8–12×',  cap_rate:'9.5–11.5%' },
+    ],
+    india_gully_pipeline: {
+      active_mandates: 8,
+      pipeline_value: '₹1,165 Cr+',
+      verticals: 6,
+      hotel_projects: 15,
+      geographic_reach: 'Pan-India',
+    },
+  })
+})
+
+// ── POST /compare — save/log a mandate comparison session ──────────────
+app.post('/compare', async (c) => {
+  try {
+    let body: any = {}
+    const ct = c.req.header('content-type') || ''
+    if (ct.includes('application/json')) body = await c.req.json()
+    else { const fd = await c.req.formData(); for(const [k,v] of fd.entries()) body[k] = v }
+
+    const ids: string[] = (body.ids || []).slice(0, 3)
+    if (!ids.length) return c.json({ success: false, error: 'Provide at least one mandate ID' }, 400)
+
+    const ref = `IG-CMP-${Date.now()}-${Math.random().toString(36).slice(2,6).toUpperCase()}`
+    const ts  = new Date().toISOString()
+
+    try {
+      const env = (c as any).env
+      if (env?.KV) await env.KV.put(`compare:${ref}`, JSON.stringify({ ref, ids, ts }),
+        { expirationTtl: 60 * 60 * 24 * 7 }) // 7 days
+    } catch(_) { /* silent */ }
+
+    return c.json({ success: true, ref, ids, share_url: `/compare?${ids.map((id,i) => `${['a','b','c'][i]}=${id}`).join('&')}`, ts })
+  } catch(e) {
+    return c.json({ success: false, error: 'Compare save failed' }, 500)
+  }
+})
+
 app.get('/listings', (c) => c.json({ total: 8, pipeline_value: '₹1,165 Cr', listings: [
   { id:'prism-tower-gurgaon',           title:'Prism Tower — Mixed-Use Hospitality & Commercial', location:'Gwalpahari, Gurugram',      value:'₹400 Cr', sector:'Real Estate',         status:'Reference Transaction – Due Diligence Stage' },
   { id:'belcibo-hospitality',           title:'Belcibo Hospitality Platform',                    location:'Delhi NCR & Goa',           value:'₹100 Cr', sector:'Hospitality',         status:'Open for Investment – Active Fundraise' },

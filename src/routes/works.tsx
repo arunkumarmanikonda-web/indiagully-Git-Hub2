@@ -126,6 +126,44 @@ app.get('/', (c) => {
   </div>
 </div>
 
+<!-- ══ ACHIEVEMENT TIMELINE ══════════════════════════════════════════════ -->
+<div style="background:var(--bg);padding:3.5rem 0;border-bottom:1px solid rgba(255,255,255,.06);">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <p style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;">Our Journey</p>
+      <h2 class="h2" style="color:#fff;margin:0;">Milestone Timeline</h2>
+    </div>
+    <div class="timeline-v">
+      ${[
+        { year:'2017', icon:'🏛️', color:'#B8960C', title:'Founded', desc:'Vivacious Entertainment and Hospitality Pvt. Ltd. incorporated. Commenced advisory across Hospitality and Entertainment sectors.' },
+        { year:'2018', icon:'🏨', color:'#065F46', title:'Hotel Management Vertical', desc:'First PMC and pre-opening consultancy mandates for Cygnett, Regenta and Radisson brand properties across North India.' },
+        { year:'2019', icon:'🏢', color:'#1A3A6B', title:'Real Estate & Retail Expansion', desc:'Expanded into Real Estate consulting and Retail Leasing strategy, building a truly diversified advisory practice.' },
+        { year:'2020', icon:'🍽️', color:'#7C3AED', title:'HORECA Division Launched', desc:'End-to-end FF&E, OS&E and kitchen procurement for hotel pre-openings. Now covers 500+ SKUs across 15+ hotel projects.' },
+        { year:'2021', icon:'🌟', color:'#B8960C', title:'India Gully Brand', desc:'Brand identity launched, celebrating Desiness. 30+ retail brand relationships and deepened hospitality advisory.' },
+        { year:'2023', icon:'⚖️', color:'#7F1D1D', title:'Pipeline Crosses ₹1,000 Cr', desc:'High-value asset sales in Chandigarh and Himachal Pradesh. Debt & Special Situations vertical established.' },
+        { year:'2024', icon:'💻', color:'#1E40AF', title:'Digital Transformation', desc:'India Gully Enterprise Platform launched. Integrated ERP, HORECA procurement, compliance and governance systems.' },
+        { year:'2026', icon:'🚀', color:'#B8960C', title:'₹1,165 Cr+ Pipeline', desc:'Active mandate pipeline covering 8 asset classes across Pan-India. Platform v2026.51 — 390+ routes, 100/100 security.' },
+      ].map((m, i) => `
+      <div class="timeline-item reveal" style="display:grid;grid-template-columns:80px 32px 1fr;gap:0 1.25rem;align-items:start;margin-bottom:2rem;position:relative;">
+        <!-- Year -->
+        <div style="text-align:right;padding-top:.35rem;">
+          <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.15rem;color:${m.color};line-height:1;">${m.year}</span>
+        </div>
+        <!-- Dot + line -->
+        <div style="display:flex;flex-direction:column;align-items:center;padding-top:.3rem;">
+          <div style="width:32px;height:32px;border-radius:50%;background:${m.color}22;border:2px solid ${m.color};display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;z-index:1;">${m.icon}</div>
+          ${i < 7 ? `<div style="width:2px;flex:1;min-height:40px;background:linear-gradient(to bottom,${m.color}44,transparent);margin-top:.4rem;"></div>` : ''}
+        </div>
+        <!-- Content -->
+        <div style="padding-bottom:.75rem;">
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.05rem;color:#fff;margin-bottom:.3rem;">${m.title}</div>
+          <p style="font-size:.85rem;color:rgba(255,255,255,.55);font-family:'DM Sans',sans-serif;line-height:1.65;margin:0;">${m.desc}</p>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>
+
 <!-- ══ VERTICAL SECTIONS ═════════════════════════════════════════════════ -->
 <div class="sec-pd" style="padding-top:4rem;">
   <div class="wrap">

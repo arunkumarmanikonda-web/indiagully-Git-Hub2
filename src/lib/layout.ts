@@ -1178,6 +1178,19 @@ body{overflow-x:hidden;}
 .ig-callout-gold{background:linear-gradient(135deg,rgba(184,150,12,.08) 0%,rgba(184,150,12,.04) 100%);border:1px solid rgba(184,150,12,.25);padding:2.5rem;position:relative;overflow:hidden;}
 .ig-callout-gold::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-lt),transparent);}
 
+/* ── timeline-v (vertical milestone timeline) ─── */
+.timeline-v { max-width:680px;margin:0 auto; }
+.timeline-item { position:relative; }
+@media(max-width:560px){
+  .timeline-v .timeline-item { grid-template-columns:60px 28px 1fr !important; gap:0 .75rem !important; }
+}
+
+/* ── sector-tab (works / compare filter tabs) ─── */
+.sector-tab-bar { display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem; }
+.sector-tab { padding:.4rem 1rem;border-radius:100px;font-size:.76rem;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:.04em;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s; }
+.sector-tab:hover { border-color:rgba(212,174,42,.4);color:rgba(255,255,255,.8); }
+.sector-tab.active { background:rgba(212,174,42,.12);border-color:var(--gold);color:var(--gold); }
+
 /* ── val-grid / val-card (valuation calculator) ── */
 .val-grid{display:grid;grid-template-columns:1fr 360px;gap:2rem;align-items:start;}
 @media(max-width:960px){.val-grid{grid-template-columns:1fr;}}
@@ -1350,8 +1363,10 @@ const NAV = `
         </div>
       </div>
       <a href="/listings" class="n-lk">Mandates</a>
+      <a href="/compare" class="n-lk">Compare</a>
       <a href="/works" class="n-lk">Our Work</a>
       <a href="/insights" class="n-lk">Insights</a>
+      <a href="/market-data" class="n-lk">Market Data</a>
       <a href="/valuation" class="n-lk">Valuation</a>
       <a href="/contact"  class="n-lk">Contact</a>
     </div>
@@ -1400,8 +1415,10 @@ const NAV = `
       <a href="/services" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Advisory Services</a>
       <a href="/horeca"   style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">HORECA Solutions</a>
       <a href="/listings" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Mandates</a>
+      <a href="/compare" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Compare Mandates</a>
       <a href="/works" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Our Work</a>
       <a href="/insights" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Insights</a>
+      <a href="/market-data" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Market Data</a>
       <a href="/valuation" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Valuation Tool</a>
       <a href="/testimonials" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Testimonials</a>
       <a href="/contact"  style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Contact</a>
@@ -1475,7 +1492,7 @@ const FOOTER = `
     <div>
       <p style="font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(184,150,12,.7);margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem;"><span style="width:16px;height:1px;background:rgba(184,150,12,.5);display:inline-block;"></span>Platform</p>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:.55rem;">
-        ${[['Active Mandates','/listings'],['Our Work','/works'],['Insights','/insights'],['Valuation Tool','/valuation'],['Client Testimonials','/testimonials'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.5);transition:color .2s;display:flex;align-items:center;gap:.4rem;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><span style="width:4px;height:4px;background:rgba(184,150,12,.4);border-radius:50%;flex-shrink:0;display:inline-block;"></span>${l}</a></li>`).join('')}
+        ${[['Active Mandates','/listings'],['Compare Mandates','/compare'],['Our Work','/works'],['Insights','/insights'],['Market Data','/market-data'],['Valuation Tool','/valuation'],['Client Testimonials','/testimonials'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.5);transition:color .2s;display:flex;align-items:center;gap:.4rem;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><span style="width:4px;height:4px;background:rgba(184,150,12,.4);border-radius:50%;flex-shrink:0;display:inline-block;"></span>${l}</a></li>`).join('')}
       </ul>
     </div>
 
