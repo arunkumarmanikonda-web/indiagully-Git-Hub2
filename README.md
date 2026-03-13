@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://48bcb41f.india-gully.pages.dev |
+| **Latest Deploy** | https://bef789d0.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
@@ -34,7 +34,29 @@ All portals require credentials provisioned by the system administrator.
 
 ---
 
+## 🚀 Phase 3 — New Routes, Valuation Tool & UX Polish (v15)
+
+**Version: v15 | Build: 3.4 MB | Routes: 12+ all 200 OK | Deploy: https://bef789d0.india-gully.pages.dev**  
+**Commit: fe78fce | Date: March 2026**
+
+### ✅ Phase 3 Deliverables
+
+| Area | What Changed |
+|------|-------------|
+| **`/valuation`** | Interactive 3-method property calculator: Income Capitalisation, DCF (10-yr), Revenue/Hotel method. India 2026 benchmark tables, advisory CTA, disclaimer panel. |
+| **`/api/valuation`** | POST endpoint (cap/dcf/rev) — full validation, unique ref IDs `IG-VAL-{ts}-XXXX`, KV logging, 3 calculation engines |
+| **`/testimonials`** | 8-card client testimonial wall — featured quote hero, sector filter buttons, outcome badges, animated `.test-card` grid |
+| **Insights** | 2 new research articles: *Mall-Hotel-Office Trinity* (Retail, Mar 2026) + *HORECA Tier-2 Supply Chain* (HORECA, Feb 2026) |
+| **Home** | Partner logo marquee (22 items, 28s CSS animation), Trust signals row (SLA badges, security, geo, testimonials link) |
+| **Contact** | Team quick-dial cards (3 leaders — call/WhatsApp/email), SLA badge strip, WhatsApp floating button |
+| **CSS System** | 8 new classes: `.val-grid/.val-card`, `.marquee-outer/.marquee-track/.marquee-item`, `.trust-row`, `.tel-grid/.tel-card`, `.test-wall/.test-card`, `.sla-badge`, `.wa-float` |
+| **Navigation** | `/valuation` in desktop nav bar; `/valuation` + `/testimonials` in footer quick-links + mobile menu |
+| **Sitemap** | Updated: `/valuation`, `/testimonials`, 2 new article IDs |
+
+---
+
 ## 🚀 Phase 2 — Frontend & Backend Quality Pass (v14)
+
 
 **Version: v14 | Build: 3.3 MB | Routes: All 200 OK | Deploy: https://48bcb41f.india-gully.pages.dev**  
 **Commit: 758add0 | Date: March 2026**
