@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://94a4d60a.india-gully.pages.dev |
+| **Latest Deploy** | https://039cca40.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
@@ -36,25 +36,25 @@ All portals require credentials provisioned by the system administrator.
 
 ---
 
-## 🚀 Phase 5 — Knowledge Hub, Careers & Platform Enrichment (v16)
+## 🚀 Phase 7 — Premium UX Polish, HORECA Catalogue & EOI Redesign (v18)
 
-**Version: v16 | Build: 3.5 MB | Routes: 17+ all 200 OK | Deploy: https://94a4d60a.india-gully.pages.dev**  
-**Commit: a589e48 | Date: March 2026**
+**Version: v18 | Build: 3.6 MB | Routes: 20+ all 200 OK | Deploy: https://039cca40.india-gully.pages.dev**  
+**Commit: 2670eff → latest | Date: March 2026**
 
-### ✅ Phase 5 Deliverables
+### ✅ Phase 7 Deliverables
 
 | Area | What Changed |
 |------|-------------|
-| **`/resources`** | 12-resource Knowledge Hub with category filter, request-access modal, custom research CTA. Resources span HORECA, Real Estate, Hospitality, Advisory and Legal categories. |
-| **`/careers`** | 5 open positions with expandable JD details, apply-now modal (posts to `/api/enquiry`), speculative CV CTA, "Why India Gully" section. |
-| **Insights** | 2 new deep-dive articles: *India Retail Leasing 2026* (Retail, Mar 2026) + *Distressed Hospitality Assets 2026* (Debt & Special Situations, Mar 2026). Duplicate article ID fixed. |
-| **`/about`** | Added "By The Numbers" section (8 KPIs) + "Recognition & Marquee Mandates" grid showing 5 headline transactions and 4 competitive differentiators. |
-| **Navigation** | Desktop: "More" dropdown with Resources, Testimonials, Careers. Mobile: Resources + Careers added. Footer quicklinks updated. |
-| **Sitemap** | `/resources` and `/careers` added with appropriate priorities. |
+| **Listings detail — Teaser Layer** | Basic mandate facts (sector, location, value, status, 2 teaser highlights) are visible to all visitors without NDA. Financial details, full specs, images, and the EOI form are revealed only after NDA acceptance. |
+| **Listings detail — NDA Gate** | Redesigned floating side-panel; sticky CTA prompts user to accept NDA. After acceptance the page smoothly unlocks: images slide in, financial metrics reveal, EOI form activates. |
+| **EOI Confirmation Panel** | Full premium redesign: gold shimmer animation, pulse-ring icon, animated step timeline (Acknowledgement → Advisory Review → Information Memorandum → Management Presentation), WhatsApp quick-contact button linking to Arun Manikonda (+91 98108 89134), share-mandate button. |
+| **HORECA Catalogue** | Category-icon mapping (8 categories → FontAwesome icons + hex colors). Price cards now show ex-GST price AND GST-inclusive price. `igCatRenderGrid` and `igCatRenderTable` rebuilt with safe HTML entity quoting to prevent JS parse errors. Fixed `DM Serif Display` font inside inline `style=` attributes (escaped correctly). BOQ Excel export retained and polished. |
+| **mandateContactPhone in EOI payload** | All `/api/enquiry` calls now pass `mandateContactPhone`; the API reads this and sets phone on the owner notification email correctly. |
+| **JS quote-escaping fixes** | All template-literal `onclick` attributes now use `&#39;` HTML entities rather than backslash-escaped single quotes; eliminates runtime "Unexpected identifier" errors in the catalogue page. |
 
 ---
 
-## 📄 All Public Routes (17 routes, all 200 OK)
+## 📄 All Public Routes (20+ routes, all 200 OK)
 
 | Route | Description |
 |-------|-------------|
@@ -62,10 +62,12 @@ All portals require credentials provisioned by the system administrator.
 | `/about` | Company overview, team bios, timeline, KPIs, marquee mandates |
 | `/services` | 6 advisory verticals |
 | `/listings` | 8 active mandates with NDA gate + EOI form |
+| `/listings/:id` | Mandate detail — teaser open, full details after NDA |
 | `/works` | Track record with timeline + vertical filter |
 | `/insights` | 14 research articles across all sectors |
 | `/contact` | WhatsApp float, team quick-dial, SLA badges |
 | `/horeca` | HORECA solutions catalogue + enquiry form |
+| `/horeca/catalogue` | 27-SKU product catalogue with category filter, grid/table view, PDF/Excel BOQ export |
 | `/valuation` | Interactive 3-method property calculator |
 | `/testimonials` | 8-card testimonial wall with sector filters |
 | `/compare` | Side-by-side mandate comparison tool |
@@ -75,6 +77,37 @@ All portals require credentials provisioned by the system administrator.
 | `/sitemap.xml` | Auto-generated XML sitemap |
 | `/audit` | Deep security audit report |
 | `/api/health` | Health check endpoint |
+| `/api/horeca/catalogue` | JSON — 27 HORECA products |
+| `/api/enquiry` (POST) | EOI / NDA submission + email notifications |
+| `/api/horeca-enquiry` (POST) | HORECA procurement enquiry + email to Pavan |
+
+---
+
+## 🚀 Phase 6 — Premium Notifications, PDF Brochure & Excel BOQ (v17)
+
+**Deploy: https://039cca40.india-gully.pages.dev | Commit: 2670eff**
+
+| Area | What Changed |
+|------|-------------|
+| **Email notifications** | SendGrid owner + CC info@ + submitter confirmation for all EOI/NDA/HORECA submissions |
+| **PDF Brochure** | Print-ready A4 HORECA brochure with cover, product table, contact details |
+| **Excel BOQ** | HTML-based Excel export with SKU, HSN, price columns, GST-inc calculation |
+| **Listings image fix** | NDA-gate image carousel with lazy loading and lightbox |
+
+---
+
+## 🚀 Phase 5 — Knowledge Hub, Careers & Platform Enrichment (v16)
+
+**Deploy: https://94a4d60a.india-gully.pages.dev | Commit: a589e48**
+
+| Area | What Changed |
+|------|-------------|
+| **`/resources`** | 12-resource Knowledge Hub with category filter, request-access modal, custom research CTA |
+| **`/careers`** | 5 open positions with expandable JD details, apply-now modal |
+| **Insights** | 2 new deep-dive articles: *India Retail Leasing 2026* + *Distressed Hospitality Assets 2026* |
+| **`/about`** | "By The Numbers" section + "Recognition & Marquee Mandates" grid |
+| **Navigation** | Desktop "More" dropdown with Resources, Testimonials, Careers |
+| **Sitemap** | `/resources` and `/careers` added |
 
 ---
 
@@ -84,26 +117,9 @@ All portals require credentials provisioned by the system administrator.
 
 | Area | What Changed |
 |------|-------------|
-| **`/compare`** | Side-by-side mandate comparison for up to 3 properties. Highlights delta, share URL generation |
-| **`/market-data`** | Real-estate & hospitality market intelligence dashboard — 6 cities, 5 hotel segments, ₹1,165 Cr+ pipeline |
-| **`/api/compare`** | POST endpoint — returns ref ID + share URL |
-| **`/api/market-data`** | GET endpoint — city cap rates, hotel RevPAR benchmarks, pipeline value |
-| **`/works`** | Milestone timeline (2017–2026), animated stats counters, vertical filter tabs |
-| **`/about`** | Expandable team bio cards, achievement timeline |
-
----
-
-## 🚀 Phase 3 — Valuation, Testimonials & UX Polish (v15)
-
-**Deploy: https://bef789d0.india-gully.pages.dev | Commit: fe78fce**
-
-| Area | What Changed |
-|------|-------------|
-| **`/valuation`** | Interactive 3-method property calculator |
-| **`/api/valuation`** | POST endpoint with unique ref IDs |
-| **`/testimonials`** | 8-card testimonial wall with sector filters |
-| **Home** | Partner logo marquee, trust signals row |
-| **Contact** | WhatsApp floating button, team quick-dial, SLA badges |
+| **`/compare`** | Side-by-side mandate comparison for up to 3 properties |
+| **`/market-data`** | Real-estate & hospitality market intelligence dashboard |
+| **`/works`** | Milestone timeline (2017–2026), animated stats counters |
 
 ---
 
@@ -126,7 +142,7 @@ All portals require credentials provisioned by the system administrator.
 
 - **Storage**: Cloudflare KV — enquiry logs, subscriptions, NDA acceptances, session tokens, valuation refs, resource requests, career applications
 - **Key Patterns**: `IG-ENQ-{ts}`, `IG-VAL-{ts}-XXXX`, `IG-CMP-{ts}-XXXX`, `IG-RES-{ts}`, `IG-APP-{ts}`
-- **Static Data**: 8 active listings, 14 insight articles, 12 resources, 5 careers, 8 testimonials
+- **Static Data**: 8 active listings (5 hospitality + 3 HORECA context), 14 insight articles, 12 resources, 5 careers, 8 testimonials, 27 HORECA SKUs across 8 categories
 
 ---
 
@@ -141,6 +157,7 @@ All portals require credentials provisioned by the system administrator.
 | Fonts | DM Serif Display + DM Sans (Google Fonts) |
 | Storage | Cloudflare KV |
 | Auth | Custom PBKDF2-SHA256 + TOTP (RFC 6238) |
+| Email | SendGrid API v3 |
 
 ---
 
