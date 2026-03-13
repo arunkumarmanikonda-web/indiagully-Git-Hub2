@@ -1178,6 +1178,61 @@ body{overflow-x:hidden;}
 .ig-callout-gold{background:linear-gradient(135deg,rgba(184,150,12,.08) 0%,rgba(184,150,12,.04) 100%);border:1px solid rgba(184,150,12,.25);padding:2.5rem;position:relative;overflow:hidden;}
 .ig-callout-gold::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-lt),transparent);}
 
+/* ── val-grid / val-card (valuation calculator) ── */
+.val-grid{display:grid;grid-template-columns:1fr 360px;gap:2rem;align-items:start;}
+@media(max-width:960px){.val-grid{grid-template-columns:1fr;}}
+.val-card{background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.09);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;}
+.val-card-title{font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;margin-bottom:.4rem;}
+.val-card-sub{font-size:.85rem;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;line-height:1.6;margin-bottom:1.25rem;}
+
+/* ── marquee (partner logo ticker) ──────────── */
+.marquee-outer{overflow:hidden;position:relative;}
+.marquee-outer::before,.marquee-outer::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none;}
+.marquee-outer::before{left:0;background:linear-gradient(to right,var(--bg),transparent);}
+.marquee-outer::after{right:0;background:linear-gradient(to left,var(--bg),transparent);}
+.marquee-track{display:flex;gap:2.5rem;animation:marquee 28s linear infinite;width:max-content;align-items:center;}
+.marquee-track:hover{animation-play-state:paused;}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.marquee-item{white-space:nowrap;font-size:.82rem;font-family:'DM Sans',sans-serif;font-weight:600;color:rgba(255,255,255,.45);letter-spacing:.06em;padding:.4rem .8rem;border:1px solid rgba(255,255,255,.08);border-radius:6px;transition:color .2s,border-color .2s;}
+.marquee-item:hover{color:var(--gold);border-color:rgba(212,174,42,.3);}
+
+/* ── trust-row (logos / ratings strip) ──────── */
+.trust-row{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;padding:1.5rem 0;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);}
+.trust-item{display:flex;align-items:center;gap:.5rem;font-size:.78rem;font-family:'DM Sans',sans-serif;color:rgba(255,255,255,.5);}
+.trust-item strong{color:rgba(255,255,255,.75);}
+
+/* ── tel-card (quick dial team card) ─────────── */
+.tel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem;}
+.tel-card{background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.08);border-radius:14px;padding:1.25rem 1.5rem;display:flex;gap:1rem;align-items:flex-start;transition:border-color .2s,background .2s;}
+.tel-card:hover{border-color:rgba(212,174,42,.3);background:rgba(212,174,42,.04);}
+.tel-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid rgba(212,174,42,.25);}
+.tel-name{font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:#fff;margin-bottom:.2rem;}
+.tel-title{font-size:.76rem;color:var(--gold);font-family:'DM Sans',sans-serif;font-weight:600;margin-bottom:.4rem;}
+.tel-contact{display:flex;flex-direction:column;gap:.2rem;}
+.tel-link{font-size:.82rem;color:rgba(255,255,255,.6);font-family:'DM Sans',sans-serif;text-decoration:none;transition:color .2s;}
+.tel-link:hover{color:var(--gold);}
+
+/* ── test-wall (testimonials) ────────────────── */
+.test-wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem;}
+.test-card{background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.08);border-radius:16px;padding:1.75rem;position:relative;transition:border-color .2s,transform .2s;}
+.test-card:hover{border-color:rgba(212,174,42,.25);transform:translateY(-2px);}
+.test-card::before{content:'"';position:absolute;top:.75rem;right:1.25rem;font-family:'DM Serif Display',Georgia,serif;font-size:4rem;color:rgba(212,174,42,.12);line-height:1;}
+.test-quote{font-size:.92rem;color:rgba(255,255,255,.7);font-family:'DM Sans',sans-serif;line-height:1.7;margin-bottom:1.25rem;font-style:italic;}
+.test-author{display:flex;align-items:center;gap:.75rem;}
+.test-avatar{width:40px;height:40px;border-radius:50%;background:rgba(212,174,42,.15);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.test-name{font-weight:700;font-size:.88rem;color:#fff;font-family:'DM Sans',sans-serif;}
+.test-role{font-size:.76rem;color:rgba(255,255,255,.45);font-family:'DM Sans',sans-serif;}
+.test-sector{display:inline-flex;align-items:center;gap:.3rem;font-size:.7rem;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .6rem;border-radius:100px;margin-top:.4rem;}
+
+/* ── sla-badge (response time indicator) ─────── */
+.sla-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#4ade80;border-radius:100px;padding:.25rem .75rem;font-size:.72rem;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:.05em;}
+.sla-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite;}
+
+/* ── whatsapp-float ──────────────────────────── */
+.wa-float{position:fixed;bottom:2rem;right:2rem;z-index:999;width:56px;height:56px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);text-decoration:none;transition:transform .2s,box-shadow .2s;}
+.wa-float:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(37,211,102,.55);}
+.wa-float svg{width:28px;height:28px;fill:#fff;}
+
 /* ── ig-step (numbered step) ────────────────── */
 .ig-step{display:flex;gap:1.5rem;align-items:flex-start;padding:1.75rem 0;border-bottom:1px solid var(--border);}
 .ig-step:last-child{border-bottom:none;}
@@ -1297,6 +1352,7 @@ const NAV = `
       <a href="/listings" class="n-lk">Mandates</a>
       <a href="/works" class="n-lk">Our Work</a>
       <a href="/insights" class="n-lk">Insights</a>
+      <a href="/valuation" class="n-lk">Valuation</a>
       <a href="/contact"  class="n-lk">Contact</a>
     </div>
 
@@ -1346,6 +1402,8 @@ const NAV = `
       <a href="/listings" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Mandates</a>
       <a href="/works" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Our Work</a>
       <a href="/insights" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Insights</a>
+      <a href="/valuation" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Valuation Tool</a>
+      <a href="/testimonials" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Testimonials</a>
       <a href="/contact"  style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Contact</a>
       <div style="padding-top:.75rem;display:flex;flex-direction:column;gap:.5rem;">
         <a href="/portal/client"   style="font-size:.8rem;color:var(--gold);"><i class="fas fa-lock" style="margin-right:.5rem;font-size:.65rem;"></i>Client Portal</a>
@@ -1417,7 +1475,7 @@ const FOOTER = `
     <div>
       <p style="font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(184,150,12,.7);margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem;"><span style="width:16px;height:1px;background:rgba(184,150,12,.5);display:inline-block;"></span>Platform</p>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:.55rem;">
-        ${[['Active Mandates','/listings'],['Our Work','/works'],['Insights','/insights'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.5);transition:color .2s;display:flex;align-items:center;gap:.4rem;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><span style="width:4px;height:4px;background:rgba(184,150,12,.4);border-radius:50%;flex-shrink:0;display:inline-block;"></span>${l}</a></li>`).join('')}
+        ${[['Active Mandates','/listings'],['Our Work','/works'],['Insights','/insights'],['Valuation Tool','/valuation'],['Client Testimonials','/testimonials'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.5);transition:color .2s;display:flex;align-items:center;gap:.4rem;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><span style="width:4px;height:4px;background:rgba(184,150,12,.4);border-radius:50%;flex-shrink:0;display:inline-block;"></span>${l}</a></li>`).join('')}
       </ul>
     </div>
 

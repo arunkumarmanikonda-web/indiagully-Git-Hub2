@@ -2376,6 +2376,122 @@ app.post('/subscribe', async (c) => {
   }
 })
 
+// ── POST /valuation — indicative property valuation calculation ────────
+app.post('/valuation', async (c) => {
+  try {
+    let body: any = {}
+    const ct = c.req.header('content-type') || ''
+    if (ct.includes('application/json')) {
+      body = await c.req.json()
+    } else {
+      const fd = await c.req.formData()
+      for (const [k, v] of fd.entries()) { body[k] = v }
+    }
+
+    const method = String(body.method || 'cap').toLowerCase()
+    const ref = `IG-VAL-${Date.now()}-${Math.random().toString(36).slice(2,6).toUpperCase()}`
+    const ts  = new Date().toISOString()
+
+    let result: any = { method, ref, ts }
+
+    if (method === 'cap') {
+      const noi    = parseFloat(body.noi)    || 0
+      const rate   = parseFloat(body.rate)   || 8.5
+      const vac    = parseFloat(body.vac)    || 0
+      const capex  = parseFloat(body.capex)  || 0
+
+      if (!noi || noi <= 0) return c.json({ success: false, error: 'NOI must be a positive number' }, 400)
+      if (rate < 1 || rate > 25)  return c.json({ success: false, error: 'Cap rate must be between 1% and 25%' }, 400)
+
+      const effectiveNOI = noi * (1 - vac / 100) * (1 - capex / 100)
+      const value = effectiveNOI / (rate / 100)
+
+      result = { ...result, noi_lakhs: noi, cap_rate_pct: rate, vacancy_pct: vac, capex_pct: capex,
+        effective_noi_lakhs: +effectiveNOI.toFixed(2),
+        indicated_value_lakhs: +value.toFixed(2),
+        indicated_value_cr: +(value / 100).toFixed(3),
+        gross_yield_pct: +(noi / value * 100).toFixed(2),
+        method_label: 'Income Capitalisation'
+      }
+    } else if (method === 'dcf') {
+      const noi0     = parseFloat(body.noi)      || 0
+      const g        = parseFloat(body.growth)   / 100 || 0.06
+      const r        = parseFloat(body.discount) / 100 || 0.13
+      const termCap  = parseFloat(body.termcap)  / 100 || 0.095
+
+      if (!noi0 || noi0 <= 0) return c.json({ success: false, error: 'Year-1 NOI must be positive' }, 400)
+      if (r <= g)             return c.json({ success: false, error: 'Discount rate must exceed NOI growth rate' }, 400)
+
+      let pv = 0; let yr10noi = 0
+      for (let i = 1; i <= 10; i++) {
+        const noi_i = noi0 * Math.pow(1 + g, i)
+        pv += noi_i / Math.pow(1 + r, i)
+        if (i === 10) yr10noi = noi_i
+      }
+      const termValue = (yr10noi * (1 + g)) / termCap
+      const pvTerm    = termValue / Math.pow(1 + r, 10)
+      const total     = pv + pvTerm
+
+      result = { ...result,
+        pv_cashflows_lakhs: +pv.toFixed(2),
+        pv_terminal_lakhs: +pvTerm.toFixed(2),
+        total_value_lakhs: +total.toFixed(2),
+        total_value_cr: +(total / 100).toFixed(3),
+        yr10_noi_lakhs: +yr10noi.toFixed(2),
+        terminal_value_pct: +(pvTerm / total * 100).toFixed(1),
+        method_label: 'Discounted Cash Flow (10-yr)'
+      }
+    } else if (method === 'rev') {
+      const keys      = parseInt(body.keys)    || 40
+      const adr       = parseFloat(body.adr)   || 4800
+      const occ       = parseFloat(body.occ)   / 100 || 0.72
+      const fnbPct    = parseFloat(body.fnb)   / 100 || 0.35
+      const ebitdaMg  = parseFloat(body.ebitda)/ 100 || 0.28
+      const multiple  = parseFloat(body.mult)  || 8
+
+      if (keys < 1)     return c.json({ success: false, error: 'Number of keys must be at least 1' }, 400)
+      if (adr < 500)    return c.json({ success: false, error: 'ADR must be at least ₹500' }, 400)
+      if (multiple < 1) return c.json({ success: false, error: 'EBITDA multiple must be positive' }, 400)
+
+      const roomRev    = keys * adr * occ * 365 / 100000
+      const fnbRev     = roomRev * fnbPct
+      const totalRev   = roomRev + fnbRev
+      const ebitda     = totalRev * ebitdaMg
+      const value      = ebitda * multiple
+      const revpar     = adr * occ
+
+      result = { ...result, keys, adr_inr: adr, occupancy_pct: occ * 100, fnb_pct: fnbPct * 100,
+        revpar_inr: +revpar.toFixed(0),
+        room_revenue_lakhs: +roomRev.toFixed(2),
+        fnb_revenue_lakhs: +fnbRev.toFixed(2),
+        total_revenue_lakhs: +totalRev.toFixed(2),
+        ebitda_lakhs: +ebitda.toFixed(2),
+        ebitda_margin_pct: ebitdaMg * 100,
+        ebitda_multiple: multiple,
+        indicated_value_lakhs: +value.toFixed(2),
+        indicated_value_cr: +(value / 100).toFixed(3),
+        value_per_key_lakhs: +(value / keys).toFixed(2),
+        method_label: 'Revenue Method (Hotel / F&B)'
+      }
+    } else {
+      return c.json({ success: false, error: 'Unknown method. Use cap, dcf, or rev.' }, 400)
+    }
+
+    // Log to KV if available
+    try {
+      const env = (c as any).env
+      if (env && env.KV) {
+        await env.KV.put(`valuation:${ref}`, JSON.stringify({ ...result, ip: c.req.header('cf-connecting-ip') }),
+          { expirationTtl: 60 * 60 * 24 * 90 }) // 90 days
+      }
+    } catch (_) { /* silent */ }
+
+    return c.json({ success: true, ...result })
+  } catch (e) {
+    return c.json({ success: false, error: 'Valuation calculation failed. Please check inputs.' }, 500)
+  }
+})
+
 app.get('/listings', (c) => c.json({ total: 8, pipeline_value: '₹1,165 Cr', listings: [
   { id:'prism-tower-gurgaon',           title:'Prism Tower — Mixed-Use Hospitality & Commercial', location:'Gwalpahari, Gurugram',      value:'₹400 Cr', sector:'Real Estate',         status:'Reference Transaction – Due Diligence Stage' },
   { id:'belcibo-hospitality',           title:'Belcibo Hospitality Platform',                    location:'Delhi NCR & Goa',           value:'₹100 Cr', sector:'Hospitality',         status:'Open for Investment – Active Fundraise' },

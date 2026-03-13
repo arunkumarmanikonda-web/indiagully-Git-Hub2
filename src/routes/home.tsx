@@ -186,6 +186,72 @@ app.get('/', (c) => {
 <!-- gold rule separator -->
 <div class="sec-sep"></div>
 
+<!-- ══ PARTNER MARQUEE ══════════════════════════════════════════════════ -->
+<div style="background:rgba(255,255,255,.015);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);padding:1.1rem 0;overflow:hidden;">
+  <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0;">
+    <div style="flex-shrink:0;padding:0 1.5rem;font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);white-space:nowrap;">
+      Advisory Partners
+    </div>
+    <div class="marquee-outer" style="flex:1;">
+      <div class="marquee-track">
+        ${[
+          '🏛️ EY (Ernst & Young)',
+          '🏢 CBRE India',
+          '📊 ANAROCK',
+          '⚖️ Pipara & Co LLP',
+          '💼 Resurgent India',
+          '🏨 Sarovar Hotels',
+          '🏪 CGH Earth',
+          '🏖️ Mahindra Holidays',
+          '🏝️ WelcomHeritage',
+          '🎰 Pride Hotels',
+          '🍽️ Maple Resorts',
+          '🏛️ EY (Ernst & Young)',
+          '🏢 CBRE India',
+          '📊 ANAROCK',
+          '⚖️ Pipara & Co LLP',
+          '💼 Resurgent India',
+          '🏨 Sarovar Hotels',
+          '🏪 CGH Earth',
+          '🏖️ Mahindra Holidays',
+          '🏝️ WelcomHeritage',
+          '🎰 Pride Hotels',
+          '🍽️ Maple Resorts',
+        ].map(p => `<span class="marquee-item">${p}</span>`).join('')}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TRUST SIGNALS ROW ════════════════════════════════════════════════ -->
+<div style="background:var(--bg);padding:1.5rem 0;border-bottom:1px solid rgba(255,255,255,.06);">
+  <div class="wrap">
+    <div class="trust-row">
+      <div class="trust-item">
+        <span class="sla-badge">24h Response</span>
+        <span>All enquiries guaranteed</span>
+      </div>
+      <div class="trust-item">
+        <i class="fas fa-shield-alt" style="color:var(--gold);"></i>
+        <span>Mutual <strong>NDA</strong> before all mandates</span>
+      </div>
+      <div class="trust-item">
+        <i class="fas fa-certificate" style="color:var(--gold);"></i>
+        <span>CERT-In & <strong>OWASP Top-10</strong> compliant</span>
+      </div>
+      <div class="trust-item">
+        <i class="fas fa-map-marked-alt" style="color:var(--gold);"></i>
+        <span><strong>Pan-India</strong> · Delhi NCR · Chandigarh · Mumbai</span>
+      </div>
+      <div class="trust-item">
+        <a href="/testimonials" style="color:var(--gold);font-weight:600;font-family:'DM Sans',sans-serif;font-size:.8rem;text-decoration:none;">
+          ⭐ View Client Testimonials →
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══ WHY INDIA GULLY ══════════════════════════════════════════════════ -->
 <div class="sec-pc" style="padding-top:7rem;padding-bottom:7rem;">
   <div class="wrap">

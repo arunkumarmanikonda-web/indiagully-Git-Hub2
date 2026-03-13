@@ -15,6 +15,8 @@ import adminRoute from './routes/admin'
 import apiRoute from './routes/api'
 import salesRoute from './routes/sales'
 import worksRoute from './routes/works'
+import valuationRoute from './routes/valuation'
+import testimonialsRoute from './routes/testimonials'
 import { layout } from './lib/layout'
 
 const app = new Hono()
@@ -178,6 +180,8 @@ app.get('/sitemap.xml', (c) => {
     { url: '/works',    priority: '0.8', freq: 'monthly' },
     { url: '/insights', priority: '0.9', freq: 'weekly'  },
     { url: '/contact',  priority: '0.8', freq: 'monthly' },
+    { url: '/valuation',     priority: '0.85', freq: 'monthly' },
+    { url: '/testimonials',  priority: '0.75', freq: 'monthly' },
     { url: '/legal/privacy',    priority: '0.3', freq: 'yearly' },
     { url: '/legal/terms',      priority: '0.3', freq: 'yearly' },
     { url: '/legal/disclaimer', priority: '0.3', freq: 'yearly' },
@@ -191,9 +195,10 @@ app.get('/sitemap.xml', (c) => {
 
   const insightIds = [
     'india-realty-2026-outlook','entertainment-zone-regulatory-india','horeca-tier2-supply-chain',
-    'ibc-distressed-hospitality-2025','mall-mixed-use-integration','greenfield-midscale-hotels',
-    'india-hospitality-2024','entertainment-destinations-india','horeca-procurement-strategy',
-    'debt-special-situations-hospitality','retail-leasing-malls-india','greenfield-hotel-development',
+    'mall-hotel-office-trinity','ibc-distressed-hospitality-2025','mall-mixed-use-integration',
+    'greenfield-midscale-hotels','india-hospitality-2024','entertainment-destinations-india',
+    'horeca-procurement-strategy','debt-special-situations-hospitality','retail-leasing-malls-india',
+    'greenfield-hotel-development',
   ]
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -256,6 +261,8 @@ app.route('/admin/sales', salesRoute)
 app.route('/sales', salesRoute)
 // Redirect bare /sales to /sales/dashboard
 app.get('/sales', (c) => c.redirect('/sales/dashboard', 302))
+app.route('/valuation', valuationRoute)
+app.route('/testimonials', testimonialsRoute)
 app.route('/api', apiRoute)
 
 // ── 404 NOT FOUND ─────────────────────────────────────────────────────────────
