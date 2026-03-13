@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://6e1f661d.india-gully.pages.dev |
+| **Latest Deploy** | https://48bcb41f.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
@@ -31,6 +31,24 @@ All portals require credentials provisioned by the system administrator.
 | Board & KMP | `/portal/board` | Director DIN/KMP ID + password + **RFC 6238 TOTP** |
 
 > 🔒 All portals enforce: PBKDF2-SHA256 password hashing · RFC 6238 TOTP server-side · HttpOnly Secure session cookies · CSRF synchronizer tokens · Server-side rate limiting (5 attempts → 5-min lockout) · 30-min session TTL.
+
+---
+
+## 🚀 Phase 2 — Frontend & Backend Quality Pass (v14)
+
+**Version: v14 | Build: 3.3 MB | Routes: All 200 OK | Deploy: https://48bcb41f.india-gully.pages.dev**  
+**Commit: 758add0 | Date: March 2026**
+
+### ✅ Phase 2 Deliverables
+
+| Area | What Changed |
+|------|-------------|
+| **404 Page** | Premium dark-mode 404 with gold gradient "404" number, animated grid background, quick navigation links |
+| **HORECA Page** | Upgraded to `hero-dk` design, 8-category supply grid with icons, premium step connector, expanded properties list (Accor, Mahindra, CGH Earth) |
+| **Home Page** | 5th hero carousel slide — HORECA/Supply Chain featuring Hotel Rajshree interior |
+| **API Backend** | Production-grade `/api/enquiry`, `/api/horeca-enquiry`, `/api/subscribe` with full validation, unique ref IDs (IG-ENQ-timestamp-XXXX), KV storage |
+| **CSS System** | New classes: `.horeca-cat-grid`, `.ig-prop-grid`, `.ig-step`, `.ig-callout-gold`, `.ig-prop-cell` |
+| **API Validation** | Email regex, name length checks, input sanitisation, proper HTTP 400 errors with descriptive messages |
 
 ---
 
