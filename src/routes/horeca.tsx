@@ -515,6 +515,8 @@ app.get('/catalogue', (c) => {
 <style>
   .prod-card { background:#fff; border:1px solid var(--border); transition:box-shadow .2s,transform .2s; }
   .prod-card:hover { box-shadow:0 8px 24px rgba(0,0,0,.09); transform:translateY(-2px); }
+  .prod-quote-btn { display:flex; align-items:center; justify-content:center; gap:.4rem; background:var(--gold); color:#fff; text-decoration:none; padding:.45rem .875rem; font-size:.7rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; transition:background .2s; }
+  .prod-quote-btn:hover { background:#a37a08; }
   .cat-badge { display:inline-flex; align-items:center; padding:.15rem .5rem; font-size:.62rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; border-radius:2px; }
   .cat-sidebar-btn { padding:.5rem 1rem; display:flex; justify-content:space-between; align-items:center; cursor:pointer; border-left:3px solid transparent; transition:background .15s; }
   .cat-sidebar-btn:hover { background:#fffbeb; }
@@ -657,42 +659,61 @@ function igCatFilter() {
 }
 
 function igCatRenderGrid(products) {
+  var catIconMap = {
+    'Kitchen Equipment': 'fire', 'Crockery & Cutlery': 'concierge-bell',
+    'Linen & Soft Furnishing': 'bed', 'Bar & Beverages': 'wine-glass-alt',
+    'Housekeeping Supplies': 'broom', 'Furniture & Fixtures': 'couch',
+    'Tech & POS Systems': 'desktop', 'Safety & Security': 'shield-alt',
+    'Guest Amenities': 'spa', 'Staff Uniforms': 'tshirt', 'Technology & AV': 'tv'
+  };
   var html = '';
   products.forEach(function(p) {
     var lowStock = p.stock <= p.reorder && p.stock > 0;
     var outOfStock = p.stock === 0;
     var stockColor = outOfStock ? '#dc2626' : (lowStock ? '#d97706' : '#16a34a');
-    var stockText = outOfStock ? 'Out of Stock' : (lowStock ? 'Low Stock — ' + p.stock + ' left' : 'In Stock — ' + p.stock);
-    var catColor = (_igCatCategories.find(function(c){ return c.name === p.category; }) || {}).color || '#475569';
-    html += '<div class="prod-card">'
-      + (p.featured ? '<div style="background:var(--gold);color:#fff;font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .75rem;">★ Featured</div>' : '')
-      + '<div style="padding:1.25rem;">'
-      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem;">'
-      + '<span style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;">' + p.sku + '</span>'
-      + '<span class="cat-badge" style="background:' + catColor + '22;color:' + catColor + ';">' + (p.category||'').split(' ')[0] + '</span>'
+    var stockBg    = outOfStock ? 'rgba(220,38,38,.07)' : (lowStock ? 'rgba(217,119,6,.07)' : 'rgba(22,163,74,.07)');
+    var stockText  = outOfStock ? 'Out of Stock' : (lowStock ? 'Low — ' + p.stock + ' left' : 'In Stock');
+    var catData    = _igCatCategories.find(function(c){ return c.name === p.category; }) || {};
+    var catColor   = catData.color || '#475569';
+    var catIcon    = catIconMap[p.category] || catData.icon || 'box';
+    var priceIncGst = p.price ? Math.round(p.price * (1 + (p.gst_rate||18)/100)) : 0;
+
+    html += '<div class="prod-card" style="display:flex;flex-direction:column;">'
+      // Featured banner
+      + (p.featured ? '<div style="background:linear-gradient(90deg,var(--gold),#a37a08);color:#fff;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .875rem;display:flex;align-items:center;gap:.3rem;"><i class="fas fa-star" style="font-size:.55rem;"></i>Featured SKU</div>' : '')
+      // Image / category icon area
+      + '<div style="height:120px;background:linear-gradient(135deg,' + catColor + '18 0%,' + catColor + '08 100%);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;border-bottom:1px solid rgba(0,0,0,.05);">'
+      + (p.image ? '<img src="' + p.image + '" alt="' + p.name.replace(/"/g,'') + '" style="max-height:100px;max-width:90%;object-fit:contain;" loading="lazy">'
+                 : '<div style="text-align:center;"><div style="width:52px;height:52px;background:' + catColor + '22;border:1px solid ' + catColor + '44;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .5rem;"><i class="fas fa-' + catIcon + '" style="color:' + catColor + ';font-size:1.1rem;"></i></div><span style="font-size:.6rem;color:' + catColor + ';font-weight:600;opacity:.7;">' + (p.category||'').split(' & ')[0] + '</span></div>')
       + '</div>'
-      + '<h3 style="font-size:.9rem;font-weight:700;color:var(--ink);margin:0 0 .35rem;line-height:1.35;">' + p.name + '</h3>'
-      + (p.brand ? '<p style="font-size:.7rem;color:#94a3b8;margin:0 0 .75rem;"><i class="fas fa-tag" style="margin-right:.3rem;"></i>' + p.brand + '</p>' : '<div style="margin-bottom:.75rem;"></div>')
-      + (p.description ? '<p style="font-size:.75rem;color:var(--ink-muted);line-height:1.5;margin:0 0 .875rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + p.description + '</p>' : '')
-      + '<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.5rem;">'
-      + '<div style="font-family:\'DM Serif Display\',Georgia,serif;font-size:1.3rem;color:var(--gold);">₹' + (p.price||0).toLocaleString('en-IN') + '</div>'
-      + '<div style="font-size:.7rem;color:#94a3b8;">per ' + (p.unit||'Piece') + '</div>'
+      // Content
+      + '<div style="padding:1rem 1.1rem;flex:1;display:flex;flex-direction:column;gap:.35rem;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;">'
+      + '<span style="font-size:.58rem;font-weight:700;letter-spacing:.1em;font-family:monospace;color:#0d9488;">' + p.sku + '</span>'
+      + '<span style="font-size:.58rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .45rem;background:' + catColor + '18;color:' + catColor + ';border:1px solid ' + catColor + '33;">' + p.hsn + '</span>'
       + '</div>'
-      + '<div style="display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-top:1px solid var(--border);">'
-      + '<span style="font-size:.7rem;color:' + stockColor + ';font-weight:600;"><i class="fas fa-circle" style="font-size:.4rem;margin-right:.3rem;"></i>' + stockText + '</span>'
-      + '<span style="font-size:.65rem;color:#94a3b8;">GST ' + (p.gst_rate||18) + '%</span>'
+      + '<h3 style="font-size:.875rem;font-weight:700;color:var(--ink);line-height:1.3;margin:0;">' + p.name + '</h3>'
+      + (p.brand ? '<p style="font-size:.68rem;color:#94a3b8;margin:0;"><i class="fas fa-trademark" style="margin-right:.2rem;font-size:.55rem;"></i>' + p.brand + '</p>' : '')
+      + (p.description ? '<p style="font-size:.72rem;color:var(--ink-muted);line-height:1.5;margin:0;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + p.description + '</p>' : '<div style="flex:1;"></div>')
+      // Price row
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.35rem;padding:.625rem 0;border-top:1px solid var(--border);margin-top:.35rem;">'
+      + '<div><div style="font-size:.55rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;margin-bottom:.15rem;">Ex-GST / ' + (p.unit||'Piece') + '</div><div style="font-family:Georgia,serif;font-size:1.15rem;color:var(--gold);">&#8377;' + (p.price||0).toLocaleString('en-IN') + '</div></div>'
+      + '<div><div style="font-size:.55rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;margin-bottom:.15rem;">Inc. GST (' + (p.gst_rate||18) + '%)</div><div style="font-size:.88rem;font-weight:700;color:var(--ink);">&#8377;' + priceIncGst.toLocaleString('en-IN') + '</div></div>'
       + '</div>'
-      + '<div style="margin-top:.5rem;display:flex;gap:.5rem;">'
-      + '<span style="font-size:.65rem;color:#94a3b8;background:#f8f6f1;padding:.2rem .5rem;">HSN: ' + (p.hsn||'—') + '</span>'
+      // Stock + CTA
+      + '<div style="display:flex;align-items:center;gap:.5rem;padding:.35rem .6rem;background:' + stockBg + ';border:1px solid ' + stockColor + '33;">'
+      + '<i class="fas fa-circle" style="font-size:.35rem;color:' + stockColor + ';"></i>'
+      + '<span style="font-size:.67rem;font-weight:600;color:' + stockColor + ';flex:1;">' + stockText + '</span>'
       + '</div>'
       + '</div>'
-      + '<div style="padding:.75rem 1.25rem;border-top:1px solid var(--border);background:#f8f6f1;">'
-      + '<a href="/horeca#enquiry" style="display:block;text-align:center;background:var(--gold);color:#fff;text-decoration:none;padding:.45rem;font-size:.72rem;font-weight:700;letter-spacing:.04em;" onclick="igCatEnquire(event,\\'' + p.sku + '\\',\\'' + p.name.replace(/'/g,"\\'") + '\\')">'
-      + '<i class="fas fa-paper-plane" style="margin-right:.3rem;"></i>Request Quote</a>'
+      // CTA footer
+      + '<div style="padding:.625rem 1.1rem;border-top:1px solid var(--border);background:#fafaf7;">'
+      + '<a href="/horeca#enquiry" class="prod-quote-btn" data-sku="' + p.sku.replace(/"/g,'') + '" data-name="' + p.name.replace(/"/g,'&quot;') + '" onclick="igCatEnquire(event,this.dataset.sku,this.dataset.name)">'
+      + '<i class="fas fa-paper-plane" style="font-size:.6rem;"></i>Request Quote</a>'
       + '</div>'
       + '</div>';
   });
-  document.getElementById('cat-grid-view').innerHTML = html;
+  document.getElementById('cat-grid-view').innerHTML = html || '<p style="padding:2rem;color:var(--ink-muted);">No products found.</p>';
 }
 
 function igCatRenderTable(products) {
@@ -707,7 +728,7 @@ function igCatRenderTable(products) {
       + '<td style="padding:.625rem 1rem;"><span style="font-size:.8rem;font-weight:600;color:var(--ink);">' + p.name + '</span>' + (p.brand ? '<br><span style="font-size:.65rem;color:#94a3b8;">' + p.brand + '</span>' : '') + '</td>'
       + '<td style="padding:.625rem 1rem;"><span class="cat-badge" style="background:' + catColor + '22;color:' + catColor + ';">' + (p.category||'') + '</span></td>'
       + '<td style="padding:.625rem 1rem;font-size:.75rem;color:var(--ink-muted);">' + (p.unit||'Piece') + '</td>'
-      + '<td style="padding:.625rem .75rem;text-align:right;font-family:\'DM Serif Display\',Georgia,serif;font-size:.9rem;color:var(--gold);">₹' + (p.price||0).toLocaleString('en-IN') + '</td>'
+      + '<td style="padding:.625rem .75rem;text-align:right;font-family:Georgia,serif;font-size:.9rem;color:var(--gold);">&#8377;' + (p.price||0).toLocaleString('en-IN') + '</td>'
       + '<td style="padding:.625rem .75rem;text-align:right;font-size:.75rem;color:var(--ink-muted);">' + (p.gst_rate||18) + '%</td>'
       + '<td style="padding:.625rem .75rem;font-size:.7rem;color:#94a3b8;font-family:monospace;">' + (p.hsn||'—') + '</td>'
       + '<td style="padding:.625rem .75rem;font-size:.75rem;color:var(--ink-muted);">' + (p.brand||'—') + '</td>'

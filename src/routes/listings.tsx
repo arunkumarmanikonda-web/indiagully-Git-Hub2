@@ -218,63 +218,81 @@ app.get('/:id', (c) => {
   // After acceptance, user sees full mandate details and can submit EOI.
   const ndaModal = l.nda ? `
 <!-- ══════════════════════════════════════════════════════════════════════
-     NDA GATE — MANDATORY BEFORE VIEWING ANY MANDATE DETAIL
-     Collects: Full Name · Email · Organisation
-     Terms: Full NDA obligations listed clearly
-     Storage: sessionStorage['ig_nda_${l.id}'] = JSON (name, email, org, ts)
+     NDA GATE — FLOATING PANEL (non-blocking teaser approach)
+     Basic project info visible beneath; detailed specs + financials + EOI
+     locked until NDA accepted. Collects: Full Name · Email · Phone · Org.
+     Storage: sessionStorage['ig_nda_${l.id}'] = JSON
 ═══════════════════════════════════════════════════════════════════════ -->
-<div id="nda-gate" style="position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(6,6,6,.92);backdrop-filter:blur(14px);overflow-y:auto;">
-  <div style="width:100%;max-width:560px;background:#fff;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.7);my:auto;">
+<div id="nda-gate" style="position:fixed;inset:0;z-index:9000;display:flex;align-items:flex-start;justify-content:center;padding:1rem;background:rgba(6,6,6,.88);backdrop-filter:blur(10px);overflow-y:auto;">
+  <div style="width:100%;max-width:580px;background:#fff;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.7);margin:2rem auto;">
 
-    <!-- Modal header (dark) -->
-    <div style="background:var(--ink);padding:1.75rem 2rem;display:flex;align-items:center;gap:1rem;">
-      <div style="width:48px;height:48px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <i class="fas fa-file-contract" style="color:#fff;font-size:1.1rem;"></i>
+    <!-- Modal header (dark) with mandate teaser -->
+    <div style="background:var(--ink);padding:1.5rem 2rem;position:relative;overflow:hidden;">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(184,150,12,.08) 0%,transparent 60%);pointer-events:none;"></div>
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+        <div style="width:44px;height:44px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fas fa-file-contract" style="color:#fff;font-size:1rem;"></i>
+        </div>
+        <div>
+          <p style="font-size:.58rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(184,150,12,.65);margin-bottom:.2rem;">India Gully · Confidential Mandate</p>
+          <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;line-height:1.2;">Non-Disclosure Agreement Required</h2>
+        </div>
       </div>
-      <div>
-        <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.3rem;color:#fff;line-height:1.2;margin-bottom:.15rem;">Non-Disclosure Agreement</h2>
-        <p style="font-size:.72rem;color:rgba(255,255,255,.45);letter-spacing:.04em;">Please read and accept before viewing this confidential mandate</p>
+      <!-- Mandate quick facts strip (visible before NDA) -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;">
+        <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.625rem .75rem;text-align:center;">
+          <div style="font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.25rem;">Sector</div>
+          <div style="font-size:.78rem;font-weight:600;color:#fff;">${l.sector}</div>
+        </div>
+        <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.625rem .75rem;text-align:center;">
+          <div style="font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.25rem;">Mandate Type</div>
+          <div style="font-size:.78rem;font-weight:600;color:#fff;">${l.mandateType}</div>
+        </div>
+        <div style="background:rgba(184,150,12,.12);border:1px solid rgba(184,150,12,.3);padding:.625rem .75rem;text-align:center;">
+          <div style="font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(184,150,12,.65);margin-bottom:.25rem;">Indicative Value</div>
+          <div style="font-family:'DM Serif Display',Georgia,serif;font-size:.9rem;color:var(--gold);">${l.value}</div>
+        </div>
       </div>
     </div>
 
     <!-- Mandate identity banner -->
-    <div style="background:#fffbeb;border-bottom:1px solid #fde68a;padding:.875rem 1.5rem;display:flex;align-items:center;gap:.625rem;">
-      <i class="fas fa-exclamation-triangle" style="color:#d97706;font-size:.85rem;flex-shrink:0;"></i>
-      <p style="font-size:.8rem;color:#78350f;line-height:1.6;margin:0;">
-        <strong>${l.title}</strong> — ${l.location}<br>
-        <span style="font-size:.72rem;color:#92400e;">Confidential Information · Exclusive India Gully Advisory Mandate · ${l.value} · ${l.status}</span>
+    <div style="background:#fffbeb;border-bottom:2px solid #fde68a;padding:.75rem 1.5rem;display:flex;align-items:center;gap:.625rem;">
+      <i class="fas fa-shield-alt" style="color:#d97706;font-size:.8rem;flex-shrink:0;"></i>
+      <p style="font-size:.75rem;color:#78350f;line-height:1.5;margin:0;">
+        <strong>${l.title}</strong> · <span style="color:#92400e;">${l.locationShort}</span><br>
+        <span style="font-size:.68rem;color:#92400e;">Signing this NDA gives you access to full mandate details, financials, and the EOI submission form.</span>
       </p>
     </div>
 
     <div style="padding:1.5rem 1.75rem;">
 
-      <!-- Identity collection form -->
+      <!-- Identity collection form (2-column grid) -->
       <div style="margin-bottom:1.25rem;">
-        <p style="font-size:.65rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.875rem;">Your Details (required to proceed)</p>
-        <div style="display:flex;flex-direction:column;gap:.625rem;">
+        <p style="font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;"><i class="fas fa-user-circle" style="color:var(--gold);margin-right:.4rem;"></i>Your Investor Details (required)</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.625rem;">
           <div>
-            <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.25rem;">Full Name *</label>
+            <label style="display:block;font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.2rem;">Full Name *</label>
             <input id="nda-name" type="text" placeholder="e.g. Rajesh Kumar" required autocomplete="name"
-                   style="width:100%;box-sizing:border-box;border:1px solid var(--border);padding:.65rem .875rem;font-size:.875rem;color:var(--ink);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;background:#fafaf7;"
-                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+                   style="width:100%;box-sizing:border-box;border:1px solid var(--border);padding:.6rem .8rem;font-size:.85rem;color:var(--ink);font-family:'DM Sans',sans-serif;outline:none;transition:all .2s;background:#fafaf7;"
+                   onfocus="this.style.borderColor='var(--gold)';this.style.boxShadow='0 0 0 3px rgba(184,150,12,.08)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
           </div>
           <div>
-            <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.25rem;">Email Address *</label>
+            <label style="display:block;font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.2rem;">Email Address *</label>
             <input id="nda-email" type="email" placeholder="your@email.com" required autocomplete="email"
-                   style="width:100%;box-sizing:border-box;border:1px solid var(--border);padding:.65rem .875rem;font-size:.875rem;color:var(--ink);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;background:#fafaf7;"
-                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+                   style="width:100%;box-sizing:border-box;border:1px solid var(--border);padding:.6rem .8rem;font-size:.85rem;color:var(--ink);font-family:'DM Sans',sans-serif;outline:none;transition:all .2s;background:#fafaf7;"
+                   onfocus="this.style.borderColor='var(--gold)';this.style.boxShadow='0 0 0 3px rgba(184,150,12,.08)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
           </div>
           <div>
-            <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.25rem;">Phone / WhatsApp *</label>
+            <label style="display:block;font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.2rem;">Phone / WhatsApp *</label>
             <input id="nda-phone" type="tel" placeholder="+91 98XXX XXXXX" required autocomplete="tel"
-                   style="width:100%;box-sizing:border-box;border:1px solid var(--border);padding:.65rem .875rem;font-size:.875rem;color:var(--ink);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;background:#fafaf7;"
-                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+                   style="width:100%;box-sizing:border-box;border:1px solid var(--border);padding:.6rem .8rem;font-size:.85rem;color:var(--ink);font-family:'DM Sans',sans-serif;outline:none;transition:all .2s;background:#fafaf7;"
+                   onfocus="this.style.borderColor='var(--gold)';this.style.boxShadow='0 0 0 3px rgba(184,150,12,.08)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
           </div>
           <div>
-            <label style="display:block;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.25rem;">Organisation / Fund *</label>
-            <input id="nda-org" type="text" placeholder="e.g. XYZ Family Office / ABC Fund" required autocomplete="organization"
-                   style="width:100%;box-sizing:border-box;border:1px solid var(--border);padding:.65rem .875rem;font-size:.875rem;color:var(--ink);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;background:#fafaf7;"
-                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+            <label style="display:block;font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.2rem;">Organisation / Fund *</label>
+            <input id="nda-org" type="text" placeholder="e.g. XYZ Family Office" required autocomplete="organization"
+                   style="width:100%;box-sizing:border-box;border:1px solid var(--border);padding:.6rem .8rem;font-size:.85rem;color:var(--ink);font-family:'DM Sans',sans-serif;outline:none;transition:all .2s;background:#fafaf7;"
+                   onfocus="this.style.borderColor='var(--gold)';this.style.boxShadow='0 0 0 3px rgba(184,150,12,.08)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
           </div>
         </div>
       </div>
@@ -326,14 +344,14 @@ app.get('/:id', (c) => {
         </button>
       </div>
 
-      <p style="font-size:.65rem;color:var(--ink-faint);margin-top:.875rem;text-align:center;line-height:1.6;">Your acceptance is recorded with timestamp and will be shared with India Gully's advisory team. India Gully · CIN: U74999DL2017PTC323237</p>
+      <p style="font-size:.62rem;color:var(--ink-faint);margin-top:.75rem;text-align:center;line-height:1.6;"><i class="fas fa-lock" style="color:var(--gold);margin-right:.3rem;font-size:.55rem;"></i>Your acceptance is recorded with timestamp · India Gully · CIN: U74999DL2017PTC323237</p>
     </div>
   </div>
 </div>
 
 <style>
 #nda-gate { transition: opacity .35s; }
-#nda-name:focus,#nda-email:focus,#nda-org:focus { border-color: var(--gold)!important; box-shadow:0 0 0 3px rgba(184,150,12,.1); }
+#nda-gate input:focus { border-color: var(--gold)!important; box-shadow:0 0 0 3px rgba(184,150,12,.1)!important; }
 </style>
 
 <script>
@@ -347,6 +365,18 @@ app.get('/:id', (c) => {
       var d = JSON.parse(stored);
       if (d && d.accepted) {
         if (gate) gate.style.display = 'none';
+        // Unlock content sections immediately
+        if (typeof igUnlockContent === 'function') {
+          igUnlockContent(d.name, d.email, d.phone, d.org);
+        } else {
+          // Fallback: direct unlock
+          var eoiLock = document.getElementById('eoi-lock-notice');
+          var eoiSec  = document.getElementById('eoi-section');
+          var specLock = document.getElementById('spec-lock-overlay');
+          if (eoiLock) eoiLock.style.display = 'none';
+          if (eoiSec)  eoiSec.style.display = 'block';
+          if (specLock) specLock.style.display = 'none';
+        }
         // Pre-fill EOI form with stored name/email/phone/org
         setTimeout(function(){
           var en = document.getElementById('eoi-name');  if(en && d.name)  en.value = d.name;
@@ -397,13 +427,16 @@ function igAcceptNDA(mandateId) {
     }));
   } catch(e) {}
 
+  // Unlock content sections
+  igUnlockContent(nameVal, emailVal, phoneVal, orgVal);
+
   // Pre-fill EOI form
   setTimeout(function(){
     var en = document.getElementById('eoi-name');  if(en) en.value = nameVal;
     var ee = document.getElementById('eoi-email'); if(ee) ee.value = emailVal;
     var ep = document.getElementById('eoi-phone'); if(ep) ep.value = phoneVal;
     var eo = document.getElementById('eoi-org');   if(eo) eo.value = orgVal;
-  }, 350);
+  }, 400);
 
   // Dismiss gate with animation
   var gate = document.getElementById('nda-gate');
@@ -421,11 +454,54 @@ function igAcceptNDA(mandateId) {
         type: 'nda_acceptance',
         mandate: mandateId,
         mandateTitle: '${l.title}',
+        mandateValue: '${l.value}',
+        mandateContact: '${l.contact || 'akm@indiagully.com'}',
+        mandateContactName: '${l.contactName || 'Arun Manikonda'}',
+        mandateContactPhone: '${l.contactPhone || '+91 98108 89134'}',
         name: nameVal, email: emailVal, phone: phoneVal, org: orgVal,
         ts: new Date().toISOString()
       })
     }).catch(function(){});
   } catch(e) {}
+}
+
+function igScrollToNDA() {
+  var gate = document.getElementById('nda-gate');
+  if (gate && gate.style.display !== 'none') {
+    gate.scrollTop = 0;
+    var inner = gate.querySelector('div');
+    if (inner) { inner.style.animation = 'none'; setTimeout(function(){ inner.style.animation = 'fadeSlideUp .3s ease'; }, 10); }
+  }
+}
+
+function igUnlockContent(name, email, phone, org) {
+  // Show full overview
+  var teaser = document.getElementById('overview-teaser');
+  var full   = document.getElementById('overview-full');
+  var lock   = document.getElementById('overview-lock');
+  if (teaser) teaser.style.display = 'none';
+  if (full)   { full.style.display = 'block'; }
+  if (lock)   lock.style.display = 'none';
+
+  // Remove spec lock overlay
+  var specLock = document.getElementById('spec-lock-overlay');
+  if (specLock) {
+    specLock.style.opacity = '0';
+    specLock.style.transition = 'opacity .3s';
+    setTimeout(function(){ specLock.style.display = 'none'; }, 300);
+  }
+
+  // Show EOI section, hide locked notice
+  var eoiLock = document.getElementById('eoi-lock-notice');
+  var eoiSec  = document.getElementById('eoi-section');
+  if (eoiLock) eoiLock.style.display = 'none';
+  if (eoiSec)  { eoiSec.style.display = 'block'; }
+
+  // Show NDA badge in sidebar
+  var badge     = document.getElementById('nda-status-badge');
+  var badgeName = document.getElementById('nda-badge-name');
+  if (badge) badge.style.display = 'block';
+  if (badgeName && name) badgeName.textContent = 'Viewing as ' + name;
 }
 </script>` : ''
 
@@ -539,7 +615,16 @@ ${ndaModal}
           <div class="gr" style="margin-bottom:1rem;"></div>
           <p class="eyebrow" style="margin-bottom:.6rem;">Mandate Overview</p>
           <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--ink);margin-bottom:1.25rem;">${l.title}</h2>
-          <div style="font-size:.9375rem;color:var(--ink-soft);line-height:1.85;white-space:pre-line;">${l.longDesc}</div>
+          <!-- Public teaser (first 2 sentences always visible) -->
+          <div id="overview-teaser" style="font-size:.9375rem;color:var(--ink-soft);line-height:1.85;">${l.desc}</div>
+          <!-- Full longDesc visible only after NDA -->
+          <div id="overview-full" style="display:none;font-size:.9375rem;color:var(--ink-soft);line-height:1.85;white-space:pre-line;margin-top:1rem;">${l.longDesc}</div>
+          <!-- NDA unlock prompt for overview -->
+          <div id="overview-lock" style="margin-top:1rem;display:flex;align-items:center;gap:.625rem;padding:.75rem 1rem;background:#fffbeb;border:1px solid #fde68a;">
+            <i class="fas fa-lock" style="color:#d97706;font-size:.8rem;"></i>
+            <span style="font-size:.75rem;color:#78350f;">Full mandate details, financials and documentation are available after NDA acceptance.</span>
+            <button onclick="igScrollToNDA()" style="margin-left:auto;background:#d97706;color:#fff;border:none;padding:.35rem .875rem;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;white-space:nowrap;">Sign NDA &rarr;</button>
+          </div>
         </div>
 
         <!-- 4-metric highlights -->
@@ -554,9 +639,22 @@ ${ndaModal}
           </div>`).join('')}
         </div>
 
-        <!-- Full spec sheet -->
-        <div style="margin-bottom:2.5rem;" id="specSheet">
+        <!-- Full spec sheet (locked until NDA) -->
+        <div style="margin-bottom:2.5rem;position:relative;" id="specSheet">
           <p style="font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.875rem;padding-bottom:.625rem;border-bottom:1px solid var(--border);">Full Specifications</p>
+          <!-- Locked overlay -->
+          <div id="spec-lock-overlay" style="position:absolute;inset:0;z-index:10;backdrop-filter:blur(6px);background:rgba(250,248,243,.75);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;border:1px solid var(--border);">
+            <div style="width:52px;height:52px;background:var(--ink);display:flex;align-items:center;justify-content:center;">
+              <i class="fas fa-lock" style="color:var(--gold);font-size:1.1rem;"></i>
+            </div>
+            <div style="text-align:center;">
+              <p style="font-size:.72rem;font-weight:700;color:var(--ink);margin-bottom:.3rem;">Full Specifications · Under NDA</p>
+              <p style="font-size:.68rem;color:var(--ink-muted);">${Object.keys(l.specs||{}).length} specification fields available after signing</p>
+            </div>
+            <button onclick="igScrollToNDA()" style="background:var(--gold);color:#fff;border:none;padding:.6rem 1.5rem;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:.5rem;">
+              <i class="fas fa-file-signature" style="font-size:.65rem;"></i>Sign NDA to Unlock
+            </button>
+          </div>
           <table style="width:100%;border-collapse:collapse;">
             ${Object.entries(l.specs || {}).map(([key, val]: [string, any], i: number) => `
             <tr style="border-bottom:1px solid ${i % 2 === 0 ? 'var(--border)' : 'transparent'};">
@@ -573,7 +671,20 @@ ${ndaModal}
         </div>
 
         <!-- ══ EOI SECTION (main body) ══════════════════════════════════ -->
-        <div id="eoi-section" style="background:var(--ink);padding:2.5rem;margin-bottom:2rem;border:1px solid rgba(184,150,12,.2);">
+        <!-- EOI LOCKED STATE (shown before NDA) -->
+        <div id="eoi-lock-notice" style="background:var(--ink);padding:2.5rem;margin-bottom:2rem;border:1px solid rgba(184,150,12,.2);text-align:center;">
+          <div style="width:56px;height:56px;background:rgba(184,150,12,.12);border:1px solid rgba(184,150,12,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
+            <i class="fas fa-lock" style="color:var(--gold);font-size:1.25rem;"></i>
+          </div>
+          <p style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(184,150,12,.6);margin-bottom:.5rem;">Expression of Interest</p>
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.4rem;color:#fff;margin-bottom:.875rem;">Sign NDA to Submit Your EOI</h3>
+          <p style="font-size:.82rem;color:rgba(255,255,255,.45);line-height:1.75;max-width:440px;margin:0 auto 1.5rem;">Access to the EOI submission form requires signing the Non-Disclosure Agreement. This protects all parties and ensures confidentiality of the transaction.</p>
+          <button onclick="igScrollToNDA()" style="background:var(--gold);color:#fff;border:none;padding:.875rem 2rem;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:.6rem;">
+            <i class="fas fa-file-signature" style="font-size:.7rem;"></i>Sign NDA &amp; Proceed
+          </button>
+        </div>
+
+        <div id="eoi-section" style="display:none;background:var(--ink);padding:2.5rem;margin-bottom:2rem;border:1px solid rgba(184,150,12,.2);">
           <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
             <div style="width:44px;height:44px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <i class="fas fa-handshake" style="color:#fff;font-size:1rem;"></i>
@@ -585,86 +696,104 @@ ${ndaModal}
           </div>
           <p style="font-size:.82rem;color:rgba(255,255,255,.5);line-height:1.75;margin-bottom:1.75rem;">Having accepted the NDA, please submit your Expression of Interest. Our advisory team will review your profile and revert within 24 business hours with the Information Memorandum and next steps for this mandate.</p>
 
-          <!-- EOI SUCCESS PANEL (hidden until submission) -->
+          <!-- EOI SUCCESS PANEL — PREMIUM REDESIGN -->
           <div id="eoi-success-panel" style="display:none;">
-            <div style="position:relative;overflow:hidden;background:linear-gradient(135deg,#0a1628 0%,#0f2040 50%,#0a1628 100%);border:1px solid rgba(184,150,12,.25);padding:2.5rem 2rem;">
-              <!-- Gold accent line top -->
-              <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold),transparent);"></div>
-              <!-- Radial glow -->
-              <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(184,150,12,.08) 0%,transparent 70%);pointer-events:none;"></div>
+            <div style="position:relative;overflow:hidden;background:linear-gradient(145deg,#06101e 0%,#0b1a30 40%,#06101e 100%);border:1px solid rgba(184,150,12,.3);padding:0;">
+              <!-- Gold shimmer top bar -->
+              <div style="height:4px;background:linear-gradient(90deg,transparent 0%,rgba(184,150,12,.4) 20%,var(--gold) 50%,rgba(184,150,12,.4) 80%,transparent 100%);position:relative;overflow:hidden;">
+                <div style="position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent);animation:shimmer 2.5s infinite;"></div>
+              </div>
+              <!-- Radial glow effects -->
+              <div style="position:absolute;top:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(184,150,12,.07) 0%,transparent 65%);pointer-events:none;"></div>
+              <div style="position:absolute;bottom:-60px;left:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(37,99,235,.06) 0%,transparent 65%);pointer-events:none;"></div>
 
-              <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.5rem;">
-                <!-- Success icon -->
-                <div style="width:72px;height:72px;background:linear-gradient(135deg,rgba(184,150,12,.2),rgba(184,150,12,.08));border:2px solid rgba(184,150,12,.4);display:flex;align-items:center;justify-content:center;border-radius:50%;position:relative;">
-                  <i class="fas fa-check" style="color:var(--gold);font-size:1.75rem;"></i>
-                  <div style="position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(184,150,12,.15);animation:pulse-ring 2.5s ease-out infinite;"></div>
-                </div>
+              <div style="padding:2.5rem 2rem;">
+                <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:1.75rem;">
 
-                <!-- Headline -->
-                <div>
-                  <p style="font-size:.58rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:rgba(184,150,12,.65);margin-bottom:.5rem;">Expression of Interest Received</p>
-                  <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.6rem;color:#fff;line-height:1.15;margin-bottom:.75rem;">Your EOI has been submitted<br>successfully.</h3>
-                  <p style="font-size:.85rem;color:rgba(255,255,255,.55);line-height:1.75;max-width:460px;">India Gully's advisory team has received your Expression of Interest for <strong style="color:#fff;" id="eoi-success-mandate"></strong>. Your reference number is below.</p>
-                </div>
-
-                <!-- Reference card -->
-                <div style="background:rgba(184,150,12,.08);border:1px solid rgba(184,150,12,.25);padding:1.1rem 2rem;width:100%;max-width:380px;">
-                  <p style="font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(184,150,12,.5);margin-bottom:.4rem;">Reference Number</p>
-                  <div id="eoi-success-ref" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.3rem;color:var(--gold);letter-spacing:.04em;"></div>
-                  <p id="eoi-success-ts" style="font-size:.62rem;color:rgba(255,255,255,.3);margin-top:.3rem;"></p>
-                </div>
-
-                <!-- Next steps -->
-                <div style="width:100%;max-width:480px;">
-                  <p style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:1rem;">What happens next</p>
-                  <div style="display:flex;flex-direction:column;gap:.75rem;text-align:left;">
-                    ${[
-                      { step:'01', icon:'envelope', title:'Acknowledgement Email', desc:'A confirmation has been sent to your registered email. Save your reference number.' },
-                      { step:'02', icon:'user-tie', title:'Advisory Review', desc:'Our transaction advisory team reviews your profile and investor credentials within 24 business hours.' },
-                      { step:'03', icon:'file-contract', title:'Information Memorandum', desc:'Qualified investors receive the full IM covering asset details, financials, legal structure, and transaction process.' },
-                      { step:'04', icon:'handshake', title:'Management Presentation', desc:'Short-listed investors are invited to a management presentation and site visit.' },
-                    ].map(s => `
-                    <div style="display:flex;gap:.875rem;align-items:flex-start;padding:.75rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);">
-                      <div style="width:32px;height:32px;background:rgba(184,150,12,.1);border:1px solid rgba(184,150,12,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                        <i class="fas fa-${s.icon}" style="color:var(--gold);font-size:.65rem;"></i>
-                      </div>
-                      <div>
-                        <div style="font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.2rem;">Step ${s.step} · ${s.title}</div>
-                        <p style="font-size:.78rem;color:rgba(255,255,255,.45);line-height:1.6;margin:0;">${s.desc}</p>
-                      </div>
-                    </div>`).join('')}
-                  </div>
-                </div>
-
-                <!-- Contact details -->
-                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:1.1rem 1.5rem;width:100%;max-width:480px;">
-                  <p style="font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.625rem;">Direct Advisory Contact</p>
-                  <div style="display:flex;flex-wrap:wrap;gap:1.25rem;align-items:center;">
-                    <div style="display:flex;align-items:center;gap:.5rem;">
-                      <i class="fas fa-user-tie" style="color:var(--gold);font-size:.7rem;width:14px;text-align:center;"></i>
-                      <span style="font-size:.82rem;color:rgba(255,255,255,.65);" id="eoi-advisor-name">Arun Manikonda, MD</span>
+                  <!-- Animated success icon -->
+                  <div style="position:relative;">
+                    <div style="width:80px;height:80px;background:linear-gradient(135deg,rgba(184,150,12,.25),rgba(184,150,12,.08));border:2px solid rgba(184,150,12,.5);display:flex;align-items:center;justify-content:center;border-radius:50%;position:relative;z-index:1;">
+                      <i class="fas fa-check-double" style="color:var(--gold);font-size:1.85rem;"></i>
                     </div>
-                    <a href="tel:+918988988988" style="display:flex;align-items:center;gap:.5rem;color:rgba(255,255,255,.55);font-size:.78rem;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.55)'">
-                      <i class="fas fa-phone" style="color:var(--gold);font-size:.65rem;width:14px;text-align:center;"></i>+91 8988 988 988
+                    <div style="position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(184,150,12,.2);animation:pulse-ring 2.5s ease-out infinite;"></div>
+                    <div style="position:absolute;inset:-14px;border-radius:50%;border:1px solid rgba(184,150,12,.1);animation:pulse-ring 2.5s ease-out .4s infinite;"></div>
+                  </div>
+
+                  <!-- Headline block -->
+                  <div>
+                    <p style="font-size:.57rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;opacity:.8;">EOI Submitted Successfully</p>
+                    <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:#fff;line-height:1.15;margin-bottom:.875rem;">Your Expression of<br>Interest has been received.</h3>
+                    <p style="font-size:.875rem;color:rgba(255,255,255,.5);line-height:1.8;max-width:460px;">India Gully's advisory team has received your EOI for <strong style="color:rgba(255,255,255,.85);" id="eoi-success-mandate"></strong>. A confirmation email has been dispatched to your registered address.</p>
+                  </div>
+
+                  <!-- Reference number card -->
+                  <div style="background:rgba(184,150,12,.08);border:1px solid rgba(184,150,12,.3);padding:1.25rem 2.5rem;width:100%;max-width:400px;position:relative;overflow:hidden;">
+                    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,150,12,.5),transparent);"></div>
+                    <p style="font-size:.56rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(184,150,12,.55);margin-bottom:.4rem;">EOI Reference Number</p>
+                    <div id="eoi-success-ref" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.4rem;color:var(--gold);letter-spacing:.05em;margin-bottom:.25rem;"></div>
+                    <p id="eoi-success-ts" style="font-size:.6rem;color:rgba(255,255,255,.28);"></p>
+                    <p style="font-size:.65rem;color:rgba(255,255,255,.35);margin-top:.4rem;"><i class="fas fa-envelope" style="margin-right:.3rem;"></i>Confirmation sent to your email</p>
+                  </div>
+
+                  <!-- Horizontal timeline of next steps -->
+                  <div style="width:100%;max-width:520px;">
+                    <p style="font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:1.25rem;text-align:center;">Transaction Process</p>
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;">
+                      ${[
+                        { n:'01', icon:'check-circle', title:'EOI Received', desc:'Logged & timestamped', active:true },
+                        { n:'02', icon:'user-tie',     title:'IM Dispatch',  desc:'Within 24–48 hrs' },
+                        { n:'03', icon:'chart-bar',    title:'Mgmt Call',    desc:'Shortlisted investors' },
+                        { n:'04', icon:'handshake',    title:'Site Visit',   desc:'Final qualified buyers' },
+                      ].map(s => `
+                      <div style="text-align:center;padding:.875rem .5rem;background:${s.active ? 'rgba(184,150,12,.1)' : 'rgba(255,255,255,.03)'};border:1px solid ${s.active ? 'rgba(184,150,12,.3)' : 'rgba(255,255,255,.06)'};">
+                        <div style="width:28px;height:28px;background:${s.active ? 'var(--gold)' : 'rgba(255,255,255,.08)'};border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto .5rem;">
+                          <i class="fas fa-${s.icon}" style="font-size:.55rem;color:${s.active ? '#fff' : 'rgba(255,255,255,.4)'}"></i>
+                        </div>
+                        <div style="font-size:.58rem;font-weight:700;letter-spacing:.05em;color:${s.active ? 'var(--gold)' : 'rgba(255,255,255,.45)'};margin-bottom:.2rem;">${s.title}</div>
+                        <div style="font-size:.57rem;color:rgba(255,255,255,.3);">${s.desc}</div>
+                      </div>`).join('')}
+                    </div>
+                  </div>
+
+                  <!-- Advisory contact card -->
+                  <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:1.25rem 1.75rem;width:100%;max-width:520px;">
+                    <p style="font-size:.58rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:.875rem;">Your Dedicated Advisory Contact</p>
+                    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+                      <div style="width:44px;height:44px;background:var(--ink-mid);border:1px solid rgba(184,150,12,.3);display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;">
+                        <span style="font-family:'DM Serif Display',Georgia,serif;font-size:.85rem;color:var(--gold);" id="eoi-advisor-initials">AK</span>
+                      </div>
+                      <div style="flex:1;">
+                        <div style="font-size:.9rem;color:#fff;font-weight:600;" id="eoi-advisor-name">Advisory Team</div>
+                        <div style="font-size:.7rem;color:rgba(255,255,255,.4);">Transaction Advisory · India Gully</div>
+                      </div>
+                      <div style="display:flex;gap:.625rem;flex-wrap:wrap;">
+                        <a id="eoi-advisor-phone-link" href="tel:+918988988988" style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:.45rem .875rem;font-size:.72rem;color:rgba(255,255,255,.7);text-decoration:none;transition:all .2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='rgba(255,255,255,.12)';this.style.color='rgba(255,255,255,.7)'">
+                          <i class="fas fa-phone" style="font-size:.6rem;color:var(--gold);"></i><span id="eoi-advisor-phone-text">Call</span>
+                        </a>
+                        <a id="eoi-advisor-wa-link" href="https://wa.me/918988988988?text=Hi%2C%20I%20have%20submitted%20an%20EOI%20for%20${encodeURIComponent(l.title)}" target="_blank" style="display:inline-flex;align-items:center;gap:.4rem;background:#25D366;border:1px solid #22c55e;padding:.45rem .875rem;font-size:.72rem;color:#fff;text-decoration:none;transition:background .2s;" onmouseover="this.style.background='#1eb659'" onmouseout="this.style.background='#25D366'">
+                          <i class="fab fa-whatsapp" style="font-size:.75rem;"></i>WhatsApp
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- CTA buttons -->
+                  <div style="display:flex;gap:.875rem;flex-wrap:wrap;justify-content:center;width:100%;">
+                    <a href="/listings" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:rgba(255,255,255,.65);text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:all .22s;" onmouseover="this.style.background='rgba(255,255,255,.1)';this.style.borderColor='rgba(255,255,255,.3)'" onmouseout="this.style.background='rgba(255,255,255,.05)';this.style.borderColor='rgba(255,255,255,.15)'">
+                      <i class="fas fa-arrow-left" style="font-size:.62rem;"></i>More Mandates
                     </a>
-                    <a href="mailto:akm@indiagully.com" style="display:flex;align-items:center;gap:.5rem;color:rgba(255,255,255,.55);font-size:.78rem;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.55)'">
-                      <i class="fas fa-envelope" style="color:var(--gold);font-size:.65rem;width:14px;text-align:center;"></i>akm@indiagully.com
+                    <a href="/insights" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;background:var(--gold);color:#fff;text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:background .22s;" onmouseover="this.style.background='#a37a08'" onmouseout="this.style.background='var(--gold)'">
+                      <i class="fas fa-newspaper" style="font-size:.62rem;"></i>Market Insights
+                    </a>
+                    <a href="/horeca/catalogue" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;border:1px solid rgba(184,150,12,.3);background:rgba(184,150,12,.07);color:rgba(255,255,255,.65);text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:all .22s;" onmouseover="this.style.background='rgba(184,150,12,.15)'" onmouseout="this.style.background='rgba(184,150,12,.07)'">
+                      <i class="fas fa-utensils" style="font-size:.62rem;color:var(--gold);"></i>HORECA Catalogue
                     </a>
                   </div>
-                </div>
-
-                <!-- Action buttons -->
-                <div style="display:flex;gap:.875rem;flex-wrap:wrap;justify-content:center;">
-                  <a href="/listings" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:rgba(255,255,255,.65);text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:all .22s;" onmouseover="this.style.background='rgba(255,255,255,.1)';this.style.borderColor='rgba(255,255,255,.3)'" onmouseout="this.style.background='rgba(255,255,255,.05)';this.style.borderColor='rgba(255,255,255,.15)'">
-                    <i class="fas fa-arrow-left" style="font-size:.62rem;"></i>View More Mandates
-                  </a>
-                  <a href="/insights" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;background:var(--gold);color:#fff;text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:background .22s;" onmouseover="this.style.background='#a37a08'" onmouseout="this.style.background='var(--gold)'">
-                    <i class="fas fa-newspaper" style="font-size:.62rem;"></i>Read Sector Insights
-                  </a>
                 </div>
               </div>
             </div>
           </div>
+
 
           <!-- EOI FORM -->
           <div id="eoi-form-wrap">
@@ -743,7 +872,9 @@ ${ndaModal}
           <script>
           (function(){
             var style = document.createElement('style');
-            style.textContent = '@keyframes pulse-ring { 0% { transform: scale(1); opacity: .5; } 100% { transform: scale(1.35); opacity: 0; } }';
+            style.textContent = '@keyframes pulse-ring{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.35);opacity:0}}'
+              + '@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}'
+              + '@keyframes fadeSlideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}';
             document.head.appendChild(style);
           })();
           function igSubmitEOI() {
@@ -779,6 +910,7 @@ ${ndaModal}
                 mandateValue: '${l.value}',
                 mandateContact: '${l.contact || 'akm@indiagully.com'}',
                 mandateContactName: '${l.contactName || 'Arun Manikonda'}',
+                mandateContactPhone: '${l.contactPhone || '+91 98108 89134'}',
                 name: name, email: email, org: org, phone: phone,
                 ticketSize: ticket, investorType: itype,
                 message: msg,
@@ -793,11 +925,28 @@ ${ndaModal}
               var refEl = document.getElementById('eoi-success-ref');
               var tsEl = document.getElementById('eoi-success-ts');
               var mandateEl = document.getElementById('eoi-success-mandate');
+              var advisorNameEl = document.getElementById('eoi-advisor-name');
+              var advisorInitialsEl = document.getElementById('eoi-advisor-initials');
+              var advisorPhoneLink = document.getElementById('eoi-advisor-phone-link');
+              var advisorPhoneText = document.getElementById('eoi-advisor-phone-text');
+              var advisorWaLink = document.getElementById('eoi-advisor-wa-link');
+
               if (formWrap) formWrap.style.display = 'none';
-              if (panel) panel.style.display = 'block';
+              if (panel) { panel.style.display = 'block'; panel.style.animation = 'fadeSlideUp .5s ease both'; }
               if (refEl) refEl.textContent = d.ref || 'IG-EOI-' + Date.now();
-              if (tsEl) tsEl.textContent = 'Submitted: ' + new Date().toLocaleString('en-IN', {timeZone:'Asia/Kolkata'}) + ' IST';
+              if (tsEl) tsEl.textContent = 'Submitted: ' + new Date().toLocaleString('en-IN', {timeZone:'Asia/Kolkata',dateStyle:'medium',timeStyle:'short'}) + ' IST';
               if (mandateEl) mandateEl.textContent = '${l.title}';
+              // Populate advisor details from listing data
+              var aName = '${l.contactName || 'Arun Manikonda'}';
+              var aPhone = '${l.contactPhone || '+91 98108 89134'}';
+              var aEmail = '${l.contact || 'akm@indiagully.com'}';
+              var initials = aName.split(' ').map(function(w){ return w[0]; }).join('').slice(0,2);
+              if (advisorNameEl) advisorNameEl.textContent = aName + ', Transaction Advisory';
+              if (advisorInitialsEl) advisorInitialsEl.textContent = initials;
+              if (advisorPhoneLink) advisorPhoneLink.href = 'tel:' + aPhone.replace(/\\s/g,'');
+              if (advisorPhoneText) advisorPhoneText.textContent = aPhone;
+              var waPhone = aPhone.replace(/[^\\d]/g,'');
+              if (advisorWaLink) advisorWaLink.href = 'https://wa.me/' + waPhone + '?text=Hi%20' + encodeURIComponent(aName.split(' ')[0]) + '%2C%20I%20have%20submitted%20an%20EOI%20for%20${encodeURIComponent(l.title)}%20(Ref%3A%20' + encodeURIComponent(d.ref||'') + ')';
               // Scroll to success panel
               if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
             })
@@ -876,7 +1025,7 @@ ${ndaModal}
           <i class="fas fa-file-signature" style="color:var(--gold);font-size:1.75rem;margin-bottom:.875rem;display:block;"></i>
           <h4 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:#fff;margin-bottom:.5rem;">Ready to Proceed?</h4>
           <p style="font-size:.75rem;color:rgba(255,255,255,.45);line-height:1.65;margin-bottom:1.25rem;">Scroll down to submit your Expression of Interest and receive the Information Memorandum within 24 hours.</p>
-          <a href="#eoi-section" onclick="document.getElementById('eoi-section').scrollIntoView({behavior:'smooth'});return false;" class="btn btn-g" style="width:100%;display:block;text-align:center;padding:.875rem;text-decoration:none;">
+          <a href="#eoi-section" onclick="(function(){ var s=sessionStorage.getItem('ig_nda_${l.id}'); if(s&&JSON.parse(s).accepted){ document.getElementById('eoi-section').scrollIntoView({behavior:'smooth'}); } else { igScrollToNDA(); } })(); return false;" class="btn btn-g" style="width:100%;display:block;text-align:center;padding:.875rem;text-decoration:none;">
             <i class="fas fa-arrow-down" style="margin-right:.4rem;font-size:.7rem;"></i>Submit EOI
           </a>
         </div>
@@ -939,6 +1088,19 @@ ${ndaModal}
         var badgeName = document.getElementById('nda-badge-name');
         if (badge) badge.style.display = 'block';
         if (badgeName && d.name) badgeName.textContent = 'Viewing as ' + d.name;
+        // Ensure content is unlocked on page load (DOMContentLoaded fired by now)
+        var eoiLock  = document.getElementById('eoi-lock-notice');
+        var eoiSec   = document.getElementById('eoi-section');
+        var specLock = document.getElementById('spec-lock-overlay');
+        var teaser   = document.getElementById('overview-teaser');
+        var full     = document.getElementById('overview-full');
+        var oLock    = document.getElementById('overview-lock');
+        if (eoiLock)  eoiLock.style.display  = 'none';
+        if (eoiSec)   eoiSec.style.display   = 'block';
+        if (specLock) specLock.style.display  = 'none';
+        if (teaser)   teaser.style.display    = 'none';
+        if (full)     full.style.display      = 'block';
+        if (oLock)    oLock.style.display     = 'none';
       }
     }
   } catch(e) {}
