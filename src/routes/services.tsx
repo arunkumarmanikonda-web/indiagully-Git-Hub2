@@ -116,15 +116,15 @@ app.get('/', (c) => {
 
 <!-- ══ SERVICES DETAIL ════════════════════════════════════════════════════ -->
 ${SERVICES.map((s, i) => `
-<div id="${s.id}" class="${i%2===0 ? 'sec-wh' : 'sec-pd'}" style="padding-top:6rem;padding-bottom:6rem;">
+<div id="${s.id}" class="${i%2===0 ? 'sec-wh' : 'sec-pc'}" style="padding-top:6.5rem;padding-bottom:6.5rem;">
   <div class="wrap">
     <div style="display:grid;grid-template-columns:5fr 4fr;gap:5rem;align-items:start;" class="mob-stack">
 
       <!-- Left -->
       <div class="reveal-l">
         <div style="display:flex;align-items:center;gap:1.25rem;margin-bottom:2rem;">
-          <div style="width:56px;height:56px;background:rgba(184,150,12,.08);border:1px solid rgba(184,150,12,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <span style="font-size:1.5rem;">${s.icon}</span>
+          <div class="ig-icon-box" style="width:64px;height:64px;">
+            <span style="font-size:1.65rem;">${s.icon}</span>
           </div>
           <div>
             <span style="font-size:.58rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);">Advisory Vertical</span>
@@ -151,22 +151,26 @@ ${SERVICES.map((s, i) => `
 
       <!-- Right -->
       <div class="reveal-r">
-        <div style="background:var(--ink);padding:2.25rem;margin-bottom:1.75rem;">
-          <p class="eyebrow-lt" style="margin-bottom:1.5rem;">Track Record</p>
-          <div style="display:flex;flex-direction:column;gap:1.25rem;">
+        <div style="background:var(--ink);padding:2.5rem;margin-bottom:1.75rem;position:relative;overflow:hidden;">
+          <!-- Gold top accent -->
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-lt),transparent);"></div>
+          <p class="eyebrow-lt" style="margin-bottom:1.75rem;">Track Record</p>
+          <div style="display:flex;flex-direction:column;gap:1.5rem;">
             ${s.highlights.map((h: any) => `
-            <div style="padding-bottom:1.25rem;border-bottom:1px solid rgba(255,255,255,.06);">
-              <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.25rem;color:var(--gold);line-height:1;margin-bottom:.4rem;">${h.v}</div>
-              <p style="font-size:.82rem;color:rgba(255,255,255,.45);line-height:1.7;">${h.l}</p>
+            <div style="padding-bottom:1.5rem;border-bottom:1px solid rgba(255,255,255,.06);transition:padding-left .2s;" onmouseover="this.style.paddingLeft='.75rem'" onmouseout="this.style.paddingLeft='0'">
+              <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.4rem;color:var(--gold);line-height:.95;margin-bottom:.5rem;letter-spacing:-.03em;">${h.v}</div>
+              <p style="font-size:.83rem;color:rgba(255,255,255,.5);line-height:1.75;">${h.l}</p>
             </div>`).join('')}
           </div>
         </div>
 
-        <div style="border:1px solid var(--border);padding:1.75rem;position:relative;overflow:hidden;">
-          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-lt),transparent);opacity:.6;"></div>
-          <p style="font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:1rem;">Engage This Vertical</p>
-          <p style="font-size:.875rem;color:var(--ink-soft);line-height:1.75;margin-bottom:1.5rem;">Interested in this advisory vertical? Our team will respond within 24 hours.</p>
-          <a href="/contact?service=${s.id}" class="btn btn-g" style="width:100%;justify-content:center;">Discuss Your Mandate</a>
+        <div class="ig-callout" style="padding:2rem;">
+          <p style="font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;">Engage This Vertical</p>
+          <p style="font-size:.875rem;color:var(--ink-soft);line-height:1.8;margin-bottom:1.5rem;">Interested in this advisory vertical? Our leadership team reviews all submissions within 24 hours.</p>
+          <div style="display:flex;flex-direction:column;gap:.625rem;margin-bottom:1.5rem;">
+            ${[{icon:"check",t:"Board-level advisory experience"},{icon:"check",t:"Pan-India mandate pipeline"},{icon:"check",t:"24-hour response commitment"}].map(b=>`<div style="display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--ink-muted);"><i class="fas fa-${b.icon}" style="color:var(--gold);font-size:.6rem;flex-shrink:0;"></i>${b.t}</div>`).join('')}
+          </div>
+          <a href="/contact?service=${s.id}" class="btn btn-g" style="width:100%;justify-content:center;">Discuss Your Mandate <i class="fas fa-arrow-right" style="margin-left:.4rem;font-size:.6rem;"></i></a>
         </div>
       </div>
     </div>

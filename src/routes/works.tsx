@@ -136,19 +136,20 @@ app.get('/', (c) => {
          style="margin-bottom:4rem;padding-bottom:4rem;border-bottom:1px solid var(--border);">
 
       <!-- Vertical header -->
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;">
-        <div style="display:flex;align-items:center;gap:1rem;">
-          <div style="width:48px;height:48px;background:${v.bg};border:1px solid ${v.border};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2.5rem;flex-wrap:wrap;gap:1.25rem;">
+        <div style="display:flex;align-items:center;gap:1.25rem;">
+          <div class="ig-icon-box" style="background:${v.bg};border-color:${v.border};">
             <i class="fas fa-${v.icon}" style="color:${v.color};font-size:1.1rem;"></i>
           </div>
           <div>
-            <div style="font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.2rem;">Vertical Track Record</div>
-            <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--ink);line-height:1.1;">${v.name}</h2>
-            <p style="font-size:.82rem;color:var(--ink-muted);margin-top:.3rem;">${v.summary}</p>
+            <div style="font-size:.58rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(184,150,12,.7);margin-bottom:.3rem;">Vertical Track Record</div>
+            <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:var(--ink);line-height:1.1;">${v.name}</h2>
+            <p style="font-size:.85rem;color:var(--ink-muted);margin-top:.35rem;">${v.summary}</p>
           </div>
         </div>
-        <div style="background:${v.bg};border:1px solid ${v.border};padding:.4rem .9rem;flex-shrink:0;">
-          <span style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${v.color};">${v.data.length} Projects Delivered</span>
+        <div style="background:${v.bg};border:1px solid ${v.border};padding:.45rem 1rem;flex-shrink:0;display:flex;align-items:center;gap:.5rem;">
+          <i class="fas fa-check-circle" style="color:${v.color};font-size:.65rem;"></i>
+          <span style="font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${v.color};">${v.data.length} Projects Delivered</span>
         </div>
       </div>
 
@@ -173,27 +174,27 @@ app.get('/', (c) => {
       <!-- Project cards grid -->
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;">
         ${v.data.map((p: any, idx: number) => `
-        <div class="card" style="overflow:hidden;animation:fadeUp .5s ease ${idx * 0.06}s both;">
-          <!-- Card image strip using vertical images cycling -->
-          <div style="height:6px;background:${v.color};opacity:.7;"></div>
-          <div style="padding:1.5rem;">
-          <!-- Type badge -->
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;flex-wrap:wrap;gap:.3rem;">
-            <span style="background:${v.bg};color:${v.color};border:1px solid ${v.border};font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .6rem;">${p.type}</span>
-            ${p.value ? `<span style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:${v.color};">${p.value}</span>` : ''}
+        <div class="works-card" style="animation:fadeUp .5s ease ${idx * 0.06}s both;">
+          <!-- Gold accent top strip -->
+          <div style="height:3px;background:linear-gradient(90deg,${v.color},transparent);opacity:.75;"></div>
+          <div style="padding:1.75rem;">
+          <!-- Type badge + value -->
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.5rem;">
+            <span style="background:${v.bg};color:${v.color};border:1px solid ${v.border};font-size:.57rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.22rem .65rem;">${p.type}</span>
+            ${p.value ? `<span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:${v.color};letter-spacing:-.02em;">${p.value}</span>` : ''}
           </div>
           <!-- Title -->
-          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.05rem;color:var(--ink);line-height:1.3;margin-bottom:.5rem;">${p.title}</h3>
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--ink);line-height:1.3;margin-bottom:.5rem;">${p.title}</h3>
           <!-- Location -->
-          <p style="font-size:.68rem;letter-spacing:.06em;color:var(--ink-muted);display:flex;align-items:center;gap:.3rem;margin-bottom:.75rem;">
+          <p style="font-size:.68rem;letter-spacing:.06em;color:var(--ink-muted);display:flex;align-items:center;gap:.35rem;margin-bottom:.875rem;">
             <i class="fas fa-map-marker-alt" style="color:${v.color};font-size:.58rem;"></i>${p.location}
           </p>
           <!-- Description -->
-          <p style="font-size:.8rem;color:var(--ink-soft);line-height:1.7;">${p.desc}</p>
+          <p style="font-size:.825rem;color:var(--ink-soft);line-height:1.75;">${p.desc}</p>
           <!-- Tags -->
           ${p.tags && p.tags.length > 0 ? `
-          <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.875rem;">
-            ${p.tags.slice(0,3).map((t: string) => `<span style="background:rgba(17,17,17,.04);color:var(--ink-soft);border:1px solid var(--border);font-size:.58rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .45rem;">${t}</span>`).join('')}
+          <div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+            ${p.tags.slice(0,3).map((t: string) => `<span style="background:${v.bg};color:${v.color};border:1px solid ${v.border};font-size:.57rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.17rem .5rem;">${t}</span>`).join('')}
           </div>` : ''}
           </div>
         </div>`).join('')}

@@ -141,14 +141,14 @@ app.get('/', (c) => {
       'Hotel Management Advisory','Entertainment Destinations','Debt & Special Situations',
       'HORECA Solutions','Brand On-Boarding','Financial Feasibility','Project Management',
       'Asset Management','Greenfield Hotels','Mall Leasing','FF&E Procurement',
-      '₹8,815 Cr+ Pipeline','15+ Hotel Projects','30+ Retail Brands','Pan-India Presence'
+      '₹10,000 Cr+ Pipeline','15+ Hotel Projects','30+ Retail Brands','Pan-India Presence'
     ].map(t=>`<span style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.75);padding:0 2.5rem;">${t}</span><span style="color:rgba(0,0,0,.25);font-size:.45rem;flex-shrink:0;">◆</span>`).join('')}
     ${[
       'Real Estate Advisory','Transaction Advisory','Retail Leasing Strategy',
       'Hotel Management Advisory','Entertainment Destinations','Debt & Special Situations',
       'HORECA Solutions','Brand On-Boarding','Financial Feasibility','Project Management',
       'Asset Management','Greenfield Hotels','Mall Leasing','FF&E Procurement',
-      '₹8,815 Cr+ Pipeline','15+ Hotel Projects','30+ Retail Brands','Pan-India Presence'
+      '₹10,000 Cr+ Pipeline','15+ Hotel Projects','30+ Retail Brands','Pan-India Presence'
     ].map(t=>`<span style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.75);padding:0 2.5rem;">${t}</span><span style="color:rgba(0,0,0,.25);font-size:.45rem;flex-shrink:0;">◆</span>`).join('')}
   </div>
 </div>
@@ -157,24 +157,22 @@ app.get('/', (c) => {
 <div style="position:relative;z-index:1;" id="homeStatsSection">
   <div id="homeStats">
     ${[
-      { n:'₹10,000 Cr+', l:'Advisory Pipeline',      sub:'Total active mandates', icon:'chart-line' },
-      { n:'15+',         l:'Hotel Projects',          sub:'Pan-India portfolio',   icon:'hotel' },
-      { n:'30+',         l:'Retail Brand Partners',   sub:'Leasing & franchise',   icon:'store' },
-      { n:'20+',         l:'Hospitality Brands',      sub:'Management & advisory', icon:'concierge-bell' },
-      { n:'Pan-India',   l:'Operations Reach',        sub:'Tier 1, 2 & 3 cities',  icon:'map-marked-alt' },
+      { n:'₹10,000 Cr+', l:'Advisory Pipeline',      sub:'Active mandates under advisory', icon:'chart-line' },
+      { n:'15+',         l:'Hotel Projects',          sub:'Pre-opening & PMC mandates', icon:'hotel' },
+      { n:'30+',         l:'Retail Brand Partners',   sub:'Leasing & franchise advisory', icon:'store' },
+      { n:'20+',         l:'Hospitality Brands',      sub:'Management & on-boarding', icon:'concierge-bell' },
+      { n:'Pan-India',   l:'Operations Reach',        sub:'Tier 1, 2 &amp; 3 cities', icon:'map-marked-alt' },
     ].map((s) => `
     <div class="home-stat-cell">
-      <div style="display:flex;align-items:center;justify-content:center;gap:.625rem;margin-bottom:.625rem;">
-        <i class="fas fa-${s.icon}" style="font-size:.7rem;color:var(--gold);opacity:.7;"></i>
-        <div class="stat-n count-up" data-target="${s.n}" style="font-size:2.5rem;">${s.n}</div>
-      </div>
-      <div style="font-size:.65rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);margin-bottom:.25rem;">${s.l}</div>
-      <div style="font-size:.68rem;color:var(--ink-muted);">${s.sub}</div>
+      <i class="fas fa-${s.icon}" style="font-size:.7rem;color:var(--gold);opacity:.6;display:block;margin-bottom:.625rem;"></i>
+      <div class="stat-n count-up" data-target="${s.n}" style="font-size:2.7rem;letter-spacing:-.03em;">${s.n}</div>
+      <div style="font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);margin-top:.4rem;margin-bottom:.2rem;">${s.l}</div>
+      <div style="font-size:.67rem;color:var(--ink-muted);">${s.sub}</div>
     </div>`).join('')}
   </div>
 </div>
 <!-- gold rule separator -->
-<div style="height:1px;background:linear-gradient(90deg,transparent,var(--gold-line),transparent);"></div>
+<div class="sec-sep"></div>
 
 <!-- ══ WHY INDIA GULLY ══════════════════════════════════════════════════ -->
 <div class="sec-pc" style="padding-top:7rem;padding-bottom:7rem;">
@@ -386,7 +384,7 @@ app.get('/', (c) => {
       ${VERTICALS.map((v: any) => `
       <div class="vg-cell" onclick="window.location='/services#${v.id}'" role="button" tabindex="0">
         <div class="vg-icon">
-          <span style="font-size:1.35rem;">${v.icon}</span>
+          <span style="font-size:1.45rem;">${v.icon}</span>
         </div>
         <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.2rem;color:var(--ink);margin-bottom:.65rem;line-height:1.2;">${v.name}</h3>
         <p style="font-size:.875rem;line-height:1.8;color:var(--ink-soft);margin-bottom:1.1rem;">${v.desc}</p>
@@ -417,14 +415,14 @@ app.get('/', (c) => {
         { icon:'handshake', n:'02', title:'20+ Brand Relationships', desc:'Deep relationships with every major hotel brand. We know which brand fits which project and navigate negotiations with authority.' },
         { icon:'utensils',  n:'03', title:'HORECA End-to-End',       desc:'One of the few consultants who also procure and supply, giving clients a single accountable partner from strategy to FF&E delivery.' },
         { icon:'bolt',      n:'04', title:'Execution-Led',           desc:'We stay involved through implementation, not just advisory. Turnkey delivery and hands-on project management is our differentiator.' },
-      ].map((d) => `
-      <div class="diff-cell">
-        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:3.5rem;color:rgba(184,150,12,.08);line-height:1;margin-bottom:1.5rem;letter-spacing:-.05em;">${d.n}</div>
-        <div style="width:44px;height:44px;border:1px solid rgba(184,150,12,.3);display:flex;align-items:center;justify-content:center;margin-bottom:1.75rem;transition:all .25s;" onmouseover="this.style.background='var(--gold)';this.style.borderColor='var(--gold)'" onmouseout="this.style.background='transparent';this.style.borderColor='rgba(184,150,12,.3)'">
-          <i class="fas fa-${d.icon}" style="color:var(--gold);font-size:.85rem;pointer-events:none;"></i>
+      ].map((d, di) => `
+      <div class="diff-cell reveal" style="transition-delay:${di*0.1}s;">
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:4rem;color:rgba(184,150,12,.07);line-height:1;margin-bottom:1.25rem;letter-spacing:-.05em;">${d.n}</div>
+        <div class="ig-icon-box" style="margin-bottom:1.75rem;">
+          <i class="fas fa-${d.icon}" style="color:var(--gold);font-size:.85rem;"></i>
         </div>
-        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;line-height:1.2;margin-bottom:.875rem;">${d.title}</h3>
-        <p style="font-size:.875rem;line-height:1.85;color:rgba(255,255,255,.42);">${d.desc}</p>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.3rem;color:#fff;line-height:1.2;margin-bottom:1rem;">${d.title}</h3>
+        <p style="font-size:.875rem;line-height:1.85;color:rgba(255,255,255,.45);">${d.desc}</p>
       </div>`).join('')}
     </div>
   </div>
@@ -604,7 +602,7 @@ app.get('/', (c) => {
           { name:'Pavan Manikonda', title:'Executive Director',      sub:'Director on Board & KMP',  init:'PM', photo:'/static/team/pavan-manikonda.jpg',  ph:'+91 62825 56067', em:'pavan@indiagully.com', bio:'Drives operations and business development across HORECA, hotel management and new verticals. Board Director and KMP of Vivacious Entertainment and Hospitality Pvt. Ltd.' },
           { name:'Amit Jhingan',    title:'President, Real Estate',  sub:'Key Managerial Personnel', init:'AJ', photo:'/static/team/amit-jhingan.png',       ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com', bio:'Real Estate Vertical Head. Specialist in retail leasing, commercial transactions and entertainment city advisory with 15+ years of pan-India experience.' },
         ].map((p, pi) => `
-        <div class="card reveal" style="padding:1.75rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.5rem;align-items:center;transition-delay:${pi*0.1}s;" onmouseover="this.style.borderColor='rgba(184,150,12,.3)';this.style.boxShadow='0 12px 40px rgba(0,0,0,.07)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+        <div class="leader-card" style="padding:1.75rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.5rem;align-items:center;transition-delay:${pi*0.1}s;border:1px solid var(--border);" onmouseover="this.style.borderColor='rgba(184,150,12,.25)'" onmouseout="this.style.borderColor='var(--border)'">
           <!-- Avatar -->
           <div style="width:62px;height:62px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid rgba(184,150,12,.3);background:var(--ink);position:relative;">
             <img src="${p.photo}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;object-position:center top;"

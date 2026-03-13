@@ -12,16 +12,22 @@ app.get('/', (c) => {
 <!-- CONTACT HERO -->
 <div class="hero-dk">
   <div class="hero-dk-grid"></div>
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 60% 50%,rgba(184,150,12,.05) 0%,transparent 55%);pointer-events:none;"></div>
-  <div style="position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(to bottom,transparent,var(--ink));pointer-events:none;"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 55% 70% at 60% 50%,rgba(184,150,12,.06) 0%,transparent 55%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to bottom,transparent,var(--ink));pointer-events:none;"></div>
+  <!-- Floating accent -->
+  <div style="position:absolute;right:5%;bottom:-2rem;font-family:'DM Serif Display',Georgia,serif;font-size:clamp(10rem,18vw,18rem);color:rgba(184,150,12,.025);line-height:1;pointer-events:none;user-select:none;">24h</div>
   <div class="wrap" style="position:relative;">
-    <div style="max-width:660px;" class="fu">
-      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+    <div style="max-width:720px;" class="fu">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem;">
         <div style="width:40px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);"></div>
         <span style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);">Contact &amp; RFQ</span>
       </div>
-      <h1 class="h1" style="margin-bottom:1.5rem;">Let's Work<br><em style="color:var(--gold);font-style:italic;">Together</em></h1>
-      <p class="lead-lt" style="max-width:520px;">Submit a mandate enquiry, HORECA RFQ or general inquiry. Our leadership team reviews all submissions within 24 hours.</p>
+      <h1 class="h1" style="margin-bottom:1.75rem;">Let's Work<br><em style="color:var(--gold);font-style:italic;">Together</em></h1>
+      <p class="lead-lt" style="max-width:540px;margin-bottom:2.5rem;">Submit a mandate enquiry, HORECA RFQ or general inquiry. Our leadership team reviews all submissions within 24 hours.</p>
+      <!-- Response commitments -->
+      <div style="display:flex;flex-wrap:wrap;gap:1.5rem;">
+        ${[{icon:"clock",t:"24h Response","s":"Guaranteed for all enquiries"},{icon:"shield-alt",t:"Confidential","s":"Mutual NDA framework"},{icon:"user-tie",t:"Leadership Review","s":"Direct to MD & ED"}].map(i=>`<div style="display:flex;align-items:center;gap:.625rem;"><div class="ig-icon-box-sm"><i class="fas fa-${i.icon}" style="color:var(--gold);font-size:.65rem;"></i></div><div><div style="font-size:.78rem;font-weight:600;color:#fff;">${i.t}</div><div style="font-size:.67rem;color:rgba(255,255,255,.45);">${i.s}</div></div></div>`).join('')}
+      </div>
     </div>
   </div>
 </div>
@@ -250,8 +256,9 @@ app.get('/', (c) => {
       <div style="display:flex;flex-direction:column;gap:1.25rem;">
 
         <!-- Leadership Contacts -->
-        <div style="background:var(--ink);padding:2rem;">
-          <p class="eyebrow-lt" style="margin-bottom:1.25rem;">Leadership Direct</p>
+        <div style="background:var(--ink);padding:2.25rem;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-lt),transparent);opacity:.7;"></div>
+          <p class="eyebrow-lt" style="margin-bottom:1.5rem;">Leadership Direct</p>
           ${[
             { name:'Arun Manikonda',  title:'Managing Director',    init:'AM', photo:'/static/team/arun-manikonda.jpg', ph:'+91 98108 89134', em:'akm@indiagully.com' },
             { name:'Pavan Manikonda', title:'Executive Director',    init:'PM', photo:'/static/team/pavan-manikonda.jpg', ph:'+91 62825 56067', em:'pavan@indiagully.com' },

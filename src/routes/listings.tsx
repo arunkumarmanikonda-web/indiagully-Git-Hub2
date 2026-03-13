@@ -58,11 +58,11 @@ app.get('/', (c) => {
         { n:'5',           l:'Asset Classes',                icon:'layer-group' },
         { n:'NDA Required', l:'All Mandates · Exclusive',   icon:'lock' },
       ].map((s, si) => `
-      <div style="padding:2.25rem 2rem;border-right:1px solid rgba(255,255,255,.05);text-align:center;position:relative;overflow:hidden;transition:background .22s;cursor:default;" onmouseover="this.style.background='rgba(184,150,12,.04)'" onmouseout="this.style.background='transparent'">
-        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(184,150,12,.3),transparent);opacity:0;transition:opacity .22s;" class="stat-top-line"></div>
-        <i class="fas fa-${s.icon}" style="font-size:.7rem;color:rgba(184,150,12,.4);margin-bottom:.625rem;display:block;"></i>
-        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.4rem;color:var(--gold);line-height:1;margin-bottom:.5rem;letter-spacing:-.02em;">${s.n}</div>
-        <div style="font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.45);">${s.l}</div>
+      <div style="padding:2.5rem 2rem;border-right:1px solid rgba(255,255,255,.05);text-align:center;position:relative;overflow:hidden;transition:all .22s;cursor:default;group" onmouseover="this.style.background='rgba(184,150,12,.05)';this.querySelector('.ps-top').style.opacity='1'" onmouseout="this.style.background='transparent';this.querySelector('.ps-top').style.opacity='0'">
+        <div class="ps-top" style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s;"></div>
+        <i class="fas fa-${s.icon}" style="font-size:.75rem;color:rgba(184,150,12,.45);margin-bottom:.75rem;display:block;"></i>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.6rem;color:var(--gold);line-height:1;margin-bottom:.55rem;letter-spacing:-.03em;">${s.n}</div>
+        <div style="font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.45);">${s.l}</div>
       </div>`).join('')}
     </div>
   </div>
@@ -80,7 +80,7 @@ app.get('/', (c) => {
         return `
       <!-- MANDATE CARD: ${l.id} -->
       <a href="/listings/${l.id}" data-sector="${l.sector}" class="mandate-card ed-card"
-         style="display:block;text-decoration:none;animation:fadeUp .6s cubic-bezier(.4,0,.2,1) ${idx * 0.07}s both;">
+         style="display:block;text-decoration:none;animation:fadeUp .6s cubic-bezier(.4,0,.2,1) ${idx * 0.07}s both;box-shadow:0 1px 3px rgba(0,0,0,.04);">
 
         <!-- IMAGE / NDA PLACEHOLDER -->
         <div class="ed-card-img" style="position:relative;height:240px;background:#0e0e18;">
@@ -115,38 +115,39 @@ app.get('/', (c) => {
         </div>
 
         <!-- CONTENT -->
-        <div style="padding:1.75rem;background:#fff;border-top:none;">
+        <div style="padding:1.875rem;background:#fff;position:relative;">
+          <!-- Gold top accent strip -->
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,${l.sectorColor},transparent);opacity:.5;"></div>
           <!-- Status + location row -->
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.4rem;">
-            <span style="background:${ss.bg};color:${ss.text};border:1px solid ${ss.border};font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.22rem .65rem;">${l.status}</span>
-            <span style="font-size:.68rem;color:var(--ink-muted);display:flex;align-items:center;gap:.3rem;"><i class="fas fa-map-marker-alt" style="color:var(--gold);font-size:.53rem;"></i>${l.locationShort}</span>
+            <span style="background:${ss.bg};color:${ss.text};border:1px solid ${ss.border};font-size:.57rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.22rem .65rem;">${l.status}</span>
+            <span style="font-size:.67rem;color:var(--ink-muted);display:flex;align-items:center;gap:.3rem;"><i class="fas fa-map-marker-alt" style="color:var(--gold);font-size:.53rem;"></i>${l.locationShort}</span>
           </div>
           <!-- Title block -->
-          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.2rem;color:var(--ink);line-height:1.2;margin-bottom:.35rem;">${l.title}</h3>
-          <p style="font-size:.72rem;color:var(--gold);font-weight:500;letter-spacing:.04em;margin-bottom:.875rem;">${l.subtitle}</p>
-          <!-- Description -->
-          <p style="font-size:.825rem;color:var(--ink-muted);line-height:1.75;margin-bottom:1.25rem;">${l.desc}</p>
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.2rem;color:var(--ink);line-height:1.2;margin-bottom:.3rem;">${l.title}</h3>
+          <p style="font-size:.72rem;color:var(--gold);font-weight:600;letter-spacing:.04em;margin-bottom:.875rem;">${l.subtitle}</p>
+          <!-- Description (truncated) -->
+          <p style="font-size:.825rem;color:var(--ink-muted);line-height:1.75;margin-bottom:1.25rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${l.desc}</p>
           <!-- Key metrics -->
-          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.625rem;margin-bottom:1.25rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1.25rem;">
             ${l.highlights.slice(0,2).map((h: any) => `
-            <div style="padding:.8rem 1rem;background:var(--parch);border:1px solid var(--border-lt);position:relative;overflow:hidden;">
-              <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);opacity:.5;"></div>
-              <div style="font-size:.57rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">${h.label}</div>
+            <div class="mandate-highlight">
+              <div style="font-size:.55rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">${h.label}</div>
               <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--gold);line-height:1;">${h.value}</div>
             </div>`).join('')}
           </div>
           <!-- Tags -->
           <div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1.25rem;">
-            ${l.tags.slice(0,4).map((t: string) => `<span style="background:rgba(10,10,10,.04);color:var(--ink-soft);border:1px solid var(--border);font-size:.6rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:.18rem .55rem;">${t}</span>`).join('')}
+            ${l.tags.slice(0,3).map((t: string) => `<span style="background:rgba(10,10,10,.04);color:var(--ink-soft);border:1px solid var(--border);font-size:.58rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:.17rem .5rem;">${t}</span>`).join('')}
           </div>
           <!-- CTA row -->
-          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.1rem;border-top:1px solid var(--border-lt);">
-            <span style="font-size:.68rem;color:var(--gold);font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:.4rem;">
-              <i class="fas fa-file-alt" style="font-size:.6rem;"></i>View Mandate + EOI
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--border-lt);">
+            <span style="font-size:.67rem;color:var(--gold);font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:.4rem;">
+              <i class="fas fa-file-signature" style="font-size:.6rem;"></i>View Mandate
             </span>
-            <span style="font-size:.62rem;color:var(--ink-faint);display:flex;align-items:center;gap:.3rem;">
-              ${l.nda ? `<i class="fas fa-lock" style="font-size:.52rem;color:var(--gold);"></i>NDA Gate` : `<i class="fas fa-unlock" style="font-size:.52rem;"></i>Open`}
-            </span>
+            <div style="display:flex;align-items:center;gap:.35rem;font-size:.6rem;color:var(--ink-faint);">
+              ${l.nda ? `<i class="fas fa-lock" style="font-size:.52rem;color:var(--gold);"></i><span>NDA Required</span>` : `<i class="fas fa-unlock" style="font-size:.52rem;"></i><span>Open</span>`}
+            </div>
           </div>
         </div>
       </a>`

@@ -9,16 +9,22 @@ app.get('/', (c) => {
 <!-- ABOUT HERO -->
 <div class="hero-dk">
   <div class="hero-dk-grid"></div>
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 55% 65% at 75% 50%,rgba(184,150,12,.05) 0%,transparent 55%);pointer-events:none;"></div>
-  <div style="position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(to bottom,transparent,var(--ink));pointer-events:none;"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 55% 65% at 75% 50%,rgba(184,150,12,.06) 0%,transparent 55%);pointer-events:none;"></div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to bottom,transparent,var(--ink));pointer-events:none;"></div>
+  <!-- Floating year accent -->
+  <div class="hero-dk-num">2017</div>
   <div class="wrap" style="position:relative;">
-    <div style="max-width:760px;" class="fu">
-      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+    <div style="max-width:820px;" class="fu">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem;">
         <div style="width:40px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);"></div>
         <span style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);">About India Gully</span>
       </div>
-      <h1 class="h1" style="margin-bottom:1.5rem;">Celebrating<br><em style="color:var(--gold);font-style:italic;">Desiness</em><br><span style="font-size:.5em;font-weight:300;color:rgba(255,255,255,.38);letter-spacing:-.01em;">Since 2017.</span></h1>
-      <p class="lead-lt" style="max-width:580px;">Vivacious Entertainment and Hospitality Pvt. Ltd. A Delhi-based, multi-vertical enterprise advisory firm operating across Hospitality, Retail, Real Estate and Entertainment with a distinctly Indian identity.</p>
+      <h1 class="h1" style="margin-bottom:1.75rem;">Celebrating<br><em style="color:var(--gold);font-style:italic;">Desiness</em><br><span style="font-size:.5em;font-weight:300;color:rgba(255,255,255,.38);letter-spacing:-.01em;">Since 2017.</span></h1>
+      <p class="lead-lt" style="max-width:600px;margin-bottom:2.5rem;">Vivacious Entertainment and Hospitality Pvt. Ltd. A Delhi-based, multi-vertical enterprise advisory firm operating across Hospitality, Retail, Real Estate and Entertainment with a distinctly Indian identity.</p>
+      <!-- Quick stats -->
+      <div style="display:flex;flex-wrap:wrap;gap:2.5rem;">
+        ${[{n:"2017",l:"Founded"},{n:"₹2,000 Cr+",l:"Transacted"},{n:"6",l:"Verticals"},{n:"Pan-India",l:"Presence"}].map(s=>`<div><div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:#fff;line-height:1;">${s.n}</div><div style="font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(184,150,12,.7);margin-top:.25rem;">${s.l}</div></div>`).join('')}
+      </div>
     </div>
   </div>
 </div>
@@ -212,10 +218,10 @@ app.get('/', (c) => {
         { label:'ROC',              value:'Registrar of Companies, NCT of Delhi & Haryana' },
         { label:'Compliance',       value:'Companies Act, 2013 · ICSI SS-1 & SS-2' },
       ].map((item, ii) => `
-      <div style="padding:1.75rem;background:rgba(255,255,255,.02);transition:background .2s;position:relative;overflow:hidden;" onmouseover="this.style.background='rgba(255,255,255,.04)'" onmouseout="this.style.background='rgba(255,255,255,.02)'">
-        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,150,12,.15),transparent);"></div>
-        <div style="font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.5rem;">${item.label}</div>
-        <div style="font-size:.9rem;font-weight:500;color:#fff;">${item.value}</div>
+      <div style="padding:1.75rem 1.5rem;background:rgba(255,255,255,.025);transition:all .22s;position:relative;overflow:hidden;cursor:default;" onmouseover="this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.background='rgba(255,255,255,.025)'">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);opacity:.4;"></div>
+        <div style="font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(184,150,12,.55);margin-bottom:.625rem;">${item.label}</div>
+        <div style="font-size:.9rem;font-weight:500;color:#fff;line-height:1.4;">${item.value}</div>
       </div>
       `).join('')}
     </div>

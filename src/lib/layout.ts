@@ -764,17 +764,285 @@ body{overflow-x:hidden;}
 
 /* ── HERO DARK SECTION (secondary pages) ─────── */
 .hero-dk{
-  background:var(--ink);padding:8rem 0 5.5rem;position:relative;overflow:hidden;
+  background:var(--ink);padding:9rem 0 6rem;position:relative;overflow:hidden;
 }
 .hero-dk-grid{
   position:absolute;inset:0;
-  background-image:linear-gradient(rgba(184,150,12,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.04) 1px,transparent 1px);
+  background-image:linear-gradient(rgba(184,150,12,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.035) 1px,transparent 1px);
   background-size:80px 80px;pointer-events:none;
 }
-.hero-dk-radial{position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(184,150,12,.05) 0%,transparent 55%);pointer-events:none;}
+.hero-dk-radial{position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(184,150,12,.06) 0%,transparent 55%);pointer-events:none;}
+/* Hero floating number — cinematic background serif */
+.hero-dk-num{
+  position:absolute;right:-2rem;bottom:-3rem;
+  font-family:"DM Serif Display",Georgia,serif;
+  font-size:clamp(12rem,22vw,22rem);
+  color:rgba(184,150,12,.025);
+  line-height:1;letter-spacing:-.05em;
+  pointer-events:none;user-select:none;
+  font-weight:400;
+}
 /* Brand logo cell */
-.brand-cell{background:#fff;padding:1.35rem 1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:96px;gap:.55rem;transition:background var(--t-fast);}
-.brand-cell:hover{background:var(--parch);}
+.brand-cell{background:#fff;padding:1.5rem 1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100px;gap:.6rem;transition:background var(--t-fast),transform var(--t-fast);}
+.brand-cell:hover{background:rgba(184,150,12,.04);transform:translateY(-2px);}
+
+/* ── PREMIUM GLASSMORPHISM CARD ──────────────── */
+.glass-card{
+  background:rgba(255,255,255,.65);
+  backdrop-filter:blur(20px) saturate(160%);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);
+  border:1px solid rgba(255,255,255,.55);
+  box-shadow:0 4px 24px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.8);
+  transition:all var(--t-med);
+}
+.glass-card:hover{
+  box-shadow:0 16px 48px rgba(0,0,0,.1),inset 0 1px 0 rgba(255,255,255,.8);
+  transform:translateY(-3px);
+  border-color:rgba(184,150,12,.3);
+}
+
+/* ── FLOATING LABEL FORM FIELDS ─────────────── */
+.fl-group{position:relative;}
+.fl-group .ig-inp{padding-top:1.4rem;padding-bottom:.4rem;}
+.fl-group label{
+  position:absolute;left:1.125rem;top:.875rem;
+  font-size:.875rem;color:var(--ink-faint);
+  transition:all .2s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;transform-origin:left top;
+}
+.fl-group .ig-inp:focus ~ label,
+.fl-group .ig-inp:not(:placeholder-shown) ~ label{
+  transform:translateY(-.625rem) scale(.75);
+  color:var(--gold);
+}
+
+/* ── PREMIUM SECTION SEPARATOR ──────────────── */
+.sec-sep{
+  height:1px;
+  background:linear-gradient(90deg,transparent 0%,var(--gold-line) 20%,var(--gold-line) 80%,transparent 100%);
+}
+
+/* ── ANIMATED GRADIENT TEXT ─────────────────── */
+.grad-text{
+  background:linear-gradient(135deg,var(--gold-dk),var(--gold),var(--gold-lt),var(--gold));
+  background-size:300% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:gradMove 5s ease-in-out infinite;
+}
+@keyframes gradMove{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+/* ── PREMIUM NUMBER DISPLAY ─────────────────── */
+.ig-big-num{
+  font-family:"DM Serif Display",Georgia,serif;
+  font-size:clamp(3.5rem,6vw,5.5rem);
+  line-height:.9;
+  color:var(--gold);
+  letter-spacing:-.04em;
+  font-weight:400;
+}
+.ig-big-num-dk{
+  font-family:"DM Serif Display",Georgia,serif;
+  font-size:clamp(3.5rem,6vw,5.5rem);
+  line-height:.9;
+  color:#fff;
+  letter-spacing:-.04em;
+  font-weight:400;
+}
+
+/* ── PREMIUM CALLOUT BLOCK ──────────────────── */
+.ig-callout{
+  position:relative;
+  padding:2rem 2.25rem;
+  background:linear-gradient(135deg,rgba(184,150,12,.06) 0%,rgba(184,150,12,.02) 100%);
+  border:1px solid rgba(184,150,12,.2);
+  overflow:hidden;
+}
+.ig-callout::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:linear-gradient(180deg,var(--gold),var(--gold-lt),transparent);
+}
+
+/* ── DARK CALLOUT BLOCK ─────────────────────── */
+.ig-callout-dk{
+  position:relative;
+  padding:2rem 2.25rem;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  overflow:hidden;
+}
+.ig-callout-dk::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:linear-gradient(180deg,var(--gold),rgba(184,150,12,.3));
+}
+
+/* ── PILL BADGE ─────────────────────────────── */
+.ig-pill{
+  display:inline-flex;align-items:center;gap:.375rem;
+  padding:.28rem .875rem;
+  font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  background:rgba(184,150,12,.1);
+  border:1px solid rgba(184,150,12,.25);
+  color:var(--gold);
+}
+.ig-pill-dk{
+  display:inline-flex;align-items:center;gap:.375rem;
+  padding:.28rem .875rem;
+  font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  background:rgba(184,150,12,.12);
+  border:1px solid rgba(184,150,12,.3);
+  color:var(--gold-lt);
+}
+
+/* ── PREMIUM NAV INDICATOR ──────────────────── */
+.n-lk.current{color:#fff;}
+.n-lk.current::after{transform:scaleX(1);}
+
+/* ── ICON BOX ───────────────────────────────── */
+.ig-icon-box{
+  width:56px;height:56px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(184,150,12,.08);
+  border:1px solid rgba(184,150,12,.18);
+  transition:background var(--t-med),border-color var(--t-med),transform var(--t-med);
+  flex-shrink:0;
+}
+.ig-icon-box:hover{background:rgba(184,150,12,.16);border-color:rgba(184,150,12,.35);transform:scale(1.05);}
+.ig-icon-box-sm{
+  width:40px;height:40px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(184,150,12,.08);
+  border:1px solid rgba(184,150,12,.18);
+  flex-shrink:0;
+}
+
+/* ── HOVER LINE CARD ────────────────────────── */
+.hover-line-card{
+  padding:1.5rem;
+  border-bottom:1px solid var(--border);
+  transition:background var(--t-fast),padding-left var(--t-fast),border-left-color var(--t-fast);
+  border-left:3px solid transparent;
+  cursor:pointer;
+}
+.hover-line-card:hover{
+  background:rgba(184,150,12,.03);
+  padding-left:1.75rem;
+  border-left-color:var(--gold);
+}
+
+/* ── STAT CARD ROW ──────────────────────────── */
+.stat-row{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border:1px solid var(--border);
+  background:#fff;
+}
+@media(max-width:860px){.stat-row{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.stat-row{grid-template-columns:1fr;}}
+.stat-row-cell{
+  padding:2.25rem 1.75rem;
+  text-align:center;
+  border-right:1px solid var(--border);
+  transition:background var(--t-med);
+  position:relative;
+}
+.stat-row-cell::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:0;transition:opacity var(--t-med);
+}
+.stat-row-cell:hover{background:rgba(184,150,12,.02);}
+.stat-row-cell:hover::after{opacity:1;}
+.stat-row-cell:last-child{border-right:none;}
+
+/* ── PREMIUM INSIGHT ARTICLE CARD ───────────── */
+.insight-card{
+  background:#fff;border:1px solid var(--border-lt);overflow:hidden;
+  transition:all var(--t-med);display:flex;flex-direction:column;
+  position:relative;
+}
+.insight-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-lt),transparent);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform var(--t-med);
+}
+.insight-card:hover{border-color:rgba(184,150,12,.3);box-shadow:0 16px 48px rgba(0,0,0,.09);transform:translateY(-4px);}
+.insight-card:hover::before{transform:scaleX(1);}
+.insight-card-img{overflow:hidden;position:relative;}
+.insight-card-img img{transition:transform 5s cubic-bezier(.4,0,.2,1);width:100%;height:100%;object-fit:cover;display:block;}
+.insight-card:hover .insight-card-img img{transform:scale(1.04);}
+
+/* ── WORKS VERTICAL CARD ────────────────────── */
+.works-card{
+  background:#fff;border:1px solid var(--border);
+  overflow:hidden;transition:all var(--t-med);
+  position:relative;
+}
+.works-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-lt),transparent);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform var(--t-med);
+}
+.works-card:hover{border-color:rgba(184,150,12,.25);box-shadow:0 12px 36px rgba(0,0,0,.09);transform:translateY(-3px);}
+.works-card:hover::after{transform:scaleX(1);}
+
+/* ── LEADERSHIP CARD ────────────────────────── */
+.leader-card{
+  background:#fff;border:1px solid var(--border);overflow:hidden;
+  transition:all var(--t-med);
+  position:relative;
+}
+.leader-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-lt),transparent);
+  opacity:0;transition:opacity var(--t-med);
+}
+.leader-card:hover{border-color:rgba(184,150,12,.3);box-shadow:0 20px 60px rgba(0,0,0,.1);transform:translateY(-5px);}
+.leader-card:hover::before{opacity:1;}
+
+/* ── CONTACT CARD ───────────────────────────── */
+.contact-info-card{
+  border:1px solid var(--border);padding:1.75rem;
+  background:#fff;
+  transition:border-color var(--t-med),box-shadow var(--t-med);
+}
+.contact-info-card:hover{border-color:rgba(184,150,12,.25);box-shadow:0 8px 28px rgba(0,0,0,.07);}
+
+/* ── MANDATE DETAIL HIGHLIGHTS ──────────────── */
+.mandate-highlight{
+  padding:1.25rem 1.5rem;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.07);
+  transition:background var(--t-fast),border-color var(--t-fast);
+}
+.mandate-highlight:hover{background:rgba(184,150,12,.08);border-color:rgba(184,150,12,.2);}
+
+/* ── MAGAZINE FEATURE ───────────────────────── */
+.magazine-feature{
+  display:grid;grid-template-columns:1.6fr 1fr;gap:0;
+  border:1px solid var(--border);overflow:hidden;
+  transition:box-shadow var(--t-med),border-color var(--t-med);
+}
+.magazine-feature:hover{border-color:rgba(184,150,12,.3);box-shadow:0 20px 60px rgba(0,0,0,.09);}
+@media(max-width:768px){.magazine-feature{grid-template-columns:1fr;}}
+.magazine-feature-img{position:relative;overflow:hidden;min-height:360px;}
+.magazine-feature-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 6s ease;}
+.magazine-feature:hover .magazine-feature-img img{transform:scale(1.03);}
+
+/* ── SCROLL INDICATOR ───────────────────────── */
+.scroll-indicator{
+  display:flex;flex-direction:column;align-items:center;gap:.5rem;
+  position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+  z-index:10;
+}
+.scroll-indicator-line{
+  width:1px;height:36px;
+  background:linear-gradient(180deg,rgba(184,150,12,.5),transparent);
+  animation:scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse{0%,100%{opacity:.4;height:28px}50%{opacity:.9;height:40px}}
 
 
 /* ── Why India Gully cards ───────────────────── */
@@ -840,14 +1108,17 @@ body{overflow-x:hidden;}
 @media(max-width:560px){#trackRecord{grid-template-columns:1fr;}}
 
 /* ── Scroll-reveal ────────────────────────────── */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .75s cubic-bezier(.4,0,.2,1),transform .75s cubic-bezier(.4,0,.2,1);}
 .reveal.visible{opacity:1;transform:translateY(0);}
-.reveal-l{opacity:0;transform:translateX(-24px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);}
+.reveal-l{opacity:0;transform:translateX(-28px);transition:opacity .75s cubic-bezier(.4,0,.2,1),transform .75s cubic-bezier(.4,0,.2,1);}
 .reveal-l.visible{opacity:1;transform:translateX(0);}
-.reveal-r{opacity:0;transform:translateX(24px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);}
+.reveal-r{opacity:0;transform:translateX(28px);transition:opacity .75s cubic-bezier(.4,0,.2,1),transform .75s cubic-bezier(.4,0,.2,1);}
 .reveal-r.visible{opacity:1;transform:translateX(0);}
-.reveal-scale{opacity:0;transform:scale(.96);transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1);}
+.reveal-scale{opacity:0;transform:scale(.95);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);}
 .reveal-scale.visible{opacity:1;transform:scale(1);}
+/* Faster reveal variant */
+.reveal-fast{opacity:0;transform:translateY(18px);transition:opacity .5s cubic-bezier(.4,0,.2,1),transform .5s cubic-bezier(.4,0,.2,1);}
+.reveal-fast.visible{opacity:1;transform:translateY(0);}
 
 /* ── Listing detail ──────────────────────────── */
 .listing-detail-grid{display:grid;grid-template-columns:1fr 390px;gap:4rem;align-items:start;}
@@ -1059,74 +1330,100 @@ const NAV = `
 
 // ── FOOTER ──────────────────────────────────────────────────────────────────
 const FOOTER = `
-<footer style="background:#080808;border-top:1px solid rgba(184,150,12,.12);">
-  <div class="wrap footer-grid" style="padding-top:4rem;padding-bottom:2.5rem;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;">
+<footer style="background:#060606;border-top:1px solid rgba(184,150,12,.15);position:relative;overflow:hidden;">
+  <!-- Footer background grid -->
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.02) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;"></div>
+  <!-- Footer radial glow -->
+  <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(184,150,12,.04) 0%,transparent 70%);pointer-events:none;"></div>
 
-    <!-- Brand -->
-    <div>
-      <!-- FOOTER LOGO: official white-text lockup — read-only, no crop, no AI, lossless -->
-      <div style="margin-bottom:1.25rem;">
-        <img src="/assets/logo-white.png"
-             alt="India Gully — Celebrating Desiness"
-             height="32"
-             style="height:32px;width:auto;max-width:200px;object-fit:contain;object-position:left center;display:block;"
-             draggable="false"
-             decoding="async">
+  <!-- Top contact strip -->
+  <div style="position:relative;border-bottom:1px solid rgba(255,255,255,.04);">
+    <div class="wrap" style="padding-top:2rem;padding-bottom:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;">
+      <div style="display:flex;align-items:center;gap:.875rem;">
+        <div style="width:40px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);flex-shrink:0;"></div>
+        <span style="font-size:.58rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:rgba(184,150,12,.7);">India Gully Advisory · New Delhi, India</span>
       </div>
-      <p style="font-size:.8rem;color:rgba(255,255,255,.65);line-height:1.8;max-width:300px;margin-bottom:1.25rem;">India's premier multi-vertical advisory firm. Strategy, transactions and enablement across Real Estate, Retail, Hospitality, Entertainment and HORECA.</p>
-      <p style="font-size:.68rem;color:rgba(255,255,255,.45);line-height:1.7;">Vivacious Entertainment and Hospitality Pvt. Ltd.<br>New Delhi, India</p>
-    </div>
-
-    <!-- Advisory -->
-    <div>
-      <p class="eyebrow" style="color:rgba(184,150,12,.85);margin-bottom:1.1rem;">Advisory</p>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:.6rem;">
-        ${['Real Estate','Retail &amp; Leasing','Hospitality','Entertainment','Debt &amp; Special Situations','HORECA Solutions'].map(s=>`<li><a href="/services" style="font-size:.8rem;color:rgba(255,255,255,.65);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.65)'">${s}</a></li>`).join('')}
-      </ul>
-    </div>
-
-    <!-- Platform -->
-    <div>
-      <p class="eyebrow" style="color:rgba(184,150,12,.85);margin-bottom:1.1rem;">Platform</p>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:.6rem;">
-        ${[['Active Mandates','/listings'],['Our Work','/works'],['Insights','/insights'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.65);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.65)'">${l}</a></li>`).join('')}
-      </ul>
-    </div>
-
-    <!-- Contact -->
-    <div>
-      <p class="eyebrow" style="color:rgba(184,150,12,.85);margin-bottom:1.1rem;">Contact</p>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:.7rem;">
-        <li style="display:flex;gap:.6rem;align-items:flex-start;font-size:.8rem;color:rgba(255,255,255,.65);"><i class="fas fa-map-marker-alt" style="color:var(--gold);font-size:.65rem;margin-top:.2rem;flex-shrink:0;"></i>New Delhi, India</li>
-        <li><a href="tel:+918988988988" style="display:flex;gap:.6rem;align-items:center;font-size:.8rem;color:rgba(255,255,255,.65);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.65)'"><i class="fas fa-phone" style="color:var(--gold);font-size:.65rem;flex-shrink:0;"></i>+91 8988 988 988</a></li>
-        <li><a href="mailto:info@indiagully.com" style="display:flex;gap:.6rem;align-items:center;font-size:.8rem;color:rgba(255,255,255,.65);transition:color .2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.65)'"><i class="fas fa-envelope" style="color:var(--gold);font-size:.65rem;flex-shrink:0;"></i>info@indiagully.com</a></li>
-      </ul>
-      <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,.06);">
-        <p style="font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(184,150,12,.75);margin-bottom:.5rem;">Leadership Direct</p>
-        <ul style="list-style:none;display:flex;flex-direction:column;gap:.35rem;">
-          <li><a href="mailto:akm@indiagully.com"          style="font-size:.75rem;color:rgba(255,255,255,.6);" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.6)'">akm@indiagully.com</a></li>
-          <li><a href="mailto:pavan@indiagully.com"        style="font-size:.75rem;color:rgba(255,255,255,.6);" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.6)'">pavan@indiagully.com</a></li>
-          <li><a href="mailto:amit.jhingan@indiagully.com" style="font-size:.75rem;color:rgba(255,255,255,.6);" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.6)'">amit.jhingan@indiagully.com</a></li>
-        </ul>
+      <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+        <a href="tel:+918988988988" style="display:flex;align-items:center;gap:.55rem;font-size:.78rem;color:rgba(255,255,255,.55);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.55)'"><i class="fas fa-phone" style="color:var(--gold);font-size:.6rem;"></i>+91 8988 988 988</a>
+        <a href="mailto:info@indiagully.com" style="display:flex;align-items:center;gap:.55rem;font-size:.78rem;color:rgba(255,255,255,.55);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(255,255,255,.55)'"><i class="fas fa-envelope" style="color:var(--gold);font-size:.6rem;"></i>info@indiagully.com</a>
+        <a href="/contact" class="btn btn-g btn-sm" style="font-size:.6rem;">Submit Mandate <i class="fas fa-arrow-right" style="font-size:.55rem;"></i></a>
       </div>
     </div>
   </div>
 
-  <div style="border-top:1px solid rgba(255,255,255,.05);">
-    <div class="wrap" style="padding-top:.9rem;padding-bottom:.9rem;display:flex;flex-direction:column;gap:.5rem;align-items:center;justify-content:space-between;">
-      <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;width:100%;gap:.75rem;">
-        <p style="font-size:.68rem;color:rgba(255,255,255,.5);">© 2026 Vivacious Entertainment and Hospitality Pvt. Ltd. All rights reserved. India Gully™ is a registered brand.</p>
-        <div style="display:flex;gap:1.25rem;font-size:.68rem;color:rgba(255,255,255,.5);align-items:center;">
-          <a href="/legal/privacy"    onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'" style="transition:color .2s;">Privacy Policy</a>
-          <a href="/legal/terms"      onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'" style="transition:color .2s;">Terms of Use</a>
-          <a href="/legal/disclaimer" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'" style="transition:color .2s;">Disclaimer</a>
-          <span style="color:rgba(255,255,255,.4);">New Delhi, India</span>
-          <button onclick="igStartTour && igStartTour()" aria-label="Start guided tour"
-                  style="background:none;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.55);padding:.2rem .6rem;font-size:.62rem;cursor:pointer;transition:color .2s;"
-                  onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.55)'">
-            <i class="fas fa-compass" style="margin-right:.3rem;"></i>Tour
-          </button>
+  <!-- Main footer grid -->
+  <div class="wrap footer-grid" style="position:relative;padding-top:4.5rem;padding-bottom:3rem;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3.5rem;">
+
+    <!-- Brand column -->
+    <div>
+      <div style="margin-bottom:1.5rem;">
+        <img src="/assets/logo-white.png"
+             alt="India Gully — Celebrating Desiness"
+             height="34"
+             style="height:34px;width:auto;max-width:200px;object-fit:contain;object-position:left center;display:block;"
+             draggable="false"
+             decoding="async">
+      </div>
+      <p style="font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.85;max-width:300px;margin-bottom:1.5rem;">India's premier multi-vertical advisory firm. Strategy, transactions and enablement across Real Estate, Retail, Hospitality, Entertainment and HORECA.</p>
+      
+      <!-- Credentials strip -->
+      <div style="padding:1rem 1.25rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);margin-bottom:1.25rem;">
+        <p style="font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(184,150,12,.65);margin-bottom:.5rem;">Institutional Credibility</p>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+          ${['EY Co-Advisory','CBRE Co-Advisory','ANAROCK Network','₹2,000 Cr+ Transacted'].map(t=>`<span style="font-size:.58rem;background:rgba(184,150,12,.08);border:1px solid rgba(184,150,12,.15);color:rgba(255,255,255,.5);padding:.18rem .5rem;">${t}</span>`).join('')}
         </div>
+      </div>
+      
+      <p style="font-size:.68rem;color:rgba(255,255,255,.35);line-height:1.7;">Vivacious Entertainment and Hospitality Pvt. Ltd.<br>CIN: U74999DL2017PTC323237 · New Delhi, India</p>
+    </div>
+
+    <!-- Advisory column -->
+    <div>
+      <p style="font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(184,150,12,.7);margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem;"><span style="width:16px;height:1px;background:rgba(184,150,12,.5);display:inline-block;"></span>Advisory</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:.55rem;">
+        ${[['Real Estate','/services#real-estate'],['Retail &amp; Leasing','/services#retail'],['Hospitality','/services#hospitality'],['Entertainment','/services#entertainment'],['Debt &amp; Special','/services#debt'],['HORECA Solutions','/horeca']].map(([s,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.5);transition:color .2s;display:flex;align-items:center;gap:.4rem;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><span style="width:4px;height:4px;background:rgba(184,150,12,.4);border-radius:50%;flex-shrink:0;display:inline-block;"></span>${s}</a></li>`).join('')}
+      </ul>
+    </div>
+
+    <!-- Platform column -->
+    <div>
+      <p style="font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(184,150,12,.7);margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem;"><span style="width:16px;height:1px;background:rgba(184,150,12,.5);display:inline-block;"></span>Platform</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:.55rem;">
+        ${[['Active Mandates','/listings'],['Our Work','/works'],['Insights','/insights'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.5);transition:color .2s;display:flex;align-items:center;gap:.4rem;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><span style="width:4px;height:4px;background:rgba(184,150,12,.4);border-radius:50%;flex-shrink:0;display:inline-block;"></span>${l}</a></li>`).join('')}
+      </ul>
+    </div>
+
+    <!-- Contact column -->
+    <div>
+      <p style="font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(184,150,12,.7);margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem;"><span style="width:16px;height:1px;background:rgba(184,150,12,.5);display:inline-block;"></span>Leadership</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:.6rem;">
+        ${[
+          {n:'Arun Manikonda',t:'Managing Director',e:'akm@indiagully.com',p:'+91 98108 89134'},
+          {n:'Pavan Manikonda',t:'Executive Director',e:'pavan@indiagully.com',p:'+91 62825 56067'},
+          {n:'Amit Jhingan',t:'President, Real Estate',e:'amit.jhingan@indiagully.com',p:'+91 98999 93543'},
+        ].map(l=>`<li style="padding:.625rem 0;border-bottom:1px solid rgba(255,255,255,.04);">
+          <div style="font-size:.78rem;font-weight:600;color:rgba(255,255,255,.75);margin-bottom:.1rem;">${l.n}</div>
+          <div style="font-size:.62rem;color:rgba(255,255,255,.4);margin-bottom:.3rem;">${l.t}</div>
+          <a href="mailto:${l.e}" style="font-size:.7rem;color:rgba(184,150,12,.65);display:block;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(184,150,12,.65)'">${l.e}</a>
+        </li>`).join('')}
+      </ul>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div style="position:relative;border-top:1px solid rgba(255,255,255,.04);">
+    <div class="wrap" style="padding-top:1rem;padding-bottom:1rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.875rem;">
+      <p style="font-size:.65rem;color:rgba(255,255,255,.38);">© 2026 Vivacious Entertainment and Hospitality Pvt. Ltd. All rights reserved. India Gully™ is a registered brand.</p>
+      <div style="display:flex;gap:1.5rem;font-size:.65rem;color:rgba(255,255,255,.38);align-items:center;flex-wrap:wrap;">
+        <a href="/legal/privacy"    style="transition:color .2s;" onmouseover="this.style.color='rgba(184,150,12,.8)'" onmouseout="this.style.color='rgba(255,255,255,.38)'">Privacy Policy</a>
+        <a href="/legal/terms"      style="transition:color .2s;" onmouseover="this.style.color='rgba(184,150,12,.8)'" onmouseout="this.style.color='rgba(255,255,255,.38)'">Terms of Use</a>
+        <a href="/legal/disclaimer" style="transition:color .2s;" onmouseover="this.style.color='rgba(184,150,12,.8)'" onmouseout="this.style.color='rgba(255,255,255,.38)'">Disclaimer</a>
+        <span style="color:rgba(255,255,255,.2);">GSTIN: 07AAGCV0867P1ZN</span>
+        <button onclick="igStartTour && igStartTour()" aria-label="Start guided tour"
+                style="background:none;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.45);padding:.22rem .6rem;font-size:.6rem;cursor:pointer;transition:all .2s;"
+                onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='rgba(255,255,255,.18)';this.style.color='rgba(255,255,255,.45)'">
+          <i class="fas fa-compass" style="margin-right:.3rem;"></i>Tour
+        </button>
       </div>
     </div>
   </div>
@@ -1171,11 +1468,11 @@ const SCRIPTS = (_nonce?: string) => `
 
   /* SCROLL-REVEAL */
   (function(){
-    var els = document.querySelectorAll('.reveal');
+    var els = document.querySelectorAll('.reveal,.reveal-l,.reveal-r,.reveal-scale,.reveal-fast');
     if(!els.length) return;
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }});
-    },{threshold:0.12});
+    },{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
     els.forEach(function(el){ io.observe(el); });
   })();
 
