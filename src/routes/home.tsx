@@ -153,14 +153,14 @@ app.get('/', (c) => {
       'Hotel Management Advisory','Entertainment Destinations','Debt & Special Situations',
       'HORECA Solutions','Brand On-Boarding','Financial Feasibility','Project Management',
       'Asset Management','Greenfield Hotels','Mall Leasing','FF&E Procurement',
-      '₹10,000 Cr+ Pipeline','15+ Hotel Projects','30+ Retail Brands','Pan-India Presence'
+      '₹1,165 Cr+ Pipeline','15+ Hotel Projects','30+ Retail Brands','Pan-India Presence'
     ].map(t=>`<span style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.75);padding:0 2.5rem;">${t}</span><span style="color:rgba(0,0,0,.25);font-size:.45rem;flex-shrink:0;">◆</span>`).join('')}
     ${[
       'Real Estate Advisory','Transaction Advisory','Retail Leasing Strategy',
       'Hotel Management Advisory','Entertainment Destinations','Debt & Special Situations',
       'HORECA Solutions','Brand On-Boarding','Financial Feasibility','Project Management',
       'Asset Management','Greenfield Hotels','Mall Leasing','FF&E Procurement',
-      '₹10,000 Cr+ Pipeline','15+ Hotel Projects','30+ Retail Brands','Pan-India Presence'
+      '₹1,165 Cr+ Pipeline','15+ Hotel Projects','30+ Retail Brands','Pan-India Presence'
     ].map(t=>`<span style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.75);padding:0 2.5rem;">${t}</span><span style="color:rgba(0,0,0,.25);font-size:.45rem;flex-shrink:0;">◆</span>`).join('')}
   </div>
 </div>
@@ -169,7 +169,7 @@ app.get('/', (c) => {
 <div style="position:relative;z-index:1;" id="homeStatsSection">
   <div id="homeStats">
     ${[
-      { n:'₹10,000 Cr+', l:'Advisory Pipeline',      sub:'Active mandates under advisory', icon:'chart-line' },
+      { n:'₹1,165 Cr+', l:'Advisory Pipeline',      sub:'Active mandates under advisory', icon:'chart-line' },
       { n:'15+',         l:'Hotel Projects',          sub:'Pre-opening & PMC mandates', icon:'hotel' },
       { n:'30+',         l:'Retail Brand Partners',   sub:'Leasing & franchise advisory', icon:'store' },
       { n:'20+',         l:'Hospitality Brands',      sub:'Management & on-boarding', icon:'concierge-bell' },
@@ -759,7 +759,7 @@ app.get('/', (c) => {
 
 `
   return c.html(layout('Home', content, {
-    description: "India Gully. Celebrating Desiness. India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions. ₹10,000 Cr+ advisory pipeline.",
+    description: "India Gully. Celebrating Desiness. India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions. ₹1,165 Cr+ active mandate pipeline.",
     canonical: 'https://india-gully.pages.dev/',
     jsonLd: JSON.stringify({
       "@context": "https://schema.org",

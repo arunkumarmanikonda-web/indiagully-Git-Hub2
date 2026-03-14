@@ -15863,7 +15863,7 @@ app.post('/cms/ai-generate', requireSession(), requireRole(['Super Admin'], ['ad
       headline: [
         { type, variant: 1, text: 'Celebrating Desi-ness — India\'s Premier Advisory Powerhouse' },
         { type, variant: 2, text: 'Where Indian Enterprise Meets Global Capital' },
-        { type, variant: 3, text: 'Trusted Advisors to ₹10,000 Cr+ in Transactions' },
+        { type, variant: 3, text: 'Trusted Advisors to ₹1,165 Cr+ in Active Mandates' },
       ],
       tagline: [
         { type, variant: 1, text: 'Desi Roots. Global Reach.' },

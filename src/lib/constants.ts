@@ -72,7 +72,7 @@ export const VERTICALS = [
 ]
 
 export const STATS = [
-  { value: '₹10,000 Cr+', label: 'Advisory Pipeline' },
+  { value: '₹1,165 Cr+', label: 'Active Mandate Pipeline' },
   { value: '15+', label: 'Hotel Projects' },
   { value: '30+', label: 'Retail Brands' },
   { value: '20+', label: 'Hospitality Brand Partnerships' },
