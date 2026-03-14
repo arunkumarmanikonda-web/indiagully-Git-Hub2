@@ -625,8 +625,8 @@ textarea.ig-input{resize:vertical;min-height:130px}
 #btt.show{display:flex;}
 
 /* ── Sticky stats bar ────────────────────────── */
-#stickyStats{position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;transform:translateY(-100%);transition:transform .38s cubic-bezier(.4,0,.2,1);background:rgba(6,6,6,.98);backdrop-filter:blur(20px);border-bottom:1px solid rgba(184,150,12,.15);}
-#stickyStats.visible{transform:translateY(0);}
+#stickyStats{position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;transform:translateY(-110%);transition:transform .38s cubic-bezier(.4,0,.2,1);background:rgba(6,6,6,.98);backdrop-filter:blur(20px);border-bottom:1px solid rgba(184,150,12,.15);pointer-events:none;}
+#stickyStats.visible{transform:translateY(0);pointer-events:auto;}
 .sticky-stat{display:flex;align-items:center;gap:.5rem;padding:.58rem 1.35rem;}
 .sticky-stat-n{font-family:"DM Serif Display",Georgia,serif;font-size:1.05rem;color:var(--gold);line-height:1;}
 .sticky-stat-l{font-size:.54rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);}
@@ -2376,10 +2376,15 @@ const SCRIPTS = (_nonce?: string) => `
     var ss = document.getElementById('stickyStats');
     var hs = document.getElementById('homeStats');
     if(!ss || !hs) return;
+    /* Only show after user has actually scrolled — guards against
+       the IO firing on page-load when homeStats is below-the-fold */
+    var hasScrolled = false;
+    window.addEventListener('scroll', function(){ hasScrolled = true; }, {passive:true, once:true});
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
-        ss.classList.toggle('visible', !e.isIntersecting);
-        ss.setAttribute('aria-hidden', e.isIntersecting ? 'true' : 'false');
+        var show = !e.isIntersecting && hasScrolled;
+        ss.classList.toggle('visible', show);
+        ss.setAttribute('aria-hidden', show ? 'false' : 'true');
       });
     },{threshold:0, rootMargin:'-80px 0px 0px 0px'});
     io.observe(hs);
