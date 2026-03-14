@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://61b06b68.india-gully.pages.dev |
+| **Latest Deploy** | https://d2529cc3.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
@@ -33,6 +33,23 @@ All portals require credentials provisioned by the system administrator.
 | Board & KMP | `/portal/board` | Director DIN/KMP ID + password + **RFC 6238 TOTP** |
 
 > 🔒 All portals enforce: PBKDF2-SHA256 password hashing · RFC 6238 TOTP server-side · HttpOnly Secure session cookies · CSRF synchronizer tokens · Server-side rate limiting (5 attempts → 5-min lockout) · 30-min session TTL.
+
+---
+
+## 🚀 Phase 9 — Navigation Cleanup, Valuation Fix & Light-Mode Default (v20)
+
+**Version: v20 | Build: 3.6 MB | Routes: 20+ all 200 OK | Deploy: https://d2529cc3.india-gully.pages.dev**  
+**Commit: 0d58cca | Date: March 2026**
+
+### ✅ Phase 9 Deliverables
+
+| Area | What Changed |
+|------|-------------|
+| **Navigation slimmed** | Reduced top-level nav items from 11 to 6: Home · About · Advisory(dropdown) · Mandates · Insights · More(dropdown) · Contact. Compare, Our Work, Market Data moved into Advisory dropdown. Our Work, Resources, Testimonials, Careers moved into More dropdown. FA icons replace emoji in dropdown items. |
+| **Valuation `[object Object]` bug** | Fixed incorrect `layout({title, body, ...})` object-syntax call — should be `layout(title, html, opts)`. This fixed the page title showing `[object Object] — India Gully`. |
+| **Same bug in 3 more routes** | Fixed identical `layout({…})` object call in `compare.tsx`, `market-data.tsx`, and `testimonials.tsx` — all pages now render with correct titles. |
+| **Light mode as default** | Removed system `prefers-color-scheme: dark` fallback from the early-init dark mode script. Site now defaults to **light mode** on every visit; dark mode only activates if the user explicitly toggles it. |
+| **Dark mode CSS selectors** | Tightened the overly broad `[style*="background:#fff"]` selector that was incorrectly forcing dark backgrounds on inline-styled elements across the whole page tree. |
 
 ---
 
