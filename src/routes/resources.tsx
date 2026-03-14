@@ -485,7 +485,8 @@ document.getElementById('res-modal').addEventListener('click', function(e){
 `
 
   return c.html(layout('Resources & Downloads', content, {
-    description: 'India Gully Knowledge Hub — free guides, checklists, templates and research covering HORECA procurement, hotel feasibility, real estate valuation and hospitality advisory. Download practical tools built from 8+ years of advisory experience.'
+    description: 'India Gully Knowledge Hub — free guides, checklists, templates and research covering HORECA procurement, hotel feasibility, real estate valuation and hospitality advisory. Download practical tools built from 8+ years of advisory experience.',
+    canonical: 'https://india-gully.pages.dev/resources'
   }))
 })
 

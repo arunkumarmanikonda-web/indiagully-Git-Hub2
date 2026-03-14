@@ -332,7 +332,8 @@ app.get('/', (c) => {
 </div>
 `
   return c.html(layout('HORECA Solutions', content, {
-    description: 'India Gully HORECA Solutions — kitchen equipment, FF&E, OS&E, linens, uniforms and guest amenities for hotels and F&B operators across India.'
+    description: 'India Gully HORECA Solutions — kitchen equipment, FF&E, OS&E, linens, uniforms and guest amenities for hotels and F&B operators across India.',
+    canonical: 'https://india-gully.pages.dev/horeca'
   }))
 })
 
@@ -1200,7 +1201,8 @@ document.addEventListener('DOMContentLoaded', igCatLoad);
 </script>
 `
   return c.html(layout('HORECA Product Catalogue', content, {
-    description: 'India Gully HORECA product catalogue — browse 500+ SKUs across kitchen equipment, crockery, linen, bar, housekeeping, furniture, technology and safety. Download CSV or PDF.'
+    description: 'India Gully HORECA product catalogue — browse 500+ SKUs across kitchen equipment, crockery, linen, bar, housekeeping, furniture, technology and safety. Download CSV or PDF.',
+    canonical: 'https://india-gully.pages.dev/horeca/catalogue'
   }))
 })
 

@@ -72,6 +72,27 @@ app.get('/', (c) => {
 <div class="sec-pd" style="padding-top:4.5rem;">
   <div class="wrap">
 
+    <!-- Sort + Results bar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border);">
+      <div id="resultsCount" style="font-size:.72rem;color:var(--ink-muted);"><span id="visibleCount">${LISTINGS.length}</span> mandates shown</div>
+      <div style="display:flex;align-items:center;gap:.5rem;">
+        <span style="font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);">Sort:</span>
+        <select id="sortSelect" onchange="sortMandates(this.value)"
+          style="font-size:.68rem;font-family:'DM Sans',sans-serif;font-weight:600;padding:.38rem .7rem;border:1px solid var(--border);background:var(--parch-dk);color:var(--ink);cursor:pointer;outline:none;border-radius:2px;">
+          <option value="default">Default Order</option>
+          <option value="value-high">Value: High → Low</option>
+          <option value="value-low">Value: Low → High</option>
+          <option value="sector">By Sector</option>
+        </select>
+        <button onclick="resetFilters()" title="Reset filters"
+          style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.38rem .75rem;border:1px solid var(--border);background:transparent;color:var(--ink-muted);cursor:pointer;transition:all .2s;border-radius:2px;"
+          onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'"
+          onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--ink-muted)'">
+          <i class="fas fa-undo" style="font-size:.55rem;margin-right:.35rem;"></i>Reset
+        </button>
+      </div>
+    </div>
+
     <!-- Grid of cards -->
     <div id="mandatesGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;">
       ${LISTINGS.map((l: any, idx: number) => {
@@ -79,7 +100,7 @@ app.get('/', (c) => {
         const hasImages = l.images && l.images.length > 0
         return `
       <!-- MANDATE CARD: ${l.id} -->
-      <a href="/listings/${l.id}" data-sector="${l.sector}" class="mandate-card ed-card"
+      <a href="/listings/${l.id}" data-sector="${l.sector}" data-idx="${idx}" data-value="${parseFloat((l.value||'0').replace(/[^0-9.]/g,''))||0}" class="mandate-card ed-card"
          style="display:block;text-decoration:none;animation:fadeUp .6s cubic-bezier(.4,0,.2,1) ${idx * 0.07}s both;box-shadow:0 1px 3px rgba(0,0,0,.04);">
 
         <!-- IMAGE / NDA PLACEHOLDER -->
@@ -127,7 +148,7 @@ app.get('/', (c) => {
         </div>
 
         <!-- CONTENT -->
-        <div style="padding:1.875rem;background:#fff;position:relative;">
+        <div style="padding:1.875rem;background:var(--parch);position:relative;">
           <!-- Gold top accent strip -->
           <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,${l.sectorColor},transparent);opacity:.5;"></div>
           <!-- Status + location row -->
@@ -153,12 +174,19 @@ app.get('/', (c) => {
             ${l.tags.slice(0,3).map((t: string) => `<span style="background:rgba(10,10,10,.04);color:var(--ink-soft);border:1px solid var(--border);font-size:.58rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:.17rem .5rem;">${t}</span>`).join('')}
           </div>
           <!-- CTA row -->
-          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--border-lt);">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--border-lt);gap:.5rem;flex-wrap:wrap;">
             <span style="font-size:.67rem;color:var(--gold);font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:.4rem;">
               <i class="fas fa-file-signature" style="font-size:.6rem;"></i>View Mandate
             </span>
-            <div style="display:flex;align-items:center;gap:.35rem;font-size:.6rem;color:var(--ink-faint);">
-              ${l.nda ? `<i class="fas fa-lock" style="font-size:.52rem;color:var(--gold);"></i><span style="color:var(--gold);font-weight:600;">NDA Required</span>` : `<i class="fas fa-unlock" style="font-size:.52rem;"></i><span>Open Mandate</span>`}
+            <div style="display:flex;align-items:center;gap:.5rem;">
+              <a href="https://wa.me/918988988988?text=${encodeURIComponent('Hi, I am interested in ' + l.title + ' — please share details / Information Memorandum.')}" target="_blank" rel="noopener" onclick="event.stopPropagation()"
+                style="display:inline-flex;align-items:center;gap:.3rem;font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#25D366;color:#fff;padding:.28rem .65rem;text-decoration:none;transition:opacity .2s;"
+                onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+                <i class="fab fa-whatsapp" style="font-size:.68rem;"></i>Enquire
+              </a>
+              <div style="display:flex;align-items:center;gap:.3rem;font-size:.6rem;color:var(--ink-faint);">
+                ${l.nda ? `<i class="fas fa-lock" style="font-size:.52rem;color:var(--gold);"></i><span style="color:var(--gold);font-weight:600;">NDA</span>` : `<i class="fas fa-unlock" style="font-size:.52rem;"></i><span>Open</span>`}
+              </div>
             </div>
           </div>
         </div>
@@ -183,26 +211,61 @@ app.get('/', (c) => {
 </style>
 
 <script>
+var _currentSector = 'All Mandates';
+
 function filterMandates(sector) {
+  _currentSector = sector;
   var cards = document.querySelectorAll('.mandate-card');
   var btns  = document.querySelectorAll('.filter-btn');
   btns.forEach(function(b) {
     var isActive = b.dataset.filter === sector;
     b.classList.toggle('active', isActive);
-    b.style.borderColor  = isActive ? 'var(--gold)' : 'rgba(255,255,255,.15)';
-    b.style.background   = isActive ? 'var(--gold)' : 'rgba(255,255,255,.03)';
-    b.style.color        = isActive ? '#fff' : 'rgba(255,255,255,.45)';
+    b.style.borderColor = isActive ? 'var(--gold)' : 'rgba(255,255,255,.15)';
+    b.style.background  = isActive ? 'var(--gold)' : 'rgba(255,255,255,.03)';
+    b.style.color       = isActive ? '#fff' : 'rgba(255,255,255,.45)';
   });
+  var visible = 0;
   cards.forEach(function(card) {
     var match = sector === 'All Mandates' || card.dataset.sector === sector;
     card.style.display = match ? 'block' : 'none';
+    if (match) visible++;
   });
+  var vc = document.getElementById('visibleCount');
+  if (vc) vc.textContent = visible;
+}
+
+function sortMandates(order) {
+  var grid = document.getElementById('mandatesGrid');
+  if (!grid) return;
+  var cards = Array.from(grid.querySelectorAll('.mandate-card'));
+  cards.sort(function(a, b) {
+    if (order === 'sector') {
+      return (a.dataset.sector || '').localeCompare(b.dataset.sector || '');
+    }
+    if (order === 'value-high' || order === 'value-low') {
+      // Extract numeric value from data-value attribute (crore)
+      var av = parseFloat(a.dataset.value || '0');
+      var bv = parseFloat(b.dataset.value || '0');
+      return order === 'value-high' ? bv - av : av - bv;
+    }
+    return parseInt(a.dataset.idx || '0') - parseInt(b.dataset.idx || '0');
+  });
+  cards.forEach(function(c) { grid.appendChild(c); });
+  // Re-apply current sector filter
+  filterMandates(_currentSector);
+}
+
+function resetFilters() {
+  document.getElementById('sortSelect').value = 'default';
+  sortMandates('default');
+  filterMandates('All Mandates');
 }
 </script>
 
 `
-  return c.html(layout('Active Mandates', content, {
-    description: 'India Gully active mandates, institutional-grade investment opportunities across Real Estate, Hospitality, Entertainment and Retail. All opportunities subject to NDA.'
+  return c.html(layout('Active Mandates — India Gully Advisory Pipeline', content, {
+    description: 'India Gully active mandates — ₹1,165 Cr+ institutional-grade investment opportunities across Real Estate, Hospitality, Entertainment and Retail. All opportunities subject to NDA.',
+    canonical: 'https://india-gully.pages.dev/listings'
   }))
 })
 

@@ -107,9 +107,19 @@ app.get('/', (c) => {
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;" class="mob-stack">
+    <!-- Sector filter pills for pipeline -->
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem;">
+      ${['All','Real Estate','Hospitality','Heritage Hospitality','Mixed-Use'].map((s,i) => `
+      <button onclick="filterInvest('${s}')" data-isector="${s}"
+        class="isect-btn${i===0?' ia':''}"
+        style="padding:.38rem 1rem;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:1px solid ${i===0?'var(--gold)':'var(--border)'};background:${i===0?'var(--gold)':'transparent'};color:${i===0?'#fff':'var(--ink-muted)'};cursor:pointer;transition:all .2s;border-radius:2px;"
+        onmouseover="if(!this.classList.contains('ia')){this.style.borderColor='var(--gold)';this.style.color='var(--gold)'}"
+        onmouseout="if(!this.classList.contains('ia')){this.style.borderColor='var(--border)';this.style.color='var(--ink-muted)'}">${s}</button>
+      `).join('')}
+    </div>
+    <div id="investGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;" class="mob-stack">
       ${LISTINGS.slice(0, 6).map((l: any) => `
-      <div class="mandate-card reveal" style="background:#fff;border:1px solid var(--border);overflow:hidden;transition:all .25s;">
+      <div class="mandate-card reveal" data-sector="${l.sector}" style="background:var(--parch);border:1px solid var(--border);overflow:hidden;transition:all .25s;">
         <!-- Card header with sector color -->
         <div style="padding:1.25rem 1.5rem;background:${l.sectorColor || '#0a0a0a'};position:relative;overflow:hidden;">
           <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:rgba(255,255,255,.04);border-radius:50%;transform:translate(20px,-20px);"></div>
@@ -350,8 +360,25 @@ app.get('/', (c) => {
     </div>
   </div>
 </div>
-`
 
+<script>
+function filterInvest(sector) {
+  var cards = document.querySelectorAll('#investGrid .mandate-card');
+  var btns = document.querySelectorAll('.isect-btn');
+  btns.forEach(function(b) {
+    var active = b.dataset.isector === sector;
+    b.classList.toggle('ia', active);
+    b.style.borderColor = active ? 'var(--gold)' : 'var(--border)';
+    b.style.background  = active ? 'var(--gold)' : 'transparent';
+    b.style.color       = active ? '#fff' : 'var(--ink-muted)';
+  });
+  cards.forEach(function(c) {
+    var match = sector === 'All' || c.dataset.sector === sector;
+    c.style.display = match ? 'block' : 'none';
+  });
+}
+</script>
+`
   return c.html(layout('Investor Relations — Active Pipeline & Mandates', content, {
     description: 'India Gully Investor Relations — ₹1,165 Cr+ active advisory pipeline across Real Estate, Hospitality, Retail, Entertainment and Debt. Institutional-grade mandates. Request Information Memorandum.',
     canonical: 'https://india-gully.pages.dev/invest',

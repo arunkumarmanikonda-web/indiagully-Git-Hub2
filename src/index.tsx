@@ -191,6 +191,7 @@ app.get('/sitemap.xml', (c) => {
     { url: '/market-data',   priority: '0.85', freq: 'weekly'  },
     { url: '/resources',     priority: '0.85', freq: 'weekly'  },
     { url: '/careers',       priority: '0.75', freq: 'monthly' },
+    { url: '/invest',        priority: '0.85', freq: 'monthly' },
     { url: '/legal/privacy',    priority: '0.3', freq: 'yearly' },
     { url: '/legal/terms',      priority: '0.3', freq: 'yearly' },
     { url: '/legal/disclaimer', priority: '0.3', freq: 'yearly' },
