@@ -1197,8 +1197,29 @@ app.get('/:id', (c) => {
 
       <!-- Share + CTA -->
       <div style="margin-top:3.5rem;padding-top:2rem;border-top:1px solid var(--border);">
+        <!-- Social share row -->
+        <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1.75rem;">
+          <span style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-right:.25rem;">Share</span>
+          <a href="https://twitter.com/intent/tweet?url=https://india-gully.pages.dev/insights/${article.id}&text=${encodeURIComponent(article.title + ' — India Gully Research')}&via=IndiaGully" target="_blank" rel="noopener" title="Share on X / Twitter"
+             style="display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .875rem;font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:#000;color:#fff;text-decoration:none;border-radius:4px;transition:opacity .2s;" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">
+            <i class="fab fa-x-twitter" style="font-size:.72rem;"></i>X / Twitter
+          </a>
+          <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://india-gully.pages.dev/insights/${article.id}" target="_blank" rel="noopener" title="Share on LinkedIn"
+             style="display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .875rem;font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:#0A66C2;color:#fff;text-decoration:none;border-radius:4px;transition:opacity .2s;" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">
+            <i class="fab fa-linkedin-in" style="font-size:.72rem;"></i>LinkedIn
+          </a>
+          <a href="https://wa.me/?text=${encodeURIComponent(article.title + ' — India Gully Research https://india-gully.pages.dev/insights/' + article.id)}" target="_blank" rel="noopener" title="Share on WhatsApp"
+             style="display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .875rem;font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:#25D366;color:#fff;text-decoration:none;border-radius:4px;transition:opacity .2s;" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">
+            <i class="fab fa-whatsapp" style="font-size:.72rem;"></i>WhatsApp
+          </a>
+          <button onclick="navigator.clipboard&&navigator.clipboard.writeText('https://india-gully.pages.dev/insights/${article.id}').then(function(){igToast('Link copied!','success')}).catch(function(){igToast('Copy link manually','info')})" title="Copy link"
+             style="display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .875rem;font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:var(--parch-dk);color:var(--ink);border:1px solid var(--border);cursor:pointer;border-radius:4px;transition:all .2s;" onmouseover="this.style.background='var(--gold-pale)'" onmouseout="this.style.background='var(--parch-dk)'">
+            <i class="fas fa-link" style="font-size:.72rem;color:var(--gold);"></i>Copy Link
+          </button>
+        </div>
+        <!-- Author + CTA row -->
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.25rem;">
-          <div style="font-size:.78rem;color:var(--ink-muted);">Published by <strong style="color:var(--ink);">India Gully Research</strong> · ${article.date}</div>
+          <div style="font-size:.78rem;color:var(--ink-muted);">Published by <strong style="color:var(--ink);">India Gully Research</strong> · ${article.date} · <span style="color:var(--gold);"><i class="fas fa-clock" style="font-size:.68rem;"></i> ${article.readTime}</span></div>
           <div style="display:flex;gap:.625rem;flex-wrap:wrap;">
             <a href="/contact?service=${article.category}" class="btn btn-dk" style="font-size:.72rem;padding:.6rem 1.25rem;">Discuss With Our Team</a>
             <a href="/insights" class="btn btn-go" style="font-size:.72rem;padding:.6rem 1.25rem;">All Insights</a>

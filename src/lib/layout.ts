@@ -23,11 +23,24 @@ export function layout(title: string, content: string, opts?: {
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta name="description" content="${desc}">
+<meta name="author" content="India Gully — Vivacious Entertainment and Hospitality Pvt. Ltd.">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <meta property="og:title" content="${title} — India Gully">
 <meta property="og:description" content="${desc}">
 <meta property="og:image" content="${ogImg}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="India Gully — Celebrating Desiness">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="India Gully">
+<meta property="og:locale" content="en_IN">
+${opts?.canonical ? `<meta property="og:url" content="${opts.canonical}">` : ''}
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@IndiaGully">
+<meta name="twitter:creator" content="@IndiaGully">
+<meta name="twitter:title" content="${title} — India Gully">
+<meta name="twitter:description" content="${desc}">
+<meta name="twitter:image" content="${ogImg}">
 <title>${title} — India Gully</title>
 ${opts?.canonical ? `<link rel="canonical" href="${opts.canonical}">` : ''}
 <!-- FAVICON: hologram asset — locked, no AI, no optimisation, lossless only -->
@@ -570,7 +583,7 @@ textarea.ig-input{resize:vertical;min-height:130px}
 #ig-lightbox-caption{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-size:.72rem;color:rgba(255,255,255,.5);letter-spacing:.1em;background:rgba(0,0,0,.4);padding:.3rem .875rem;}
 
 /* ── Back-to-top ─────────────────────────────── */
-#btt{position:fixed;bottom:2rem;right:2rem;z-index:400;width:44px;height:44px;background:var(--gold);color:#fff;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:.8rem;box-shadow:0 4px 20px rgba(184,150,12,.45),0 0 0 3px rgba(184,150,12,.12);transition:all var(--t-med);}
+#btt{position:fixed;bottom:6rem;right:1.75rem;z-index:400;width:40px;height:40px;background:var(--gold);color:#fff;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:.75rem;box-shadow:0 4px 20px rgba(184,150,12,.45),0 0 0 3px rgba(184,150,12,.12);transition:all var(--t-med);border-radius:50%;}
 #btt:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(184,150,12,.55);}
 #btt.show{display:flex;}
 
@@ -1279,10 +1292,22 @@ body{overflow-x:hidden;}
 [data-theme="dark"] .sla-badge{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.25);color:#4ade80;}
 [data-theme="dark"] .sla-badge::before{background:#4ade80;}
 
-/* ── whatsapp-float ──────────────────────────── */
-.wa-float{position:fixed;bottom:2rem;right:2rem;z-index:999;width:56px;height:56px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);text-decoration:none;transition:transform .2s,box-shadow .2s;}
-.wa-float:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(37,211,102,.55);}
-.wa-float svg{width:28px;height:28px;fill:#fff;}
+/* ── scroll-progress bar ──────────────────────── */
+#ig-scroll-prog{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--gold),rgba(212,174,42,.7));z-index:10000;transition:width .1s linear;pointer-events:none;}
+
+/* ── contact-bubble (multi-action FAB) ─────────── */
+#ig-contact-fab{position:fixed;bottom:1.75rem;right:1.75rem;z-index:9000;display:flex;flex-direction:column;align-items:flex-end;gap:.6rem;}
+#ig-fab-main{width:56px;height:56px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.45);border:none;cursor:pointer;transition:transform .2s,box-shadow .2s;flex-shrink:0;}
+#ig-fab-main:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(37,211,102,.6);}
+#ig-fab-main i{font-size:1.25rem;color:#fff;transition:transform .3s;}
+#ig-fab-main.open i.fa-whatsapp{display:none;}
+#ig-fab-main.open i.fa-times{display:block!important;}
+.ig-fab-action{display:flex;align-items:center;gap:.65rem;opacity:0;transform:translateY(10px) scale(.9);transition:opacity .2s,transform .2s;pointer-events:none;}
+.ig-fab-action.show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+.ig-fab-action a{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 14px rgba(0,0,0,.22);text-decoration:none;transition:transform .2s;}
+.ig-fab-action a:hover{transform:scale(1.1);}
+.ig-fab-label{background:#0a0a0a;color:#fff;font-size:.68rem;font-weight:600;letter-spacing:.06em;padding:.28rem .65rem;border-radius:4px;white-space:nowrap;pointer-events:none;}
+@media print{#ig-contact-fab,#ig-scroll-prog{display:none!important;}}
 
 /* ── ig-step (numbered step) ────────────────── */
 .ig-step{display:flex;gap:1.5rem;align-items:flex-start;padding:1.75rem 0;border-bottom:1px solid var(--border);}
@@ -1329,6 +1354,8 @@ body{overflow-x:hidden;}
 </style>
 </head>
 <body class="${opts?.bodyClass || ''}">
+<!-- SCROLL PROGRESS BAR -->
+<div id="ig-scroll-prog" aria-hidden="true"></div>
 <a href="#main-content" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;" onfocus="this.style.cssText='position:fixed;left:1rem;top:1rem;z-index:99999;background:var(--gold);color:#fff;padding:.5rem 1rem;font-size:.85rem;font-weight:700;text-decoration:none;'" onblur="this.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;'">Skip to main content</a>
 ${opts?.noNav ? '' : NAV}
 <main id="main-content" role="main" aria-label="Main content" tabindex="-1">
@@ -1339,6 +1366,31 @@ ${opts?.noFooter ? '' : FOOTER}
 <button id="btt" aria-label="Back to top" title="Back to top">
   <i class="fas fa-chevron-up"></i>
 </button>
+<!-- MULTI-ACTION CONTACT FAB -->
+${opts?.noNav ? '' : `<div id="ig-contact-fab" aria-label="Contact India Gully">
+  <div class="ig-fab-action" id="fab-act-email" style="transition-delay:.12s;">
+    <span class="ig-fab-label">Email Us</span>
+    <a href="mailto:info@indiagully.com" aria-label="Email India Gully" style="background:#1A3A6B;">
+      <i class="fas fa-envelope" style="color:#fff;font-size:.9rem;"></i>
+    </a>
+  </div>
+  <div class="ig-fab-action" id="fab-act-call" style="transition-delay:.08s;">
+    <span class="ig-fab-label">Call Us</span>
+    <a href="tel:+918988988988" aria-label="Call India Gully" style="background:var(--gold);">
+      <i class="fas fa-phone-alt" style="color:#fff;font-size:.85rem;"></i>
+    </a>
+  </div>
+  <div class="ig-fab-action" id="fab-act-wa" style="transition-delay:.04s;">
+    <span class="ig-fab-label">WhatsApp</span>
+    <a href="https://wa.me/918988988988?text=Hi%20India%20Gully%2C%20I%20would%20like%20to%20discuss%20a%20mandate." target="_blank" rel="noopener" aria-label="WhatsApp India Gully" style="background:#25D366;">
+      <i class="fab fa-whatsapp" style="color:#fff;font-size:1rem;"></i>
+    </a>
+  </div>
+  <button id="ig-fab-main" aria-label="Contact options" aria-expanded="false" onclick="igFabToggle()">
+    <i class="fab fa-whatsapp"></i>
+    <i class="fas fa-times" style="display:none;"></i>
+  </button>
+</div>`}
 <!-- LIGHTBOX -->
 <div id="ig-lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
   <button id="ig-lightbox-close" aria-label="Close image viewer" onclick="igLightboxClose()"><i class="fas fa-times"></i></button>
@@ -1415,10 +1467,11 @@ const NAV = `
       <div class="relative n-par" style="position:relative;">
         <button class="n-lk" style="display:flex;align-items:center;gap:.35rem;">More <i class="fas fa-chevron-down" style="font-size:.48rem;opacity:.4;"></i></button>
         <div class="n-drop" style="right:0;left:auto;min-width:12rem;">
-          <a href="/works"        class="n-di"><i class="fas fa-trophy"     style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Our Work</a>
-          <a href="/resources"    class="n-di"><i class="fas fa-book-open"  style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Resources</a>
-          <a href="/testimonials" class="n-di"><i class="fas fa-star"       style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Testimonials</a>
-          <a href="/careers"      class="n-di"><i class="fas fa-briefcase"  style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Careers</a>
+          <a href="/works"        class="n-di"><i class="fas fa-trophy"       style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Our Work</a>
+          <a href="/invest"       class="n-di"><i class="fas fa-chart-line"   style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Investor Relations</a>
+          <a href="/resources"    class="n-di"><i class="fas fa-book-open"    style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Resources</a>
+          <a href="/testimonials" class="n-di"><i class="fas fa-star"         style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Testimonials</a>
+          <a href="/careers"      class="n-di"><i class="fas fa-briefcase"    style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Careers</a>
         </div>
       </div>
 
@@ -1466,6 +1519,7 @@ const NAV = `
       <a href="/listings"    style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Mandates</a>
       <a href="/insights"    style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Insights</a>
       <a href="/works"       style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Our Work</a>
+      <a href="/invest"      style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Investor Relations</a>
       <a href="/valuation"   style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Valuation Tool</a>
       <a href="/market-data" style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Market Data</a>
       <a href="/compare"     style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Compare Mandates</a>
@@ -1543,7 +1597,7 @@ const FOOTER = `
     <div>
       <p style="font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(184,150,12,.7);margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem;"><span style="width:16px;height:1px;background:rgba(184,150,12,.5);display:inline-block;"></span>Platform</p>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:.55rem;">
-        ${[['Active Mandates','/listings'],['Compare Mandates','/compare'],['Our Work','/works'],['Insights','/insights'],['Market Data','/market-data'],['Valuation Tool','/valuation'],['Resources','/resources'],['Careers','/careers'],['Client Testimonials','/testimonials'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.5);transition:color .2s;display:flex;align-items:center;gap:.4rem;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><span style="width:4px;height:4px;background:rgba(184,150,12,.4);border-radius:50%;flex-shrink:0;display:inline-block;"></span>${l}</a></li>`).join('')}
+        ${[['Active Mandates','/listings'],['Compare Mandates','/compare'],['Our Work','/works'],['Investor Relations','/invest'],['Insights','/insights'],['Market Data','/market-data'],['Valuation Tool','/valuation'],['Resources','/resources'],['Careers','/careers'],['Client Testimonials','/testimonials'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.5);transition:color .2s;display:flex;align-items:center;gap:.4rem;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><span style="width:4px;height:4px;background:rgba(184,150,12,.4);border-radius:50%;flex-shrink:0;display:inline-block;"></span>${l}</a></li>`).join('')}
       </ul>
     </div>
 
@@ -1596,6 +1650,33 @@ const SCRIPTS = (_nonce?: string) => `
   }
   updNav();
   window.addEventListener('scroll', updNav, {passive:true});
+
+  /* SCROLL PROGRESS BAR */
+  var prog = document.getElementById('ig-scroll-prog');
+  if(prog){
+    window.addEventListener('scroll', function(){
+      var scrollTop = window.scrollY;
+      var docH = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      var pct = docH > 0 ? Math.min((scrollTop / docH) * 100, 100) : 0;
+      prog.style.width = pct + '%';
+    }, {passive:true});
+  }
+
+  /* MULTI-ACTION FAB */
+  function igFabToggle(){
+    var fab = document.getElementById('ig-fab-main');
+    var actions = document.querySelectorAll('.ig-fab-action');
+    var isOpen = fab && fab.classList.contains('open');
+    if(fab){ fab.classList.toggle('open', !isOpen); fab.setAttribute('aria-expanded', String(!isOpen)); }
+    actions.forEach(function(a){ a.classList.toggle('show', !isOpen); });
+  }
+  window.igFabToggle = igFabToggle;
+  /* Close FAB when clicking outside */
+  document.addEventListener('click', function(e){
+    var fab = document.getElementById('ig-contact-fab');
+    var btn = document.getElementById('ig-fab-main');
+    if(fab && btn && !fab.contains(e.target)){ btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); document.querySelectorAll('.ig-fab-action').forEach(function(a){ a.classList.remove('show'); }); }
+  });
 
   /* MOBILE MENU */
   var mb = document.getElementById('mobileBtn');

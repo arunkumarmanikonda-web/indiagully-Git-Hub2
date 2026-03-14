@@ -478,7 +478,27 @@ app.get('/', (c) => {
 
 `
   return c.html(layout('About India Gully', content, {
-    description: "About India Gully. Celebrating Desiness since 2017. Leadership, vision, values and the story behind India's premier multi-vertical advisory firm."
+    description: "About India Gully. Celebrating Desiness since 2017. Leadership, vision, values and the story behind India's premier multi-vertical advisory firm.",
+    canonical: 'https://india-gully.pages.dev/about',
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'AboutPage',
+      name: 'About India Gully',
+      url: 'https://india-gully.pages.dev/about',
+      description: "India Gully (Vivacious Entertainment and Hospitality Pvt. Ltd.) — advisory firm celebrating Desiness since 2017.",
+      mainEntity: {
+        '@type': 'Organization',
+        name: 'India Gully',
+        legalName: 'Vivacious Entertainment and Hospitality Pvt. Ltd.',
+        foundingDate: '2017',
+        url: 'https://india-gully.pages.dev',
+        employee: [
+          { '@type': 'Person', name: 'Arun Kumar Manikonda', jobTitle: 'Managing Director' },
+          { '@type': 'Person', name: 'Pavan Kumar Manikonda', jobTitle: 'Executive Director' },
+          { '@type': 'Person', name: 'Amit Jhingan', jobTitle: 'President, Real Estate' }
+        ]
+      }
+    }
   }))
 })
 

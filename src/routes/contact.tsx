@@ -412,7 +412,22 @@ function igContactAjax() {
 
 `
   return c.html(layout('Contact & Enquiry', content, {
-    description: 'Contact India Gully, submit a mandate enquiry, HORECA RFQ or advisory request. Our leadership team responds within 24 hours.'
+    description: 'Contact India Gully, submit a mandate enquiry, HORECA RFQ or advisory request. Our leadership team responds within 24 hours.',
+    canonical: 'https://india-gully.pages.dev/contact',
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'ContactPage',
+      name: 'Contact India Gully',
+      url: 'https://india-gully.pages.dev/contact',
+      description: 'Submit a mandate enquiry or HORECA RFQ. 24h response guaranteed.',
+      mainEntity: {
+        '@type': 'Organization',
+        name: 'India Gully',
+        telephone: '+918988988988',
+        email: 'info@indiagully.com',
+        address: { '@type': 'PostalAddress', addressLocality: 'New Delhi', addressCountry: 'IN' }
+      }
+    }
   }))
 })
 

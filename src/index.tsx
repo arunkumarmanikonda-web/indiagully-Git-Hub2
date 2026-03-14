@@ -21,6 +21,7 @@ import compareRoute from './routes/compare'
 import marketDataRoute from './routes/market-data'
 import resourcesRoute from './routes/resources'
 import careersRoute from './routes/careers'
+import investRoute from './routes/invest'
 import { layout } from './lib/layout'
 
 const app = new Hono()
@@ -276,6 +277,7 @@ app.route('/compare', compareRoute)
 app.route('/market-data', marketDataRoute)
 app.route('/resources', resourcesRoute)
 app.route('/careers', careersRoute)
+app.route('/invest', investRoute)
 app.route('/api', apiRoute)
 
 // ── 404 NOT FOUND ─────────────────────────────────────────────────────────────

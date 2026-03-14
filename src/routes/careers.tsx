@@ -437,7 +437,21 @@ document.getElementById('apply-modal').addEventListener('click', function(e){
 `
 
   return c.html(layout('Careers — Join India Gully', content, {
-    description: 'Join India Gully\'s high-performance advisory team. We are hiring across Transaction Advisory, HORECA Procurement, Business Development and Research. Celebrating Desiness since 2017.'
+    description: 'Join India Gully\'s high-performance advisory team. We are hiring across Transaction Advisory, HORECA Procurement, Business Development and Research. Celebrating Desiness since 2017.',
+    canonical: 'https://india-gully.pages.dev/careers',
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'JobPosting',
+      hiringOrganization: {
+        '@type': 'Organization',
+        name: 'India Gully',
+        sameAs: 'https://india-gully.pages.dev',
+        logo: 'https://india-gully.pages.dev/assets/logo-white.png'
+      },
+      jobLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', addressLocality: 'New Delhi', addressCountry: 'IN' } },
+      employmentType: 'FULL_TIME',
+      description: 'Multiple openings across Transaction Advisory, HORECA Procurement, Business Development and Research at India Gully.'
+    }
   }))
 })
 
