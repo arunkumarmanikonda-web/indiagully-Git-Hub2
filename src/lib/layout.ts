@@ -1548,6 +1548,7 @@ const NAV = `
         <div class="n-drop" style="right:0;left:auto;min-width:12rem;">
           <a href="/works"        class="n-di"><i class="fas fa-trophy"       style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Our Work</a>
           <a href="/invest"       class="n-di"><i class="fas fa-chart-line"   style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Investor Relations</a>
+          <a href="/pipeline"     class="n-di"><i class="fas fa-stream"        style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Pipeline Dashboard</a>
           <a href="/resources"    class="n-di"><i class="fas fa-book-open"    style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Resources</a>
           <a href="/testimonials" class="n-di"><i class="fas fa-star"         style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Testimonials</a>
           <a href="/careers"      class="n-di"><i class="fas fa-briefcase"    style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Careers</a>
@@ -1683,7 +1684,7 @@ const FOOTER = `
     <div>
       <p style="font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(184,150,12,.7);margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem;"><span style="width:16px;height:1px;background:rgba(184,150,12,.5);display:inline-block;"></span>Platform</p>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:.55rem;">
-        ${[['Active Mandates','/listings'],['Compare Mandates','/compare'],['Our Work','/works'],['Investor Relations','/invest'],['Insights','/insights'],['Market Data','/market-data'],['Valuation Tool','/valuation'],['Resources','/resources'],['Careers','/careers'],['Client Testimonials','/testimonials'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.5);transition:color .2s;display:flex;align-items:center;gap:.4rem;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><span style="width:4px;height:4px;background:rgba(184,150,12,.4);border-radius:50%;flex-shrink:0;display:inline-block;"></span>${l}</a></li>`).join('')}
+        ${[['Active Mandates','/listings'],['Compare Mandates','/compare'],['Pipeline Dashboard','/pipeline'],['Our Work','/works'],['Investor Relations','/invest'],['Insights','/insights'],['Market Data','/market-data'],['Valuation Tool','/valuation'],['Resources','/resources'],['Careers','/careers'],['Client Testimonials','/testimonials'],['Submit Mandate','/contact'],['About Us','/about'],['Client Portal','/portal/client'],['Employee Portal','/portal/employee'],['Board Portal','/portal/board']].map(([l,h])=>`<li><a href="${h}" style="font-size:.8rem;color:rgba(255,255,255,.5);transition:color .2s;display:flex;align-items:center;gap:.4rem;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.5)'"><span style="width:4px;height:4px;background:rgba(184,150,12,.4);border-radius:50%;flex-shrink:0;display:inline-block;"></span>${l}</a></li>`).join('')}
       </ul>
     </div>
 
@@ -2399,6 +2400,7 @@ const SCRIPTS = (_nonce?: string) => `
       {type:'page', icon:'fa-info-circle',  title:'About India Gully',            url:'/about'},
       {type:'page', icon:'fa-briefcase',    title:'Active Mandates',              url:'/listings'},
       {type:'page', icon:'fa-chart-line',   title:'Investor Relations',           url:'/invest'},
+      {type:'page', icon:'fa-stream',        title:'Pipeline Dashboard',           url:'/pipeline'},
       {type:'page', icon:'fa-envelope',     title:'Contact Us',                   url:'/contact'},
       {type:'page', icon:'fa-lightbulb',    title:'Insights & Research',          url:'/insights'},
       {type:'page', icon:'fa-star',         title:'Track Record',                 url:'/works'},

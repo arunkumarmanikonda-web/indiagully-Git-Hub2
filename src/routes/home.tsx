@@ -393,6 +393,161 @@ app.get('/', (c) => {
   </div>
 </div>
 
+<!-- ══ PAN-INDIA PRESENCE MAP ════════════════════════════════════════════ -->
+<div style="background:var(--parch);padding:5rem 0;border-top:1px solid var(--border);overflow:hidden;">
+  <div class="wrap">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;" class="mob-stack">
+      <!-- Left: copy -->
+      <div class="fu">
+        <div class="gr"></div>
+        <p class="eyebrow" style="margin-bottom:1rem;">Pan-India Presence</p>
+        <h2 class="h2" style="margin-bottom:1.25rem;">Active Mandates<br>Across India</h2>
+        <p class="body-lg" style="margin-bottom:2rem;color:var(--ink-soft);">India Gully operates across Tier 1, 2 and 3 markets — from Delhi NCR and Mumbai to Kasauli, Chail, Chandigarh and Jaipur. Our active mandates span 8+ cities with ₹1,165 Cr+ in combined advisory value.</p>
+        <!-- City list -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:2rem;">
+          ${[
+            { city:'Delhi NCR',       sub:'Gurugram · Noida · Shalimar Bagh', pin:'#B8960C' },
+            { city:'Chandigarh',      sub:'Hotel Rajshree & Spa', pin:'#065F46' },
+            { city:'Himachal Pradesh',sub:'Kasauli · Chail · Shimla', pin:'#1A3A6B' },
+            { city:'Jaipur',          sub:'Heritage Hotel Corridor', pin:'#7C3AED' },
+            { city:'Mumbai',          sub:'BKC · Lower Parel', pin:'#B8960C' },
+            { city:'Bengaluru',       sub:'Whitefield · MG Road', pin:'#065F46' },
+          ].map(c => `
+          <div style="display:flex;align-items:flex-start;gap:.625rem;padding:.625rem;background:#fff;border:1px solid var(--border);transition:border-color .2s;" onmouseover="this.style.borderColor='${c.pin}44'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="width:8px;height:8px;border-radius:50%;background:${c.pin};flex-shrink:0;margin-top:.25rem;"></div>
+            <div>
+              <div style="font-size:.75rem;font-weight:700;color:var(--ink);">${c.city}</div>
+              <div style="font-size:.62rem;color:var(--ink-faint);">${c.sub}</div>
+            </div>
+          </div>`).join('')}
+        </div>
+        <div style="display:flex;gap:.875rem;flex-wrap:wrap;">
+          <a href="/listings" class="btn btn-g" style="font-size:.75rem;"><i class="fas fa-map-marked-alt" style="margin-right:.4rem;font-size:.65rem;"></i>View Active Mandates</a>
+          <a href="/pipeline" class="btn btn-dko" style="font-size:.75rem;"><i class="fas fa-chart-bar" style="margin-right:.4rem;font-size:.65rem;"></i>Pipeline Dashboard</a>
+        </div>
+      </div>
+      <!-- Right: SVG India map -->
+      <div style="position:relative;" id="indiaMapWrap">
+        <div style="background:linear-gradient(135deg,#f0ebe0 0%,#e8e1d0 100%);border:1px solid var(--border);padding:1.5rem;position:relative;overflow:hidden;">
+          <!-- SVG map of India (simplified outline with key city pins) -->
+          <svg viewBox="0 0 400 480" width="100%" style="display:block;max-width:400px;margin:0 auto;" aria-label="India map showing active mandate locations">
+            <!-- Simplified India outline path -->
+            <path d="M160,20 L185,18 L210,22 L235,28 L255,35 L270,50 L280,68 L288,85 L295,100 L300,115
+                     L310,125 L318,140 L322,158 L325,175 L322,192 L315,205 L308,218 L305,232
+                     L310,248 L318,262 L325,278 L328,295 L322,312 L312,328 L298,342 L282,355
+                     L265,368 L248,380 L232,390 L218,398 L205,402 L195,398 L185,388 L175,375
+                     L162,360 L148,345 L136,330 L128,315 L122,300 L120,285 L118,270 L115,255
+                     L108,240 L100,228 L95,215 L92,200 L90,185 L88,170 L90,155 L95,140
+                     L100,125 L105,110 L108,95 L112,80 L118,65 L128,52 L140,40 L152,28 Z"
+                  fill="#f5efe5" stroke="#d4c9b0" stroke-width="1.5"/>
+            <!-- Kashmir / J&K extension -->
+            <path d="M152,28 L148,20 L145,12 L150,8 L158,6 L168,8 L178,12 L185,18 L185,18 Z"
+                  fill="#ede6d8" stroke="#d4c9b0" stroke-width="1"/>
+            <!-- Northeast extension -->
+            <path d="M322,158 L330,150 L340,148 L350,152 L355,162 L350,172 L340,175 L332,170 L325,175 Z"
+                  fill="#ede6d8" stroke="#d4c9b0" stroke-width="1"/>
+            <!-- Gujarat peninsula -->
+            <path d="M100,228 L92,235 L86,248 L82,262 L86,275 L94,280 L100,272 L104,258 L108,245 L108,240 Z"
+                  fill="#ede6d8" stroke="#d4c9b0" stroke-width="1"/>
+            <!-- Kerala tip -->
+            <path d="M185,388 L180,395 L178,408 L182,418 L188,420 L194,412 L195,398 Z"
+                  fill="#ede6d8" stroke="#d4c9b0" stroke-width="1"/>
+
+            <!-- Internal state lines (simplified) -->
+            <line x1="200" y1="150" x2="280" y2="150" stroke="#d4c9b0" stroke-width=".8" stroke-dasharray="3,3"/>
+            <line x1="160" y1="220" x2="310" y2="220" stroke="#d4c9b0" stroke-width=".8" stroke-dasharray="3,3"/>
+            <line x1="130" y1="290" x2="295" y2="290" stroke="#d4c9b0" stroke-width=".8" stroke-dasharray="3,3"/>
+
+            <!-- ── CITY PINS ── -->
+            <!-- Delhi NCR (Gurugram/Noida) -->
+            <g id="pin-delhi" style="cursor:pointer;" onmouseover="igMapHover('delhi',true)" onmouseout="igMapHover('delhi',false)">
+              <circle cx="215" cy="138" r="14" fill="rgba(184,150,12,.15)" stroke="rgba(184,150,12,.4)" stroke-width="1">
+                <animate attributeName="r" values="14;18;14" dur="3s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="1;0.4;1" dur="3s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="215" cy="138" r="7" fill="#B8960C" stroke="#fff" stroke-width="1.5"/>
+              <circle cx="215" cy="138" r="3" fill="#fff"/>
+              <text x="225" y="132" font-family="DM Sans,sans-serif" font-size="9" font-weight="700" fill="#0a0a0a">Delhi NCR</text>
+              <text x="225" y="143" font-family="DM Sans,sans-serif" font-size="7" fill="#555">3 Mandates · ₹900 Cr</text>
+            </g>
+            <!-- Chandigarh -->
+            <g id="pin-chandigarh" style="cursor:pointer;" onmouseover="igMapHover('chandigarh',true)" onmouseout="igMapHover('chandigarh',false)">
+              <circle cx="196" cy="118" r="6" fill="#065F46" stroke="#fff" stroke-width="1.5"/>
+              <circle cx="196" cy="118" r="2.5" fill="#fff"/>
+              <text x="175" y="114" font-family="DM Sans,sans-serif" font-size="8" font-weight="700" fill="#0a0a0a" text-anchor="end">Chandigarh</text>
+              <text x="175" y="123" font-family="DM Sans,sans-serif" font-size="7" fill="#555" text-anchor="end">₹70 Cr</text>
+            </g>
+            <!-- Kasauli/Chail (Himachal) -->
+            <g id="pin-himachal" style="cursor:pointer;" onmouseover="igMapHover('himachal',true)" onmouseout="igMapHover('himachal',false)">
+              <circle cx="195" cy="102" r="5.5" fill="#1A3A6B" stroke="#fff" stroke-width="1.5"/>
+              <circle cx="195" cy="102" r="2.2" fill="#fff"/>
+              <text x="185" y="92" font-family="DM Sans,sans-serif" font-size="7.5" font-weight="700" fill="#0a0a0a" text-anchor="end">Kasauli · Chail</text>
+              <text x="185" y="100" font-family="DM Sans,sans-serif" font-size="7" fill="#555" text-anchor="end">₹75 Cr</text>
+            </g>
+            <!-- Jaipur -->
+            <g id="pin-jaipur" style="cursor:pointer;" onmouseover="igMapHover('jaipur',true)" onmouseout="igMapHover('jaipur',false)">
+              <circle cx="175" cy="185" r="5.5" fill="#7C3AED" stroke="#fff" stroke-width="1.5"/>
+              <circle cx="175" cy="185" r="2.2" fill="#fff"/>
+              <text x="162" y="182" font-family="DM Sans,sans-serif" font-size="8" font-weight="700" fill="#0a0a0a" text-anchor="end">Jaipur</text>
+              <text x="162" y="191" font-family="DM Sans,sans-serif" font-size="7" fill="#555" text-anchor="end">₹20 Cr</text>
+            </g>
+            <!-- Mumbai -->
+            <g id="pin-mumbai" style="cursor:pointer;" onmouseover="igMapHover('mumbai',true)" onmouseout="igMapHover('mumbai',false)">
+              <circle cx="148" cy="268" r="5.5" fill="#dc2626" stroke="#fff" stroke-width="1.5"/>
+              <circle cx="148" cy="268" r="2.2" fill="#fff"/>
+              <text x="136" y="264" font-family="DM Sans,sans-serif" font-size="8" font-weight="700" fill="#0a0a0a" text-anchor="end">Mumbai</text>
+              <text x="136" y="273" font-family="DM Sans,sans-serif" font-size="7" fill="#555" text-anchor="end">Pipeline</text>
+            </g>
+
+            <!-- Pipeline legend -->
+            <rect x="10" y="430" width="380" height="42" rx="3" fill="rgba(184,150,12,.06)" stroke="rgba(184,150,12,.2)" stroke-width="1"/>
+            <text x="18" y="445" font-family="DM Sans,sans-serif" font-size="7.5" font-weight="700" fill="#555" letter-spacing="1">ACTIVE MANDATE LOCATIONS</text>
+            ${[
+              { cx:35,  color:'#B8960C', label:'Delhi NCR (₹900 Cr)' },
+              { cx:155, color:'#065F46', label:'Chandigarh (₹70 Cr)' },
+              { cx:275, color:'#1A3A6B', label:'Himachal (₹75 Cr)' },
+            ].map(p => `
+            <circle cx="${p.cx}" cy="462" r="4" fill="${p.color}"/>
+            <text x="${p.cx+8}" y="465" font-family="DM Sans,sans-serif" font-size="7" fill="#333">${p.label}</text>`).join('')}
+          </svg>
+          <!-- Hover tooltip -->
+          <div id="map-tooltip" style="position:absolute;display:none;background:var(--ink);color:#fff;padding:.5rem .75rem;font-size:.7rem;pointer-events:none;border:1px solid rgba(184,150,12,.3);max-width:160px;z-index:10;"></div>
+        </div>
+        <!-- Map caption -->
+        <p style="font-size:.65rem;color:var(--ink-faint);text-align:center;margin-top:.625rem;"><i class="fas fa-map-pin" style="color:var(--gold);margin-right:.3rem;font-size:.55rem;"></i>Pins show active India Gully advisory mandates · Updated Q1 2026</p>
+        <script>
+        (function(){
+          var tooltips = {
+            delhi:      { title:'Delhi NCR', sub:'Prism Tower · Ambience Tower · Sawasdee JLG', val:'₹900 Cr combined' },
+            chandigarh: { title:'Chandigarh', sub:'Hotel Rajshree & Spa · 41 Keys', val:'₹70 Cr' },
+            himachal:   { title:'Himachal Pradesh', sub:'WelcomHeritage Kasauli · Maple Resort Chail', val:'₹75 Cr combined' },
+            jaipur:     { title:'Jaipur', sub:'Heritage Hotel Structure · 43 Keys', val:'₹20 Cr' },
+            mumbai:     { title:'Mumbai', sub:'Advisory pipeline · Active', val:'In discussion' },
+          };
+          window.igMapHover = function(id, on) {
+            var tt = document.getElementById('map-tooltip');
+            var wrap = document.getElementById('indiaMapWrap');
+            if (!tt || !wrap) return;
+            if (on && tooltips[id]) {
+              var d = tooltips[id];
+              tt.innerHTML = '<strong style="display:block;font-size:.72rem;color:var(--gold);margin-bottom:.2rem;">' + d.title + '</strong>' +
+                '<span style="display:block;font-size:.65rem;color:rgba(255,255,255,.65);margin-bottom:.2rem;">' + d.sub + '</span>' +
+                '<span style="font-size:.65rem;color:var(--gold);font-weight:700;">' + d.val + '</span>';
+              tt.style.display = 'block';
+              tt.style.top = '50%';
+              tt.style.left = '50%';
+              tt.style.transform = 'translate(-50%,-50%)';
+            } else {
+              tt.style.display = 'none';
+            }
+          };
+        })();
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══ WHY INDIA GULLY ══════════════════════════════════════════════════ -->
 <div class="sec-pc" style="padding-top:7rem;padding-bottom:7rem;">
   <div class="wrap">

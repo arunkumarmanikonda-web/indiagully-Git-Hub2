@@ -858,6 +858,261 @@ const ARTICLES = [
 <p>For special situations investors seeking exposure to India's hospitality sector at below-replacement-cost pricing, India Gully offers a differentiated advisory capability that combines transaction execution skill with deep hospitality operating expertise — a combination that is rare in the Indian advisory market.</p>
 `,
   },
+  // ── NEW PHASE 17B ARTICLES ─────────────────────────────────────────────────
+  {
+    id: 'horeca-cloud-kitchen-india-2026',
+    category: 'HORECA',
+    date: 'March 2026',
+    title: 'Cloud Kitchens & Dark Stores: India\'s HORECA Infrastructure Revolution',
+    excerpt: 'India\'s food delivery ecosystem has crossed ₹1,00,000 Cr in annual GMV, yet the kitchen infrastructure underpinning it remains fragmented and capital-inefficient. India Gully\'s HORECA advisory practice examines the cloud kitchen model, dark store integration, and the investment opportunities emerging at the intersection of real estate and foodservice.',
+    tags: ['HORECA', 'Cloud Kitchen', 'Food Delivery', 'Real Estate'],
+    readTime: '9 min read',
+    body: `
+<h2>Executive Summary</h2>
+<p>India's online food delivery market crossed ₹1,00,000 Cr in annualised GMV in Q3 FY26, driven by Swiggy, Zomato, and an increasingly sophisticated set of quick-commerce platforms. Yet the physical infrastructure enabling this digital economy — the kitchen, the cold chain, the last-mile dark store — remains the least institutionalised segment of the entire value chain.</p>
+<p>India Gully's HORECA advisory practice has been advising operators, landlords, and investors on this infrastructure gap since 2023. This report synthesises our active mandate experience across 8 cloud kitchen operator clients and 3 real estate mandates involving HORECA-anchored commercial spaces.</p>
+
+<h2>1. The Market Structure in 2026</h2>
+<h3>Aggregators as Infrastructure Providers</h3>
+<p>Swiggy and Zomato have each evolved beyond pure aggregation into vertically integrated food infrastructure companies. Key developments:</p>
+<ul>
+  <li><strong>Swiggy Snacc / Instamart</strong>: Dark store network of 800+ locations nationally, expanding into HORECA-adjacent cold storage</li>
+  <li><strong>Zomato Hyperpure</strong>: B2B ingredient supply business now processing ₹2,400 Cr+ annually, servicing 50,000+ restaurant partners</li>
+  <li><strong>Blinkit (Zomato)</strong>: 800+ dark stores across 40+ cities; average dark store area 1,800–3,500 sq ft; lease terms 3–5 years at ₹45–120 per sq ft per month in Tier-1 micro-markets</li>
+</ul>
+<p>The implication for commercial real estate: aggregator-operated dark stores have become a new, credit-worthy tenant category for landlords with ground-floor retail in the right micro-markets.</p>
+
+<h3>Cloud Kitchen Operator Landscape</h3>
+<p>India's cloud kitchen landscape has consolidated significantly from the 2020–22 peak. Current structure:</p>
+<ul>
+  <li><strong>Platform-operated hubs</strong>: Rebel Foods (Faasos, Behrouz, Ovenstory), EatClub — vertically integrated multi-brand operators with 300–600 sq ft standardised kitchen modules</li>
+  <li><strong>Landlord-operated shared kitchens</strong>: Co-working-style shared kitchen infrastructure (Kitchens@, The Kitchens by Swiggy) leased to F&B brands at ₹12,000–35,000 per station per month</li>
+  <li><strong>Single-brand cloud kitchens</strong>: Restaurant chains using dedicated dark kitchen units to extend delivery radius without front-of-house investment</li>
+  <li><strong>Ghost kitchens in hotel basements</strong>: India Gully has actively advised 3 hotel owners on monetising under-utilised basement kitchen infrastructure for cloud kitchen sub-leasing — generating ₹80,000–1.8 Cr per year in incremental revenue</li>
+</ul>
+
+<h2>2. Real Estate Implications</h2>
+<h3>The HORECA Real Estate Stack</h3>
+<p>India Gully has developed a framework for categorising the physical infrastructure requirements across the HORECA delivery ecosystem:</p>
+<ol>
+  <li><strong>Tier A: Hub Dark Kitchens</strong> (2,500–8,000 sq ft): Multi-brand production hubs in industrial or commercial zones; ground floor preferred; loading bay mandatory; 3-phase power (80–150 kW); monthly lease ₹20–60 per sq ft in Tier-1</li>
+  <li><strong>Tier B: Satellite Cloud Kitchens</strong> (400–1,200 sq ft): Delivery-radius extension units; typically in basement or mezzanine of existing commercial buildings; monthly lease ₹40–120 per sq ft depending on micro-market</li>
+  <li><strong>Tier C: Dark Stores</strong> (1,500–4,000 sq ft): Ground-floor retail with 15-minute delivery access; cold storage (0–4°C zone) mandatory; monthly lease ₹60–180 per sq ft in high-demand micro-markets</li>
+  <li><strong>Tier D: Hotel Kitchen Monetisation</strong>: Sub-leasing hotel kitchen capacity during off-peak hours to cloud kitchen operators; India Gully's model generates 18–32% kitchen utilisation increase with minimal capex</li>
+</ol>
+
+<h3>Location Science for HORECA Infrastructure</h3>
+<p>Optimal HORECA infrastructure location depends on three variables that India Gully has modelled across active mandates:</p>
+<ul>
+  <li><strong>Delivery radius economics</strong>: Swiggy/Zomato delivery radius optimisation centres on 3–5 km radius from kitchen; beyond 6 km, packaging quality and delivery cost economics deteriorate</li>
+  <li><strong>Population density threshold</strong>: Dark stores require 8,000+ households within 2 km radius to sustain a 10-minute delivery model; cloud kitchens require 15,000+ food delivery orders per month in the micro-market</li>
+  <li><strong>Infrastructure requirements</strong>: 3-phase power, ventilation compliance, ground-floor vehicle access — these structural requirements limit eligible buildings to 15–25% of total commercial stock in most micro-markets</li>
+</ul>
+
+<h2>3. Investment Opportunity Analysis</h2>
+<h3>HORECA Real Estate as an Asset Class</h3>
+<p>The institutionalisation of dark kitchens and dark stores as tenants creates a new sub-category of commercial real estate investment. Key investment metrics from India Gully's mandate experience:</p>
+<ul>
+  <li><strong>Yield premium</strong>: HORECA-optimised commercial spaces (with ventilation, power, and loading access) achieve 15–25% yield premium over equivalent non-HORECA commercial</li>
+  <li><strong>Tenant credit quality</strong>: Aggregator-operated dark stores (Blinkit, Swiggy Instamart) represent investment-grade tenants with 3–5 year leases; independent cloud kitchen operators are sub-investment-grade but provide higher yield</li>
+  <li><strong>Asset repositioning</strong>: Ground-floor retail with 30%+ vacancy in Tier-1 micro-markets can achieve full occupancy through HORECA-format conversion at ₹150–400 per sq ft capex</li>
+</ul>
+
+<h3>Operating Business Opportunities</h3>
+<p>Beyond real estate, India Gully's HORECA practice identifies three investable operating business opportunities:</p>
+<ul>
+  <li><strong>Shared kitchen platform</strong>: ₹2–8 Cr investment in 3,000–6,000 sq ft shared kitchen infrastructure; payback 28–42 months at 75%+ utilisation; multiple revenue streams (station rent, ingredient supply, licensing)</li>
+  <li><strong>Cold chain distribution</strong>: B2B ingredient logistics serving cloud kitchen and dark store networks; underserved by existing logistics operators; 18–28% gross margin for temperature-controlled last-mile</li>
+  <li><strong>Technology stack for HORECA operators</strong>: Order aggregation, inventory management, menu engineering and customer analytics tools for cloud kitchen operators; SaaS opportunity with ₹8,000–25,000 per month ARPU</li>
+</ul>
+
+<h2>4. Challenges and Risk Factors</h2>
+<p>India Gully's advisory experience across HORECA mandates surfaces several structural risk factors for investors:</p>
+<ul>
+  <li><strong>Regulatory uncertainty</strong>: FSSAI compliance requirements for cloud kitchens continue to evolve; zoning and fire safety compliance is inconsistently enforced across states</li>
+  <li><strong>Aggregator dependency</strong>: Single-aggregator dependency creates concentration risk; multi-aggregator listing is best practice but adds operational complexity</li>
+  <li><strong>Unit economics pressure</strong>: Aggregator commission rates (18–28% of order value) create sustained P&L pressure; operators with proprietary delivery capability achieve 8–12% better contribution margin</li>
+  <li><strong>Real estate availability</strong>: The intersection of affordable rent, structural compliance, and delivery-optimised location remains scarce; site identification is the primary bottleneck for expansion-stage operators</li>
+</ul>
+
+<h2>Conclusion</h2>
+<p>India's HORECA infrastructure story is one of the most interesting convergence plays in the current investment cycle: digital food demand growth meeting physical real estate constraints in a market where the right operator, location, and capital structure can generate exceptional returns. India Gully's HORECA advisory practice offers end-to-end support — from site selection and lease negotiation through operator partnership and procurement optimisation — for investors and operators building in this space.</p>
+`,
+  },
+  {
+    id: 'india-hospitality-brand-strategy-2026',
+    category: 'Hospitality',
+    date: 'February 2026',
+    title: 'Hotel Brand Affiliation in India 2026: Choosing the Right Flag for Your Asset',
+    excerpt: 'India now hosts 850+ branded hotel projects across 25+ international and domestic flags. For hotel owners navigating the affiliation decision — IHG, Marriott, Hyatt, Radisson, Choice, OYO Townhouse, or homegrown brands — the choice has profound implications for RevPAR, capex requirement, management contract terms, and exit value. India Gully maps the landscape.',
+    tags: ['Hospitality', 'Hotel Brands', 'Management Contracts', 'Investment'],
+    readTime: '12 min read',
+    body: `
+<h2>Executive Summary</h2>
+<p>India's branded hotel pipeline has expanded dramatically in the post-COVID recovery cycle. As of Q1 2026, the country's 850+ branded hotel projects represent a market where the affiliation decision — which flag to fly, on what contractual terms, for what duration — is one of the most consequential strategic choices a hotel owner can make.</p>
+<p>India Gully's hospitality advisory practice has structured or reviewed 40+ hotel management contracts over the past 5 years, representing assets from 30-key boutique properties in Tier-3 cities to 250-key full-service hotels in metro markets. This report synthesises that experience into an actionable framework for hotel owners.</p>
+
+<h2>1. The Brand Landscape in India</h2>
+<h3>International Chains</h3>
+<p>The three dominant international chains in India's midscale-to-upscale segment are:</p>
+<ul>
+  <li><strong>Marriott International</strong>: 150+ hotels open and 80+ in pipeline. Brands present: Courtyard, Four Points, Fairfield, Marriott, JW Marriott, Westin, Sheraton, W, The Ritz-Carlton. Strongest in NCR, Mumbai, Bengaluru. RevPAR premium over comparable unbranded: 28–40%.</li>
+  <li><strong>IHG (InterContinental Hotels Group)</strong>: 50+ hotels open, 40+ pipeline. Holiday Inn, Holiday Inn Express, Crowne Plaza, InterContinental. Strongest in mid-market (Holiday Inn Express) with strong secondary city penetration. Management fee: 2% of revenue base fee + 6–8% gross operating profit incentive fee.</li>
+  <li><strong>Hyatt</strong>: 40+ hotels open, 35+ pipeline. Hyatt Regency, Grand Hyatt, Park Hyatt, Alila, Andaz, Hyatt Place, Hyatt Centric. Premium positioning; Delhi, Mumbai, Bengaluru focus. Known for demanding fitout standards but strong loyalty network (World of Hyatt).</li>
+</ul>
+
+<h3>Domestic Full-Service Brands</h3>
+<ul>
+  <li><strong>Taj Hotels (IHCL)</strong>: India's most premium domestic brand. Selects (upscale), Vivanta (upper-upscale), SeleQtions (soft brand), Taj (luxury). Strong F&B reputation drives ancillary revenue; brand licensing fee structure rather than full management contract available in some formats.</li>
+  <li><strong>Oberoi Group (EIH)</strong>: Ultra-luxury positioning, very selective. Trident brand for upscale segment. High management standards require; limited to assets meeting very specific physical criteria.</li>
+  <li><strong>Lemon Tree Hotels</strong>: India's largest domestically-listed hotel chain. Lemon Tree Premier (upscale), Lemon Tree (midscale), Red Fox (economy). Strong value proposition for owners seeking domestic brand with institutional management. Actively expanding through management contracts in Tier-2 and Tier-3 cities.</li>
+  <li><strong>WelcomHeritage (ITC)</strong>: Heritage and boutique positioning; relevant specifically for palace, fort, and heritage property owners. India Gully has an active mandate — WelcomHeritage Santa Roza, Kasauli — demonstrating the brand's value for appropriate assets.</li>
+</ul>
+
+<h3>Midscale & Economy Aggregators</h3>
+<ul>
+  <li><strong>OYO</strong>: Franchise-light model at economy segment (₹800–2,500 ADR). 3,000+ properties nationally. Rapid customer acquisition through platform; significant brand reputation risks. India Gully recommends OYO only for assets unable to qualify for conventional brands.</li>
+  <li><strong>Radisson Hotel Group</strong>: Park Inn, Radisson, Radisson Blu, Radisson RED. Active in Tier-2 and Tier-3 cities; more flexible on fitout standards than Marriott or IHG. Growing pipeline in highway and industrial corridor locations.</li>
+  <li><strong>Choice Hotels (Comfort Inn, Quality Inn)</strong>: Franchise model (not management contract); lower fee structure; appropriate for owner-operated hotels seeking distribution benefits without full management handover.</li>
+</ul>
+
+<h2>2. The Management Contract Framework</h2>
+<h3>Key Contract Terms India Gully Negotiates</h3>
+<p>Hotel management contracts are complex instruments. India Gully's advisory practice focuses on 7 key terms that drive long-term owner economics:</p>
+<ol>
+  <li><strong>Base fee</strong>: Typically 1.5–3.5% of total revenue. Benchmark: 2% for midscale, 2.5–3.5% for upper-upscale. Negotiate a ramp-up structure (lower base fee in years 1–3) for new builds.</li>
+  <li><strong>Incentive fee</strong>: 6–10% of GOP (Gross Operating Profit) after a fixed owner's priority return (typically 8–10% of invested capital or total investment). The incentive fee structure is where most owner-operator disputes originate — ensure GOP definition, capex treatment, and owner's priority are clearly defined.</li>
+  <li><strong>Operator performance guarantee</strong>: Minimum RevPAR (Revenue Per Available Room) or NOI (Net Operating Income) guarantee by the operator, with termination rights if missed for 2–3 consecutive years. Not all operators offer performance guarantees — Marriott and IHG do in competitive situations; OYO and budget operators typically do not.</li>
+  <li><strong>Technical services fee (TSA)</strong>: Pre-opening fee covering design review, pre-opening services, and brand standard compliance. Typically 3–4% of project cost. India Gully negotiates cap and scope limitations.</li>
+  <li><strong>FF&E (Furniture, Fixtures & Equipment) reserve</strong>: Mandatory reserve of 3–5% of revenue, held in escrow and applied to hotel maintenance capex. India Gully negotiates joint control over deployment.</li>
+  <li><strong>Brand fee / royalty</strong>: Separate from management fee in franchise models (Choice, some Marriott formats). Typically 4–6% of rooms revenue. Franchise without full management is increasingly common for experienced owner-operators.</li>
+  <li><strong>Term and termination</strong>: Standard initial term 15–25 years with renewal options. India Gully structures break clauses (performance-based, change-of-control, sale of asset) to preserve owner liquidity options.</li>
+</ol>
+
+<h2>3. Choosing the Right Brand for Your Asset</h2>
+<h3>The India Gully Brand-Asset Matching Framework</h3>
+<p>India Gully uses a four-dimension analysis to match hotel assets with the optimal brand:</p>
+
+<h3>Dimension 1: Market Position</h3>
+<p>The brand's competitive position in the specific city and micro-market matters more than national brand strength. A Marriott brand may drive stronger RevPAR in Delhi NCR; the same flag in a Tier-3 city may underperform a domestic brand that has stronger recognition and distribution in that market.</p>
+
+<h3>Dimension 2: Fitout and Capex Requirements</h3>
+<p>Brand standard compliance capex varies dramatically:</p>
+<ul>
+  <li>IHG Holiday Inn Express: ₹18–25 lakh per key (renovation to brand standard for existing hotel)</li>
+  <li>Marriott Courtyard / Fairfield: ₹22–35 lakh per key</li>
+  <li>Hyatt Place / Centric: ₹28–42 lakh per key</li>
+  <li>Lemon Tree / Goldfinch: ₹12–20 lakh per key</li>
+  <li>Choice Hotels (Quality Inn): ₹8–15 lakh per key</li>
+</ul>
+<p>Owners must model the full risk-adjusted return including brand capex before signing a management contract — India Gully consistently finds that aspirational brand selection that exceeds the market's willingness to pay destroys owner value.</p>
+
+<h3>Dimension 3: Distribution and Loyalty</h3>
+<p>The value of a global brand's loyalty program (Marriott Bonvoy, IHG One Rewards, World of Hyatt) is most evident in airports, CBDs, and gateway cities with high proportion of corporate and international travel. In leisure markets, temple towns, and Tier-3 cities, domestic OTA (MakeMyTrip, Goibibo) distribution often outperforms global loyalty channels. India Gully's analysis of 15 managed hotels in our portfolio shows that loyalty-channel contribution ranges from 8% (Tier-3 leisure) to 41% (metro corporate).</p>
+
+<h3>Dimension 4: Exit and Financing Value</h3>
+<p>The brand decision directly affects asset exit value and debt financing terms:</p>
+<ul>
+  <li>Institutionally recognised brands (Marriott, IHG, Hyatt) add 15–25% to asset value at exit versus equivalent unbranded</li>
+  <li>Domestic brand affiliations (Taj, Lemon Tree) add 8–15% at exit, particularly for domestic buyer pools</li>
+  <li>Economy aggregator affiliations (OYO, Fab Hotels) may not add meaningful value at institutional-standard exits</li>
+  <li>Branded hotel assets access bank finance at lower interest rates (typically 75–150 bps lower) versus unbranded, reflecting lender comfort with management continuity</li>
+</ul>
+
+<h2>4. India Gully's Hotel Brand Advisory Practice</h2>
+<p>India Gully provides hotel brand selection and management contract advisory as a standalone engagement for owner-developers navigating the affiliation decision:</p>
+<ul>
+  <li><strong>Brand feasibility study</strong>: Market positioning analysis, brand comparison, projected RevPAR under each brand scenario, capex modelling</li>
+  <li><strong>RFP and brand selection process</strong>: Structured competitive process to shortlist 3–4 brands, manage technical due diligence, and negotiate management contract terms</li>
+  <li><strong>Contract negotiation</strong>: India Gully's proprietary contract benchmark database (40+ contracts reviewed) enables evidence-based negotiation on fees, performance standards, break clauses, and FF&E structures</li>
+  <li><strong>Pre-opening advisory</strong>: Supporting owners through the brand's pre-opening technical services process to ensure compliance while controlling costs</li>
+</ul>
+<p>For hotel owners considering an affiliation change, refinancing, or new development, India Gully's brand advisory practice offers a rigorous, owner-aligned perspective that is independent of any brand relationship — a critical distinction in a market where most advisory is provided by parties with brand distribution conflicts of interest.</p>
+`,
+  },
+  {
+    id: 'entertainment-destination-development-india-2026',
+    category: 'Entertainment',
+    date: 'March 2026',
+    title: 'Building India\'s Next Entertainment Destination: Development Economics & Operational Model',
+    excerpt: 'India\'s entertainment real estate pipeline for 2026–29 includes 35+ large-format destination projects across family entertainment, sports, gaming, and experiential retail. The development economics of these assets are complex — high capex, non-standard valuation, and operator-dependency. India Gully maps the framework for developers and investors.',
+    tags: ['Entertainment', 'Real Estate Development', 'FEC', 'Investment'],
+    readTime: '10 min read',
+    body: `
+<h2>Executive Summary</h2>
+<p>India's entertainment real estate — encompassing family entertainment centres (FECs), theme parks, waterparks, bowling alleys, go-karting tracks, trampoline parks, virtual reality arcades, and integrated entertainment destinations — is at an inflection point. Consumer spending on experiential leisure is growing at 18–22% annually (CRISIL, 2025), driven by a young population, rising disposable incomes, and the 'experience economy' shift that followed COVID-19.</p>
+<p>Yet despite strong demand fundamentals, entertainment real estate development economics remain complex: high capex, unconventional asset valuation, operator dependency, and a thin domestic institutional equity market. India Gully's entertainment advisory practice — active on 5 entertainment destination mandates totalling ₹280 Cr in project value — presents a development framework for operators and investors in this space.</p>
+
+<h2>1. The Entertainment Destination Landscape</h2>
+<h3>Format Categories</h3>
+<p>India Gully classifies entertainment destinations into four format categories, each with distinct development and operating economics:</p>
+<ol>
+  <li><strong>Large-format theme parks / waterparks</strong> (₹150–500 Cr): Adlabs Imagica, Wonderla — high capex, high barrier to entry, strong cash-on-cash returns at maturity (12–18% CoC at 70% occupancy) but 4–7 year payback period and significant operational complexity</li>
+  <li><strong>Integrated entertainment centres in malls</strong> (₹25–80 Cr): FECs, bowling, arcade gaming, trampoline parks within mall anchoring space — mall anchor tenant economics with revenue share structures; lower capex but dependent on mall traffic</li>
+  <li><strong>Standalone destination FECs</strong> (₹8–35 Cr): Go-karting tracks, adventure zones, escape rooms, indoor sports facilities with F&B — India Gully's most active advisory segment; mid-ticket capex with 3–5 year payback at adequate utilisation</li>
+  <li><strong>Entertainment hospitality hybrids</strong> (₹40–120 Cr): Resort properties with integrated entertainment — adventure activities, gaming zones, live entertainment venues — increasingly relevant as India's MICE and leisure travel grows</li>
+</ol>
+
+<h3>Consumer Demand Drivers</h3>
+<p>India Gully's demand analysis across entertainment mandates identifies three primary demand drivers:</p>
+<ul>
+  <li><strong>Family leisure spend growth</strong>: Average family entertainment spend per outing has grown from ₹1,800 in 2019 to ₹3,200 in 2025 (FICCI, 2025). The per-outing basket is expanding as consumers trade up from bowling alleys to multi-format FECs with F&B integration.</li>
+  <li><strong>Youth-driven experiential demand</strong>: 18–35 age cohort (India's largest demographic) is the most active entertainment consumer — VR arcades, e-sports centres, escape rooms, and social gaming formats skew strongly to this cohort</li>
+  <li><strong>Corporate MICE demand</strong>: Post-COVID, corporate events and team-building activities have shifted toward experiential formats — go-karting, bowling tournaments, escape room team events. India Gully's entertainment clients report MICE contributing 18–35% of revenue at optimal locations</li>
+</ul>
+
+<h2>2. Development Economics Framework</h2>
+<h3>Capex Benchmarks (2025-26)</h3>
+<p>India Gully's active mandate database provides the following capex benchmarks for entertainment destination development:</p>
+<ul>
+  <li><strong>Go-karting track</strong> (400m outdoor): ₹3.5–6 Cr including track, barriers, safety systems, timing equipment, and basic F&B infrastructure</li>
+  <li><strong>Trampoline park</strong> (8,000–15,000 sq ft): ₹2.8–4.5 Cr including trampoline installation, foam pits, ninja warrior courses, and structural upgrades</li>
+  <li><strong>Bowling alley</strong> (8 lanes): ₹4–7 Cr including lane equipment (AMF/Brunswick), flooring, scoring systems, seating, and F&B</li>
+  <li><strong>Indoor climbing wall</strong> (4,000–8,000 sq ft): ₹1.8–3.2 Cr including wall structures, safety systems, and equipment</li>
+  <li><strong>VR / gaming zone</strong> (3,000–6,000 sq ft): ₹2.5–5 Cr including VR hardware, gaming pods, cabling, and digital infrastructure</li>
+  <li><strong>Integrated FEC</strong> (25,000–50,000 sq ft, multiple formats): ₹18–40 Cr including all entertainment formats, F&B build-out, and interior design</li>
+</ul>
+
+<h3>Revenue Model</h3>
+<p>Entertainment destination revenue models have three layers:</p>
+<ol>
+  <li><strong>Activity revenue</strong>: Per-session charges (go-kart laps, bowling games, VR sessions) — typically 55–65% of total revenue; highest margin (70–80% gross margin)</li>
+  <li><strong>F&B revenue</strong>: Restaurant, café, bar — typically 25–35% of total revenue; gross margin 60–70% for mid-market F&B offering</li>
+  <li><strong>Ancillary revenue</strong>: Birthday packages, corporate MICE bookings, membership programs, retail (branded merchandise) — typically 10–20% of total revenue; highest contribution margin</li>
+</ol>
+<p>India Gully's revenue model for a ₹15 Cr standalone FEC (25,000 sq ft, 3 entertainment formats + F&B) projects stabilised Year 3 revenue of ₹6–8 Cr against operating cost of ₹3.5–4.5 Cr, implying EBITDA of ₹2–3.5 Cr (30–45% margin) and a project-level IRR of 18–26% over a 7-year horizon.</p>
+
+<h3>Valuation Methodology</h3>
+<p>Entertainment real estate requires a bespoke valuation approach that blends real estate and operating business methodologies:</p>
+<ul>
+  <li><strong>DCF on stabilised cash flows</strong>: Primary methodology for operational properties; discount rate 14–18% for entertainment assets reflecting operating risk premium</li>
+  <li><strong>EV/EBITDA comparable</strong>: Benchmarked against listed entertainment operators (PVR Inox, Wonderla) at 10–16x EBITDA; applicable to scaled multi-location operators</li>
+  <li><strong>Real estate residual value</strong>: For owned property entertainment assets, land and building value provides floor value; applicable when operating business value is impaired</li>
+</ul>
+
+<h2>3. Operator Selection and Partnership Structures</h2>
+<p>Unlike hotels where the brand/operator market is well-structured, entertainment operators in India operate a fragmented, largely domestic market. India Gully's operator partnership framework:</p>
+
+<h3>Option A: Operator-Managed Model</h3>
+<p>Developer builds and owns the asset; experienced operator manages for a management fee (typically 8–15% of revenue + 20–25% of EBITDA over hurdle). Best for developers without entertainment operating capability. Risk: operator dependency; quality of operators is highly variable in India's entertainment space.</p>
+
+<h3>Option B: Revenue Share Lease</h3>
+<p>Developer leases space to operator on revenue share basis (typically base rent + 12–20% of gross revenue). Lower risk for developer; operator retains upside. Best for developer-landlords seeking income certainty. India Gully has structured 2 such arrangements in the past 12 months.</p>
+
+<h3>Option C: Franchise Model</h3>
+<p>International entertainment franchise brands (Kidzania, Bounce, Clip 'n Climb) provide brand, operating manual, and marketing for an upfront franchise fee (₹1.5–8 Cr) plus ongoing royalty (3–6% of revenue). Best for operators without brand development budget but seeking a proven concept. International franchise availability in India is growing: Kidzania (Delhi), Bounce (Bengaluru, Gurgaon), Sky Zone (Mumbai announced).</p>
+
+<h2>4. India Gully's Entertainment Advisory Practice</h2>
+<p>India Gully's entertainment advisory practice provides end-to-end support for entertainment destination developers and operators:</p>
+<ul>
+  <li><strong>Feasibility and concept study</strong>: Market demand analysis, concept selection, revenue modelling, capex benchmarking, and financial projections</li>
+  <li><strong>Operator / franchise selection</strong>: India Gully maintains relationships with 20+ entertainment operators and franchise brands across format categories</li>
+  <li><strong>Real estate advisory</strong>: Site selection, landlord negotiation (for leased formats), and property acquisition advisory for owned-format developments</li>
+  <li><strong>Regulatory navigation</strong>: Fire safety, occupancy, FSSAI, and excise licensing across the relevant state regulatory framework</li>
+  <li><strong>Capital raise</strong>: Structuring and placing entertainment destination projects with family offices and HNI investors seeking alternative real estate exposure</li>
+</ul>
+`,
+  },
 ]
 
 // Category colour map
@@ -952,7 +1207,7 @@ app.get('/', (c) => {
   <div class="wrap" style="padding:0;">
     <div class="ins-stats-bar">
       ${[
-        { n: '12', l: 'In-Depth Articles' },
+        { n: '19', l: 'In-Depth Articles' },
         { n: '6',  l: 'Sectors Covered' },
         { n: '₹1,165 Cr+', l: 'Active Pipeline' },
         { n: '2024–26', l: 'Research Period' },
@@ -1232,15 +1487,35 @@ app.get('/:id', (c) => {
     <!-- ── SIDEBAR ─────────────────────────────────────── -->
     <div style="position:sticky;top:calc(var(--nav-h) + 1.5rem);display:flex;flex-direction:column;gap:1.25rem;" class="listing-sidebar">
 
-      <!-- Phase 11D: Author Profile -->
-      <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;display:flex;align-items:center;gap:.875rem;">
-        <div style="width:48px;height:48px;background:var(--ink);display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;">
-          <i class="fas fa-pen-nib" style="color:var(--gold);font-size:.9rem;"></i>
+      <!-- Phase 17B: Enhanced Author Byline Card -->
+      <div style="background:linear-gradient(135deg,var(--ink) 0%,#1a1a2e 100%);border:1px solid rgba(184,150,12,.2);padding:1.5rem;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:radial-gradient(circle,rgba(184,150,12,.12) 0%,transparent 70%);pointer-events:none;"></div>
+        <div style="display:flex;align-items:flex-start;gap:1rem;margin-bottom:1rem;">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--gold) 0%,#8A6E08 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Serif Display',Georgia,serif;font-size:1.15rem;font-weight:700;color:#fff;letter-spacing:.04em;">IG</div>
+          <div>
+            <div style="font-size:.78rem;font-weight:700;color:#fff;letter-spacing:.02em;">India Gully Research</div>
+            <div style="font-size:.65rem;color:rgba(255,255,255,.5);margin-top:.2rem;line-height:1.4;">Transaction-Backed Advisory Practice</div>
+            <div style="display:flex;align-items:center;gap:.5rem;margin-top:.5rem;flex-wrap:wrap;">
+              <span style="font-size:.58rem;background:rgba(184,150,12,.18);color:var(--gold);border:1px solid rgba(184,150,12,.3);padding:.15rem .5rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;">${article.category}</span>
+              <span style="font-size:.6rem;color:rgba(255,255,255,.35);"><i class="fas fa-clock" style="font-size:.55rem;color:var(--gold);margin-right:.25rem;"></i>${article.readTime}</span>
+            </div>
+          </div>
         </div>
-        <div>
-          <div style="font-size:.875rem;font-weight:700;color:var(--ink);">India Gully Research</div>
-          <div style="font-size:.7rem;color:var(--ink-muted);margin-bottom:.25rem;">Transaction-Backed Advisory Insights</div>
-          <div style="font-size:.65rem;color:var(--ink-faint);display:flex;align-items:center;gap:.4rem;"><i class="fas fa-calendar-alt" style="color:var(--gold);font-size:.55rem;"></i>${article.date} · ${article.readTime}</div>
+        <p style="font-size:.7rem;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:1rem;">Our research draws directly from active advisory mandates — real transactions, real data, no theoretical models.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1rem;">
+          ${[
+            { n: '8+', l: 'Yrs Advisory' },
+            { n: '40+', l: 'Contracts' },
+            { n: '₹1,165 Cr', l: 'Pipeline' },
+            { n: '6', l: 'Sectors' },
+          ].map((s: any) => `<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.6rem .75rem;text-align:center;">
+            <div style="font-family:'DM Serif Display',Georgia,serif;font-size:.95rem;color:var(--gold);line-height:1;">${s.n}</div>
+            <div style="font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:.2rem;">${s.l}</div>
+          </div>`).join('')}
+        </div>
+        <div style="font-size:.62rem;color:rgba(255,255,255,.3);border-top:1px solid rgba(255,255,255,.06);padding-top:.75rem;display:flex;align-items:center;justify-content:space-between;">
+          <span><i class="fas fa-calendar-alt" style="color:var(--gold);font-size:.52rem;margin-right:.3rem;"></i>${article.date}</span>
+          <span>India Gully · CIN U74999DL2017PTC323237</span>
         </div>
       </div>
 
