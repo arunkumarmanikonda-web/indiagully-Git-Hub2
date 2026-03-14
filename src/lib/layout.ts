@@ -64,15 +64,15 @@ tailwind.config = {
   }
 }
 </script>
-<!-- DARK MODE: early init to prevent flash of unstyled content -->
+<!-- DARK MODE: early init — defaults to LIGHT; only switches to dark if user explicitly enabled it -->
 <script>
 (function(){
   try{
     var s=localStorage.getItem('ig_dark_mode');
-    var sys=window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches;
-    if(s?s==='1':sys) document.documentElement.setAttribute('data-theme','dark');
+    // Default is LIGHT — only switch to dark if user explicitly set it to '1'
+    if(s==='1') document.documentElement.setAttribute('data-theme','dark');
     else document.documentElement.setAttribute('data-theme','light');
-  }catch(e){}
+  }catch(e){ document.documentElement.setAttribute('data-theme','light'); }
 })();
 </script>
 <style>
@@ -92,7 +92,9 @@ tailwind.config = {
   --surface:#141420;--surface-2:#1a1a28;
 }
 [data-theme="dark"] body{background:#0a0a0f;color:#f1f5f9;}
-[data-theme="dark"] .sec-wh,[data-theme="dark"] .card,[data-theme="dark"] [style*="background:#fff"]{background:#141420!important;}
+[data-theme="dark"] .sec-wh,[data-theme="dark"] .card{background:#141420!important;}
+[data-theme="dark"] .mandate-card [style*="background:#fff"],[data-theme="dark"] .insight-card [style*="background:#fff"]{background:#141420!important;color:#f1f5f9!important;}
+[data-theme="dark"] [style*="background:#fff"]:not(.hero-dk *):not(nav *):not(footer *){background:#141420!important;}
 [data-theme="dark"] .sec-pc,[data-theme="dark"] .sec-pd{background:#111118!important;}
 [data-theme="dark"] .am,[data-theme="dark"] .ig-tbl thead tr{background:#1a1a28!important;}
 [data-theme="dark"] table.ig-tbl tbody tr{background:#141420;}
@@ -1335,107 +1337,110 @@ const NAV = `
 <nav id="mainNav" class="nav-clear">
   <div style="max-width:1280px;margin:0 auto;padding:0 1.25rem;height:100%;display:flex;align-items:center;justify-content:space-between;">
 
-    <!-- LOGO: official white-text lockup — read-only, no crop, no AI, lossless -->
+    <!-- LOGO -->
     <a href="/" style="display:flex;align-items:center;flex-shrink:0;" aria-label="India Gully — Home">
       <img src="/assets/logo-white.png"
            alt="India Gully — Celebrating Desiness"
            height="38"
-           style="height:38px;width:auto;max-width:220px;object-fit:contain;object-position:left center;display:block;"
+           style="height:38px;width:auto;max-width:200px;object-fit:contain;object-position:left center;display:block;"
            draggable="false"
            fetchpriority="high"
            decoding="async">
     </a>
 
-    <!-- DESKTOP NAV -->
-    <div id="nav-desktop-links" style="gap:.15rem;">
+    <!-- DESKTOP NAV — 6 top-level items only -->
+    <div id="nav-desktop-links" style="gap:.05rem;">
       <a href="/"         class="n-lk">Home</a>
       <a href="/about"    class="n-lk">About</a>
+
+      <!-- Advisory & Services dropdown -->
       <div class="relative n-par" style="position:relative;">
-        <button class="n-lk" style="display:flex;align-items:center;gap:.4rem;">Advisory <i class="fas fa-chevron-down" style="font-size:.5rem;opacity:.45;"></i></button>
-        <div class="n-drop">
-          <a href="/services#real-estate"   class="n-di"><span style="font-size:.85rem;">🏛️</span>Real Estate</a>
-          <a href="/services#retail"        class="n-di"><span style="font-size:.85rem;">🛍️</span>Retail &amp; Leasing</a>
-          <a href="/services#hospitality"   class="n-di"><span style="font-size:.85rem;">🏨</span>Hospitality</a>
-          <a href="/services#entertainment" class="n-di"><span style="font-size:.85rem;">🎡</span>Entertainment</a>
-          <a href="/services#debt"          class="n-di"><span style="font-size:.85rem;">⚖️</span>Debt &amp; Special</a>
-          <div style="height:1px;background:rgba(255,255,255,.06);margin:.25rem 0;"></div>
-          <a href="/horeca"                 class="n-di"><span style="font-size:.85rem;">🍽️</span>HORECA Solutions</a>
+        <button class="n-lk" style="display:flex;align-items:center;gap:.35rem;">Advisory <i class="fas fa-chevron-down" style="font-size:.48rem;opacity:.4;"></i></button>
+        <div class="n-drop" style="min-width:16rem;">
+          <div style="padding:.5rem 1.2rem .25rem;font-size:.56rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.28);">Services</div>
+          <a href="/services#real-estate"   class="n-di"><i class="fas fa-landmark"     style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Real Estate</a>
+          <a href="/services#hospitality"   class="n-di"><i class="fas fa-hotel"        style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Hospitality</a>
+          <a href="/services#retail"        class="n-di"><i class="fas fa-store"        style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Retail &amp; Leasing</a>
+          <a href="/services#entertainment" class="n-di"><i class="fas fa-ticket-alt"   style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Entertainment</a>
+          <a href="/services#debt"          class="n-di"><i class="fas fa-balance-scale" style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Debt &amp; Special</a>
+          <a href="/horeca"                 class="n-di"><i class="fas fa-utensils"     style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>HORECA Solutions</a>
+          <div style="height:1px;background:rgba(255,255,255,.06);margin:.3rem 0;"></div>
+          <div style="padding:.25rem 1.2rem .2rem;font-size:.56rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.28);">Tools</div>
+          <a href="/valuation"   class="n-di"><i class="fas fa-chart-bar"   style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Valuation Calculator</a>
+          <a href="/compare"     class="n-di"><i class="fas fa-columns"     style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Compare Mandates</a>
+          <a href="/market-data" class="n-di"><i class="fas fa-chart-line"  style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Market Data</a>
         </div>
       </div>
+
       <a href="/listings" class="n-lk">Mandates</a>
-      <a href="/compare" class="n-lk">Compare</a>
-      <a href="/works" class="n-lk">Our Work</a>
       <a href="/insights" class="n-lk">Insights</a>
-      <a href="/market-data" class="n-lk">Market Data</a>
-      <a href="/valuation" class="n-lk">Valuation</a>
+
+      <!-- More dropdown -->
       <div class="relative n-par" style="position:relative;">
-        <button class="n-lk" style="display:flex;align-items:center;gap:.4rem;">More <i class="fas fa-chevron-down" style="font-size:.5rem;opacity:.45;"></i></button>
-        <div class="n-drop" style="right:0;left:auto;min-width:13rem;">
-          <a href="/resources" class="n-di"><span style="font-size:.85rem;">📚</span>Resources</a>
-          <a href="/testimonials" class="n-di"><span style="font-size:.85rem;">⭐</span>Testimonials</a>
-          <a href="/careers" class="n-di"><span style="font-size:.85rem;">💼</span>Careers</a>
+        <button class="n-lk" style="display:flex;align-items:center;gap:.35rem;">More <i class="fas fa-chevron-down" style="font-size:.48rem;opacity:.4;"></i></button>
+        <div class="n-drop" style="right:0;left:auto;min-width:12rem;">
+          <a href="/works"        class="n-di"><i class="fas fa-trophy"     style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Our Work</a>
+          <a href="/resources"    class="n-di"><i class="fas fa-book-open"  style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Resources</a>
+          <a href="/testimonials" class="n-di"><i class="fas fa-star"       style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Testimonials</a>
+          <a href="/careers"      class="n-di"><i class="fas fa-briefcase"  style="width:16px;font-size:.72rem;color:rgba(184,150,12,.6);"></i>Careers</a>
         </div>
       </div>
-      <a href="/contact"  class="n-lk">Contact</a>
+
+      <a href="/contact" class="n-lk">Contact</a>
     </div>
 
     <!-- RIGHT -->
-    <div id="nav-desktop-right" style="gap:.75rem;">
+    <div id="nav-desktop-right" style="gap:.6rem;">
       <!-- Dark Mode Toggle -->
       <button id="dark-toggle" onclick="igToggleDark()" aria-label="Toggle dark mode"
-              style="color:rgba(255,255,255,.6);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);padding:.38rem .6rem;cursor:pointer;font-size:.75rem;transition:color .2s;"
-              title="Toggle dark mode" data-tip="Dark mode">
+              style="color:rgba(255,255,255,.55);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);padding:.35rem .55rem;cursor:pointer;font-size:.72rem;transition:all .2s;"
+              title="Toggle dark mode">
         <i id="dark-icon" class="fas fa-moon"></i>
       </button>
-      <!-- Hindi / English Toggle -->
-      <button id="lang-toggle" onclick="igToggleLang()" aria-label="Switch language between English and Hindi"
-              style="color:rgba(255,255,255,.6);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);padding:.38rem .6rem;cursor:pointer;font-size:.72rem;font-weight:600;transition:color .2s;letter-spacing:.04em;"
-              title="Switch to Hindi / English" data-tip="भाषा / Language">
-        <span id="lang-label">हिंदी</span>
-      </button>
+      <!-- Portals dropdown -->
       <div class="relative n-par" style="position:relative;">
-        <button class="n-lk" style="display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);padding:.42rem .9rem;">
-          <i class="fas fa-lock" style="font-size:.55rem;color:var(--gold);"></i>Portals
-          <i class="fas fa-chevron-down" style="font-size:.48rem;opacity:.4;"></i>
+        <button class="n-lk" style="display:flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);padding:.38rem .8rem;">
+          <i class="fas fa-lock" style="font-size:.5rem;color:var(--gold);"></i>Portals
+          <i class="fas fa-chevron-down" style="font-size:.45rem;opacity:.4;"></i>
         </button>
-        <div class="n-drop" style="right:0;left:auto;min-width:13rem;">
-          <a href="/portal/client"   class="n-di"><i class="fas fa-user-tie"    style="color:var(--gold);width:14px;font-size:.72rem;text-align:center;"></i>Client Portal</a>
-          <a href="/portal/employee" class="n-di"><i class="fas fa-users"       style="color:var(--gold);width:14px;font-size:.72rem;text-align:center;"></i>Employee Portal</a>
-          <a href="/portal/board"    class="n-di"><i class="fas fa-gavel"       style="color:var(--gold);width:14px;font-size:.72rem;text-align:center;"></i>Board &amp; KMP</a>
-          <div style="height:1px;background:rgba(255,255,255,.06);margin:.25rem 0;"></div>
-          <a href="/admin"           class="n-di"><i class="fas fa-shield-alt"  style="color:var(--gold);width:14px;font-size:.72rem;text-align:center;"></i>Super Admin</a>
+        <div class="n-drop" style="right:0;left:auto;min-width:12rem;">
+          <a href="/portal/client"   class="n-di"><i class="fas fa-user-tie"   style="color:var(--gold);width:14px;font-size:.7rem;"></i>Client Portal</a>
+          <a href="/portal/employee" class="n-di"><i class="fas fa-users"      style="color:var(--gold);width:14px;font-size:.7rem;"></i>Employee Portal</a>
+          <a href="/portal/board"    class="n-di"><i class="fas fa-gavel"      style="color:var(--gold);width:14px;font-size:.7rem;"></i>Board &amp; KMP</a>
+          <div style="height:1px;background:rgba(255,255,255,.06);margin:.2rem 0;"></div>
+          <a href="/admin"           class="n-di"><i class="fas fa-shield-alt" style="color:var(--gold);width:14px;font-size:.7rem;"></i>Super Admin</a>
         </div>
       </div>
-      <a href="/contact" class="btn btn-g" style="padding:.55rem 1.4rem;">Submit Mandate</a>
+      <a href="/contact" class="btn btn-g" style="padding:.5rem 1.2rem;font-size:.72rem;">Submit Mandate</a>
     </div>
 
     <!-- HAMBURGER -->
     <button id="mobileBtn" style="color:#fff;padding:.5rem;background:none;border:none;cursor:pointer;">
-      <i class="fas fa-bars" style="font-size:1.1rem;"></i>
+      <i class="fas fa-bars" style="font-size:1.05rem;"></i>
     </button>
   </div>
 
   <!-- MOBILE MENU -->
-  <div id="mobileMenu" style="display:none;background:rgba(8,8,8,.98);border-top:1px solid rgba(255,255,255,.06);">
-    <div style="padding:1rem 1.25rem;display:flex;flex-direction:column;gap:.15rem;">
-      <a href="/"         style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Home</a>
-      <a href="/about"    style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">About</a>
-      <a href="/services" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Advisory Services</a>
-      <a href="/horeca"   style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">HORECA Solutions</a>
-      <a href="/listings" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Mandates</a>
-      <a href="/compare" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Compare Mandates</a>
-      <a href="/works" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Our Work</a>
-      <a href="/insights" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Insights</a>
-      <a href="/market-data" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Market Data</a>
-      <a href="/valuation" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Valuation Tool</a>
-      <a href="/testimonials" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Testimonials</a>
-      <a href="/resources" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Resources</a>
-      <a href="/careers" style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Careers</a>
-      <a href="/contact"  style="display:block;padding:.7rem 0;font-size:.85rem;color:rgba(255,255,255,.65);border-bottom:1px solid rgba(255,255,255,.04);">Contact</a>
-      <div style="padding-top:.75rem;display:flex;flex-direction:column;gap:.5rem;">
-        <a href="/portal/client"   style="font-size:.8rem;color:var(--gold);"><i class="fas fa-lock" style="margin-right:.5rem;font-size:.65rem;"></i>Client Portal</a>
-        <a href="/portal/employee" style="font-size:.8rem;color:var(--gold);"><i class="fas fa-lock" style="margin-right:.5rem;font-size:.65rem;"></i>Employee Portal</a>
-        <a href="/portal/board"    style="font-size:.8rem;color:var(--gold);"><i class="fas fa-lock" style="margin-right:.5rem;font-size:.65rem;"></i>Board &amp; KMP</a>
+  <div id="mobileMenu" style="display:none;background:rgba(6,6,6,.98);border-top:1px solid rgba(255,255,255,.06);">
+    <div style="padding:1rem 1.25rem;display:flex;flex-direction:column;gap:.1rem;">
+      <a href="/"            style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Home</a>
+      <a href="/about"       style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">About</a>
+      <a href="/services"    style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Advisory Services</a>
+      <a href="/horeca"      style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">HORECA Solutions</a>
+      <a href="/listings"    style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Mandates</a>
+      <a href="/insights"    style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Insights</a>
+      <a href="/works"       style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Our Work</a>
+      <a href="/valuation"   style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Valuation Tool</a>
+      <a href="/market-data" style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Market Data</a>
+      <a href="/compare"     style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Compare Mandates</a>
+      <a href="/resources"   style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Resources</a>
+      <a href="/testimonials" style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Testimonials</a>
+      <a href="/careers"     style="display:block;padding:.65rem 0;font-size:.875rem;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04);">Careers</a>
+      <a href="/contact"     style="display:block;padding:.65rem 0;font-size:.875rem;color:var(--gold);">Contact Us</a>
+      <div style="padding-top:.75rem;display:flex;flex-direction:column;gap:.4rem;border-top:1px solid rgba(255,255,255,.06);margin-top:.2rem;">
+        <a href="/portal/client"   style="font-size:.78rem;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:.5rem;"><i class="fas fa-lock" style="color:var(--gold);font-size:.58rem;width:14px;"></i>Client Portal</a>
+        <a href="/portal/employee" style="font-size:.78rem;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:.5rem;"><i class="fas fa-lock" style="color:var(--gold);font-size:.58rem;width:14px;"></i>Employee Portal</a>
+        <a href="/portal/board"    style="font-size:.78rem;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:.5rem;"><i class="fas fa-lock" style="color:var(--gold);font-size:.58rem;width:14px;"></i>Board &amp; KMP</a>
       </div>
     </div>
   </div>

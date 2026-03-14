@@ -229,10 +229,8 @@ function filterTest(cat) {
 }
 </script>
 `
-  return c.html(layout({
-    title: 'Client Testimonials | India Gully Advisory',
+  return c.html(layout('Client Testimonials', html, {
     description: 'Read what India Gully clients say about our transaction advisory, HORECA procurement, and hospitality development services across ₹1,165 Cr+ of mandates.',
-    body: html,
     canonical: '/testimonials',
   }))
 })

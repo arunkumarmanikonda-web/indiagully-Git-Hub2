@@ -319,10 +319,8 @@ function shareCompare() {
 updateCompare();
 </script>
 `
-  return c.html(layout({
-    title: 'Mandate Comparison Tool | India Gully Advisory',
+  return c.html(layout('Mandate Comparison Tool', html, {
     description: 'Compare up to 3 India Gully active mandates side-by-side. Analyse location, sector, value, highlights and specifications in one view.',
-    body: html,
     canonical: '/compare',
   }))
 })

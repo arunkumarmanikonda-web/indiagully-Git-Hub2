@@ -491,10 +491,8 @@ function calcRev() {
 calcCap();
 </script>
 `
-  return c.html(layout({
-    title: 'Property Valuation Calculator | India Gully Advisory',
+  return c.html(layout('Property Valuation Calculator', html, {
     description: 'Free interactive property valuation calculator using Income Capitalisation, DCF, and Revenue methods. Built on India Gully\'s active ₹1,165 Cr+ advisory intelligence across hotels, commercial, and retail real estate.',
-    body: html,
     canonical: '/valuation',
     ogImage: 'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/Hotel-Rajshree-5-scaled-e1765525431558.webp',
   }))
