@@ -112,14 +112,16 @@ app.get('/', (c) => {
   <div class="wrap" style="padding-top:0;padding-bottom:0;">
     <div style="display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.05);">
       ${[
-        { n: '₹2,000 Cr+', l: 'Transactions Advised',  icon:'trophy' },
-        { n: String(totalDeals) + '+', l: 'Mandates Delivered', icon:'check-circle' },
-        { n: '6',           l: 'Verticals Covered',     icon:'layer-group' },
-        { n: 'Pan-India',   l: 'Geographic Reach',      icon:'map-marked-alt' },
+        { n: '2000', prefix:'₹', suffix:' Cr+', l: 'Transactions Advised',  icon:'trophy' },
+        { n: String(totalDeals),  prefix:'',  suffix:'+',     l: 'Mandates Delivered', icon:'check-circle' },
+        { n: '6',                 prefix:'',  suffix:'',      l: 'Verticals Covered',  icon:'layer-group' },
+        { n: null,                prefix:'',  suffix:'',      l: 'Geographic Reach',   icon:'map-marked-alt', text:'Pan-India' },
       ].map(s => `
-      <div style="padding:2.25rem 2rem;border-right:1px solid rgba(255,255,255,.05);text-align:center;transition:background .22s;" onmouseover="this.style.background='rgba(184,150,12,.04)'" onmouseout="this.style.background='transparent'">
+      <div class="works-stat-cell" style="padding:2.25rem 2rem;border-right:1px solid rgba(255,255,255,.05);text-align:center;transition:background .22s;" onmouseover="this.style.background='rgba(184,150,12,.04)'" onmouseout="this.style.background='transparent'">
         <i class="fas fa-${s.icon}" style="font-size:.72rem;color:rgba(184,150,12,.35);margin-bottom:.625rem;display:block;"></i>
-        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.4rem;color:var(--gold);line-height:1;margin-bottom:.5rem;letter-spacing:-.02em;">${s.n}</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.4rem;color:var(--gold);line-height:1;margin-bottom:.5rem;letter-spacing:-.02em;">
+          ${s.n ? `<span style="font-size:.6em;">${s.prefix}</span><span class="count-up" data-target="${s.n}" data-prefix="${s.prefix}" data-suffix="${s.suffix}">0</span><span style="font-size:.65em;">${s.suffix}</span>` : `<span>${s.text}</span>`}
+        </div>
         <div style="font-size:.6rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.45);">${s.l}</div>
       </div>`).join('')}
     </div>
@@ -210,7 +212,7 @@ app.get('/', (c) => {
       </div>` : ''}
 
       <!-- Project cards grid -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;">
+      <div class="works-card-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;">
         ${v.data.map((p: any, idx: number) => `
         <div class="works-card" style="animation:fadeUp .5s ease ${idx * 0.06}s both;">
           <!-- Gold accent top strip -->
@@ -253,6 +255,10 @@ app.get('/', (c) => {
   </div>
 </div>
 
+<style>
+@media(max-width:900px){.works-card-grid{grid-template-columns:repeat(2,1fr)!important;}}
+@media(max-width:560px){.works-card-grid{grid-template-columns:1fr!important;}.works-stat-cell{padding:1.5rem 1rem!important;}}
+</style>
 <script>
 function filterVertical(id) {
   // Update buttons
@@ -267,6 +273,33 @@ function filterVertical(id) {
     sec.style.display = (id === 'all' || sec.dataset.vertical === id) ? 'block' : 'none';
   });
 }
+
+/* count-up for works stats (uses global layout count-up if available,
+   otherwise runs its own IntersectionObserver) */
+(function(){
+  var els = document.querySelectorAll('.works-stat-cell .count-up');
+  if(!els.length) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(!entry.isIntersecting) return;
+      var el = entry.target;
+      io.unobserve(el);
+      var target  = parseInt(el.getAttribute('data-target') || '0', 10);
+      var suffix  = el.getAttribute('data-suffix') || '';
+      var dur     = 1400;
+      var t0      = performance.now();
+      function step(now){
+        var p = Math.min((now - t0) / dur, 1);
+        var ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = String(Math.round(ease * target));
+        if(p < 1) requestAnimationFrame(step);
+        else el.textContent = String(target);
+      }
+      requestAnimationFrame(step);
+    });
+  }, {threshold:0.3});
+  els.forEach(function(el){ io.observe(el); });
+})();
 </script>
 
 `

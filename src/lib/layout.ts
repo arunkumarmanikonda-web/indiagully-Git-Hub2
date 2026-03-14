@@ -584,6 +584,31 @@ textarea.ig-input{resize:vertical;min-height:130px}
 #ig-lightbox-prev:hover,#ig-lightbox-next:hover{background:var(--gold);border-color:var(--gold);}
 #ig-lightbox-caption{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-size:.72rem;color:rgba(255,255,255,.5);letter-spacing:.1em;background:rgba(0,0,0,.4);padding:.3rem .875rem;}
 
+/* ── command-k search palette ─────────────────── */
+#ig-search-overlay{display:none;position:fixed;inset:0;z-index:10500;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);padding:10vh 1rem 2rem;align-items:flex-start;justify-content:center;}
+#ig-search-overlay.open{display:flex;}
+#ig-search-box{width:100%;max-width:640px;background:#111118;border:1px solid rgba(184,150,12,.35);box-shadow:0 24px 64px rgba(0,0,0,.7),0 0 0 1px rgba(184,150,12,.1);overflow:hidden;}
+#ig-search-header{display:flex;align-items:center;gap:.75rem;padding:.875rem 1.1rem;border-bottom:1px solid rgba(255,255,255,.07);}
+#ig-search-header i{color:rgba(184,150,12,.7);font-size:.85rem;flex-shrink:0;}
+#ig-search-input{flex:1;background:transparent;border:none;outline:none;font-size:.95rem;color:#fff;font-family:'DM Sans',sans-serif;caret-color:var(--gold);}
+#ig-search-input::placeholder{color:rgba(255,255,255,.25);}
+#ig-search-shortcut{font-size:.6rem;color:rgba(255,255,255,.2);letter-spacing:.05em;white-space:nowrap;display:flex;gap:.3rem;align-items:center;}
+#ig-search-shortcut kbd{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.1rem .35rem;font-size:.58rem;border-radius:3px;}
+#ig-search-results{max-height:58vh;overflow-y:auto;padding:.5rem 0;}
+#ig-search-results:empty::after{content:'Start typing to search mandates, articles, and pages…';display:block;padding:2rem 1.25rem;font-size:.8rem;color:rgba(255,255,255,.2);text-align:center;}
+.ig-sr-group{padding:.55rem 1.1rem .2rem;font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.25);}
+.ig-sr-item{display:flex;align-items:center;gap:.875rem;padding:.7rem 1.1rem;cursor:pointer;transition:background .12s;text-decoration:none;color:inherit;}
+.ig-sr-item:hover,.ig-sr-item.active{background:rgba(184,150,12,.1);}
+.ig-sr-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.72rem;}
+.ig-sr-item-title{font-size:.82rem;color:#fff;margin-bottom:.15rem;line-height:1.3;}
+.ig-sr-item-sub{font-size:.68rem;color:rgba(255,255,255,.35);line-height:1.3;}
+.ig-sr-item-badge{margin-left:auto;font-size:.55rem;font-weight:700;letter-spacing:.08em;padding:.15rem .45rem;flex-shrink:0;}
+#ig-search-footer{padding:.55rem 1.1rem;border-top:1px solid rgba(255,255,255,.06);display:flex;gap:1.25rem;align-items:center;}
+#ig-search-footer span{font-size:.6rem;color:rgba(255,255,255,.2);display:flex;align-items:center;gap:.3rem;}
+#ig-search-footer kbd{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:.1rem .35rem;font-size:.58rem;border-radius:3px;}
+.ig-sr-highlight{color:var(--gold);}
+@media(max-width:640px){#ig-search-overlay{padding:5vh .75rem 1rem;align-items:flex-start;}#ig-search-box{max-width:100%;}}
+
 /* ── Back-to-top ─────────────────────────────── */
 #btt{position:fixed;bottom:6rem;right:1.75rem;z-index:400;width:40px;height:40px;background:var(--gold);color:#fff;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:.75rem;box-shadow:0 4px 20px rgba(184,150,12,.45),0 0 0 3px rgba(184,150,12,.12);transition:all var(--t-med);border-radius:50%;}
 #btt:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(184,150,12,.55);}
@@ -1311,6 +1336,20 @@ body{overflow-x:hidden;}
 .ig-fab-label{background:#0a0a0a;color:#fff;font-size:.68rem;font-weight:600;letter-spacing:.06em;padding:.28rem .65rem;border-radius:4px;white-space:nowrap;pointer-events:none;}
 @media print{#ig-contact-fab,#ig-scroll-prog{display:none!important;}}
 
+/* ── mobile sticky bottom bar ─────────────────── */
+#ig-mob-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:8900;background:#0c0c18;border-top:1px solid rgba(184,150,12,.25);padding:.55rem .75rem calc(.55rem + env(safe-area-inset-bottom));gap:.5rem;}
+#ig-mob-bar a,#ig-mob-bar button{flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.55rem .25rem;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:opacity .18s;}
+#ig-mob-bar .mob-wa{background:#25D366;color:#fff;}
+#ig-mob-bar .mob-call{background:rgba(184,150,12,.18);border:1px solid rgba(184,150,12,.35);color:#fbbf24;}
+#ig-mob-bar .mob-enq{background:var(--gold);color:#fff;}
+#ig-mob-bar a:active,#ig-mob-bar button:active{opacity:.75;}
+@media(max-width:767px){
+  #ig-mob-bar{display:flex;}
+  #ig-contact-fab{display:none!important;}
+  body{padding-bottom:calc(52px + env(safe-area-inset-bottom));}
+}
+@media print{#ig-mob-bar{display:none!important;}}
+
 /* ── ig-step (numbered step) ────────────────── */
 .ig-step{display:flex;gap:1.5rem;align-items:flex-start;padding:1.75rem 0;border-bottom:1px solid var(--border);}
 .ig-step:last-child{border-bottom:none;}
@@ -1393,6 +1432,34 @@ ${opts?.noNav ? '' : `<div id="ig-contact-fab" aria-label="Contact India Gully">
     <i class="fas fa-times" style="display:none;"></i>
   </button>
 </div>`}
+<!-- MOBILE STICKY BOTTOM BAR -->
+${opts?.noNav ? '' : `<nav id="ig-mob-bar" aria-label="Quick contact">
+  <a href="https://wa.me/918988988988?text=Hi%20India%20Gully%2C%20I%20would%20like%20to%20discuss%20a%20mandate." target="_blank" rel="noopener" class="mob-wa" aria-label="WhatsApp India Gully">
+    <i class="fab fa-whatsapp" style="font-size:.85rem;"></i>WhatsApp
+  </a>
+  <a href="tel:+918988988988" class="mob-call" aria-label="Call India Gully">
+    <i class="fas fa-phone-alt" style="font-size:.75rem;"></i>Call
+  </a>
+  <a href="/contact" class="mob-enq" aria-label="Send enquiry">
+    <i class="fas fa-paper-plane" style="font-size:.75rem;"></i>Enquire
+  </a>
+</nav>`}
+<!-- COMMAND-K SEARCH PALETTE -->
+<div id="ig-search-overlay" role="dialog" aria-modal="true" aria-label="Search" onclick="if(event.target===this)igSearchClose()">
+  <div id="ig-search-box">
+    <div id="ig-search-header">
+      <i class="fas fa-search"></i>
+      <input id="ig-search-input" type="text" placeholder="Search mandates, articles, pages…" autocomplete="off" spellcheck="false" oninput="igSearchQuery(this.value)" onkeydown="igSearchKey(event)">
+      <span id="ig-search-shortcut"><kbd>Esc</kbd> to close</span>
+    </div>
+    <div id="ig-search-results"></div>
+    <div id="ig-search-footer">
+      <span><kbd>↑↓</kbd> navigate</span>
+      <span><kbd>Enter</kbd> open</span>
+      <span><kbd>Esc</kbd> close</span>
+    </div>
+  </div>
+</div>
 <!-- LIGHTBOX -->
 <div id="ig-lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
   <button id="ig-lightbox-close" aria-label="Close image viewer" onclick="igLightboxClose()"><i class="fas fa-times"></i></button>
@@ -1482,6 +1549,13 @@ const NAV = `
 
     <!-- RIGHT -->
     <div id="nav-desktop-right" style="gap:.6rem;">
+      <!-- Search Button -->
+      <button onclick="igSearchOpen()" aria-label="Search" title="Search (Ctrl+K / ⌘K)"
+              style="color:rgba(255,255,255,.55);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);padding:.35rem .55rem;cursor:pointer;font-size:.72rem;transition:all .2s;display:flex;align-items:center;gap:.4rem;"
+              onmouseover="this.style.borderColor='rgba(184,150,12,.4)';this.style.color='#fbbf24'" onmouseout="this.style.borderColor='rgba(255,255,255,.12)';this.style.color='rgba(255,255,255,.55)'">
+        <i class="fas fa-search" style="font-size:.68rem;"></i>
+        <span style="font-size:.58rem;opacity:.6;">⌘K</span>
+      </button>
       <!-- Dark Mode Toggle -->
       <button id="dark-toggle" onclick="igToggleDark()" aria-label="Toggle dark mode"
               style="color:rgba(255,255,255,.55);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);padding:.35rem .55rem;cursor:pointer;font-size:.72rem;transition:all .2s;"
@@ -2299,6 +2373,165 @@ const SCRIPTS = (_nonce?: string) => `
       });
     },{threshold:0, rootMargin:'-80px 0px 0px 0px'});
     io.observe(hs);
+  })();
+
+  /* ── CMD+K SEARCH PALETTE ────────────────────────────────────────────── */
+  (function(){
+    /* ---- static search index ---- */
+    var IG_INDEX = [
+      /* Pages */
+      {type:'page', icon:'fa-home',         title:'Home',                         url:'/'},
+      {type:'page', icon:'fa-info-circle',  title:'About India Gully',            url:'/about'},
+      {type:'page', icon:'fa-briefcase',    title:'Active Mandates',              url:'/listings'},
+      {type:'page', icon:'fa-chart-line',   title:'Investor Relations',           url:'/invest'},
+      {type:'page', icon:'fa-envelope',     title:'Contact Us',                   url:'/contact'},
+      {type:'page', icon:'fa-lightbulb',    title:'Insights & Research',          url:'/insights'},
+      {type:'page', icon:'fa-star',         title:'Track Record',                 url:'/works'},
+      {type:'page', icon:'fa-concierge-bell',title:'Advisory Services',           url:'/services'},
+      {type:'page', icon:'fa-utensils',     title:'HORECA Solutions',             url:'/horeca'},
+      {type:'page', icon:'fa-book',         title:'Resources & Downloads',        url:'/resources'},
+      {type:'page', icon:'fa-users',        title:'Testimonials',                 url:'/testimonials'},
+      {type:'page', icon:'fa-user-tie',     title:'Admin Dashboard',              url:'/admin'},
+      /* Mandates */
+      {type:'mandate', icon:'fa-building',  title:'Prism Tower — Gurugram',           url:'/listings/prism-tower-gurgaon',           meta:'₹400 Cr · Mixed-Use · Gurugram'},
+      {type:'mandate', icon:'fa-building',  title:'Belcibo Hospitality Platform',     url:'/listings/belcibo-hospitality-platform',  meta:'₹100 Cr · F&B Platform · Delhi NCR & Goa'},
+      {type:'mandate', icon:'fa-hotel',     title:'Hotel Rajshree Chandigarh',        url:'/listings/hotel-rajshree-chandigarh',     meta:'₹70 Cr · Boutique Hotel · Chandigarh'},
+      {type:'mandate', icon:'fa-landmark',  title:'WelcomHeritage Santa Roza Kasauli',url:'/listings/welcomheritage-santa-roza-kasauli', meta:'₹45 Cr · Heritage Resort · Kasauli'},
+      {type:'mandate', icon:'fa-landmark',  title:'Heritage Hotel Jaipur',            url:'/listings/heritage-hotel-jaipur',         meta:'₹35 Cr · Heritage · Jaipur'},
+      {type:'mandate', icon:'fa-tree',      title:'Maple Resort Chail',               url:'/listings/maple-resort-chail',            meta:'₹30 Cr · Mountain Resort · Chail'},
+      {type:'mandate', icon:'fa-city',      title:'Ambience Tower North Delhi',       url:'/listings/ambience-tower-north-delhi',    meta:'₹120 Cr · Grade-A Commercial · Rohini'},
+      {type:'mandate', icon:'fa-city',      title:'Sawasdee JLG Noida',              url:'/listings/sawasdee-jlg-noida',           meta:'₹85 Cr · Mixed-Use · Noida'},
+      /* Articles */
+      {type:'article', icon:'fa-newspaper', title:'India Real Estate 2026: Commercial & Hospitality Convergence', url:'/insights/india-realty-2026-outlook',          meta:'Real Estate · 2026'},
+      {type:'article', icon:'fa-newspaper', title:'Navigating the Entertainment Zone Regulatory Landscape',       url:'/insights/entertainment-zone-regulatory-india', meta:'Entertainment · Regulatory'},
+      {type:'article', icon:'fa-newspaper', title:'Building Resilient HORECA Supply Chains in Tier 2 India',     url:'/insights/horeca-tier2-supply-chain',           meta:'HORECA · Supply Chain'},
+      {type:'article', icon:'fa-newspaper', title:'IBC 2025 Update: Hospitality Asset Resolution Trends',        url:'/insights/ibc-distressed-hospitality-2025',     meta:'Debt · IBC · 2025'},
+      {type:'article', icon:'fa-newspaper', title:'The Mall-Hotel-Office Trinity: Mixed-Use Integration',         url:'/insights/mall-mixed-use-integration',          meta:'Real Estate · Mixed-Use'},
+      {type:'article', icon:'fa-newspaper', title:'Greenfield Mid-Scale Hotel Opportunity 2025-27',              url:'/insights/greenfield-midscale-hotels',          meta:'Hospitality · Greenfield'},
+      {type:'article', icon:'fa-newspaper', title:'India Hospitality Market Outlook 2024-2025',                  url:'/insights/india-hospitality-2024',              meta:'Hospitality · Market Outlook'},
+      {type:'article', icon:'fa-newspaper', title:'Rise of Integrated Entertainment Destinations in India',       url:'/insights/entertainment-destinations-india',    meta:'Entertainment · FEC'},
+      {type:'article', icon:'fa-newspaper', title:'HORECA Procurement Strategy for New Hotel Openings',          url:'/insights/horeca-procurement-strategy',         meta:'HORECA · Procurement'},
+      {type:'article', icon:'fa-newspaper', title:'Distressed Hotel Assets: Opportunities in IBC Landscape',     url:'/insights/debt-special-situations-hospitality', meta:'Debt · Distressed'},
+      {type:'article', icon:'fa-newspaper', title:'Mall Leasing Strategy in the Experience Economy',             url:'/insights/retail-leasing-malls-india',          meta:'Retail · Leasing'},
+      {type:'article', icon:'fa-newspaper', title:'Greenfield Hotel Development in Tier 2 & 3 India',           url:'/insights/greenfield-hotel-development',        meta:'Hospitality · Tier 2'},
+      {type:'article', icon:'fa-newspaper', title:'India Retail Leasing 2026: Premiumisation & New Mall Hierarchy',url:'/insights/retail-leasing-trends-india-2026',  meta:'Retail · 2026'},
+      {type:'article', icon:'fa-newspaper', title:'Distressed Hospitality Assets in India 2026',                 url:'/insights/debt-special-situations-india-hospitality-2026', meta:'Debt · Special Situations'},
+    ];
+
+    var overlay  = document.getElementById('ig-search-overlay');
+    var input    = document.getElementById('ig-search-input');
+    var results  = document.getElementById('ig-search-results');
+    var activeIdx = -1;
+
+    function open(){
+      if(!overlay) return;
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      if(input){ input.value = ''; input.focus(); }
+      if(results) results.innerHTML = '';
+      activeIdx = -1;
+      renderAll();
+    }
+    function close(){
+      if(!overlay) return;
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    /* Show a short "featured" list when query is empty */
+    function renderAll(){
+      if(!results) return;
+      var featured = IG_INDEX.filter(function(x){ return x.type==='mandate'; }).slice(0,5)
+        .concat(IG_INDEX.filter(function(x){ return x.type==='page'; }).slice(0,4));
+      render(featured, '');
+    }
+
+    function query(q){
+      if(!q || !q.trim()){ renderAll(); return; }
+      var lq = q.toLowerCase();
+      var hits = IG_INDEX.filter(function(item){
+        return (item.title + ' ' + (item.meta||'') + ' ' + item.url).toLowerCase().indexOf(lq) !== -1;
+      }).slice(0, 10);
+      render(hits, q);
+    }
+
+    function typeColor(t){
+      if(t==='mandate') return '#B8960C';
+      if(t==='article') return '#1A3A6B';
+      return '#065F46';
+    }
+    function typeLabel(t){
+      if(t==='mandate') return 'Mandate';
+      if(t==='article') return 'Article';
+      return 'Page';
+    }
+
+    function render(items, q){
+      if(!results) return;
+      activeIdx = -1;
+      if(items.length === 0){
+        results.innerHTML = '<div style="padding:2rem 1.25rem;text-align:center;font-size:.8rem;color:rgba(255,255,255,.3);">No results for <em style=\'color:rgba(255,255,255,.55)\'>"'+q+'"</em></div>';
+        return;
+      }
+      var html = items.map(function(item, i){
+        var accent = typeColor(item.type);
+        var label  = typeLabel(item.type);
+        var metaHtml = item.meta ? '<span style="font-size:.65rem;color:rgba(255,255,255,.3);margin-left:auto;white-space:nowrap;">'+item.meta+'</span>' : '';
+        return '<a href="'+item.url+'" class="ig-sr-item" data-idx="'+i+'" style="display:flex;align-items:center;gap:.85rem;padding:.7rem 1.1rem;text-decoration:none;border-left:2px solid transparent;transition:background .14s,border-color .14s;" onmouseenter="igSearchHover('+i+')" onclick="igSearchClose()">'
+          +'<i class="fas '+item.icon+'" style="font-size:.75rem;color:'+accent+';width:16px;text-align:center;flex-shrink:0;"></i>'
+          +'<div style="flex:1;min-width:0;">'
+          +'<div style="font-size:.82rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+item.title+'</div>'
+          +'<div style="font-size:.6rem;color:rgba(255,255,255,.25);margin-top:.15rem;">'+item.url+'</div>'
+          +'</div>'
+          +metaHtml
+          +'<span style="font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:'+accent+'22;color:'+accent+';border:1px solid '+accent+'44;padding:.1rem .45rem;flex-shrink:0;">'+label+'</span>'
+          +'</a>';
+      }).join('');
+      results.innerHTML = html;
+      if(items.length > 0) setActive(0);
+    }
+
+    function setActive(i){
+      var items = results ? results.querySelectorAll('.ig-sr-item') : [];
+      items.forEach(function(el, idx){
+        el.style.background    = idx===i ? 'rgba(184,150,12,.08)' : '';
+        el.style.borderColor   = idx===i ? 'var(--gold)' : 'transparent';
+      });
+      activeIdx = i;
+    }
+
+    function key(e){
+      var items = results ? results.querySelectorAll('.ig-sr-item') : [];
+      if(e.key === 'ArrowDown'){
+        e.preventDefault();
+        setActive(Math.min(activeIdx+1, items.length-1));
+      } else if(e.key === 'ArrowUp'){
+        e.preventDefault();
+        setActive(Math.max(activeIdx-1, 0));
+      } else if(e.key === 'Enter'){
+        e.preventDefault();
+        if(activeIdx >= 0 && items[activeIdx]){
+          window.location.href = items[activeIdx].getAttribute('href');
+        }
+      } else if(e.key === 'Escape'){
+        close();
+      }
+    }
+
+    /* expose globally */
+    window.igSearchOpen  = open;
+    window.igSearchClose = close;
+    window.igSearchQuery = query;
+    window.igSearchKey   = key;
+    window.igSearchHover = setActive;
+
+    /* Keyboard shortcut: Ctrl+K / Cmd+K */
+    document.addEventListener('keydown', function(e){
+      if((e.ctrlKey || e.metaKey) && e.key === 'k'){
+        e.preventDefault();
+        if(overlay && overlay.classList.contains('open')) close(); else open();
+      }
+    });
   })();
 
 })();

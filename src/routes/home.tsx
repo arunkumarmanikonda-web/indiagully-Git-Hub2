@@ -84,8 +84,8 @@ app.get('/', (c) => {
       <div class="car-ov-gold"></div>
       <!-- Gold grid texture -->
       <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.025) 1px,transparent 1px);background-size:88px 88px;pointer-events:none;"></div>
-
-      <!-- Slide body -->
+      <!-- Star / particle canvas overlay -->
+      <canvas class="hero-stars" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.55;z-index:1;"></canvas>
       <div class="car-body">
         <div class="wrap" style="width:100%;">
           <div style="max-width:760px;">
@@ -144,6 +144,73 @@ app.get('/', (c) => {
 @keyframes pulse-line{0%,100%{opacity:.3;transform:scaleY(.8)}50%{opacity:.8;transform:scaleY(1)}}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
 </style>
+<script>
+(function(){
+  /* ── Hero star/particle canvas ── */
+  function initStars(canvas){
+    var W = canvas.offsetWidth || window.innerWidth;
+    var H = canvas.offsetHeight || window.innerHeight;
+    canvas.width  = W;
+    canvas.height = H;
+    var ctx = canvas.getContext('2d');
+    if(!ctx) return;
+    var COUNT = Math.min(Math.floor(W * H / 8000), 120);
+    var stars = Array.from({length: COUNT}, function(){
+      return {
+        x:  Math.random() * W,
+        y:  Math.random() * H,
+        r:  Math.random() * 1.2 + 0.2,
+        sp: Math.random() * 0.4 + 0.05,
+        op: Math.random() * 0.6 + 0.15,
+        tw: Math.random() * Math.PI * 2,
+        ts: Math.random() * 0.015 + 0.005
+      };
+    });
+    var raf;
+    function draw(){
+      ctx.clearRect(0, 0, W, H);
+      stars.forEach(function(s){
+        s.tw += s.ts;
+        s.y  -= s.sp;
+        if(s.y < -2) { s.y = H + 2; s.x = Math.random() * W; }
+        var alpha = s.op * (0.6 + 0.4 * Math.sin(s.tw));
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,220,100,' + alpha.toFixed(2) + ')';
+        ctx.fill();
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return function(){ cancelAnimationFrame(raf); };
+  }
+  var destroyers = [];
+  function startAll(){
+    destroyers.forEach(function(d){ d(); });
+    destroyers = [];
+    document.querySelectorAll('.hero-stars').forEach(function(c){
+      destroyers.push(initStars(c));
+    });
+  }
+  /* start after hero loads */
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', startAll);
+  } else {
+    setTimeout(startAll, 200);
+  }
+  /* Pause stars on non-active slides to save CPU */
+  var obs = new MutationObserver(function(){
+    document.querySelectorAll('.car-slide').forEach(function(slide){
+      var c = slide.querySelector('.hero-stars');
+      if(!c) return;
+      c.style.opacity = slide.classList.contains('on') ? '0.55' : '0';
+    });
+  });
+  document.querySelectorAll('.car-slide').forEach(function(s){
+    obs.observe(s, {attributes:true, attributeFilter:['class']});
+  });
+})();
+</script>
 
 <!-- ══ GOLD SERVICE TICKER ═══════════════════════════════════════════════ -->
 <div class="ticker" role="marquee" aria-label="India Gully services">
