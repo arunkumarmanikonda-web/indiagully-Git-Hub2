@@ -99,6 +99,23 @@ All portals require credentials provisioned by the system administrator.
 
 ---
 
+## 🚀 Phase 16 — Save Mandates, HORECA 3-Step RFQ, Testimonials Carousel, Performance (v27)
+
+**Version: v27 | Build: 3.8 MB | Routes: 22+ all 200 OK | Deploy: https://852a5a63.india-gully.pages.dev**  
+**Commit: cd571d6 | Date: March 2026**
+
+### ✅ Phase 16 Deliverables
+
+| Area | What Changed |
+|------|-------------|
+| **16A — Home Insights Strip** | A "Recent Insights" mini-strip on the home page surfaces the 3 latest articles from `/insights` with category chip, read-time, title and arrow CTA. Styled in the dark editorial palette with gold accents. |
+| **16B — Save Mandate Bookmarks** | Every mandate card on `/listings` now has a ♥ bookmark button. Saves/removes the mandate ID to `localStorage` under `ig_saved_mandates`. A "Saved (N)" toggle button in the filter bar shows the count badge and filters the grid to saved-only mandates. State survives page refreshes. |
+| **16C — HORECA 3-Step Quick RFQ** | The HORECA Quick RFQ slide-out panel is rewritten as a 3-step wizard: Step 1 — Contact Details (name, company, email, phone); Step 2 — Supply Requirements (category checkboxes + property location + notes); Step 3 — Success screen with reference ID + WhatsApp CTA. Progress indicator, back/next navigation, inline validation, POST to `/api/horeca-enquiry`. |
+| **16D — Testimonials Carousel** | `/testimonials` redesigned with an auto-advancing carousel at the top (5 s interval, pause-on-hover, touch swipe, prev/next arrows, dot indicators, animated progress bar). All 8 testimonials get 5-star ratings, sector icon badges, outcome pills, and scroll-triggered fade-in animation on the card wall. Stats strip shows 5.0 rating, 8+ clients, ₹1,165 Cr+, 100% NDA compliance. |
+| **16E — Performance: Non-Blocking Resources** | Google Fonts and FontAwesome now load via `media="print" onload` swap trick — completely non-render-blocking (improves FCP/LCP). Tailwind CDN script gets `defer` attribute. Partner logos and advisory firm logos get `loading="lazy" decoding="async"`. `<link rel="preload" as="style">` hints added for both external CSS resources. |
+
+---
+
 ## 🚀 Phase 15 — Cmd+K Search Palette, Mobile CTA Bar, Social Proof, Hero Stars, Works Improvements (v26)
 
 **Version: v26 | Build: 3.8 MB | Routes: 22+ all 200 OK | Deploy: https://3e7281ee.india-gully.pages.dev**  
