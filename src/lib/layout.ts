@@ -1485,8 +1485,8 @@ ${opts?.noNav ? '' : `<nav id="ig-mob-bar" aria-label="Quick contact">
       ${[
         {n:'₹1,165 Cr+',l:'Pipeline'},
         {n:'15+',        l:'Hotels'},
-        {n:'30+',        l:'Retail Brands'},
-        {n:'20+',        l:'HB Partners'},
+        {n:'35+',        l:'Retail Brands'},
+        {n:'20+',        l:'Hotel Brands'},
         {n:'Pan-India',  l:'Reach'},
       ].map(s=>`<div class="sticky-stat"><div class="sticky-stat-n">${s.n}</div><div class="sticky-stat-l">${s.l}</div></div>`).join('<div style="width:1px;height:32px;background:rgba(255,255,255,.07);flex-shrink:0;"></div>')}
       <a href="/listings" style="margin-left:auto;flex-shrink:0;padding:.4rem 1rem;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--gold);color:#fff;white-space:nowrap;">View Mandates</a>

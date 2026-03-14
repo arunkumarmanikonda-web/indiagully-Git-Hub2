@@ -74,19 +74,27 @@ const SERVICES = [
 
 // Helper: logo grid for brands
 function brandLogoGrid(brands: any[], title: string, subtitle: string) {
+  // Group by category
+  const cats = [...new Set(brands.map((b: any) => b.cat))] as string[]
   return `
 <div style="margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--border);">
-  <p style="font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:1rem;">${title}</p>
-  <p style="font-size:.78rem;color:var(--ink-muted);margin-bottom:1.25rem;">${subtitle}</p>
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);">
-    ${brands.slice(0,8).map((b: any) => `
-    <div style="background:#fff;padding:1.1rem .875rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:72px;gap:.5rem;transition:background .2s;" onmouseover="this.style.background='var(--parch)'" onmouseout="this.style.background='#fff'">
-      <img src="${b.logo}" alt="${b.name}" style="height:24px;width:auto;object-fit:contain;filter:grayscale(100%);opacity:.6;transition:all .25s;"
-           onmouseover="this.style.filter='grayscale(0)';this.style.opacity='1'" onmouseout="this.style.filter='grayscale(100%)';this.style.opacity='.6'"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-      <div style="display:none;font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);text-align:center;">${b.name}</div>
-    </div>`).join('')}
-  </div>
+  <p style="font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.5rem;">${title}</p>
+  <p style="font-size:.78rem;color:var(--ink-muted);margin-bottom:1.5rem;">${subtitle}</p>
+  ${cats.map((cat: string) => `
+  <div style="margin-bottom:1.5rem;">
+    <p style="font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;padding-bottom:.4rem;border-bottom:1px solid rgba(184,150,12,.2);">${cat}</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.75rem;">
+      ${brands.filter((b: any) => b.cat === cat).map((b: any) => `
+      <div style="background:var(--parch);padding:.875rem .75rem;display:flex;flex-direction:column;align-items:center;gap:.4rem;border:1px solid var(--border);transition:all .2s;"
+           onmouseover="this.style.borderColor='${b.color}';this.style.background='white'"
+           onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--parch)'">
+        <img src="${b.svg}" alt="${b.name}" width="140" height="56"
+             style="width:140px;height:56px;object-fit:contain;border-radius:2px;"
+             loading="lazy" decoding="async">
+        <span style="font-size:.56rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);text-align:center;">${b.name}</span>
+      </div>`).join('')}
+    </div>
+  </div>`).join('')}
 </div>`
 }
 

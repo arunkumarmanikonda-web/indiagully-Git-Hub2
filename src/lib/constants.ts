@@ -80,63 +80,562 @@ export const STATS = [
 ]
 
 // ── BRAND LOGOS ─────────────────────────────────────────────────────────────
-// All logos are inline SVG — zero external dependencies, always visible.
-// Each svg field is a complete <svg>…</svg> string ready to embed in HTML.
-
-// Helper to make a branded SVG wordmark tile
-// bg=brand colour, text=display name, textColor=text colour, size=font scale
-function svgLogo(name: string, bg: string, textColor: string, fontSize = 11): string {
-  const escaped = name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  // Split long names into two lines at a natural break
-  const words = name.split(' ')
-  let line1 = name, line2 = ''
-  if (words.length >= 3 && name.length > 12) {
-    const mid = Math.ceil(words.length / 2)
-    line1 = words.slice(0, mid).join(' ')
-    line2 = words.slice(mid).join(' ')
-  } else if (words.length === 2 && name.length > 14) {
-    line1 = words[0]; line2 = words[1]
-  }
-  const l1e = line1.replace(/&/g, '&amp;')
-  const l2e = line2.replace(/&/g, '&amp;')
-  const y1 = line2 ? '44%' : '58%'
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="48" viewBox="0 0 120 48"><rect width="120" height="48" fill="${bg}"/><text x="60" y="${y1}" font-family="Georgia,serif" font-size="${fontSize}" font-weight="700" fill="${textColor}" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.5">${l1e}</text>${line2 ? `<text x="60" y="72%" font-family="Georgia,serif" font-size="${fontSize}" font-weight="700" fill="${textColor}" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.5">${l2e}</text>` : ''}</svg>`
-}
+// Premium inline-SVG brand logo tiles — zero external CDN dependency.
+// Design: brand-accurate colours + bold wordmark + subtle accent shape.
+// Width=160 Height=64 for wider display in brand marquees.
 
 function svgToDataUri(svg: string): string {
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg)
 }
 
-// Hospitality brands — proper brand colours
-export const HOSPITALITY_BRANDS = [
-  { name: 'Marriott',        svg: svgToDataUri(svgLogo('MARRIOTT',        '#8B0000', '#fff', 11)),  color: '#8B0000', cat: 'Global Chain' },
-  { name: 'Radisson',        svg: svgToDataUri(svgLogo('RADISSON',        '#003DA5', '#fff', 11)),  color: '#003DA5', cat: 'Global Chain' },
-  { name: 'IHG Hotels',      svg: svgToDataUri(svgLogo('IHG',             '#006399', '#fff', 14)),  color: '#006399', cat: 'Global Chain' },
-  { name: 'Taj Hotels',      svg: svgToDataUri(svgLogo('TAJ HOTELS',      '#1A1A1A', '#C9A84C', 10)), color: '#1A1A1A', cat: 'Indian Luxury' },
-  { name: 'ITC Hotels',      svg: svgToDataUri(svgLogo('ITC HOTELS',      '#2C5F2E', '#FFD700', 10)), color: '#2C5F2E', cat: 'Indian Luxury' },
-  { name: 'Lemon Tree',      svg: svgToDataUri(svgLogo('LEMON TREE',      '#F5A623', '#fff', 10)),  color: '#F5A623', cat: 'Midscale' },
-  { name: 'Cygnett Hotels',  svg: svgToDataUri(svgLogo('CYGNETT',         '#1A3A6B', '#fff', 11)),  color: '#1A3A6B', cat: 'Midscale' },
-  { name: 'Regenta / Royal Orchid', svg: svgToDataUri(svgLogo('REGENTA',  '#6B1A1A', '#fff', 11)), color: '#6B1A1A', cat: 'Midscale' },
-  { name: 'Sarovar Hotels',  svg: svgToDataUri(svgLogo('SAROVAR',         '#C0392B', '#fff', 11)),  color: '#C0392B', cat: 'Midscale' },
-  { name: 'Pride Hotels',    svg: svgToDataUri(svgLogo('PRIDE HOTELS',    '#B8960C', '#fff', 10)),  color: '#B8960C', cat: 'Midscale' },
-  { name: 'Keys Hotels',     svg: svgToDataUri(svgLogo('KEYS HOTELS',     '#1A6B3A', '#fff', 10)),  color: '#1A6B3A', cat: 'Economy' },
-  { name: 'Louvre Hotels',   svg: svgToDataUri(svgLogo('LOUVRE HOTELS',   '#2C3E50', '#E8C96C', 10)), color: '#2C3E50', cat: 'Economy' },
+// Build a brand wordmark SVG with icon accent
+// bg=fill, fg=text, accent=decorative color, label=display text, sub=subtitle, iconPath=optional small path
+function bsvg(opts: {
+  bg: string; fg: string; accent?: string
+  label: string; sub?: string
+  fs?: number; fw?: string; ff?: string
+  ls?: string; shape?: string // shape = extra SVG element
+}): string {
+  const { bg, fg, accent = fg, label, sub, fs = 13, fw = '700', ff = 'Arial,Helvetica,sans-serif', ls = '1', shape = '' } = opts
+  const lbl = label.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  const subLine = sub ? sub.replace(/&/g, '&amp;').replace(/</g, '&lt;') : ''
+  const y1 = sub ? '42%' : '54%'
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="64" viewBox="0 0 160 64">\
+<rect width="160" height="64" fill="${bg}"/>\
+${shape}\
+<text x="80" y="${y1}" font-family="${ff}" font-size="${fs}" font-weight="${fw}" fill="${fg}" text-anchor="middle" dominant-baseline="middle" letter-spacing="${ls}">${lbl}</text>\
+${sub ? `<text x="80" y="68%" font-family="${ff}" font-size="7" font-weight="400" fill="${accent}" text-anchor="middle" dominant-baseline="middle" letter-spacing="1.5">${subLine}</text>` : ''}\
+</svg>`
+}
+
+// ── HOSPITALITY BRANDS ─────────────────────────────────────────────────────
+// Categories: Global Chains · Indian Luxury · Midscale India · Economy/Budget
+// Brands India Gully actively works with for hotel on-boarding, management contracts & acquisitions
+
+export const HOSPITALITY_BRANDS: Array<{ name: string; svg: string; color: string; cat: string; catColor: string }> = [
+
+  // ── GLOBAL CHAINS (operating extensively in India) ──
+  {
+    name: 'Marriott Bonvoy', color: '#8B0000', cat: 'Global Chain', catColor: '#8B0000',
+    svg: svgToDataUri(bsvg({
+      bg: '#8B0000', fg: '#FFFFFF', accent: '#FFD7A0',
+      label: 'MARRIOTT', sub: 'BONVOY',
+      fs: 14, ls: '2',
+      shape: '<rect x="12" y="28" width="136" height="1" fill="rgba(255,215,160,.3)"/><polygon points="80,8 87,18 73,18" fill="rgba(255,215,160,.4)"/>'
+    }))
+  },
+  {
+    name: 'Radisson Hotels', color: '#003DA5', cat: 'Global Chain', catColor: '#003DA5',
+    svg: svgToDataUri(bsvg({
+      bg: '#003DA5', fg: '#FFFFFF', accent: '#7EC8E3',
+      label: 'RADISSON', sub: 'HOTELS & RESORTS',
+      fs: 14, ls: '1.5',
+      shape: '<rect x="12" y="56" width="40" height="2" fill="#7EC8E3" rx="1"/>'
+    }))
+  },
+  {
+    name: 'IHG Hotels & Resorts', color: '#006399', cat: 'Global Chain', catColor: '#006399',
+    svg: svgToDataUri(bsvg({
+      bg: '#006399', fg: '#FFFFFF', accent: '#A8D8EA',
+      label: 'IHG', sub: 'HOTELS & RESORTS',
+      fs: 22, ls: '3', fw: '900',
+      shape: '<circle cx="24" cy="32" r="10" fill="rgba(168,216,234,.15)"/><circle cx="136" cy="32" r="10" fill="rgba(168,216,234,.15)"/>'
+    }))
+  },
+  {
+    name: 'Hyatt Hotels', color: '#1D2B4F', cat: 'Global Chain', catColor: '#1D2B4F',
+    svg: svgToDataUri(bsvg({
+      bg: '#1D2B4F', fg: '#FFFFFF', accent: '#E8C96C',
+      label: 'HYATT', sub: 'HOTELS & RESORTS',
+      fs: 16, ls: '3', fw: '800',
+      shape: '<rect x="12" y="8" width="2" height="48" fill="rgba(232,201,108,.25)"/><rect x="146" y="8" width="2" height="48" fill="rgba(232,201,108,.25)"/>'
+    }))
+  },
+  {
+    name: 'Accor Hotels', color: '#B01C2E', cat: 'Global Chain', catColor: '#B01C2E',
+    svg: svgToDataUri(bsvg({
+      bg: '#B01C2E', fg: '#FFFFFF', accent: '#FFD7A0',
+      label: 'ACCOR', sub: 'IBIS · NOVOTEL · MERCURE',
+      fs: 15, ls: '2.5',
+      shape: '<rect x="60" y="8" width="40" height="3" fill="rgba(255,215,160,.35)" rx="1.5"/>'
+    }))
+  },
+  {
+    name: 'Wyndham Hotels', color: '#002A5C', cat: 'Global Chain', catColor: '#002A5C',
+    svg: svgToDataUri(bsvg({
+      bg: '#002A5C', fg: '#FFFFFF', accent: '#F0A500',
+      label: 'WYNDHAM', sub: 'HOTELS & RESORTS',
+      fs: 13, ls: '1.5',
+      shape: '<path d="M 12 32 Q 80 16 148 32" stroke="rgba(240,165,0,.3)" stroke-width="1.5" fill="none"/>'
+    }))
+  },
+
+  // ── INDIAN LUXURY ──
+  {
+    name: 'Taj Hotels', color: '#1A1A1A', cat: 'Indian Luxury', catColor: '#C9A84C',
+    svg: svgToDataUri(bsvg({
+      bg: '#1A1A1A', fg: '#C9A84C', accent: '#C9A84C',
+      label: 'TAJ', sub: 'HOTELS · RESORTS · PALACES',
+      fs: 20, ls: '4', fw: '700', ff: 'Georgia,serif',
+      shape: '<rect x="12" y="56" width="136" height="1" fill="rgba(201,168,76,.3)"/><rect x="42" y="58" width="76" height="1" fill="rgba(201,168,76,.5)"/>'
+    }))
+  },
+  {
+    name: 'ITC Hotels', color: '#1A4D2E', cat: 'Indian Luxury', catColor: '#FFD700',
+    svg: svgToDataUri(bsvg({
+      bg: '#1A4D2E', fg: '#FFD700', accent: '#FFD700',
+      label: 'ITC', sub: 'HOTELS · LUXURY COLLECTION',
+      fs: 20, ls: '4', fw: '800',
+      shape: '<rect x="12" y="8" width="136" height="1.5" fill="rgba(255,215,0,.3)"/>'
+    }))
+  },
+  {
+    name: 'The Leela Palaces', color: '#1B1B2F', cat: 'Indian Luxury', catColor: '#D4AF37',
+    svg: svgToDataUri(bsvg({
+      bg: '#1B1B2F', fg: '#D4AF37', accent: '#D4AF37',
+      label: 'THE LEELA', sub: 'PALACES · HOTELS · RESORTS',
+      fs: 13, ls: '1.5', fw: '700', ff: 'Georgia,serif',
+      shape: '<polygon points="80,6 84,14 76,14" fill="rgba(212,175,55,.3)"/>'
+    }))
+  },
+  {
+    name: 'Oberoi Hotels', color: '#2C1A0E', cat: 'Indian Luxury', catColor: '#D4AF37',
+    svg: svgToDataUri(bsvg({
+      bg: '#2C1A0E', fg: '#D4AF37', accent: '#D4AF37',
+      label: 'OBEROI', sub: 'HOTELS & RESORTS',
+      fs: 14, ls: '2', fw: '700', ff: 'Georgia,serif',
+      shape: '<rect x="40" y="8" width="80" height="1" fill="rgba(212,175,55,.35)"/><rect x="40" y="55" width="80" height="1" fill="rgba(212,175,55,.35)"/>'
+    }))
+  },
+  {
+    name: 'WelcomHeritage', color: '#3D1C1C', cat: 'Indian Luxury', catColor: '#E8C84A',
+    svg: svgToDataUri(bsvg({
+      bg: '#3D1C1C', fg: '#E8C84A', accent: '#E8C84A',
+      label: 'WELCOMHERITAGE', sub: 'BY ITC HOTELS',
+      fs: 10, ls: '1', fw: '700',
+      shape: '<path d="M 30 32 L 35 22 L 40 32 L 45 22 L 50 32" stroke="rgba(232,200,74,.3)" stroke-width="1" fill="none"/>'
+    }))
+  },
+
+  // ── MIDSCALE INDIA ──
+  {
+    name: 'Lemon Tree Hotels', color: '#F5A623', cat: 'Midscale', catColor: '#F5A623',
+    svg: svgToDataUri(bsvg({
+      bg: '#F5A623', fg: '#1A1A1A', accent: '#1A1A1A',
+      label: 'LEMON TREE', sub: 'HOTELS',
+      fs: 13, ls: '1',
+      shape: '<circle cx="18" cy="14" r="8" fill="rgba(26,26,26,.15)"/><circle cx="18" cy="14" r="5" fill="rgba(26,26,26,.2)"/>'
+    }))
+  },
+  {
+    name: 'Sarovar Hotels', color: '#C0392B', cat: 'Midscale', catColor: '#C0392B',
+    svg: svgToDataUri(bsvg({
+      bg: '#C0392B', fg: '#FFFFFF', accent: '#FFD7A0',
+      label: 'SAROVAR', sub: 'HOTELS & RESORTS',
+      fs: 13, ls: '1.5',
+      shape: '<path d="M 20 40 Q 80 20 140 40" stroke="rgba(255,215,160,.3)" stroke-width="2" fill="none"/>'
+    }))
+  },
+  {
+    name: 'Pride Hotels', color: '#B8960C', cat: 'Midscale', catColor: '#B8960C',
+    svg: svgToDataUri(bsvg({
+      bg: '#B8960C', fg: '#FFFFFF', accent: '#fff',
+      label: 'PRIDE', sub: 'HOTELS & RESORTS',
+      fs: 15, ls: '2',
+      shape: '<polygon points="80,6 86,16 74,16" fill="rgba(255,255,255,.25)"/>'
+    }))
+  },
+  {
+    name: 'Fortune Hotels', color: '#1A3A6B', cat: 'Midscale', catColor: '#F0A500',
+    svg: svgToDataUri(bsvg({
+      bg: '#1A3A6B', fg: '#F0A500', accent: '#F0A500',
+      label: 'FORTUNE', sub: 'HOTELS · PARK INN',
+      fs: 13, ls: '1.5',
+      shape: '<rect x="12" y="30" width="136" height="1" fill="rgba(240,165,0,.2)"/>'
+    }))
+  },
+  {
+    name: 'Cygnett Hotels', color: '#1A3A6B', cat: 'Midscale', catColor: '#7EC8E3',
+    svg: svgToDataUri(bsvg({
+      bg: '#1A3A6B', fg: '#FFFFFF', accent: '#7EC8E3',
+      label: 'CYGNETT', sub: 'HOTELS & RESORTS',
+      fs: 13, ls: '1',
+      shape: '<path d="M 30 44 Q 50 28 70 44 Q 90 28 110 44" stroke="rgba(126,200,227,.35)" stroke-width="1.5" fill="none"/>'
+    }))
+  },
+  {
+    name: 'Regenta by Royal Orchid', color: '#6B1A1A', cat: 'Midscale', catColor: '#E8C84A',
+    svg: svgToDataUri(bsvg({
+      bg: '#6B1A1A', fg: '#FFFFFF', accent: '#E8C84A',
+      label: 'REGENTA', sub: 'BY ROYAL ORCHID',
+      fs: 13, ls: '1.5',
+      shape: '<path d="M 20 20 Q 80 8 140 20" stroke="rgba(232,200,74,.3)" stroke-width="1.5" fill="none"/>'
+    }))
+  },
+  {
+    name: 'Nile Hospitality', color: '#1A4A6B', cat: 'Midscale', catColor: '#4FC3F7',
+    svg: svgToDataUri(bsvg({
+      bg: '#1A4A6B', fg: '#FFFFFF', accent: '#4FC3F7',
+      label: 'NILE', sub: 'HOSPITALITY',
+      fs: 16, ls: '3', fw: '800',
+      shape: '<path d="M 12 44 Q 40 32 68 44 Q 96 56 124 44 Q 136 38 148 44" stroke="rgba(79,195,247,.4)" stroke-width="2" fill="none"/>'
+    }))
+  },
+
+  // ── ECONOMY / BUDGET ──
+  {
+    name: 'Keys Hotels', color: '#1A6B3A', cat: 'Economy', catColor: '#6EE7B7',
+    svg: svgToDataUri(bsvg({
+      bg: '#1A6B3A', fg: '#FFFFFF', accent: '#6EE7B7',
+      label: 'KEYS', sub: 'SELECT · PRIME · LITE',
+      fs: 16, ls: '3',
+      shape: '<circle cx="145" cy="20" r="7" fill="none" stroke="rgba(110,231,183,.4)" stroke-width="1.5"/><line x1="145" y1="20" x2="145" y2="30" stroke="rgba(110,231,183,.4)" stroke-width="1.5"/><line x1="141" y1="25" x2="149" y2="25" stroke="rgba(110,231,183,.4)" stroke-width="1.5"/>'
+    }))
+  },
+  {
+    name: 'Treebo Hotels', color: '#E91E63', cat: 'Economy', catColor: '#fff',
+    svg: svgToDataUri(bsvg({
+      bg: '#E91E63', fg: '#FFFFFF', accent: '#fff',
+      label: 'TREEBO', sub: 'HOTELS',
+      fs: 14, ls: '1.5',
+      shape: '<path d="M 20 40 L 24 28 L 28 40" stroke="rgba(255,255,255,.4)" stroke-width="1.5" fill="none"/><line x1="16" y1="40" x2="32" y2="40" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/>'
+    }))
+  },
+  {
+    name: 'OYO Rooms', color: '#EF3340', cat: 'Economy', catColor: '#fff',
+    svg: svgToDataUri(bsvg({
+      bg: '#EF3340', fg: '#FFFFFF', accent: '#fff',
+      label: 'OYO', sub: 'HOTELS & HOMES',
+      fs: 18, ls: '3', fw: '900',
+      shape: '<rect x="12" y="56" width="136" height="2" fill="rgba(255,255,255,.2)" rx="1"/>'
+    }))
+  },
 ]
 
-// Retail brand relationships
-export const RETAIL_BRANDS = [
-  { name: 'Big Bazaar',   svg: svgToDataUri(svgLogo('BIG BAZAAR',  '#E21D26', '#fff', 10)),   cat: 'Anchor' },
-  { name: 'Lifestyle',    svg: svgToDataUri(svgLogo('LIFESTYLE',   '#1A1A1A', '#fff', 10)),    cat: 'Anchor' },
-  { name: 'Max Fashion',  svg: svgToDataUri(svgLogo('MAX',         '#E63946', '#fff', 16)),    cat: 'Fashion' },
-  { name: 'Westside',     svg: svgToDataUri(svgLogo('WESTSIDE',    '#2C2C2C', '#fff', 10)),    cat: 'Fashion' },
-  { name: 'H&M',          svg: svgToDataUri(svgLogo('H&M',         '#E50010', '#fff', 16)),    cat: 'Fashion' },
-  { name: 'Zara',         svg: svgToDataUri(svgLogo('ZARA',        '#1A1A1A', '#fff', 14)),    cat: 'Fashion' },
-  { name: "McDonald's",   svg: svgToDataUri(svgLogo("McDONALD'S",  '#FFC72C', '#DA291C', 9)),  cat: 'F&B' },
-  { name: 'KFC',          svg: svgToDataUri(svgLogo('KFC',         '#F40027', '#fff', 16)),    cat: 'F&B' },
-  { name: 'Subway',       svg: svgToDataUri(svgLogo('SUBWAY',      '#009B48', '#FFC709', 11)), cat: 'F&B' },
-  { name: 'Starbucks',    svg: svgToDataUri(svgLogo('STARBUCKS',   '#00704A', '#fff', 10)),    cat: 'F&B' },
-  { name: "Domino's",     svg: svgToDataUri(svgLogo("DOMINO'S",    '#006491', '#fff', 10)),    cat: 'F&B' },
-  { name: 'Pizza Hut',    svg: svgToDataUri(svgLogo('PIZZA HUT',   '#EE3124', '#fff', 11)),    cat: 'F&B' },
+// ── RETAIL BRANDS ──────────────────────────────────────────────────────────
+// Categorised by industry best-practice mall/retail mix:
+//   F&B | Anchor Retail | Cinema | Fashion & Apparel | Accessories & Beauty | Electronics
+// Brands India Gully works with for leasing advisory, brand on-boarding & tenant mix
+
+export const RETAIL_BRANDS: Array<{ name: string; svg: string; color: string; cat: string; catColor: string; catIcon: string }> = [
+
+  // ── F&B ──
+  {
+    name: "McDonald's", color: '#DA291C', cat: 'F&B', catColor: '#FFC72C', catIcon: 'fa-burger',
+    svg: svgToDataUri(bsvg({
+      bg: '#DA291C', fg: '#FFC72C', accent: '#FFC72C',
+      label: "McDONALD'S", sub: 'FOOD & BEVERAGE',
+      fs: 11, ls: '1', fw: '900',
+      shape: '<path d="M 62 46 Q 62 30 70 24 Q 78 18 80 24 Q 82 18 90 24 Q 98 30 98 46" stroke="#FFC72C" stroke-width="3" fill="none" stroke-linecap="round"/>'
+    }))
+  },
+  {
+    name: 'KFC', color: '#F40027', cat: 'F&B', catColor: '#fff', catIcon: 'fa-drumstick-bite',
+    svg: svgToDataUri(bsvg({
+      bg: '#F40027', fg: '#FFFFFF', accent: '#fff',
+      label: 'KFC', sub: "KENTUCKY FRIED CHICKEN",
+      fs: 22, ls: '4', fw: '900',
+      shape: '<rect x="12" y="54" width="136" height="2" fill="rgba(255,255,255,.25)" rx="1"/>'
+    }))
+  },
+  {
+    name: 'Burger King', color: '#F5821F', cat: 'F&B', catColor: '#501E10', catIcon: 'fa-burger',
+    svg: svgToDataUri(bsvg({
+      bg: '#F5821F', fg: '#501E10', accent: '#501E10',
+      label: 'BURGER', sub: 'KING',
+      fs: 16, ls: '2', fw: '900',
+      shape: '<path d="M 20 20 Q 80 12 140 20" stroke="rgba(80,30,16,.35)" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M 20 44 Q 80 52 140 44" stroke="rgba(80,30,16,.35)" stroke-width="3" fill="none" stroke-linecap="round"/>'
+    }))
+  },
+  {
+    name: 'Subway', color: '#009B48', cat: 'F&B', catColor: '#FFC709', catIcon: 'fa-sandwich',
+    svg: svgToDataUri(bsvg({
+      bg: '#009B48', fg: '#FFC709', accent: '#FFC709',
+      label: 'SUBWAY', sub: 'EAT FRESH',
+      fs: 14, ls: '2', fw: '900',
+      shape: '<path d="M 12 48 L 148 48" stroke="rgba(255,199,9,.3)" stroke-width="2"/>'
+    }))
+  },
+  {
+    name: 'Starbucks', color: '#00704A', cat: 'F&B', catColor: '#CBA258', catIcon: 'fa-mug-hot',
+    svg: svgToDataUri(bsvg({
+      bg: '#00704A', fg: '#FFFFFF', accent: '#CBA258',
+      label: 'STARBUCKS', sub: 'COFFEE',
+      fs: 12, ls: '1',
+      shape: '<circle cx="80" cy="14" r="8" fill="none" stroke="rgba(203,162,88,.5)" stroke-width="1.5"/><circle cx="80" cy="14" r="4" fill="rgba(203,162,88,.25)"/>'
+    }))
+  },
+  {
+    name: "Domino's Pizza", color: '#006491', cat: 'F&B', catColor: '#E31837', catIcon: 'fa-pizza-slice',
+    svg: svgToDataUri(bsvg({
+      bg: '#006491', fg: '#FFFFFF', accent: '#E31837',
+      label: "DOMINO'S", sub: 'PIZZA',
+      fs: 13, ls: '1.5',
+      shape: '<rect x="12" y="56" width="60" height="3" fill="#E31837" rx="1.5"/>'
+    }))
+  },
+  {
+    name: 'Pizza Hut', color: '#EE3124', cat: 'F&B', catColor: '#fff', catIcon: 'fa-pizza-slice',
+    svg: svgToDataUri(bsvg({
+      bg: '#EE3124', fg: '#FFFFFF', accent: '#fff',
+      label: 'PIZZA HUT', sub: 'RESTAURANTS',
+      fs: 13, ls: '1',
+      shape: '<path d="M 55 14 Q 80 6 105 14 L 100 20 Q 80 12 60 20 Z" fill="rgba(255,255,255,.2)"/>'
+    }))
+  },
+  {
+    name: "Dunkin'", color: '#FF671F', cat: 'F&B', catColor: '#DA1884', catIcon: 'fa-circle-dot',
+    svg: svgToDataUri(bsvg({
+      bg: '#FF671F', fg: '#FFFFFF', accent: '#DA1884',
+      label: "DUNKIN'", sub: 'DONUTS & COFFEE',
+      fs: 13, ls: '1',
+      shape: '<circle cx="18" cy="32" r="10" fill="none" stroke="rgba(218,24,132,.5)" stroke-width="2.5"/><circle cx="18" cy="32" r="4" fill="rgba(218,24,132,.4)"/>'
+    }))
+  },
+  {
+    name: 'Barbeque Nation', color: '#8B1A1A', cat: 'F&B', catColor: '#F5A623', catIcon: 'fa-fire',
+    svg: svgToDataUri(bsvg({
+      bg: '#8B1A1A', fg: '#F5A623', accent: '#F5A623',
+      label: 'BARBEQUE', sub: 'NATION',
+      fs: 13, ls: '1', fw: '800',
+      shape: '<path d="M 20 38 Q 22 28 24 38 Q 26 28 28 38" stroke="rgba(245,166,35,.5)" stroke-width="1.5" fill="none"/>'
+    }))
+  },
+  {
+    name: "Haldiram's", color: '#D4721E', cat: 'F&B', catColor: '#fff', catIcon: 'fa-bowl-food',
+    svg: svgToDataUri(bsvg({
+      bg: '#D4721E', fg: '#FFFFFF', accent: '#fff',
+      label: "HALDIRAM'S", sub: 'SINCE 1937',
+      fs: 12, ls: '1',
+      shape: '<path d="M 40 54 Q 80 44 120 54" stroke="rgba(255,255,255,.3)" stroke-width="1.5" fill="none"/>'
+    }))
+  },
+
+  // ── ANCHOR RETAIL & HYPERMARKET ──
+  {
+    name: 'D-Mart', color: '#1A4B8E', cat: 'Anchor Retail', catColor: '#E8000D', catIcon: 'fa-store',
+    svg: svgToDataUri(bsvg({
+      bg: '#1A4B8E', fg: '#FFFFFF', accent: '#E8000D',
+      label: 'D MART', sub: 'EVERYDAY LOW PRICES',
+      fs: 15, ls: '2', fw: '900',
+      shape: '<rect x="12" y="8" width="8" height="48" fill="rgba(232,0,13,.6)" rx="2"/>'
+    }))
+  },
+  {
+    name: 'Reliance Retail', color: '#0B316A', cat: 'Anchor Retail', catColor: '#E53935', catIcon: 'fa-store',
+    svg: svgToDataUri(bsvg({
+      bg: '#0B316A', fg: '#FFFFFF', accent: '#E53935',
+      label: 'RELIANCE', sub: 'RETAIL · FRESH · SMART',
+      fs: 13, ls: '1.5',
+      shape: '<path d="M 20 32 Q 40 20 60 32 Q 80 44 100 32 Q 120 20 140 32" stroke="rgba(229,57,53,.4)" stroke-width="1.5" fill="none"/>'
+    }))
+  },
+  {
+    name: "Spencer's Retail", color: '#E31837', cat: 'Anchor Retail', catColor: '#fff', catIcon: 'fa-store',
+    svg: svgToDataUri(bsvg({
+      bg: '#E31837', fg: '#FFFFFF', accent: '#fff',
+      label: "SPENCER'S", sub: 'HYPER · DAILY',
+      fs: 12, ls: '1',
+      shape: '<rect x="12" y="56" width="80" height="2" fill="rgba(255,255,255,.3)" rx="1"/>'
+    }))
+  },
+  {
+    name: 'More Retail', color: '#0054A5', cat: 'Anchor Retail', catColor: '#FFC107', catIcon: 'fa-store',
+    svg: svgToDataUri(bsvg({
+      bg: '#0054A5', fg: '#FFFFFF', accent: '#FFC107',
+      label: 'MORE', sub: 'SUPERMARKET · HYPERMARKET',
+      fs: 16, ls: '3', fw: '800',
+      shape: '<circle cx="140" cy="18" r="8" fill="rgba(255,193,7,.2)"/>'
+    }))
+  },
+  {
+    name: 'Lifestyle Stores', color: '#1A1A1A', cat: 'Anchor Retail', catColor: '#D4AF37', catIcon: 'fa-store',
+    svg: svgToDataUri(bsvg({
+      bg: '#1A1A1A', fg: '#FFFFFF', accent: '#D4AF37',
+      label: 'LIFESTYLE', sub: 'DEPARTMENT STORE',
+      fs: 12, ls: '1.5',
+      shape: '<rect x="12" y="56" width="136" height="1" fill="rgba(212,175,55,.4)"/>'
+    }))
+  },
+
+  // ── CINEMA / ENTERTAINMENT ANCHOR ──
+  {
+    name: 'PVR INOX', color: '#C8001C', cat: 'Cinema', catColor: '#FFD700', catIcon: 'fa-film',
+    svg: svgToDataUri(bsvg({
+      bg: '#C8001C', fg: '#FFFFFF', accent: '#FFD700',
+      label: 'PVR INOX', sub: 'CINEMAS',
+      fs: 14, ls: '2', fw: '900',
+      shape: '<path d="M 20 22 L 26 14 L 26 30 Z" fill="rgba(255,215,0,.4)"/><path d="M 30 22 L 36 14 L 36 30 Z" fill="rgba(255,215,0,.3)"/>'
+    }))
+  },
+  {
+    name: 'Cinépolis', color: '#E30613', cat: 'Cinema', catColor: '#fff', catIcon: 'fa-film',
+    svg: svgToDataUri(bsvg({
+      bg: '#E30613', fg: '#FFFFFF', accent: '#fff',
+      label: 'CINÉPOLIS', sub: 'CINEMAS',
+      fs: 13, ls: '1.5',
+      shape: '<path d="M 18 32 Q 18 18 28 18 Q 38 18 38 32 Q 38 46 28 46 Q 18 46 18 32 M 24 32 Q 24 24 28 24 Q 32 24 32 32 Q 32 40 28 40 Q 24 40 24 32" fill="rgba(255,255,255,.2)"/>'
+    }))
+  },
+  {
+    name: 'Miraj Cinemas', color: '#1A1A6B', cat: 'Cinema', catColor: '#F0C040', catIcon: 'fa-film',
+    svg: svgToDataUri(bsvg({
+      bg: '#1A1A6B', fg: '#F0C040', accent: '#F0C040',
+      label: 'MIRAJ', sub: 'CINEMAS',
+      fs: 15, ls: '2',
+      shape: '<path d="M 20 42 L 26 12 L 32 42" stroke="rgba(240,192,64,.4)" stroke-width="1.5" fill="none"/>'
+    }))
+  },
+
+  // ── FASHION & APPAREL ──
+  {
+    name: 'H&M', color: '#E50010', cat: 'Fashion & Apparel', catColor: '#fff', catIcon: 'fa-shirt',
+    svg: svgToDataUri(bsvg({
+      bg: '#E50010', fg: '#FFFFFF', accent: '#fff',
+      label: 'H&M', sub: 'FASHION & QUALITY',
+      fs: 22, ls: '3', fw: '900',
+      shape: ''
+    }))
+  },
+  {
+    name: 'Zara', color: '#1A1A1A', cat: 'Fashion & Apparel', catColor: '#D4AF37', catIcon: 'fa-shirt',
+    svg: svgToDataUri(bsvg({
+      bg: '#1A1A1A', fg: '#FFFFFF', accent: '#D4AF37',
+      label: 'ZARA', sub: 'INDITEX GROUP',
+      fs: 18, ls: '5', fw: '700',
+      shape: '<rect x="12" y="56" width="136" height="1" fill="rgba(255,255,255,.15)"/>'
+    }))
+  },
+  {
+    name: 'Uniqlo', color: '#E00012', cat: 'Fashion & Apparel', catColor: '#fff', catIcon: 'fa-shirt',
+    svg: svgToDataUri(bsvg({
+      bg: '#E00012', fg: '#FFFFFF', accent: '#fff',
+      label: 'UNIQLO', sub: 'MADE FOR ALL',
+      fs: 14, ls: '2', fw: '900',
+      shape: '<rect x="12" y="8" width="136" height="3" fill="rgba(255,255,255,.2)" rx="1.5"/>'
+    }))
+  },
+  {
+    name: 'Marks & Spencer', color: '#1A1A1A', cat: 'Fashion & Apparel', catColor: '#D4AF37', catIcon: 'fa-shirt',
+    svg: svgToDataUri(bsvg({
+      bg: '#1A1A1A', fg: '#FFFFFF', accent: '#D4AF37',
+      label: 'M&S', sub: 'MARKS & SPENCER',
+      fs: 20, ls: '3', fw: '700',
+      shape: '<rect x="12" y="56" width="136" height="1" fill="rgba(212,175,55,.4)"/>'
+    }))
+  },
+  {
+    name: 'Westside', color: '#2C2C2C', cat: 'Fashion & Apparel', catColor: '#D4AF37', catIcon: 'fa-shirt',
+    svg: svgToDataUri(bsvg({
+      bg: '#2C2C2C', fg: '#FFFFFF', accent: '#D4AF37',
+      label: 'WESTSIDE', sub: 'TATA ENTERPRISE',
+      fs: 12, ls: '1.5',
+      shape: '<rect x="12" y="8" width="60" height="2" fill="rgba(212,175,55,.4)" rx="1"/>'
+    }))
+  },
+  {
+    name: 'Max Fashion', color: '#E63946', cat: 'Fashion & Apparel', catColor: '#fff', catIcon: 'fa-shirt',
+    svg: svgToDataUri(bsvg({
+      bg: '#E63946', fg: '#FFFFFF', accent: '#fff',
+      label: 'MAX', sub: 'FASHION',
+      fs: 20, ls: '4', fw: '900',
+      shape: '<rect x="12" y="56" width="136" height="2" fill="rgba(255,255,255,.25)" rx="1"/>'
+    }))
+  },
+  {
+    name: 'FabIndia', color: '#8B2500', cat: 'Fashion & Apparel', catColor: '#F5D78E', catIcon: 'fa-shirt',
+    svg: svgToDataUri(bsvg({
+      bg: '#8B2500', fg: '#F5D78E', accent: '#F5D78E',
+      label: 'FABINDIA', sub: 'SINCE 1960',
+      fs: 12, ls: '1.5', fw: '700', ff: 'Georgia,serif',
+      shape: '<path d="M 20 44 Q 40 32 60 44 Q 80 56 100 44 Q 120 32 140 44" stroke="rgba(245,215,142,.3)" stroke-width="1" fill="none"/>'
+    }))
+  },
+  {
+    name: 'Manyavar', color: '#7B0C2D', cat: 'Fashion & Apparel', catColor: '#D4AF37', catIcon: 'fa-person',
+    svg: svgToDataUri(bsvg({
+      bg: '#7B0C2D', fg: '#D4AF37', accent: '#D4AF37',
+      label: 'MANYAVAR', sub: 'CELEBRATE LIFE',
+      fs: 12, ls: '1', fw: '700', ff: 'Georgia,serif',
+      shape: '<rect x="12" y="8" width="136" height="1.5" fill="rgba(212,175,55,.3)"/><rect x="12" y="54" width="136" height="1.5" fill="rgba(212,175,55,.3)"/>'
+    }))
+  },
+  {
+    name: 'BIBA', color: '#E8374A', cat: 'Fashion & Apparel', catColor: '#fff', catIcon: 'fa-person-dress',
+    svg: svgToDataUri(bsvg({
+      bg: '#E8374A', fg: '#FFFFFF', accent: '#fff',
+      label: 'BIBA', sub: 'INDIAN ETHNIC WEAR',
+      fs: 18, ls: '4', fw: '800',
+      shape: '<circle cx="140" cy="14" r="6" fill="rgba(255,255,255,.15)"/>'
+    }))
+  },
+
+  // ── ACCESSORIES & JEWELLERY & BEAUTY ──
+  {
+    name: 'Tanishq', color: '#1A1A1A', cat: 'Accessories & Beauty', catColor: '#D4AF37', catIcon: 'fa-gem',
+    svg: svgToDataUri(bsvg({
+      bg: '#1A1A1A', fg: '#D4AF37', accent: '#D4AF37',
+      label: 'TANISHQ', sub: 'TATA JEWELLERY',
+      fs: 12, ls: '1.5', fw: '700', ff: 'Georgia,serif',
+      shape: '<polygon points="80,6 83,14 91,14 85,19 87,27 80,22 73,27 75,19 69,14 77,14" fill="rgba(212,175,55,.25)"/>'
+    }))
+  },
+  {
+    name: 'Nykaa', color: '#FC2779', cat: 'Accessories & Beauty', catColor: '#fff', catIcon: 'fa-spray-can-sparkles',
+    svg: svgToDataUri(bsvg({
+      bg: '#FC2779', fg: '#FFFFFF', accent: '#fff',
+      label: 'NYKAA', sub: 'BEAUTY & FASHION',
+      fs: 14, ls: '2',
+      shape: '<circle cx="140" cy="14" r="7" fill="rgba(255,255,255,.15)"/><circle cx="140" cy="14" r="3.5" fill="rgba(255,255,255,.2)"/>'
+    }))
+  },
+  {
+    name: 'Sephora', color: '#1A1A1A', cat: 'Accessories & Beauty', catColor: '#fff', catIcon: 'fa-spray-can-sparkles',
+    svg: svgToDataUri(bsvg({
+      bg: '#1A1A1A', fg: '#FFFFFF', accent: '#fff',
+      label: 'SEPHORA', sub: 'BEAUTY',
+      fs: 13, ls: '2',
+      shape: '<rect x="12" y="30" width="60" height="1.5" fill="rgba(255,255,255,.2)" rx="0.75"/>'
+    }))
+  },
+  {
+    name: "L'Oréal Paris", color: '#1B1464', cat: 'Accessories & Beauty', catColor: '#FFD700', catIcon: 'fa-spray-can',
+    svg: svgToDataUri(bsvg({
+      bg: '#1B1464', fg: '#FFD700', accent: '#FFD700',
+      label: "L'ORÉAL", sub: 'PARIS',
+      fs: 14, ls: '1.5', fw: '700',
+      shape: '<rect x="12" y="56" width="136" height="1.5" fill="rgba(255,215,0,.35)" rx="0.75"/>'
+    }))
+  },
+
+  // ── ELECTRONICS & LIFESTYLE ──
+  {
+    name: 'Croma', color: '#00B000', cat: 'Electronics', catColor: '#fff', catIcon: 'fa-mobile-screen',
+    svg: svgToDataUri(bsvg({
+      bg: '#00B000', fg: '#FFFFFF', accent: '#fff',
+      label: 'CROMA', sub: 'TATA ELECTRONICS',
+      fs: 14, ls: '2',
+      shape: '<rect x="12" y="8" width="136" height="2" fill="rgba(255,255,255,.2)" rx="1"/>'
+    }))
+  },
+  {
+    name: 'Reliance Digital', color: '#0066CC', cat: 'Electronics', catColor: '#E53935', catIcon: 'fa-mobile-screen',
+    svg: svgToDataUri(bsvg({
+      bg: '#0066CC', fg: '#FFFFFF', accent: '#E53935',
+      label: 'RELIANCE', sub: 'DIGITAL',
+      fs: 12, ls: '1.5',
+      shape: '<circle cx="140" cy="18" r="8" fill="rgba(229,57,53,.2)"/>'
+    }))
+  },
+  {
+    name: 'Samsung', color: '#1428A0', cat: 'Electronics', catColor: '#fff', catIcon: 'fa-mobile-screen',
+    svg: svgToDataUri(bsvg({
+      bg: '#1428A0', fg: '#FFFFFF', accent: '#fff',
+      label: 'SAMSUNG', sub: 'EXPERIENCE STORE',
+      fs: 12, ls: '1.5',
+      shape: '<path d="M 40 52 Q 80 44 120 52" stroke="rgba(255,255,255,.25)" stroke-width="1.5" fill="none"/>'
+    }))
+  },
 ]
 
 // Transaction Advisory partners

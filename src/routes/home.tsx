@@ -254,14 +254,14 @@ app.get('/', (c) => {
       'Hotel Management Advisory','Entertainment Destinations','Debt & Special Situations',
       'HORECA Solutions','Brand On-Boarding','Financial Feasibility','Project Management',
       'Asset Management','Greenfield Hotels','Mall Leasing','FF&E Procurement',
-      '₹1,165 Cr+ Pipeline','15+ Hotel Projects','30+ Retail Brands','Pan-India Presence'
+      '₹1,165 Cr+ Pipeline','15+ Hotel Projects','35+ Retail Brands','Pan-India Presence'
     ].map(t=>`<span style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.75);padding:0 2.5rem;">${t}</span><span style="color:rgba(0,0,0,.25);font-size:.45rem;flex-shrink:0;">◆</span>`).join('')}
     ${[
       'Real Estate Advisory','Transaction Advisory','Retail Leasing Strategy',
       'Hotel Management Advisory','Entertainment Destinations','Debt & Special Situations',
       'HORECA Solutions','Brand On-Boarding','Financial Feasibility','Project Management',
       'Asset Management','Greenfield Hotels','Mall Leasing','FF&E Procurement',
-      '₹1,165 Cr+ Pipeline','15+ Hotel Projects','30+ Retail Brands','Pan-India Presence'
+      '₹1,165 Cr+ Pipeline','15+ Hotel Projects','35+ Retail Brands','Pan-India Presence'
     ].map(t=>`<span style="font-size:.62rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.75);padding:0 2.5rem;">${t}</span><span style="color:rgba(0,0,0,.25);font-size:.45rem;flex-shrink:0;">◆</span>`).join('')}
   </div>
 </div>
@@ -298,7 +298,7 @@ app.get('/', (c) => {
       { icon:'handshake',      color:'#60a5fa', text:'EY Co-Advisory Partner' },
       { icon:'chart-line',     color:'#B8960C', text:'₹1,165 Cr+ Active Pipeline' },
       { icon:'hotel',          color:'#a78bfa', text:'15+ Hotel Projects Executed' },
-      { icon:'store',          color:'#34d399', text:'30+ Retail Brand Partnerships' },
+      { icon:'store',          color:'#34d399', text:'35+ Retail Brand Partnerships' },
       { icon:'building',       color:'#60a5fa', text:'CBRE Co-Advisory Partner' },
       { icon:'balance-scale',  color:'#fbbf24', text:'SEBI-Framework Advisory' },
       { icon:'registered',     color:'#B8960C', text:'MCA Registered · CIN U74999DL2017PTC323237' },
@@ -313,7 +313,7 @@ app.get('/', (c) => {
       { icon:'handshake',      color:'#60a5fa', text:'EY Co-Advisory Partner' },
       { icon:'chart-line',     color:'#B8960C', text:'₹1,165 Cr+ Active Pipeline' },
       { icon:'hotel',          color:'#a78bfa', text:'15+ Hotel Projects Executed' },
-      { icon:'store',          color:'#34d399', text:'30+ Retail Brand Partnerships' },
+      { icon:'store',          color:'#34d399', text:'35+ Retail Brand Partnerships' },
     ]).map(item => `
     <span style="display:inline-flex;align-items:center;gap:.5rem;padding:0 2rem;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);">
       <i class="fas fa-${item.icon}" style="color:${item.color};font-size:.58rem;flex-shrink:0;"></i>${item.text}
@@ -659,65 +659,134 @@ app.get('/', (c) => {
 <div class="sec-wh" style="padding-top:7rem;padding-bottom:7rem;">
   <div class="wrap">
 
-    <!-- Hospitality brands -->
+    <!-- ── HOSPITALITY BRANDS ── -->
     <div style="margin-bottom:6rem;">
-      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3.5rem;flex-wrap:wrap;gap:1.5rem;">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1.5rem;">
         <div>
           <div class="gr"></div>
           <p class="eyebrow" style="margin-bottom:.875rem;">Hospitality Partners</p>
           <h2 class="h2">Hotel Brands We<br>Work With</h2>
         </div>
         <div style="max-width:380px;text-align:right;">
-          <p class="lead" style="font-size:.9375rem;margin-bottom:1.25rem;">Active relationships with India's most prominent hotel brands, from global chains to homegrown operators.</p>
+          <p class="lead" style="font-size:.9375rem;margin-bottom:1.25rem;">Active relationships with India's most prominent hotel brands — from global chains to homegrown operators. Including our exclusive partner <strong>Nile Hospitality</strong>.</p>
           <a href="/services#hospitality" class="btn btn-sm btn-dko">Our Hospitality Practice</a>
         </div>
       </div>
 
-      <div class="brand-grid">
+      <!-- Category filter tabs for hotel brands -->
+      <div id="hb-filters" style="display:flex;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap;">
+        ${['All','Global Chain','Indian Luxury','Midscale','Economy'].map((c,i) => `
+        <button onclick="filterHB('${c}')" data-hbcat="${c}"
+          style="padding:.3rem .85rem;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:1px solid ${i===0?'var(--gold)':'var(--border)'};background:${i===0?'rgba(184,150,12,.08)':'transparent'};color:${i===0?'var(--gold)':'var(--ink-muted)'};cursor:pointer;transition:all .2s;">
+          ${c}${c!=='All'?` <span style="font-size:.55rem;opacity:.7;">(${HOSPITALITY_BRANDS.filter((b:any)=>b.cat===c).length})</span>`:''}
+        </button>`).join('')}
+      </div>
+
+      <!-- Hotel brand grid -->
+      <div id="hbGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:1rem;">
         ${HOSPITALITY_BRANDS.map((b: any) => `
-        <div class="brand-cell">
-          <img src="${b.svg}" alt="${b.name}" style="width:110px;height:42px;object-fit:contain;filter:grayscale(1) opacity(.55);transition:filter .3s;"
-               loading="lazy" decoding="async"
-               onmouseover="this.style.filter='grayscale(0) opacity(1)'" onmouseout="this.style.filter='grayscale(1) opacity(.55)'"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div style="display:none;width:110px;height:42px;background:${b.color};align-items:center;justify-content:center;border-radius:2px;">
-            <span style="font-size:.58rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff;text-align:center;padding:0 6px;">${b.name}</span>
+        <div class="hb-card" data-hbcat="${b.cat}"
+          style="border:1px solid var(--border);padding:.875rem .75rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;transition:all .25s;cursor:default;"
+          onmouseover="this.style.borderColor='${b.color}';this.style.background='rgba(${parseInt(b.color.slice(1,3),16)},${parseInt(b.color.slice(3,5),16)},${parseInt(b.color.slice(5,7),16)},.04)'"
+          onmouseout="this.style.borderColor='var(--border)';this.style.background='transparent'">
+          <img src="${b.svg}" alt="${b.name}" width="155" height="62"
+               style="width:155px;height:62px;object-fit:contain;border-radius:3px;"
+               loading="lazy" decoding="async">
+          <div style="text-align:center;">
+            <div style="font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);">${b.cat}</div>
           </div>
-          <div style="font-size:.52rem;color:var(--ink-faint);letter-spacing:.08em;text-transform:uppercase;text-align:center;">${b.cat}</div>
         </div>`).join('')}
       </div>
     </div>
 
-    <!-- Retail brands -->
+    <!-- ── RETAIL BRANDS ── -->
     <div>
-      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3.5rem;flex-wrap:wrap;gap:1.5rem;">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1.5rem;">
         <div>
           <div class="gr"></div>
           <p class="eyebrow" style="margin-bottom:.875rem;">Retail Partners</p>
           <h2 class="h2">Retail Brands We<br>Advise &amp; Place</h2>
         </div>
-        <div style="max-width:380px;text-align:right;">
-          <p class="lead" style="font-size:.9375rem;margin-bottom:1.25rem;">30+ active retail brand relationships spanning anchor tenants, fashion, food &amp; beverage and entertainment.</p>
+        <div style="max-width:420px;text-align:right;">
+          <p class="lead" style="font-size:.9375rem;margin-bottom:1.25rem;">${RETAIL_BRANDS.length}+ active retail brand relationships — F&amp;B, anchor stores, cinemas, fashion, accessories &amp; electronics.</p>
           <a href="/services#retail" class="btn btn-sm btn-dko">Our Retail Practice</a>
         </div>
       </div>
 
-      <div class="brand-grid">
+      <!-- Retail category tabs -->
+      <div id="rb-filters" style="display:flex;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap;">
+        ${['All','F&B','Anchor Retail','Cinema','Fashion & Apparel','Accessories & Beauty','Electronics'].map((c,i) => `
+        <button onclick="filterRB('${c}')" data-rbcat="${c}"
+          style="padding:.3rem .85rem;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:1px solid ${i===0?'var(--gold)':'var(--border)'};background:${i===0?'rgba(184,150,12,.08)':'transparent'};color:${i===0?'var(--gold)':'var(--ink-muted)'};cursor:pointer;transition:all .2s;">
+          ${c}${c!=='All'?` <span style="font-size:.55rem;opacity:.7;">(${RETAIL_BRANDS.filter((b:any)=>b.cat===c).length})</span>`:''}
+        </button>`).join('')}
+      </div>
+
+      <!-- Retail brand grid -->
+      <div id="rbGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:1rem;">
         ${RETAIL_BRANDS.map((b: any) => `
-        <div class="brand-cell">
-          <img src="${b.svg}" alt="${b.name}" style="width:110px;height:42px;object-fit:contain;filter:grayscale(1) opacity(.55);transition:filter .3s;"
-               onmouseover="this.style.filter='grayscale(0) opacity(1)'" onmouseout="this.style.filter='grayscale(1) opacity(.55)'"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div style="display:none;width:110px;height:42px;background:#1a1a1a;align-items:center;justify-content:center;border-radius:2px;">
-            <span style="font-size:.58rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff;text-align:center;padding:0 6px;">${b.name}</span>
+        <div class="rb-card" data-rbcat="${b.cat}"
+          style="border:1px solid var(--border);padding:.875rem .75rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;transition:all .25s;cursor:default;"
+          onmouseover="this.style.borderColor='${b.color}';this.style.background='rgba(${parseInt(b.color.slice(1,3),16)},${parseInt(b.color.slice(3,5),16)},${parseInt(b.color.slice(5,7),16)},.04)'"
+          onmouseout="this.style.borderColor='var(--border)';this.style.background='transparent'">
+          <img src="${b.svg}" alt="${b.name}" width="155" height="62"
+               style="width:155px;height:62px;object-fit:contain;border-radius:3px;"
+               loading="lazy" decoding="async">
+          <div style="text-align:center;">
+            <div style="font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);">${b.cat}</div>
           </div>
-          <div style="font-size:.52rem;color:var(--ink-faint);letter-spacing:.08em;text-transform:uppercase;text-align:center;">${b.cat}</div>
         </div>`).join('')}
+      </div>
+
+      <!-- Category count summary strip -->
+      <div style="display:flex;gap:1rem;margin-top:2.5rem;flex-wrap:wrap;justify-content:center;padding:1.5rem;background:rgba(184,150,12,.03);border:1px solid rgba(184,150,12,.12);">
+        ${['F&B','Anchor Retail','Cinema','Fashion & Apparel','Accessories & Beauty','Electronics'].map((c: string) => {
+          const count = RETAIL_BRANDS.filter((b: any) => b.cat === c).length
+          const icons: Record<string,string> = {
+            'F&B':'fa-utensils','Anchor Retail':'fa-store','Cinema':'fa-film',
+            'Fashion & Apparel':'fa-shirt','Accessories & Beauty':'fa-gem','Electronics':'fa-mobile-screen'
+          }
+          return `<div style="display:flex;flex-direction:column;align-items:center;gap:.3rem;min-width:80px;">
+            <i class="fas ${icons[c]||'fa-tag'}" style="font-size:.9rem;color:var(--gold);"></i>
+            <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.2rem;color:var(--ink);">${count}</span>
+            <span style="font-size:.56rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);text-align:center;">${c}</span>
+          </div>`
+        }).join('')}
       </div>
     </div>
 
   </div>
 </div>
+
+<script>
+/* ── Brand filter tabs ────────────────────────────────────────────── */
+function filterHB(cat){
+  document.querySelectorAll('[data-hbcat]').forEach(function(el){
+    if(el.tagName === 'BUTTON'){
+      var isActive = el.getAttribute('data-hbcat') === cat;
+      el.style.borderColor  = isActive ? 'var(--gold)' : 'var(--border)';
+      el.style.background   = isActive ? 'rgba(184,150,12,.08)' : 'transparent';
+      el.style.color        = isActive ? 'var(--gold)' : 'var(--ink-muted)';
+    } else {
+      var show = cat === 'All' || el.getAttribute('data-hbcat') === cat;
+      el.style.display = show ? '' : 'none';
+    }
+  });
+}
+function filterRB(cat){
+  document.querySelectorAll('[data-rbcat]').forEach(function(el){
+    if(el.tagName === 'BUTTON'){
+      var isActive = el.getAttribute('data-rbcat') === cat;
+      el.style.borderColor  = isActive ? 'var(--gold)' : 'var(--border)';
+      el.style.background   = isActive ? 'rgba(184,150,12,.08)' : 'transparent';
+      el.style.color        = isActive ? 'var(--gold)' : 'var(--ink-muted)';
+    } else {
+      var show = cat === 'All' || el.getAttribute('data-rbcat') === cat;
+      el.style.display = show ? '' : 'none';
+    }
+  });
+}
+</script>
 
 <!-- ══ RECENT INSIGHTS ═════════════════════════════════════════════════ -->
 <div class="sec-wh" style="padding-top:5.5rem;padding-bottom:5.5rem;border-top:1px solid var(--border);">
