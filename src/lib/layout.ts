@@ -164,6 +164,9 @@ tailwind.config = {
 [data-theme="dark"] .map-city-sub{color:rgba(255,255,255,.4)!important;}
 [data-theme="dark"] .india-map-box{background:linear-gradient(135deg,#0d0d1e 0%,#141428 100%)!important;border-color:rgba(255,255,255,.08)!important;}
 [data-theme="dark"] .india-map-wrap svg .india-land{fill:#1e1e35!important;stroke:rgba(184,150,12,.35)!important;}
+[data-theme="dark"] .india-map-wrap svg path[style*="fill:#e8ddc8"]{fill:#1e1e35!important;stroke:rgba(184,150,12,.3)!important;}
+[data-theme="dark"] .india-map-wrap svg path[style*="fill:#ddd5be"]{fill:#181830!important;stroke:rgba(184,150,12,.25)!important;}
+[data-theme="dark"] .india-map-wrap svg ellipse[style*="fill:#ddd5be"],[data-theme="dark"] .india-map-wrap svg ellipse[style*="fill:#e8ddc8"]{fill:#181830!important;stroke:rgba(184,150,12,.25)!important;}
 [data-theme="dark"] .india-map-wrap svg .map-island-label{fill:rgba(255,255,255,.4)!important;}
 [data-theme="dark"] .india-map-caption{color:rgba(255,255,255,.3)!important;}
 [data-theme="dark"] .india-map-wrap svg text{fill:rgba(255,255,255,.75)!important;}
@@ -172,9 +175,10 @@ tailwind.config = {
 [data-theme="dark"] .india-map-wrap svg .map-pin-label{fill:rgba(255,255,255,.88)!important;}
 [data-theme="dark"] .india-map-wrap svg .map-pin-sub{fill:rgba(255,255,255,.5)!important;}
 /* Dark mode: why-cards section text */
-[data-theme="dark"] .why-card{background:#22223a!important;border-color:rgba(255,255,255,.13)!important;}
+[data-theme="dark"] .why-card{background:#22223a!important;border-color:rgba(255,255,255,.13)!important;box-shadow:0 2px 20px rgba(0,0,0,.4)!important;}
 [data-theme="dark"] .why-card h3{color:#f1f5f9!important;}
 [data-theme="dark"] .why-card p{color:rgba(255,255,255,.65)!important;}
+[data-theme="dark"] .why-card .why-icon{background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.1)!important;}
 /* Dark mode: sec-wh inline-bg overrides */
 [data-theme="dark"] [style*="background:var(--parch)"]{background:var(--parch)!important;}
 [data-theme="dark"] [style*="background:var(--parch-dk)"]{background:var(--parch-dk)!important;}
@@ -1343,7 +1347,7 @@ body{overflow-x:hidden;}
 [data-theme="dark"] .trust-item strong{color:#fff;}
 
 /* ── india-map-box (map section card) ────────── */
-.india-map-box{background:linear-gradient(135deg,#f0ebe0 0%,#e8e1d0 100%);}
+.india-map-box{background:linear-gradient(135deg,#f0ebe0 0%,#e8e1d0 100%);transition:background .3s;}
 .india-map-wrap svg .india-land{fill:#e8ddc8;stroke:#b8a878;stroke-width:1.2;stroke-linejoin:round;}
 .india-map-wrap svg text{fill:#444;}
 
