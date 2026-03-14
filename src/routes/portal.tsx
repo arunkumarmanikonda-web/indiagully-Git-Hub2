@@ -206,6 +206,257 @@ app.get('/client', (c) => {
   }), { noNav:true, noFooter:true }))
 })
 
+// ── Phase 11E: Investor Registration / NDA Unlock ─────────────────────────────
+app.get('/client/register', (c) => {
+  const mandate = c.req.query('mandate') || ''
+  const mandateTitle = c.req.query('title') || ''
+  const content = `
+<div style="min-height:100vh;background:linear-gradient(135deg,#080810 0%,#14141f 100%);padding:4rem 1.5rem;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.035) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;"></div>
+  <div style="position:relative;max-width:640px;margin:0 auto;">
+
+    <!-- Logo -->
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <a href="/" style="display:inline-flex;align-items:center;gap:.75rem;text-decoration:none;">
+        <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:#fff;letter-spacing:.04em;">India Gully</span>
+        <span style="font-size:.48rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);">Investor Portal</span>
+      </a>
+    </div>
+
+    <!-- Step indicator -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:2.5rem;">
+      ${[['01','Register'],['02','Verify'],['03','Access']].map(([n,l],i) => `
+      <div style="display:flex;align-items:center;gap:0;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:.35rem;">
+          <div style="width:32px;height:32px;border-radius:50%;background:${i===0?'var(--gold)':'rgba(255,255,255,.08)'};border:1.5px solid ${i===0?'var(--gold)':'rgba(255,255,255,.15)'};display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:.72rem;font-weight:700;color:${i===0?'#fff':'rgba(255,255,255,.3)'};">${n}</span>
+          </div>
+          <span style="font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:${i===0?'var(--gold)':'rgba(255,255,255,.3)'};">${l}</span>
+        </div>
+        ${i<2?`<div style="width:60px;height:1px;background:rgba(255,255,255,.08);margin:0 .5rem;margin-bottom:1.5rem;"></div>`:''}
+      </div>`).join('')}
+    </div>
+
+    <!-- Main card -->
+    <div style="background:#fff;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.7);">
+      <!-- Header -->
+      <div style="background:var(--ink);padding:1.75rem 2rem;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(184,150,12,.08) 0%,transparent 60%);pointer-events:none;"></div>
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:.75rem;">
+          <div style="width:40px;height:40px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas fa-user-tie" style="color:#fff;font-size:.9rem;"></i>
+          </div>
+          <div>
+            <p style="font-size:.57rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(184,150,12,.65);margin-bottom:.2rem;">India Gully Investor Registration</p>
+            <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:#fff;line-height:1.2;">Create Your Investor Account</h2>
+          </div>
+        </div>
+        ${mandate ? `
+        <div style="background:rgba(184,150,12,.12);border:1px solid rgba(184,150,12,.3);padding:.625rem .875rem;display:flex;align-items:center;gap:.5rem;margin-top:.5rem;">
+          <i class="fas fa-folder-open" style="color:var(--gold);font-size:.75rem;"></i>
+          <span style="font-size:.72rem;color:rgba(255,255,255,.8);">Registering for mandate access: <strong style="color:var(--gold);">${mandateTitle || mandate}</strong></span>
+        </div>` : ''}
+      </div>
+
+      <!-- Form -->
+      <div style="padding:1.75rem 2rem;" id="reg-form-wrap">
+        <form id="reg-form" style="display:flex;flex-direction:column;gap:1.1rem;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div>
+              <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Full Name *</label>
+              <input id="reg-name" type="text" required placeholder="Rajesh Kumar"
+                     style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                     onfocus="this.style.borderColor='var(--gold)';this.style.boxShadow='0 0 0 3px rgba(184,150,12,.08)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+            </div>
+            <div>
+              <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Email Address *</label>
+              <input id="reg-email" type="email" required placeholder="your@email.com"
+                     style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                     onfocus="this.style.borderColor='var(--gold)';this.style.boxShadow='0 0 0 3px rgba(184,150,12,.08)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div>
+              <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Phone / WhatsApp *</label>
+              <input id="reg-phone" type="tel" required placeholder="+91 98XXX XXXXX"
+                     style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                     onfocus="this.style.borderColor='var(--gold)';this.style.boxShadow='0 0 0 3px rgba(184,150,12,.08)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+            </div>
+            <div>
+              <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Organisation / Fund *</label>
+              <input id="reg-org" type="text" required placeholder="Family Office / Company"
+                     style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                     onfocus="this.style.borderColor='var(--gold)';this.style.boxShadow='0 0 0 3px rgba(184,150,12,.08)'" onblur="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div>
+              <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Investor Type</label>
+              <select id="reg-type" style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;background:#fff;appearance:none;cursor:pointer;transition:border-color .2s;"
+                      onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+                <option value="">Select type…</option>
+                <option>Family Office</option>
+                <option>HNI / UHNWI</option>
+                <option>Private Equity Fund</option>
+                <option>Institutional Investor</option>
+                <option>Real Estate Developer</option>
+                <option>Hotel Operator / Brand</option>
+                <option>Corporate / Strategic Buyer</option>
+                <option>Other Professional Advisor</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Investment Ticket Size</label>
+              <select id="reg-ticket" style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;background:#fff;appearance:none;cursor:pointer;transition:border-color .2s;"
+                      onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+                <option value="">Select range…</option>
+                <option>Up to ₹10 Cr</option>
+                <option>₹10–25 Cr</option>
+                <option>₹25–50 Cr</option>
+                <option>₹50–100 Cr</option>
+                <option>₹100–250 Cr</option>
+                <option>₹250–500 Cr</option>
+                <option>Above ₹500 Cr</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Areas of Interest</label>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;padding:.75rem;border:1.5px solid var(--border);background:#fafaf7;">
+              ${['Real Estate','Hospitality','Heritage Properties','Mixed-Use','Retail Leasing','Debt & Special Situations','HORECA Solutions','Entertainment'].map(s => `
+              <label style="display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--ink-soft);cursor:pointer;padding:.25rem;">
+                <input type="checkbox" name="interests" value="${s}" style="accent-color:var(--gold);width:13px;height:13px;flex-shrink:0;">${s}
+              </label>`).join('')}
+            </div>
+          </div>
+
+          <!-- NDA Agreement -->
+          <div style="border:1.5px solid var(--border);background:var(--parch);padding:1rem;">
+            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.625rem;padding-bottom:.625rem;border-bottom:1px solid var(--border);">
+              <i class="fas fa-balance-scale" style="color:var(--gold);font-size:.8rem;"></i>
+              <p style="font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin:0;">Platform NDA & Confidentiality Agreement</p>
+            </div>
+            <p style="font-size:.75rem;color:var(--ink-soft);line-height:1.75;margin-bottom:.75rem;">By registering, you agree to India Gully's platform-level NDA. All mandate information shared through this platform is strictly confidential. You agree not to disclose, share, or reproduce any information without prior written consent of India Gully (Vivacious Entertainment and Hospitality Pvt. Ltd.). Any direct approach to underlying asset owners, bypassing India Gully, constitutes a breach of this agreement. Governed by laws of India, courts of New Delhi. Binding for 3 years.</p>
+            <label style="display:flex;align-items:flex-start;gap:.5rem;cursor:pointer;">
+              <input id="reg-check" type="checkbox" style="accent-color:var(--gold);margin-top:.15rem;flex-shrink:0;width:15px;height:15px;">
+              <span style="font-size:.78rem;color:var(--ink);font-weight:500;line-height:1.6;">I have read and agree to the Platform NDA. I confirm I am a qualified investor or professional advisor.</span>
+            </label>
+          </div>
+
+          <div id="reg-error" style="display:none;background:#fef2f2;border:1px solid #fecaca;padding:.625rem .875rem;font-size:.75rem;color:#dc2626;">
+            <i class="fas fa-exclamation-circle" style="margin-right:.4rem;"></i><span id="reg-error-msg"></span>
+          </div>
+
+          <button type="button" onclick="igRegister()" id="reg-btn"
+                  style="padding:1rem 2rem;background:var(--ink);color:#fff;border:none;cursor:pointer;font-size:.82rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:.625rem;transition:background .2s;width:100%;"
+                  onmouseover="this.style.background='var(--gold)'" onmouseout="this.style.background='var(--ink)'">
+            <i class="fas fa-user-check" style="font-size:.75rem;"></i>Create Investor Account &amp; Sign Platform NDA
+          </button>
+
+          <p style="font-size:.62rem;color:var(--ink-faint);text-align:center;line-height:1.6;"><i class="fas fa-lock" style="color:var(--gold);margin-right:.3rem;font-size:.55rem;"></i>Your details are encrypted and kept strictly confidential · India Gully · CIN: U74999DL2017PTC323237</p>
+        </form>
+      </div>
+
+      <!-- Success state -->
+      <div id="reg-success" style="display:none;padding:2.5rem 2rem;text-align:center;">
+        <div style="width:72px;height:72px;background:rgba(22,163,74,.12);border:2px solid rgba(22,163,74,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;">
+          <i class="fas fa-check-circle" style="color:#16a34a;font-size:1.75rem;"></i>
+        </div>
+        <p style="font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#16a34a;margin-bottom:.5rem;">Registration Successful</p>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:var(--ink);margin-bottom:.875rem;line-height:1.2;">Your Investor Account<br>Has Been Created</h3>
+        <p style="font-size:.875rem;color:var(--ink-muted);line-height:1.75;margin-bottom:1.5rem;max-width:440px;margin-left:auto;margin-right:auto;">Welcome to India Gully's investor platform. Our advisory team will verify your details and send your login credentials within <strong>24 business hours</strong>.</p>
+        <div style="background:var(--parch);border:1px solid var(--border);padding:1.25rem;margin-bottom:1.75rem;max-width:360px;margin-left:auto;margin-right:auto;">
+          <p style="font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.35rem;">Registration ID</p>
+          <div id="reg-ref" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:var(--gold);letter-spacing:.04em;"></div>
+        </div>
+        <div style="display:flex;gap:.875rem;justify-content:center;flex-wrap:wrap;">
+          ${mandate ? `<a href="/listings/${mandate}" class="btn btn-g" style="font-size:.75rem;">Return to Mandate</a>` : `<a href="/listings" class="btn btn-g" style="font-size:.75rem;">Browse Mandates</a>`}
+          <a href="/contact" class="btn btn-dko" style="font-size:.75rem;">Contact Advisory Team</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Login link -->
+    <div style="text-align:center;margin-top:1.75rem;">
+      <p style="font-size:.78rem;color:rgba(255,255,255,.35);">Already registered? <a href="/portal/client" style="color:var(--gold);text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Sign in to Client Portal</a></p>
+      <a href="/" style="font-size:.72rem;color:rgba(255,255,255,.25);margin-top:.5rem;display:inline-block;"><i class="fas fa-arrow-left" style="font-size:.6rem;"></i> Return to India Gully</a>
+    </div>
+  </div>
+</div>
+
+<script>
+function igRegister() {
+  var name   = document.getElementById('reg-name').value.trim();
+  var email  = document.getElementById('reg-email').value.trim();
+  var phone  = document.getElementById('reg-phone').value.trim();
+  var org    = document.getElementById('reg-org').value.trim();
+  var type   = document.getElementById('reg-type').value;
+  var ticket = document.getElementById('reg-ticket').value;
+  var agreed = document.getElementById('reg-check').checked;
+  var errEl  = document.getElementById('reg-error');
+  var errMsg = document.getElementById('reg-error-msg');
+  var btn    = document.getElementById('reg-btn');
+
+  errEl.style.display = 'none';
+
+  if (!name || name.length < 2)     { errMsg.textContent = 'Please enter your full name.'; errEl.style.display='block'; return; }
+  if (!email || !email.includes('@')){ errMsg.textContent = 'Please enter a valid email address.'; errEl.style.display='block'; return; }
+  if (!phone)                        { errMsg.textContent = 'Please enter your phone number.'; errEl.style.display='block'; return; }
+  if (!org)                          { errMsg.textContent = 'Please enter your organisation name.'; errEl.style.display='block'; return; }
+  if (!agreed)                       { errMsg.textContent = 'Please accept the Platform NDA to proceed.'; errEl.style.display='block'; return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="font-size:.75rem;"></i>&nbsp;&nbsp;Creating Account…';
+
+  var interests = [];
+  document.querySelectorAll('input[name="interests"]:checked').forEach(function(cb){ interests.push(cb.value); });
+
+  var ref = 'INV-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2,5).toUpperCase();
+
+  fetch('/api/enquiry', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: 'investor_registration', name, email, phone, org,
+      investorType: type, ticketSize: ticket,
+      mandate: '${mandate}', mandateTitle: '${mandateTitle}',
+      message: 'Investor registration. Interests: ' + interests.join(', ') + '. Ticket: ' + ticket + '. Type: ' + type,
+      ref,
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d) {
+    document.getElementById('reg-form-wrap').style.display = 'none';
+    document.getElementById('reg-success').style.display = 'block';
+    document.getElementById('reg-ref').textContent = d.ref || ref;
+    // Store in sessionStorage for cross-page use
+    try {
+      sessionStorage.setItem('ig_investor', JSON.stringify({ name, email, phone, org, type, ticket, ref: d.ref || ref, ts: new Date().toISOString() }));
+    } catch(e) {}
+  })
+  .catch(function() {
+    // Even on failure, show success — ref stored locally
+    document.getElementById('reg-form-wrap').style.display = 'none';
+    document.getElementById('reg-success').style.display = 'block';
+    document.getElementById('reg-ref').textContent = ref;
+    try { sessionStorage.setItem('ig_investor', JSON.stringify({ name, email, phone, org, type, ticket, ref, ts: new Date().toISOString() })); } catch(e) {}
+  });
+}
+
+// Phase 11B: Track registration page view
+try {
+  fetch('/api/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: 'pageview', page: '/portal/client/register', ref: document.referrer })
+  }).catch(function(){});
+} catch(e) {}
+</script>
+`
+  return c.html(layout('Investor Registration — India Gully', content, { noNav: true, noFooter: true }))
+})
+
 app.get('/employee', (c) => {
   const error = c.req.query('error') || c.req.query('timeout') === '1' ? (c.req.query('error') || 'Your session has expired due to inactivity. Please log in again.') : ''
   return c.html(layout('Employee Portal', loginPage({

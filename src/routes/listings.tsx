@@ -340,14 +340,17 @@ app.get('/:id', (c) => {
       </div>
 
       <!-- Action buttons -->
-      <div style="display:flex;gap:.875rem;">
-        <a href="/listings" style="flex:1;padding:.875rem;border:1px solid var(--border);text-align:center;font-size:.75rem;font-weight:600;color:var(--ink-soft);text-decoration:none;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.4rem;" onmouseover="this.style.borderColor='var(--ink)'" onmouseout="this.style.borderColor='var(--border)'">
-          <i class="fas fa-arrow-left" style="font-size:.62rem;"></i>Back to Mandates
+      <div style="display:flex;gap:.875rem;flex-wrap:wrap;">
+        <a href="/listings" style="padding:.875rem 1rem;border:1px solid var(--border);text-align:center;font-size:.75rem;font-weight:600;color:var(--ink-soft);text-decoration:none;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.4rem;" onmouseover="this.style.borderColor='var(--ink)'" onmouseout="this.style.borderColor='var(--border)'">
+          <i class="fas fa-arrow-left" style="font-size:.62rem;"></i>Back
+        </a>
+        <a href="/portal/client/register?mandate=${l.id}&title=${encodeURIComponent(l.title)}" style="padding:.875rem 1.25rem;border:1px solid rgba(184,150,12,.4);text-align:center;font-size:.72rem;font-weight:600;color:var(--gold);text-decoration:none;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.4rem;background:rgba(184,150,12,.06);" onmouseover="this.style.background='rgba(184,150,12,.12)'" onmouseout="this.style.background='rgba(184,150,12,.06)'">
+          <i class="fas fa-user-plus" style="font-size:.62rem;"></i>Register Instead
         </a>
         <button id="nda-accept" onclick="igAcceptNDA('${l.id}')"
-                style="flex:2;padding:.875rem;background:var(--ink);color:#fff;border:none;cursor:pointer;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem;"
+                style="flex:2;min-width:200px;padding:.875rem;background:var(--ink);color:#fff;border:none;cursor:pointer;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem;"
                 onmouseover="this.style.background='var(--gold)'" onmouseout="this.style.background='var(--ink)'">
-          <i class="fas fa-file-signature" style="font-size:.72rem;"></i>I Accept &amp; Proceed to Mandate
+          <i class="fas fa-file-signature" style="font-size:.72rem;"></i>I Accept &amp; Proceed
         </button>
       </div>
 
@@ -513,6 +516,25 @@ function igUnlockContent(name, email, phone, org) {
 </script>` : ''
 
   const content = `
+<!-- Phase 11A: Reading progress bar -->
+<div id="detail-progress" style="position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--gold),#D4AE2A);z-index:9999;transition:width .1s linear;pointer-events:none;"></div>
+
+<!-- Phase 11A: Lightbox overlay -->
+<div id="ig-lightbox" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.96);align-items:center;justify-content:center;flex-direction:column;">
+  <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);"></div>
+  <!-- Close -->
+  <button onclick="window.igLightboxClose()" style="position:absolute;top:1.25rem;right:1.5rem;background:none;border:1px solid rgba(255,255,255,.2);color:#fff;width:40px;height:40px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2;" onmouseover="this.style.background='var(--gold)';this.style.borderColor='var(--gold)'" onmouseout="this.style.background='none';this.style.borderColor='rgba(255,255,255,.2)'"><i class="fas fa-times"></i></button>
+  <!-- Counter -->
+  <div id="ig-lb-count" style="position:absolute;top:1.5rem;left:50%;transform:translateX(-50%);font-size:.72rem;font-weight:700;letter-spacing:.16em;color:rgba(255,255,255,.5);"></div>
+  <!-- Image -->
+  <img id="ig-lb-img" src="" alt="" style="max-width:92vw;max-height:82vh;object-fit:contain;transition:opacity .18s;user-select:none;">
+  <!-- Caption -->
+  <div id="ig-lb-caption" style="margin-top:1rem;font-size:.75rem;color:rgba(255,255,255,.35);letter-spacing:.06em;"></div>
+  <!-- Arrows -->
+  <button id="ig-lb-prev" style="position:absolute;left:1.5rem;top:50%;transform:translateY(-50%);width:48px;height:48px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.4);backdrop-filter:blur(8px);color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;" onmouseover="this.style.background='var(--gold)';this.style.borderColor='var(--gold)'" onmouseout="this.style.background='rgba(0,0,0,.4)';this.style.borderColor='rgba(255,255,255,.2)'"><i class="fas fa-chevron-left"></i></button>
+  <button id="ig-lb-next" style="position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);width:48px;height:48px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.4);backdrop-filter:blur(8px);color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;" onmouseover="this.style.background='var(--gold)';this.style.borderColor='var(--gold)'" onmouseout="this.style.background='rgba(0,0,0,.4)';this.style.borderColor='rgba(255,255,255,.2)'"><i class="fas fa-chevron-right"></i></button>
+</div>
+
 ${ndaModal}
 
 <!-- ══ DETAIL HERO ══════════════════════════════════════════════════════ -->
@@ -644,6 +666,43 @@ ${ndaModal}
             <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:var(--gold);line-height:1;margin-bottom:.3rem;">${h.value}</div>
             <div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);">${h.label}</div>
           </div>`).join('')}
+        </div>
+
+        <!-- ── Phase 11A: Investment Snapshot ─────────────────────────── -->
+        <div style="margin-bottom:2.5rem;border:1px solid var(--border);background:var(--parch);overflow:hidden;">
+          <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:.625rem;">
+              <i class="fas fa-chart-bar" style="color:var(--gold);font-size:.85rem;"></i>
+              <p style="font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);margin:0;">Investment Snapshot</p>
+            </div>
+            <span style="font-size:.62rem;color:var(--ink-muted);letter-spacing:.04em;">Indicative · Subject to Due Diligence</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;">
+            ${[
+              { label:'Indicative Value', value: l.value,            icon:'rupee-sign',  color:'var(--gold)' },
+              { label:'Mandate Type',     value: l.mandateType,       icon:'file-alt',    color:'var(--ink)' },
+              { label:'Deal Status',      value: l.status.split('–')[0].trim(), icon:'circle', color: l.statusType==='active'?'#15803d':l.statusType==='negotiation'?'#1d4ed8':'#9333ea' },
+            ].map(item => `
+            <div style="padding:1.25rem 1rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);text-align:center;">
+              <i class="fas fa-${item.icon}" style="color:${item.color};font-size:.75rem;margin-bottom:.5rem;display:block;opacity:.7;"></i>
+              <div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.35rem;">${item.label}</div>
+              <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:${item.color};line-height:1.2;">${item.value}</div>
+            </div>`).join('')}
+            ${[
+              { label:'Location',    value: l.locationShort,      icon:'map-marker-alt', color:'var(--ink)' },
+              { label:'NDA',         value: l.nda?'Required':'Not Required', icon:'lock', color:l.nda?'#B8960C':'#15803d' },
+              { label:'USD Equiv.',  value: l.valueUSD || 'N/A',  icon:'dollar-sign',   color:'var(--ink-muted)' },
+            ].map(item => `
+            <div style="padding:1.25rem 1rem;border-right:1px solid var(--border);text-align:center;">
+              <i class="fas fa-${item.icon}" style="color:${item.color};font-size:.75rem;margin-bottom:.5rem;display:block;opacity:.7;"></i>
+              <div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.35rem;">${item.label}</div>
+              <div style="font-size:.875rem;font-weight:600;color:${item.color};line-height:1.2;">${item.value}</div>
+            </div>`).join('')}
+          </div>
+          <div style="padding:.875rem 1.25rem;background:rgba(184,150,12,.04);border-top:1px solid var(--border);display:flex;align-items:center;gap:.5rem;">
+            <i class="fas fa-info-circle" style="color:var(--gold);font-size:.7rem;flex-shrink:0;"></i>
+            <span style="font-size:.72rem;color:var(--ink-muted);line-height:1.5;">Full financial model, cap rate analysis, DCF and historical performance data available in the Information Memorandum — provided to accepted investors after NDA execution.</span>
+          </div>
         </div>
 
         <!-- Full spec sheet (locked until NDA) -->
@@ -1155,6 +1214,66 @@ ${ndaModal}
   } else {
     initCarousel();
   }
+
+  // ── Phase 11B: Track page view ─────────────────────────────────────────
+  try {
+    fetch('/api/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'pageview', page: '/listings/${l.id}', ref: document.referrer })
+    }).catch(function(){});
+  } catch(e) {}
+
+  // ── Phase 11A: Reading progress bar ───────────────────────────────────
+  var progBar = document.getElementById('detail-progress');
+  if (progBar) {
+    window.addEventListener('scroll', function() {
+      var scrollTop = window.scrollY || document.documentElement.scrollTop;
+      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      var pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+      progBar.style.width = pct + '%';
+    }, { passive: true });
+  }
+
+  // ── Phase 11A: Lightbox ────────────────────────────────────────────────
+  window.igLightboxOpen = function(images, startIdx) {
+    var cur = startIdx || 0;
+    var total = images.length;
+    var lb = document.getElementById('ig-lightbox');
+    if (!lb) return;
+    var lbImg = document.getElementById('ig-lb-img');
+    var lbCount = document.getElementById('ig-lb-count');
+    var lbCaption = document.getElementById('ig-lb-caption');
+    function gotoSlide(n) {
+      cur = ((n % total) + total) % total;
+      if (lbImg) { lbImg.style.opacity = '0'; setTimeout(function(){ lbImg.src = images[cur]; lbImg.style.opacity = '1'; }, 180); }
+      if (lbCount) lbCount.textContent = (cur+1) + ' / ' + total;
+      if (lbCaption) lbCaption.textContent = '${l.title} · Image ' + (cur+1);
+    }
+    gotoSlide(cur);
+    lb.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    lb.onclick = function(e){ if(e.target===lb) window.igLightboxClose(); };
+    document.getElementById('ig-lb-prev').onclick = function(){ gotoSlide(cur-1); };
+    document.getElementById('ig-lb-next').onclick = function(){ gotoSlide(cur+1); };
+    var _kh = function(e){
+      if(e.key==='ArrowLeft') gotoSlide(cur-1);
+      else if(e.key==='ArrowRight') gotoSlide(cur+1);
+      else if(e.key==='Escape') window.igLightboxClose();
+    };
+    document.addEventListener('keydown', _kh);
+    lb._removeKey = function(){ document.removeEventListener('keydown', _kh); };
+    // Touch swipe
+    var lbTx = 0;
+    lb.addEventListener('touchstart', function(e){ lbTx = e.touches[0].clientX; }, {passive:true});
+    lb.addEventListener('touchend', function(e){ var dx = e.changedTouches[0].clientX - lbTx; if(Math.abs(dx)>40) gotoSlide(cur+(dx<0?1:-1)); }, {passive:true});
+  };
+  window.igLightboxClose = function() {
+    var lb = document.getElementById('ig-lightbox');
+    if (lb) lb.style.display = 'none';
+    document.body.style.overflow = '';
+    if (lb && lb._removeKey) lb._removeKey();
+  };
 })();
 </script>
 `

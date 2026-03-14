@@ -8996,6 +8996,69 @@ app.get('/reports', (c) => {
     </div>
   </div>
 
+  <!-- Phase 11B: Live Analytics & Lead Tracking Dashboard -->
+  <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;">
+    <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
+      <div style="display:flex;align-items:center;gap:.625rem;">
+        <i class="fas fa-chart-line" style="color:var(--gold);font-size:.9rem;"></i>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);margin:0;">Live Analytics & Lead Tracking</h3>
+      </div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <button onclick="igLoadAnalytics()" style="background:none;border:1px solid var(--border);padding:.3rem .875rem;font-size:.72rem;cursor:pointer;color:var(--gold);display:flex;align-items:center;gap:.35rem;"><i class="fas fa-sync-alt" style="font-size:.6rem;"></i>Refresh</button>
+        <button onclick="igLoadLeads()" style="background:var(--gold);color:#fff;border:none;padding:.35rem .875rem;font-size:.72rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.35rem;"><i class="fas fa-users" style="font-size:.6rem;"></i>Load Leads</button>
+      </div>
+    </div>
+    <div style="padding:1.25rem;">
+      <!-- Stats row -->
+      <div id="analytics-stats-row" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem;">
+        ${[
+          {id:'an-total-views',  label:'Total Page Views',  icon:'eye',         c:'#B8960C'},
+          {id:'an-today-views',  label:"Today's Views",     icon:'clock',       c:'#2563eb'},
+          {id:'an-total-leads',  label:'NDA Leads',         icon:'file-signature',c:'#16a34a'},
+          {id:'an-total-eoi',    label:'EOI Submissions',   icon:'handshake',   c:'#7c3aed'},
+        ].map(s=>`
+        <div style="background:var(--parch-dk);border:1px solid var(--border);padding:1rem;">
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;">
+            <i class="fas fa-${s.icon}" style="color:${s.c};font-size:.75rem;"></i>
+            <span style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);">${s.label}</span>
+          </div>
+          <div id="${s.id}" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:${s.c};line-height:1;">—</div>
+        </div>`).join('')}
+      </div>
+      <!-- 7-day sparkline -->
+      <div style="margin-bottom:1.25rem;">
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.625rem;">7-Day Page View Trend</div>
+        <div id="analytics-daily-chart" style="background:var(--parch-dk);border:1px solid var(--border);padding:1rem;display:flex;align-items:flex-end;gap:4px;height:80px;">
+          <span style="font-size:.72rem;color:var(--ink-faint);">Loading…</span>
+        </div>
+      </div>
+      <!-- Top pages -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <!-- Top pages table -->
+        <div>
+          <div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.625rem;">Top Pages</div>
+          <div id="analytics-top-pages" style="background:var(--parch-dk);border:1px solid var(--border);">
+            <div style="padding:1rem;font-size:.75rem;color:var(--ink-faint);">Click Refresh to load…</div>
+          </div>
+        </div>
+        <!-- Recent leads -->
+        <div>
+          <div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.625rem;">Recent NDA Leads</div>
+          <div id="analytics-leads-list" style="background:var(--parch-dk);border:1px solid var(--border);">
+            <div style="padding:1rem;font-size:.75rem;color:var(--ink-faint);">Click Load Leads to view…</div>
+          </div>
+        </div>
+      </div>
+      <!-- Mandate engagement table -->
+      <div style="margin-top:1rem;">
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.625rem;">Mandate Engagement (NDA Counts)</div>
+        <div id="analytics-mandate-table" style="background:var(--parch-dk);border:1px solid var(--border);">
+          <div style="padding:1rem;font-size:.75rem;color:var(--ink-faint);">Click Refresh to load…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Self-Service Analytics -->
   <div style="background:#fff;border:1px solid var(--border);margin-bottom:1.5rem;padding:1.25rem;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
@@ -9321,6 +9384,93 @@ app.get('/reports', (c) => {
     igApi.post('/reports/schedule',{report:reportName,frequency:freq,recipients:['superadmin@indiagully.com']}).then(function(r){
       igToast('"'+reportName+'" scheduled for '+freq+' delivery'+(r&&r.id?' — ID: '+r.id:''),'success');
     }).catch(function(){ igToast('"'+reportName+'" scheduled for '+freq+' delivery','success'); });
+  };
+
+  // ── Phase 11B: Analytics Dashboard ────────────────────────────────────────
+  window.igLoadAnalytics = function() {
+    igToast('Loading analytics…','info');
+    igApi.get('/analytics').then(function(d) {
+      // Total views
+      var tv = document.getElementById('an-total-views');
+      if (tv) tv.textContent = (d.totalViews || 0).toLocaleString('en-IN');
+      // Today views
+      var today = new Date().toISOString().slice(0,10);
+      var todayData = (d.daily||[]).find(function(x){ return x.date === today; });
+      var tday = document.getElementById('an-today-views');
+      if (tday) tday.textContent = todayData ? (todayData.pageviews||0) : '0';
+      // Daily bar chart
+      var chartEl = document.getElementById('analytics-daily-chart');
+      if (chartEl && d.daily && d.daily.length) {
+        var maxV = Math.max.apply(null, d.daily.map(function(x){ return x.pageviews||0; })) || 1;
+        chartEl.innerHTML = d.daily.map(function(x) {
+          var h = Math.max(4, Math.round(((x.pageviews||0)/maxV)*60));
+          var isToday = x.date===today;
+          return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;">'
+            +'<div style="font-size:.58rem;color:var(--ink-faint);">'+(x.pageviews||0)+'</div>'
+            +'<div style="width:100%;max-width:28px;height:'+h+'px;background:'+(isToday?'var(--gold)':'rgba(184,150,12,.35)')+';transition:height .4s;border-radius:2px 2px 0 0;" title="'+x.date+': '+(x.pageviews||0)+' views"></div>'
+            +'<div style="font-size:.55rem;color:var(--ink-faint);">'+x.date.slice(5)+'</div>'
+            +'</div>';
+        }).join('');
+        chartEl.style.display='flex';chartEl.style.alignItems='flex-end';chartEl.style.gap='4px';
+      }
+      // Top pages
+      var pagesEl = document.getElementById('analytics-top-pages');
+      if (pagesEl && d.pageCounts) {
+        var sorted = Object.entries(d.pageCounts).sort(function(a,b){ return (b[1] as number)-(a[1] as number); }).slice(0,8);
+        var maxPv = sorted[0] ? (sorted[0][1] as number) : 1;
+        pagesEl.innerHTML = '<table style="width:100%;border-collapse:collapse;">'
+          + sorted.map(function(e, i) {
+            var pct = Math.round(((e[1] as number)/maxPv)*100);
+            return '<tr style="border-bottom:1px solid var(--border);">'
+              +'<td style="padding:.5rem .75rem;font-size:.72rem;color:var(--ink-muted);width:22px;">'+(i+1)+'</td>'
+              +'<td style="padding:.5rem .375rem;font-size:.75rem;color:var(--ink);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><a href="'+e[0]+'" target="_blank" style="color:var(--ink);text-decoration:none;" onmouseover="this.style.color=\'var(--gold)\'" onmouseout="this.style.color=\'var(--ink)\'">'+e[0]+'</a></td>'
+              +'<td style="padding:.5rem .75rem;text-align:right;font-size:.78rem;font-weight:700;color:var(--gold);">'+e[1]+'</td>'
+              +'</tr>';
+          }).join('')
+          + '</table>';
+      }
+      // Load mandate analytics
+      igApi.get('/mandate-analytics').then(function(ma) {
+        var tblEl = document.getElementById('analytics-mandate-table');
+        if (tblEl && ma.stats) {
+          tblEl.innerHTML = '<table style="width:100%;border-collapse:collapse;">'
+            +'<thead><tr style="background:var(--parch-dk);"><th style="padding:.5rem .75rem;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);text-align:left;">Mandate</th><th style="padding:.5rem .75rem;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);text-align:center;">NDA Accepts</th><th style="padding:.5rem .75rem;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);text-align:center;">EOI</th></tr></thead>'
+            +'<tbody>'
+            + ma.stats.map(function(s: any) {
+              return '<tr style="border-bottom:1px solid var(--border);">'
+                +'<td style="padding:.5rem .75rem;font-size:.75rem;color:var(--ink);">'+s.id+'</td>'
+                +'<td style="padding:.5rem .75rem;font-size:.82rem;font-weight:700;color:var(--gold);text-align:center;">'+(s.nda_count||0)+'</td>'
+                +'<td style="padding:.5rem .75rem;font-size:.82rem;font-weight:700;color:#7c3aed;text-align:center;">'+(s.eoi_count||0)+'</td>'
+                +'</tr>';
+            }).join('')
+            +'</tbody></table>';
+        }
+      }).catch(function(){});
+    }).catch(function(e){ igToast('Analytics load failed — '+e,'error'); });
+  };
+
+  window.igLoadLeads = function() {
+    igToast('Loading leads…','info');
+    igApi.get('/leads').then(function(d) {
+      var tv = document.getElementById('an-total-leads');
+      if (tv) tv.textContent = (d.total || 0);
+      var leadsEl = document.getElementById('analytics-leads-list');
+      if (leadsEl && d.leads) {
+        leadsEl.innerHTML = '<div style="max-height:260px;overflow-y:auto;">'
+          + d.leads.slice(0,20).map(function(lead: any) {
+            var dt = lead.ts ? new Date(lead.ts).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'2-digit'}) : '';
+            return '<div style="padding:.625rem .875rem;border-bottom:1px solid var(--border);">'
+              +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.2rem;">'
+              +'<span style="font-size:.8rem;font-weight:600;color:var(--ink);">'+lead.name+'</span>'
+              +'<span style="font-size:.62rem;color:var(--ink-faint);">'+dt+'</span>'
+              +'</div>'
+              +'<div style="font-size:.72rem;color:var(--ink-muted);">'+lead.email+' · '+(lead.org||'')+'</div>'
+              +'<div style="font-size:.68rem;color:var(--gold);margin-top:.18rem;">'+(lead.mandateTitle||lead.mandate||'')+'</div>'
+              +'</div>';
+          }).join('')
+          + '</div>';
+      }
+    }).catch(function(e){ igToast('Leads load failed','error'); });
   };
 
   // ── BI: Save Integration Config ───────────────────────────────────────────

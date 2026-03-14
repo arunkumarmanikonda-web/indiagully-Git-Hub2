@@ -1144,6 +1144,8 @@ app.get('/:id', (c) => {
   const catImg = CAT_IMAGES[article.category] || 'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/Hotel-Rajshree-5-scaled-e1765525431558.webp'
 
   const content = `
+<!-- Phase 11D: Reading progress bar -->
+<div id="article-progress" style="position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--gold),#D4AE2A);z-index:9999;transition:width .1s linear;pointer-events:none;"></div>
 
 <!-- ══ ARTICLE HERO ══════════════════════════════════════════════════════ -->
 <div style="background:var(--ink);position:relative;overflow:hidden;">
@@ -1208,6 +1210,26 @@ app.get('/:id', (c) => {
     <!-- ── SIDEBAR ─────────────────────────────────────── -->
     <div style="position:sticky;top:calc(var(--nav-h) + 1.5rem);display:flex;flex-direction:column;gap:1.25rem;" class="listing-sidebar">
 
+      <!-- Phase 11D: Author Profile -->
+      <div style="background:#fff;border:1px solid var(--border);padding:1.25rem;display:flex;align-items:center;gap:.875rem;">
+        <div style="width:48px;height:48px;background:var(--ink);display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;">
+          <i class="fas fa-pen-nib" style="color:var(--gold);font-size:.9rem;"></i>
+        </div>
+        <div>
+          <div style="font-size:.875rem;font-weight:700;color:var(--ink);">India Gully Research</div>
+          <div style="font-size:.7rem;color:var(--ink-muted);margin-bottom:.25rem;">Transaction-Backed Advisory Insights</div>
+          <div style="font-size:.65rem;color:var(--ink-faint);display:flex;align-items:center;gap:.4rem;"><i class="fas fa-calendar-alt" style="color:var(--gold);font-size:.55rem;"></i>${article.date} · ${article.readTime}</div>
+        </div>
+      </div>
+
+      <!-- Phase 11D: Table of Contents (auto-generated) -->
+      <div style="background:var(--parch);border:1px solid var(--border);padding:1.25rem;" id="toc-box">
+        <p style="font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem;"><i class="fas fa-list" style="color:var(--gold);"></i>Contents</p>
+        <div id="toc-list" style="display:flex;flex-direction:column;gap:.4rem;">
+          <span style="font-size:.75rem;color:var(--ink-faint);">Loading…</span>
+        </div>
+      </div>
+
       <!-- About India Gully Research -->
       <div style="background:#fff;border:1px solid var(--border);padding:1.5rem;">
         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border);">
@@ -1248,15 +1270,23 @@ app.get('/:id', (c) => {
       </div>
 
       <!-- Subscribe -->
-      <div style="background:var(--parch-dk);border:1px solid var(--border);padding:1.5rem;">
-        <p style="font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">Stay Updated</p>
-        <p style="font-size:.78rem;color:var(--ink-soft);margin-bottom:1rem;line-height:1.6;">Receive new insights directly to your inbox.</p>
-        <form class="ig-form" method="POST" action="/api/subscribe" style="display:flex;flex-direction:column;gap:.625rem;">
-          <input type="email" name="email" required placeholder="your@email.com"
-                 style="width:100%;border:1px solid var(--border);padding:.7rem .875rem;font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;background:#fff;color:var(--ink);"
-                 onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
-          <button type="submit" class="btn btn-dk" style="width:100%;justify-content:center;font-size:.72rem;">Subscribe</button>
-        </form>
+      <div style="background:var(--parch-dk);border:1px solid var(--border);padding:1.5rem;" id="subscribe-box">
+        <p style="font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;"><i class="fas fa-bell" style="color:var(--gold);margin-right:.35rem;font-size:.55rem;"></i>Stay Updated</p>
+        <p style="font-size:.78rem;color:var(--ink-soft);margin-bottom:1rem;line-height:1.6;">New insights from active mandates, direct to your inbox.</p>
+        <div id="sub-form-wrap">
+          <div style="display:flex;flex-direction:column;gap:.625rem;">
+            <input type="email" id="sub-email" placeholder="your@email.com"
+                   style="width:100%;box-sizing:border-box;border:1px solid var(--border);padding:.7rem .875rem;font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;background:#fff;color:var(--ink);"
+                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'"
+                   onkeydown="if(event.key==='Enter'){event.preventDefault();igSubscribe();}">
+            <button onclick="igSubscribe()" id="sub-btn" class="btn btn-dk" style="width:100%;justify-content:center;font-size:.72rem;cursor:pointer;border:none;"><i class="fas fa-paper-plane" style="margin-right:.4rem;font-size:.62rem;"></i>Subscribe</button>
+          </div>
+        </div>
+        <div id="sub-success" style="display:none;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.3);padding:.875rem;text-align:center;">
+          <i class="fas fa-check-circle" style="color:#16a34a;font-size:1.25rem;display:block;margin-bottom:.4rem;"></i>
+          <p style="font-size:.78rem;color:#15803d;font-weight:600;">Subscribed!</p>
+          <p style="font-size:.7rem;color:var(--ink-muted);margin-top:.2rem;">You'll receive our next insight.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -1290,6 +1320,109 @@ ${relatedArticles.length ? `
     </div>
   </div>
 </div>` : ''}
+
+<script>
+(function() {
+  // Phase 11D: Reading progress bar
+  var progBar = document.getElementById('article-progress');
+  if (progBar) {
+    window.addEventListener('scroll', function() {
+      var st = window.scrollY || document.documentElement.scrollTop;
+      var dh = document.documentElement.scrollHeight - window.innerHeight;
+      progBar.style.width = (dh > 0 ? Math.min(100, (st / dh) * 100) : 0) + '%';
+    }, { passive: true });
+  }
+
+  // Phase 11D: Auto-generate Table of Contents from article headings
+  var tocList = document.getElementById('toc-list');
+  var articleEl = document.querySelector('article');
+  var tocLinks = [];
+  var tocHeadings = [];
+  if (tocList && articleEl) {
+    var headings = articleEl.querySelectorAll('h2, h3');
+    if (headings.length > 0) {
+      var tocHtml = '';
+      var hIdx = 0;
+      headings.forEach(function(h) {
+        var id = 'toc-' + (hIdx++);
+        h.id = id;
+        var indent = h.tagName === 'H3' ? 'padding-left:1.25rem;' : '';
+        var size = h.tagName === 'H3' ? '.72rem' : '.78rem';
+        var weight = h.tagName === 'H3' ? '400' : '600';
+        tocHtml += '<a href="#' + id + '" data-toc="' + id + '" style="display:block;font-size:' + size + ';font-weight:' + weight + ';color:var(--ink-soft);line-height:1.45;padding:.28rem 0 .28rem .625rem;text-decoration:none;transition:all .18s;border-left:2px solid transparent;' + indent + '" onmouseover="if(!this.classList.contains(\'toc-active\')){this.style.color=\'var(--gold)\';this.style.borderLeftColor=\'rgba(184,150,12,.4)\'}" onmouseout="if(!this.classList.contains(\'toc-active\')){this.style.color=\'var(--ink-soft)\';this.style.borderLeftColor=\'transparent\'}">' + h.textContent + '</a>';
+        tocHeadings.push(h);
+      });
+      tocList.innerHTML = tocHtml;
+      tocLinks = Array.from(tocList.querySelectorAll('a[data-toc]'));
+    } else {
+      var tocBox = document.getElementById('toc-box');
+      if (tocBox) tocBox.style.display = 'none';
+    }
+  }
+
+  // Active TOC link on scroll
+  if (tocLinks.length > 0) {
+    function updateActiveToc() {
+      var scrollY = window.scrollY + 100;
+      var activeIdx = 0;
+      for (var i = 0; i < tocHeadings.length; i++) {
+        if (tocHeadings[i].getBoundingClientRect().top + window.scrollY - 120 <= scrollY) {
+          activeIdx = i;
+        }
+      }
+      tocLinks.forEach(function(link, idx) {
+        if (idx === activeIdx) {
+          link.classList.add('toc-active');
+          link.style.color = 'var(--gold)';
+          link.style.borderLeftColor = 'var(--gold)';
+          link.style.fontWeight = '700';
+        } else {
+          link.classList.remove('toc-active');
+          link.style.color = 'var(--ink-soft)';
+          link.style.borderLeftColor = 'transparent';
+          link.style.fontWeight = '';
+        }
+      });
+    }
+    window.addEventListener('scroll', updateActiveToc, { passive: true });
+    updateActiveToc();
+  }
+
+  // Phase 11D: Subscribe AJAX
+  window.igSubscribe = function() {
+    var email = (document.getElementById('sub-email') || {}).value || '';
+    email = email.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      var inp = document.getElementById('sub-email');
+      if (inp) { inp.style.borderColor = '#dc2626'; setTimeout(function(){ inp.style.borderColor = 'var(--border)'; }, 2000); }
+      return;
+    }
+    var btn = document.getElementById('sub-btn');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="margin-right:.4rem;"></i>Subscribing…'; }
+    fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, source: 'insights_sidebar', article: window.location.pathname })
+    }).then(function(r){ return r.json(); }).then(function(){
+      var wrap = document.getElementById('sub-form-wrap');
+      var suc = document.getElementById('sub-success');
+      if (wrap) wrap.style.display = 'none';
+      if (suc) suc.style.display = 'block';
+    }).catch(function(){
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane" style="margin-right:.4rem;font-size:.62rem;"></i>Subscribe'; }
+    });
+  };
+
+  // Phase 11B: Track page view
+  try {
+    fetch('/api/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'pageview', page: window.location.pathname, ref: document.referrer })
+    }).catch(function(){});
+  } catch(e) {}
+})();
+</script>
 `
 
   return c.html(layout(article.title, content, {

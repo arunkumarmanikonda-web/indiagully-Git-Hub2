@@ -539,11 +539,167 @@ app.get('/catalogue', (c) => {
     <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:2rem;color:#fff;margin:0 0 1rem;">Get a Custom Quote for Your Property</h2>
     <p style="font-size:.875rem;color:rgba(255,255,255,.55);margin:0 auto 2rem;max-width:480px;">Our team will prepare a detailed specification and GST-inclusive quote within 5 business days.</p>
     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-      <a href="/horeca#enquiry" class="btn btn-g"><i class="fas fa-paper-plane" style="margin-right:.4rem;"></i>Submit HORECA Enquiry</a>
+      <button onclick="igQuickRFQOpen()" class="btn btn-g"><i class="fas fa-paper-plane" style="margin-right:.4rem;"></i>Quick RFQ</button>
+      <a href="/horeca#enquiry" style="background:none;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.2);padding:.65rem 1.5rem;font-size:.78rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;"><i class="fas fa-list-alt" style="margin-right:.4rem;"></i>Full Enquiry Form</a>
       <a href="tel:+916282556067" style="background:none;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.2);padding:.65rem 1.5rem;font-size:.78rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;"><i class="fas fa-phone"></i>+91 62825 56067</a>
     </div>
   </div>
 </div>
+
+<!-- Phase 11C: Quick RFQ Floating Button + Slide-out Panel -->
+<button onclick="igQuickRFQOpen()" id="rfq-fab"
+        style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:500;background:var(--gold);color:#fff;border:none;padding:.75rem 1.25rem;font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:.5rem;box-shadow:0 8px 28px rgba(184,150,12,.4);transition:all .2s;"
+        onmouseover="this.style.background='#a37a08'" onmouseout="this.style.background='var(--gold)'">
+  <i class="fas fa-file-invoice" style="font-size:.7rem;"></i>Quick RFQ
+</button>
+
+<div id="rfq-overlay" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);" onclick="igQuickRFQClose()"></div>
+<div id="rfq-panel" style="position:fixed;top:0;right:-480px;width:min(480px,100vw);height:100vh;z-index:1000;background:#fff;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,.2);transition:right .35s cubic-bezier(.77,0,.175,1);">
+  <!-- Panel header -->
+  <div style="background:var(--ink);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2;">
+    <div style="display:flex;align-items:center;gap:.75rem;">
+      <div style="width:36px;height:36px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="fas fa-file-invoice" style="color:#fff;font-size:.8rem;"></i>
+      </div>
+      <div>
+        <p style="font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(184,150,12,.7);margin-bottom:.1rem;">HORECA Solutions</p>
+        <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:#fff;margin:0;">Quick RFQ</h3>
+      </div>
+    </div>
+    <button onclick="igQuickRFQClose()" style="background:none;border:1px solid rgba(255,255,255,.2);color:#fff;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='none'">
+      <i class="fas fa-times" style="font-size:.8rem;"></i>
+    </button>
+  </div>
+
+  <div style="padding:1.5rem;">
+    <!-- Success state -->
+    <div id="rfq-panel-success" style="display:none;text-align:center;padding:2rem 1rem;">
+      <div style="width:64px;height:64px;background:rgba(22,163,74,.1);border:2px solid rgba(22,163,74,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+        <i class="fas fa-check" style="color:#16a34a;font-size:1.5rem;"></i>
+      </div>
+      <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.4rem;color:var(--ink);margin-bottom:.5rem;">RFQ Submitted!</h3>
+      <p style="font-size:.82rem;color:var(--ink-muted);line-height:1.75;margin-bottom:1.25rem;">Pavan Manikonda will respond within 48 business hours with a detailed specification and quote.</p>
+      <div style="background:var(--parch);border:1px solid var(--border);padding:.875rem;margin-bottom:1.25rem;">
+        <p style="font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.25rem;">Reference</p>
+        <div id="rfq-success-ref" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:var(--gold);"></div>
+      </div>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+        <a href="/horeca/catalogue" class="btn btn-g" style="font-size:.72rem;">Continue Browsing</a>
+        <button onclick="igQuickRFQClose()" style="background:none;border:1px solid var(--border);padding:.5rem 1rem;font-size:.72rem;cursor:pointer;color:var(--ink);">Close</button>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div id="rfq-panel-form">
+      <p style="font-size:.78rem;color:var(--ink-muted);line-height:1.65;margin-bottom:1.25rem;">Submit your requirements and we'll respond with a custom specification and GST-inclusive quote within 48 hours.</p>
+      <div style="display:flex;flex-direction:column;gap:.875rem;">
+        <div>
+          <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Full Name *</label>
+          <input id="rfq-name" type="text" placeholder="Your name"
+                 style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                 onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div>
+          <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Property / Company *</label>
+          <input id="rfq-company" type="text" placeholder="Hotel / Restaurant name"
+                 style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                 onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+          <div>
+            <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Email *</label>
+            <input id="rfq-email" type="email" placeholder="your@email.com"
+                   style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+          <div>
+            <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Phone</label>
+            <input id="rfq-phone" type="tel" placeholder="+91 XXXXX XXXXX"
+                   style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+        </div>
+        <div>
+          <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Supply Categories Required</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.35rem;border:1.5px solid var(--border);padding:.75rem;background:#fafaf7;">
+            ${['FF&E','OS&E','Kitchen Equipment','Linen & Towelling','Uniforms','Guest Amenities','SPA & Wellness','Turnkey Package'].map(cat => `
+            <label style="display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--ink-soft);cursor:pointer;padding:.2rem;">
+              <input type="checkbox" name="rfq-cat" value="${cat}" style="accent-color:var(--gold);width:12px;height:12px;flex-shrink:0;">${cat}
+            </label>`).join('')}
+          </div>
+        </div>
+        <div>
+          <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Property Location *</label>
+          <input id="rfq-location" type="text" placeholder="City, State"
+                 style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                 onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div>
+          <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Additional Requirements</label>
+          <textarea id="rfq-notes" rows="3" placeholder="Brand standards, budget range, timeline, number of keys…"
+                    style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;resize:vertical;min-height:80px;transition:all .2s;"
+                    onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+        </div>
+        <div id="rfq-error" style="display:none;background:#fef2f2;border:1px solid #fecaca;padding:.625rem .875rem;font-size:.75rem;color:#dc2626;">
+          <i class="fas fa-exclamation-circle" style="margin-right:.4rem;"></i><span id="rfq-error-msg"></span>
+        </div>
+        <button type="button" onclick="igQuickRFQSubmit()" id="rfq-submit-btn"
+                style="padding:.875rem;background:var(--gold);color:#fff;border:none;cursor:pointer;font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:background .2s;width:100%;"
+                onmouseover="this.style.background='#a37a08'" onmouseout="this.style.background='var(--gold)'">
+          <i class="fas fa-paper-plane" style="font-size:.7rem;"></i>Submit RFQ to HORECA Team
+        </button>
+        <p style="font-size:.65rem;color:var(--ink-faint);text-align:center;"><i class="fas fa-lock" style="color:var(--gold);margin-right:.3rem;font-size:.55rem;"></i>Confidential · Pavan Manikonda responds within 48h</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.igQuickRFQOpen = function() {
+  document.getElementById('rfq-overlay').style.display = 'block';
+  document.getElementById('rfq-panel').style.right = '0';
+  document.body.style.overflow = 'hidden';
+};
+window.igQuickRFQClose = function() {
+  document.getElementById('rfq-overlay').style.display = 'none';
+  document.getElementById('rfq-panel').style.right = '-480px';
+  document.body.style.overflow = '';
+};
+window.igQuickRFQSubmit = function() {
+  var name     = (document.getElementById('rfq-name')||{}).value||'';
+  var company  = (document.getElementById('rfq-company')||{}).value||'';
+  var email    = (document.getElementById('rfq-email')||{}).value||'';
+  var phone    = (document.getElementById('rfq-phone')||{}).value||'';
+  var location = (document.getElementById('rfq-location')||{}).value||'';
+  var notes    = (document.getElementById('rfq-notes')||{}).value||'';
+  var errEl    = document.getElementById('rfq-error');
+  var errMsg   = document.getElementById('rfq-error-msg');
+  name = name.trim(); company = company.trim(); email = email.trim(); location = location.trim();
+  if (!name) { errMsg.textContent='Please enter your name.'; errEl.style.display='block'; return; }
+  if (!company) { errMsg.textContent='Please enter your property/company.'; errEl.style.display='block'; return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { errMsg.textContent='Please enter a valid email.'; errEl.style.display='block'; return; }
+  if (!location) { errMsg.textContent='Please enter your property location.'; errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+  var categories = [];
+  document.querySelectorAll('input[name="rfq-cat"]:checked').forEach(function(cb){ categories.push(cb.value); });
+  var btn = document.getElementById('rfq-submit-btn');
+  if (btn) { btn.disabled=true; btn.innerHTML='<i class="fas fa-circle-notch fa-spin" style="font-size:.7rem;"></i>&nbsp;Submitting…'; btn.style.background='rgba(184,150,12,.5)'; }
+  fetch('/api/horeca-enquiry', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, company, email, phone, location, categories: categories.join(', '), notes, source: 'quick_rfq_panel' })
+  }).then(function(r){ return r.json(); }).then(function(d){
+    document.getElementById('rfq-panel-form').style.display = 'none';
+    document.getElementById('rfq-panel-success').style.display = 'block';
+    var refEl = document.getElementById('rfq-success-ref');
+    if (refEl) refEl.textContent = d.ref || ('HRC-RFQ-'+Date.now());
+  }).catch(function(){
+    if (btn) { btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane" style="font-size:.7rem;"></i>&nbsp;Submit RFQ to HORECA Team'; btn.style.background='var(--gold)'; }
+    if (errMsg) errMsg.textContent='Network error. Please call +91 62825 56067.';
+    if (errEl) errEl.style.display='block';
+  });
+};
+</script>
 
 <style>
   .prod-card { background:#fff; border:1px solid var(--border); transition:box-shadow .2s,transform .2s; }
