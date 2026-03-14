@@ -10,13 +10,14 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://3e7281ee.india-gully.pages.dev |
+| **Latest Deploy** | https://c8ac771b.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
 | **Knowledge Hub** | https://india-gully.pages.dev/resources |
 | **Careers** | https://india-gully.pages.dev/careers |
 | **Investor Relations** | https://india-gully.pages.dev/invest |
+| **Pipeline Dashboard** | https://india-gully.pages.dev/pipeline |
 | **Sandbox Preview** | http://localhost:3000 |
 
 ---
@@ -96,6 +97,22 @@ All portals require credentials provisioned by the system administrator.
 | Page | URL |
 |------|-----|
 | Investor Relations | https://india-gully.pages.dev/invest |
+
+---
+
+## 🚀 Phase 17 — Insights Expansion, Pipeline Dashboard, India Map, Enhanced Author Bylines (v28)
+
+**Version: v28 | Build: 3.9 MB | Routes: 23+ all 200 OK | Deploy: https://c8ac771b.india-gully.pages.dev**  
+**Commit: 79d17c5 | Date: March 2026**
+
+### ✅ Phase 17 Deliverables
+
+| Area | What Changed |
+|------|-------------|
+| **17B — 3 New Insight Articles** | Added 3 deep-dive research articles: (1) **"Cloud Kitchens & Dark Stores: India's HORECA Infrastructure Revolution"** (HORECA, 9 min) — covers GMV, cloud kitchen formats, dark store real estate, investment models; (2) **"Hotel Brand Affiliation in India 2026: Choosing the Right Flag"** (Hospitality, 12 min) — comprehensive MC framework covering Marriott/IHG/Hyatt/domestic brands, contract terms, exit value; (3) **"Building India's Next Entertainment Destination"** (Entertainment, 10 min) — development economics, capex benchmarks, revenue models, operator structures. Insights count updated to 19. |
+| **17B — Enhanced Author Byline Card** | Article detail sidebar now shows a premium dark "India Gully Research" byline card with IG monogram, 4-stat mini-grid (8+ Yrs Advisory, 40+ Contracts, ₹1,165 Cr Pipeline, 6 Sectors), category badge, publish date and CIN registration. Replaces the plain icon author block. |
+| **17C — Pipeline Dashboard `/pipeline`** | New investor-facing pipeline dashboard at `/pipeline`. Features: (1) Hero with live pipeline indicator; (2) 5-KPI metrics bar; (3) Analytics section with SVG sector-mix donut chart (Real Estate 77.3%, Hospitality 21.1%, Debt 1.7%), deal-size distribution bar chart across 4 buckets, and stage-breakdown table; (4) Timeline view grouping all 8 mandates by stage (Active Fundraise → Due Diligence → Feasibility) with colored stage indicators and mandate cards; (5) NDA request CTA. Added to nav "More" dropdown and footer sitemap. |
+| **17D — India Map on Homepage** | Pan-India Presence section added to `/` between trust signals and "Why India Gully". SVG India outline map with animated pulsing pin for Delhi NCR (₹900 Cr, 3 mandates), static pins for Chandigarh, Kasauli/Chail, Jaipur and Mumbai. City list grid with 6 locations. Hover tooltips show mandate details. Pipeline Dashboard CTA button. |
 
 ---
 
