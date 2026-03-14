@@ -59,10 +59,18 @@ ${opts?.jsonLd ? `<script type="application/ld+json">${typeof opts.jsonLd === 's
 <link rel="dns-prefetch" href="https://hotelrajshreechandigarh.com">
 <link rel="dns-prefetch" href="https://www.welcomheritagehotels.in">
 ${opts?.heroPreload ? `<link rel="preload" as="image" href="${opts.heroPreload}" fetchpriority="high">` : ''}
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
-<script src="https://cdn.tailwindcss.com"></script>
+<!-- Non-blocking Google Fonts — media=print swap trick avoids render-blocking -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"></noscript>
+<!-- Non-blocking FontAwesome — defer icon font until after first paint -->
+<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css"></noscript>
+<!-- Tailwind CDN \u2014 defer so it does not block first paint; config script waits for load event -->
 <script>
+/* Tailwind config declared before CDN loads — tw CDN reads this on init */
+window.tailwind = window.tailwind || {};
 tailwind.config = {
   theme: {
     extend: {
@@ -79,6 +87,8 @@ tailwind.config = {
   }
 }
 </script>
+<!-- Load Tailwind CDN async — runs after config object is set above -->
+<script src="https://cdn.tailwindcss.com" defer></script>
 <!-- DARK MODE: early init — defaults to LIGHT; only switches to dark if user explicitly enabled it -->
 <script>
 (function(){

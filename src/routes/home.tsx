@@ -2,6 +2,40 @@ import { Hono } from 'hono'
 import { layout } from '../lib/layout'
 import { VERTICALS, LISTINGS, HOSPITALITY_BRANDS, RETAIL_BRANDS, ADVISORY_PARTNERS } from '../lib/constants'
 
+// ── RECENT INSIGHTS (3 latest) ───────────────────────────────────────────────
+const RECENT_INSIGHTS = [
+  {
+    id: 'retail-leasing-trends-india-2026',
+    category: 'Retail',
+    date: 'March 2026',
+    readTime: '8 min read',
+    title: 'India Retail Leasing 2026: Premiumisation, Omnichannel & the New Mall Hierarchy',
+    excerpt: 'High-street and grade-A malls are diverging sharply from secondary retail. We map the forces reshaping where brands expand, how rents are structured, and which micro-markets will lead the next leasing cycle.',
+    img: 'https://www.mapleresorts.in/images/slider/maple-resort-chail-2.jpg',
+    color: '#B8960C',
+  },
+  {
+    id: 'debt-special-situations-india-hospitality-2026',
+    category: 'Debt & Special Situations',
+    date: 'March 2026',
+    readTime: '11 min read',
+    title: 'Distressed Hospitality Assets in India 2026: Opportunity Map for Special Situations Investors',
+    excerpt: 'IBC resolution timelines are shortening, and a new class of hotel assets is emerging from NCLT. We identify the 12 most actionable distressed hospitality opportunities and the deal structures that work.',
+    img: 'https://www.mapleresorts.in/images/slider/maple-resort-chail-1.jpg',
+    color: '#7F1D1D',
+  },
+  {
+    id: 'india-realty-2026-outlook',
+    category: 'Real Estate',
+    date: 'February 2026',
+    readTime: '10 min read',
+    title: 'India Real Estate 2026: Commercial & Hospitality Convergence',
+    excerpt: 'Hybrid work patterns and experience-led tenants are rewriting Grade-A office specifications. Five structural drivers and an investment framework for developers navigating the convergence.',
+    img: 'https://hotelrajshreechandigarh.com/wp-content/uploads/2025/12/Hotel-Rajshree-5-scaled-e1765525431558.webp',
+    color: '#1A3A6B',
+  },
+]
+
 const app = new Hono()
 
 // ── HERO SLIDES ─────────────────────────────────────────────────────────────
@@ -643,6 +677,7 @@ app.get('/', (c) => {
         ${HOSPITALITY_BRANDS.map((b: any) => `
         <div class="brand-cell">
           <img src="${b.svg}" alt="${b.name}" style="width:110px;height:42px;object-fit:contain;filter:grayscale(1) opacity(.55);transition:filter .3s;"
+               loading="lazy" decoding="async"
                onmouseover="this.style.filter='grayscale(0) opacity(1)'" onmouseout="this.style.filter='grayscale(1) opacity(.55)'"
                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
           <div style="display:none;width:110px;height:42px;background:${b.color};align-items:center;justify-content:center;border-radius:2px;">
@@ -684,6 +719,59 @@ app.get('/', (c) => {
   </div>
 </div>
 
+<!-- ══ RECENT INSIGHTS ═════════════════════════════════════════════════ -->
+<div class="sec-wh" style="padding-top:5.5rem;padding-bottom:5.5rem;border-top:1px solid var(--border);">
+  <div class="wrap">
+
+    <!-- Section header -->
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <div class="gr"></div>
+        <p class="eyebrow" style="margin-bottom:.75rem;">Knowledge & Research</p>
+        <h2 class="h2" style="margin-bottom:.5rem;">Recent Insights</h2>
+        <p style="font-size:.88rem;color:var(--ink-muted);max-width:480px;line-height:1.7;">Advisory intelligence from India Gully's active deal pipeline — sector analysis, regulatory briefings, and market forecasts.</p>
+      </div>
+      <a href="/insights" class="btn btn-dko" style="flex-shrink:0;"><i class="fas fa-book-open" style="margin-right:.5rem;font-size:.7rem;"></i>All Articles</a>
+    </div>
+
+    <!-- 3-column article cards -->
+    <div class="insights-strip-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem;">
+      ${RECENT_INSIGHTS.map((a, idx) => `
+      <article class="ins-home-card reveal" style="border:1px solid var(--border);overflow:hidden;transition:box-shadow .25s,transform .25s;" onmouseover="this.style.boxShadow='0 12px 40px rgba(0,0,0,.12)';this.style.transform='translateY(-3px)'" onmouseout="this.style.boxShadow='';this.style.transform=''">
+        <!-- Thumbnail -->
+        <a href="/insights/${a.id}" style="display:block;position:relative;height:168px;overflow:hidden;">
+          <img src="${a.img}" alt="${a.title}" loading="lazy"
+               style="width:100%;height:100%;object-fit:cover;transition:transform 5s ease;"
+               onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55) 0%,transparent 55%);"></div>
+          <span style="position:absolute;top:.875rem;left:.875rem;background:${a.color};color:#fff;font-size:.52rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.22rem .65rem;">${a.category}</span>
+        </a>
+        <!-- Body -->
+        <div style="padding:1.5rem;">
+          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem;">
+            <span style="font-size:.62rem;color:var(--ink-muted);">${a.date}</span>
+            <span style="width:3px;height:3px;border-radius:50%;background:var(--border-dark);display:inline-block;"></span>
+            <span style="font-size:.62rem;color:var(--ink-muted);"><i class="fas fa-clock" style="margin-right:.25rem;font-size:.55rem;"></i>${a.readTime}</span>
+          </div>
+          <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.08rem;color:var(--ink);line-height:1.4;margin-bottom:.75rem;">
+            <a href="/insights/${a.id}" style="text-decoration:none;color:inherit;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">${a.title}</a>
+          </h3>
+          <p style="font-size:.8rem;color:var(--ink-soft);line-height:1.75;margin-bottom:1.25rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${a.excerpt}</p>
+          <a href="/insights/${a.id}" style="font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${a.color};text-decoration:none;display:inline-flex;align-items:center;gap:.35rem;transition:gap .2s;" onmouseover="this.style.gap='.55rem'" onmouseout="this.style.gap='.35rem'">
+            Read Article <i class="fas fa-arrow-right" style="font-size:.58rem;"></i>
+          </a>
+        </div>
+      </article>`).join('')}
+    </div>
+
+    <style>
+      @media(max-width:900px){.insights-strip-grid{grid-template-columns:repeat(2,1fr)!important;}}
+      @media(max-width:560px){.insights-strip-grid{grid-template-columns:1fr!important;}}
+    </style>
+
+  </div>
+</div>
+
 <!-- ══ ADVISORY PARTNERS ══════════════════════════════════════════════ -->
 <div class="sec-pd" style="padding-top:7rem;padding-bottom:7rem;">
   <div class="wrap">
@@ -702,6 +790,7 @@ app.get('/', (c) => {
         <div class="partner-card reveal">
           <div style="height:52px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
             <img src="${p.logo}" alt="${p.name}" style="max-width:140px;max-height:42px;width:auto;height:auto;object-fit:contain;"
+                 loading="lazy" decoding="async"
                  onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex'">
             <div style="display:none;align-items:center;justify-content:center;width:130px;height:42px;background:${p.color};border-radius:2px;">
               <span style="font-size:.78rem;font-weight:800;letter-spacing:.06em;color:${p.textColor || '#fff'};">${p.abbr}</span>
@@ -719,6 +808,7 @@ app.get('/', (c) => {
       <div class="partner-card" style="padding:1.75rem 3rem;">
         <div style="height:52px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
           <img src="${p.logo}" alt="${p.name}" style="max-width:150px;max-height:46px;width:auto;height:auto;object-fit:contain;"
+               loading="lazy" decoding="async"
                onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='flex'">
           <div style="display:none;align-items:center;justify-content:center;width:130px;height:42px;background:${p.color};border-radius:2px;">
             <span style="font-size:.78rem;font-weight:800;letter-spacing:.06em;color:${p.textColor || '#fff'};">${p.abbr}</span>

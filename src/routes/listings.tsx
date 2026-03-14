@@ -35,14 +35,19 @@ app.get('/', (c) => {
       </div>
       <h1 class="h1" style="margin-bottom:1.75rem;">Active<br><em style="font-style:italic;color:var(--gold);">Mandates</em></h1>
       <p class="lead-lt" style="max-width:620px;margin-bottom:3rem;">Institutional-grade investment mandates across India's premier asset classes. All opportunities are exclusive to India Gully's advisory pipeline and strictly subject to NDA. Information Memoranda available to qualified investors, family offices and institutional buyers upon request.</p>
-      <!-- Filter buttons -->
-      <div style="display:flex;flex-wrap:wrap;gap:.625rem;">
+      <!-- Filter buttons + Saved bookmarks toggle -->
+      <div style="display:flex;flex-wrap:wrap;gap:.625rem;align-items:center;">
         ${['All Mandates','Hospitality','Real Estate','Heritage Hospitality','Mixed-Use'].map((f,i) => `
         <button onclick="filterMandates('${f}')" data-filter="${f}" class="filter-btn${i===0?' active':''}"
                 style="padding:.5rem 1.2rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:1px solid ${i===0?'var(--gold)':'rgba(255,255,255,.15)'};background:${i===0?'var(--gold)':'rgba(255,255,255,.03)'};color:${i===0?'#fff':'rgba(255,255,255,.45)'};cursor:pointer;transition:all .22s;backdrop-filter:blur(4px);"
                 onmouseover="if(this.dataset.filter!=='All Mandates'&&!this.classList.contains('active')){this.style.borderColor='rgba(184,150,12,.5)';this.style.color='rgba(255,255,255,.8)'}"
                 onmouseout="if(!this.classList.contains('active')){this.style.borderColor='rgba(255,255,255,.15)';this.style.color='rgba(255,255,255,.45)'}">${f}</button>
         `).join('')}
+        <!-- Saved mandates toggle -->
+        <button id="savedToggleBtn" onclick="igToggleSaved()" title="Show saved mandates"
+                style="padding:.5rem 1.1rem;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.03);color:rgba(255,255,255,.45);cursor:pointer;transition:all .22s;display:flex;align-items:center;gap:.4rem;">
+          <i class="fas fa-bookmark" style="font-size:.6rem;"></i>Saved (<span id="savedBadge">0</span>)
+        </button>
       </div>
     </div>
   </div>
@@ -179,6 +184,12 @@ app.get('/', (c) => {
               <i class="fas fa-file-signature" style="font-size:.6rem;"></i>View Mandate
             </span>
             <div style="display:flex;align-items:center;gap:.5rem;">
+              <!-- Bookmark / Save button -->
+              <button class="ig-save-btn" data-id="${l.id}" data-title="${l.title.replace(/"/g,'&quot;')}" onclick="event.preventDefault();event.stopPropagation();igSaveToggle(this)"
+                title="Save this mandate"
+                style="width:28px;height:28px;background:rgba(184,150,12,.08);border:1px solid rgba(184,150,12,.25);color:rgba(184,150,12,.55);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;">
+                <i class="fas fa-bookmark" style="font-size:.58rem;"></i>
+              </button>
               <a href="https://wa.me/918988988988?text=${encodeURIComponent('Hi, I am interested in ' + l.title + ' — please share details / Information Memorandum.')}" target="_blank" rel="noopener" onclick="event.stopPropagation()"
                 style="display:inline-flex;align-items:center;gap:.3rem;font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#25D366;color:#fff;padding:.28rem .65rem;text-decoration:none;transition:opacity .2s;"
                 onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
@@ -212,10 +223,85 @@ app.get('/', (c) => {
 
 <script>
 var _currentSector = 'All Mandates';
+var _showingOnlySaved = false;
+
+/* ── BOOKMARK / SAVE ────────────────────────────────────────────────── */
+var IG_SAVED_KEY = 'ig_saved_mandates';
+function igGetSaved(){ try{ return JSON.parse(localStorage.getItem(IG_SAVED_KEY)||'[]'); }catch(e){ return []; } }
+function igSetSaved(arr){ localStorage.setItem(IG_SAVED_KEY, JSON.stringify(arr)); }
+
+function igSaveToggle(btn){
+  var id    = btn.getAttribute('data-id');
+  var title = btn.getAttribute('data-title');
+  var saved = igGetSaved();
+  var idx   = saved.indexOf(id);
+  if(idx === -1){
+    saved.push(id);
+    btn.style.background = 'var(--gold)';
+    btn.style.borderColor = 'var(--gold)';
+    btn.style.color = '#fff';
+    btn.querySelector('i').className = 'fas fa-bookmark';
+    if(window.igToast) igToast('\u2665 Saved: ' + title, 'success');
+  } else {
+    saved.splice(idx, 1);
+    btn.style.background = 'rgba(184,150,12,.08)';
+    btn.style.borderColor = 'rgba(184,150,12,.25)';
+    btn.style.color = 'rgba(184,150,12,.55)';
+    if(window.igToast) igToast('Removed: ' + title, 'info');
+  }
+  igSetSaved(saved);
+  igUpdateSavedBadge();
+}
+
+function igUpdateSavedBadge(){
+  var saved  = igGetSaved();
+  var badge  = document.getElementById('savedBadge');
+  var togBtn = document.getElementById('savedToggleBtn');
+  if(badge) badge.textContent = String(saved.length);
+  if(togBtn){
+    togBtn.style.borderColor  = saved.length ? 'var(--gold)' : 'rgba(255,255,255,.15)';
+    togBtn.style.color        = saved.length ? 'var(--gold)' : 'rgba(255,255,255,.45)';
+    togBtn.style.background   = saved.length ? 'rgba(184,150,12,.1)' : 'rgba(255,255,255,.03)';
+  }
+  /* update individual card buttons */
+  document.querySelectorAll('.ig-save-btn').forEach(function(b){
+    var isSaved = saved.indexOf(b.getAttribute('data-id')) !== -1;
+    b.style.background   = isSaved ? 'var(--gold)'              : 'rgba(184,150,12,.08)';
+    b.style.borderColor  = isSaved ? 'var(--gold)'              : 'rgba(184,150,12,.25)';
+    b.style.color        = isSaved ? '#fff'                     : 'rgba(184,150,12,.55)';
+  });
+}
+
+function igToggleSaved(){
+  _showingOnlySaved = !_showingOnlySaved;
+  var saved  = igGetSaved();
+  var togBtn = document.getElementById('savedToggleBtn');
+  if(togBtn){
+    togBtn.style.background  = _showingOnlySaved ? 'var(--gold)' : (saved.length ? 'rgba(184,150,12,.1)' : 'rgba(255,255,255,.03)');
+    togBtn.style.color       = _showingOnlySaved ? '#fff'        : (saved.length ? 'var(--gold)' : 'rgba(255,255,255,.45)');
+  }
+  applyFilters();
+  if(_showingOnlySaved && saved.length === 0 && window.igToast){
+    igToast('No saved mandates yet \u2014 click \u2665 on any card to save.', 'info');
+  }
+}
+
+function applyFilters(){
+  var saved = igGetSaved();
+  document.querySelectorAll('.mandate-card').forEach(function(card){
+    var sectorMatch = (_currentSector === 'All Mandates' || card.dataset.sector === _currentSector);
+    var savedMatch  = !_showingOnlySaved || saved.indexOf(card.getAttribute('href')&&card.getAttribute('href').split('/').pop()) !== -1
+      || saved.indexOf(card.querySelector('.ig-save-btn')&&card.querySelector('.ig-save-btn').getAttribute('data-id')) !== -1;
+    card.style.display = (sectorMatch && savedMatch) ? 'block' : 'none';
+  });
+}
+
+/* initialise badge on page load */
+document.addEventListener('DOMContentLoaded', igUpdateSavedBadge);
+if(document.readyState !== 'loading') igUpdateSavedBadge();
 
 function filterMandates(sector) {
   _currentSector = sector;
-  var cards = document.querySelectorAll('.mandate-card');
   var btns  = document.querySelectorAll('.filter-btn');
   btns.forEach(function(b) {
     var isActive = b.dataset.filter === sector;
@@ -224,14 +310,11 @@ function filterMandates(sector) {
     b.style.background  = isActive ? 'var(--gold)' : 'rgba(255,255,255,.03)';
     b.style.color       = isActive ? '#fff' : 'rgba(255,255,255,.45)';
   });
-  var visible = 0;
-  cards.forEach(function(card) {
-    var match = sector === 'All Mandates' || card.dataset.sector === sector;
-    card.style.display = match ? 'block' : 'none';
-    if (match) visible++;
-  });
+  applyFilters();
+  var visible = document.querySelectorAll('.mandate-card[style*="block"]').length
+             || document.querySelectorAll('.mandate-card:not([style*="none"])').length;
   var vc = document.getElementById('visibleCount');
-  if (vc) vc.textContent = visible;
+  if (vc) vc.textContent = String(visible);
 }
 
 function sortMandates(order) {

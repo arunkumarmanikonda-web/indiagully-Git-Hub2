@@ -590,114 +590,253 @@ app.get('/catalogue', (c) => {
       </div>
     </div>
 
-    <!-- Form -->
+    <!-- Form — 3-step wizard -->
     <div id="rfq-panel-form">
-      <p style="font-size:.78rem;color:var(--ink-muted);line-height:1.65;margin-bottom:1.25rem;">Submit your requirements and we'll respond with a custom specification and GST-inclusive quote within 48 hours.</p>
-      <div style="display:flex;flex-direction:column;gap:.875rem;">
-        <div>
-          <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Full Name *</label>
-          <input id="rfq-name" type="text" placeholder="Your name"
-                 style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
-                 onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
-        </div>
-        <div>
-          <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Property / Company *</label>
-          <input id="rfq-company" type="text" placeholder="Hotel / Restaurant name"
-                 style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
-                 onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
-          <div>
-            <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Email *</label>
-            <input id="rfq-email" type="email" placeholder="your@email.com"
-                   style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
-                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
-          </div>
-          <div>
-            <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Phone</label>
-            <input id="rfq-phone" type="tel" placeholder="+91 XXXXX XXXXX"
-                   style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
-                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
-          </div>
-        </div>
-        <div>
-          <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Supply Categories Required</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.35rem;border:1.5px solid var(--border);padding:.75rem;background:#fafaf7;">
-            ${['FF&E','OS&E','Kitchen Equipment','Linen & Towelling','Uniforms','Guest Amenities','SPA & Wellness','Turnkey Package'].map(cat => `
-            <label style="display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--ink-soft);cursor:pointer;padding:.2rem;">
-              <input type="checkbox" name="rfq-cat" value="${cat}" style="accent-color:var(--gold);width:12px;height:12px;flex-shrink:0;">${cat}
-            </label>`).join('')}
-          </div>
-        </div>
-        <div>
-          <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Property Location *</label>
-          <input id="rfq-location" type="text" placeholder="City, State"
-                 style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
-                 onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
-        </div>
-        <div>
-          <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Additional Requirements</label>
-          <textarea id="rfq-notes" rows="3" placeholder="Brand standards, budget range, timeline, number of keys…"
-                    style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;resize:vertical;min-height:80px;transition:all .2s;"
-                    onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'"></textarea>
-        </div>
-        <div id="rfq-error" style="display:none;background:#fef2f2;border:1px solid #fecaca;padding:.625rem .875rem;font-size:.75rem;color:#dc2626;">
-          <i class="fas fa-exclamation-circle" style="margin-right:.4rem;"></i><span id="rfq-error-msg"></span>
-        </div>
-        <button type="button" onclick="igQuickRFQSubmit()" id="rfq-submit-btn"
-                style="padding:.875rem;background:var(--gold);color:#fff;border:none;cursor:pointer;font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:background .2s;width:100%;"
-                onmouseover="this.style.background='#a37a08'" onmouseout="this.style.background='var(--gold)'">
-          <i class="fas fa-paper-plane" style="font-size:.7rem;"></i>Submit RFQ to HORECA Team
-        </button>
-        <p style="font-size:.65rem;color:var(--ink-faint);text-align:center;"><i class="fas fa-lock" style="color:var(--gold);margin-right:.3rem;font-size:.55rem;"></i>Confidential · Pavan Manikonda responds within 48h</p>
+
+      <!-- Step indicator -->
+      <div style="display:flex;align-items:center;gap:0;margin-bottom:1.5rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border);">
+        ${[1,2,3].map(n => `
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;position:relative;">
+          <div id="rfq-step-dot-${n}" style="width:30px;height:30px;border-radius:50%;background:${n===1?'var(--gold)':'var(--border)'};border:2px solid ${n===1?'var(--gold)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;color:${n===1?'#fff':'var(--ink-muted)'};transition:all .3s;z-index:1;">${n}</div>
+          <span id="rfq-step-lbl-${n}" style="font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${n===1?'var(--gold)':'var(--ink-faint)'};transition:color .3s;">${n===1?'Type':n===2?'Details':'Contact'}</span>
+          ${n<3?`<div id="rfq-connector-${n}" style="position:absolute;top:15px;left:calc(50% + 15px);right:calc(-50% + 15px);height:2px;background:var(--border);transition:background .3s;"></div>`:''}
+        </div>`).join('')}
       </div>
+
+      <!-- STEP 1: Property type + supply categories -->
+      <div id="rfq-step-1">
+        <p style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">Property Type</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1.25rem;">
+          ${['Hotel (New Opening)','Hotel (Refurbishment)','Restaurant / F&B','Resort / Boutique','Hospital / Institutional','Other'].map(t => `
+          <label style="display:flex;align-items:center;gap:.5rem;border:1.5px solid var(--border);padding:.6rem .75rem;cursor:pointer;font-size:.75rem;color:var(--ink-soft);transition:all .2s;" class="rfq-type-opt" onclick="igRFQSelectType(this,'${t.replace(/'/g,"\\x27")}')">
+            <input type="radio" name="rfq-prop-type" value="${t}" style="accent-color:var(--gold);flex-shrink:0;"> ${t}
+          </label>`).join('')}
+        </div>
+        <p style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.75rem;">Supply Categories Needed</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.35rem;border:1.5px solid var(--border);padding:.75rem;background:#fafaf7;">
+          ${['FF&E','OS&E','Kitchen Equipment','Linen & Towelling','Uniforms','Guest Amenities','SPA & Wellness','Turnkey Package'].map(cat => `
+          <label style="display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--ink-soft);cursor:pointer;padding:.2rem;">
+            <input type="checkbox" name="rfq-cat" value="${cat}" style="accent-color:var(--gold);width:12px;height:12px;flex-shrink:0;"> ${cat}
+          </label>`).join('')}
+        </div>
+        <div id="rfq-err-1" style="display:none;margin-top:.75rem;background:#fef2f2;border:1px solid #fecaca;padding:.5rem .75rem;font-size:.72rem;color:#dc2626;"></div>
+        <button onclick="igRFQNextStep(1)" style="width:100%;margin-top:1.25rem;padding:.8rem;background:var(--gold);color:#fff;border:none;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;">
+          Next: Property Details <i class="fas fa-arrow-right" style="font-size:.65rem;"></i>
+        </button>
+      </div>
+
+      <!-- STEP 2: Property details -->
+      <div id="rfq-step-2" style="display:none;">
+        <div style="display:flex;flex-direction:column;gap:.875rem;">
+          <div>
+            <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Property / Company Name *</label>
+            <input id="rfq-company" type="text" placeholder="Hotel / Restaurant name"
+                   style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+          <div>
+            <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Property Location *</label>
+            <input id="rfq-location" type="text" placeholder="City, State"
+                   style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+          <div>
+            <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Rooms / Covers</label>
+            <input id="rfq-rooms" type="text" placeholder="e.g. 80 rooms / 120 covers"
+                   style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+          <div>
+            <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Approx. Budget Range</label>
+            <select id="rfq-budget"
+                    style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;background:#fff;transition:all .2s;">
+              <option value="">Select range (optional)</option>
+              <option>Under \u20b925 Lakhs</option>
+              <option>\u20b925\u201375 Lakhs</option>
+              <option>\u20b975 Lakhs \u2013 \u20b91 Cr</option>
+              <option>\u20b91 Cr \u2013 \u20b93 Cr</option>
+              <option>\u20b93 Cr+</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Additional Notes</label>
+            <textarea id="rfq-notes" rows="3" placeholder="Brand standards, timeline, special requirements\u2026"
+                      style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;resize:vertical;min-height:80px;transition:all .2s;"
+                      onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+          </div>
+        </div>
+        <div id="rfq-err-2" style="display:none;margin-top:.75rem;background:#fef2f2;border:1px solid #fecaca;padding:.5rem .75rem;font-size:.72rem;color:#dc2626;"></div>
+        <div style="display:flex;gap:.75rem;margin-top:1.25rem;">
+          <button onclick="igRFQGoStep(1)" style="flex:0 0 auto;padding:.8rem 1.1rem;background:none;border:1.5px solid var(--border);color:var(--ink-muted);font-size:.75rem;cursor:pointer;">
+            <i class="fas fa-arrow-left" style="font-size:.62rem;"></i>
+          </button>
+          <button onclick="igRFQNextStep(2)" style="flex:1;padding:.8rem;background:var(--gold);color:#fff;border:none;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;">
+            Next: Your Contact <i class="fas fa-arrow-right" style="font-size:.65rem;"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Contact + submit -->
+      <div id="rfq-step-3" style="display:none;">
+        <div style="display:flex;flex-direction:column;gap:.875rem;">
+          <div>
+            <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Full Name *</label>
+            <input id="rfq-name" type="text" placeholder="Your full name"
+                   style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                   onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+            <div>
+              <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">Email *</label>
+              <input id="rfq-email" type="email" placeholder="your@email.com"
+                     style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                     onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+            </div>
+            <div>
+              <label style="display:block;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.3rem;">WhatsApp / Phone *</label>
+              <input id="rfq-phone" type="tel" placeholder="+91 XXXXX XXXXX"
+                     style="width:100%;box-sizing:border-box;border:1.5px solid var(--border);padding:.65rem .875rem;font-size:.875rem;font-family:'DM Sans',sans-serif;color:var(--ink);outline:none;transition:all .2s;"
+                     onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+            </div>
+          </div>
+          <div id="rfq-summary-box" style="background:var(--parch);border:1px solid var(--border);padding:.875rem;font-size:.73rem;color:var(--ink-soft);line-height:1.75;display:none;">
+            <p style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:.4rem;">RFQ Summary</p>
+            <div id="rfq-summary-text"></div>
+          </div>
+        </div>
+        <div id="rfq-err-3" style="display:none;margin-top:.75rem;background:#fef2f2;border:1px solid #fecaca;padding:.5rem .75rem;font-size:.72rem;color:#dc2626;"></div>
+        <div style="display:flex;gap:.75rem;margin-top:1.25rem;">
+          <button onclick="igRFQGoStep(2)" style="flex:0 0 auto;padding:.8rem 1.1rem;background:none;border:1.5px solid var(--border);color:var(--ink-muted);font-size:.75rem;cursor:pointer;">
+            <i class="fas fa-arrow-left" style="font-size:.62rem;"></i>
+          </button>
+          <button onclick="igQuickRFQSubmit()" id="rfq-submit-btn" style="flex:1;padding:.8rem;background:var(--gold);color:#fff;border:none;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;">
+            <i class="fas fa-paper-plane" style="font-size:.7rem;"></i>Submit RFQ
+          </button>
+        </div>
+        <div style="margin-top:.875rem;padding-top:.875rem;border-top:1px solid var(--border);text-align:center;">
+          <p style="font-size:.62rem;color:var(--ink-muted);margin-bottom:.5rem;">Prefer WhatsApp?</p>
+          <button onclick="igRFQWhatsApp()" style="width:100%;padding:.65rem;background:#25D366;color:#fff;border:none;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.4rem;">
+            <i class="fab fa-whatsapp" style="font-size:.8rem;"></i>Send via WhatsApp
+          </button>
+        </div>
+        <p style="font-size:.62rem;color:var(--ink-faint);text-align:center;margin-top:.75rem;"><i class="fas fa-lock" style="color:var(--gold);margin-right:.3rem;font-size:.52rem;"></i>Confidential \u00b7 Pavan Manikonda responds within 48h</p>
+      </div>
+
     </div>
   </div>
 </div>
 
 <script>
+var _rfqStep = 1;
+var _rfqType = '';
+var _rfqCats = [];
+
 window.igQuickRFQOpen = function() {
   document.getElementById('rfq-overlay').style.display = 'block';
   document.getElementById('rfq-panel').style.right = '0';
   document.body.style.overflow = 'hidden';
+  igRFQGoStep(1);
+  _rfqType = ''; _rfqCats = [];
+  ['rfq-name','rfq-email','rfq-phone','rfq-company','rfq-location','rfq-rooms','rfq-notes'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.value = '';
+  });
+  var bd = document.getElementById('rfq-budget'); if(bd) bd.selectedIndex = 0;
+  document.querySelectorAll('.rfq-type-opt').forEach(function(o){ o.style.borderColor='var(--border)'; o.style.background=''; });
+  document.querySelectorAll('input[name="rfq-cat"]').forEach(function(cb){ cb.checked=false; });
+  var pf = document.getElementById('rfq-panel-form'); if(pf) pf.style.display='block';
+  var ps = document.getElementById('rfq-panel-success'); if(ps) ps.style.display='none';
 };
 window.igQuickRFQClose = function() {
   document.getElementById('rfq-overlay').style.display = 'none';
   document.getElementById('rfq-panel').style.right = '-480px';
   document.body.style.overflow = '';
 };
-window.igQuickRFQSubmit = function() {
-  var name     = (document.getElementById('rfq-name')||{}).value||'';
-  var company  = (document.getElementById('rfq-company')||{}).value||'';
-  var email    = (document.getElementById('rfq-email')||{}).value||'';
-  var phone    = (document.getElementById('rfq-phone')||{}).value||'';
-  var location = (document.getElementById('rfq-location')||{}).value||'';
-  var notes    = (document.getElementById('rfq-notes')||{}).value||'';
-  var errEl    = document.getElementById('rfq-error');
-  var errMsg   = document.getElementById('rfq-error-msg');
-  name = name.trim(); company = company.trim(); email = email.trim(); location = location.trim();
-  if (!name) { errMsg.textContent='Please enter your name.'; errEl.style.display='block'; return; }
-  if (!company) { errMsg.textContent='Please enter your property/company.'; errEl.style.display='block'; return; }
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { errMsg.textContent='Please enter a valid email.'; errEl.style.display='block'; return; }
-  if (!location) { errMsg.textContent='Please enter your property location.'; errEl.style.display='block'; return; }
-  errEl.style.display = 'none';
-  var categories = [];
-  document.querySelectorAll('input[name="rfq-cat"]:checked').forEach(function(cb){ categories.push(cb.value); });
-  var btn = document.getElementById('rfq-submit-btn');
-  if (btn) { btn.disabled=true; btn.innerHTML='<i class="fas fa-circle-notch fa-spin" style="font-size:.7rem;"></i>&nbsp;Submitting…'; btn.style.background='rgba(184,150,12,.5)'; }
-  fetch('/api/horeca-enquiry', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, company, email, phone, location, categories: categories.join(', '), notes, source: 'quick_rfq_panel' })
+
+function igRFQSelectType(el, type){
+  _rfqType = type;
+  document.querySelectorAll('.rfq-type-opt').forEach(function(o){
+    o.style.borderColor = o===el ? 'var(--gold)' : 'var(--border)';
+    o.style.background  = o===el ? 'rgba(184,150,12,.06)' : '';
+  });
+}
+
+function igRFQGoStep(n){
+  _rfqStep = n;
+  [1,2,3].forEach(function(s){
+    var stepEl = document.getElementById('rfq-step-'+s);
+    if(stepEl) stepEl.style.display = s===n ? 'block' : 'none';
+    var dot  = document.getElementById('rfq-step-dot-'+s);
+    var lbl  = document.getElementById('rfq-step-lbl-'+s);
+    var done = s < n; var active = s===n;
+    if(dot){
+      dot.style.background  = active?'var(--gold)':done?'#16a34a':'var(--border)';
+      dot.style.borderColor = active?'var(--gold)':done?'#16a34a':'var(--border)';
+      dot.style.color       = (active||done)?'#fff':'var(--ink-muted)';
+      dot.innerHTML = done?'<i class="fas fa-check" style="font-size:.5rem;"></i>':String(s);
+    }
+    if(lbl) lbl.style.color = active?'var(--gold)':done?'#16a34a':'var(--ink-faint)';
+    if(s<3){ var conn=document.getElementById('rfq-connector-'+s); if(conn) conn.style.background=s<n?'#16a34a':'var(--border)'; }
+  });
+}
+
+function igRFQNextStep(from){
+  if(from===1){
+    _rfqCats = Array.from(document.querySelectorAll('input[name="rfq-cat"]:checked')).map(function(c){ return c.value; });
+    var e1 = document.getElementById('rfq-err-1');
+    if(!_rfqType){ e1.style.display='block'; e1.textContent='Please select a property type.'; return; }
+    if(!_rfqCats.length){ e1.style.display='block'; e1.textContent='Please select at least one supply category.'; return; }
+    e1.style.display='none'; igRFQGoStep(2);
+  } else if(from===2){
+    var company  = (document.getElementById('rfq-company')||{value:''}).value.trim();
+    var location = (document.getElementById('rfq-location')||{value:''}).value.trim();
+    var e2 = document.getElementById('rfq-err-2');
+    if(!company){ e2.style.display='block'; e2.textContent='Please enter the property/company name.'; return; }
+    if(!location){ e2.style.display='block'; e2.textContent='Please enter the property location.'; return; }
+    e2.style.display='none';
+    var budget=(document.getElementById('rfq-budget')||{value:''}).value;
+    var rooms=(document.getElementById('rfq-rooms')||{value:''}).value;
+    var sb=document.getElementById('rfq-summary-box'), st=document.getElementById('rfq-summary-text');
+    if(st) st.innerHTML='<b>Type:</b> '+_rfqType+'<br><b>Categories:</b> '+_rfqCats.join(', ')+'<br><b>Property:</b> '+company+', '+location+(rooms?'<br><b>Rooms/Covers:</b> '+rooms:'')+(budget?'<br><b>Budget:</b> '+budget:'');
+    if(sb) sb.style.display='block';
+    igRFQGoStep(3);
+  }
+}
+
+window.igRFQWhatsApp = function(){
+  var name=( document.getElementById('rfq-name')||{value:''}).value.trim();
+  var company=(document.getElementById('rfq-company')||{value:''}).value.trim();
+  var loc=(document.getElementById('rfq-location')||{value:''}).value.trim();
+  var msg='Hi Pavan, HORECA Quick RFQ\nType: '+_rfqType+'\nCategories: '+_rfqCats.join(', ')+(company?'\nProperty: '+company+(loc?', '+loc:''):'')+(name?'\nContact: '+name:'');
+  window.open('https://wa.me/916282556067?text='+encodeURIComponent(msg),'_blank');
+};
+
+window.igQuickRFQSubmit = function(){
+  var name=(document.getElementById('rfq-name')||{value:''}).value.trim();
+  var email=(document.getElementById('rfq-email')||{value:''}).value.trim();
+  var phone=(document.getElementById('rfq-phone')||{value:''}).value.trim();
+  var company=(document.getElementById('rfq-company')||{value:''}).value.trim();
+  var location=(document.getElementById('rfq-location')||{value:''}).value.trim();
+  var notes=(document.getElementById('rfq-notes')||{value:''}).value.trim();
+  var budget=(document.getElementById('rfq-budget')||{value:''}).value;
+  var rooms=(document.getElementById('rfq-rooms')||{value:''}).value.trim();
+  var e3=document.getElementById('rfq-err-3');
+  if(!name){ e3.style.display='block'; e3.textContent='Please enter your name.'; return; }
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ e3.style.display='block'; e3.textContent='Please enter a valid email.'; return; }
+  if(!phone){ e3.style.display='block'; e3.textContent='Please enter your WhatsApp/phone number.'; return; }
+  e3.style.display='none';
+  var btn=document.getElementById('rfq-submit-btn');
+  if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-circle-notch fa-spin" style="font-size:.7rem;"></i>\u00a0Submitting\u2026'; btn.style.background='rgba(184,150,12,.5)'; }
+  fetch('/api/horeca-enquiry',{
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({name,company,email,phone,location,categories:_rfqCats.join(', '),propType:_rfqType,budget,rooms,notes,source:'quick_rfq_wizard'})
   }).then(function(r){ return r.json(); }).then(function(d){
-    document.getElementById('rfq-panel-form').style.display = 'none';
-    document.getElementById('rfq-panel-success').style.display = 'block';
-    var refEl = document.getElementById('rfq-success-ref');
-    if (refEl) refEl.textContent = d.ref || ('HRC-RFQ-'+Date.now());
+    document.getElementById('rfq-panel-form').style.display='none';
+    var succ=document.getElementById('rfq-panel-success'); if(succ) succ.style.display='block';
+    var refEl=document.getElementById('rfq-success-ref'); if(refEl) refEl.textContent=d.ref||('HRC-RFQ-'+Date.now());
+    if(window.igToast) igToast('RFQ submitted \u2714 Reference: '+(d.ref||''),'success');
   }).catch(function(){
-    if (btn) { btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane" style="font-size:.7rem;"></i>&nbsp;Submit RFQ to HORECA Team'; btn.style.background='var(--gold)'; }
-    if (errMsg) errMsg.textContent='Network error. Please call +91 62825 56067.';
-    if (errEl) errEl.style.display='block';
+    if(btn){ btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane" style="font-size:.7rem;"></i>\u00a0Submit RFQ'; btn.style.background='var(--gold)'; }
+    if(e3){ e3.style.display='block'; e3.textContent='Network error. Please call +91 62825 56067 or use WhatsApp.'; }
   });
 };
 </script>

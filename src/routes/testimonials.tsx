@@ -13,6 +13,7 @@ const TESTIMONIALS = [
     emoji: '🏨',
     location: 'Chandigarh',
     outcome: 'Acquired 41-key boutique hotel at ₹70 Cr',
+    stars: 5,
   },
   {
     id: 't2',
@@ -23,6 +24,7 @@ const TESTIMONIALS = [
     emoji: '🏔️',
     location: 'Kasauli, HP',
     outcome: 'Heritage resort mandate — actively marketing',
+    stars: 5,
   },
   {
     id: 't3',
@@ -33,6 +35,7 @@ const TESTIMONIALS = [
     emoji: '🍽️',
     location: 'Chail, HP',
     outcome: '14% cost saving vs budgeted procurement',
+    stars: 5,
   },
   {
     id: 't4',
@@ -43,6 +46,7 @@ const TESTIMONIALS = [
     emoji: '🎡',
     location: 'Noida, NCR',
     outcome: 'Active mandate — ₹2,100 Cr pipeline',
+    stars: 5,
   },
   {
     id: 't5',
@@ -53,6 +57,7 @@ const TESTIMONIALS = [
     emoji: '⚖️',
     location: 'Delhi NCR',
     outcome: 'Completed resolution — ₹120 Cr asset',
+    stars: 5,
   },
   {
     id: 't6',
@@ -63,6 +68,7 @@ const TESTIMONIALS = [
     emoji: '🛍️',
     location: 'Gurugram, NCR',
     outcome: '22% rental premium vs benchmark',
+    stars: 5,
   },
   {
     id: 't7',
@@ -73,6 +79,7 @@ const TESTIMONIALS = [
     emoji: '🏨',
     location: 'Chandigarh',
     outcome: 'Brand on-boarded, pre-opening Q2 2026',
+    stars: 5,
   },
   {
     id: 't8',
@@ -83,17 +90,24 @@ const TESTIMONIALS = [
     emoji: '🏢',
     location: 'Gurugram, NCR',
     outcome: '3 LOIs within 60 days, ₹400 Cr transaction',
+    stars: 5,
   },
 ]
 
-const SECTOR_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  'Hospitality':             { bg: 'rgba(180,83,9,.12)',   text: '#fbbf24', border: 'rgba(180,83,9,.25)' },
-  'Real Estate':             { bg: 'rgba(26,58,107,.12)',  text: '#93c5fd', border: 'rgba(26,58,107,.25)' },
-  'HORECA':                  { bg: 'rgba(6,78,59,.12)',    text: '#4ade80', border: 'rgba(6,78,59,.25)' },
-  'Entertainment':           { bg: 'rgba(109,40,217,.12)', text: '#c4b5fd', border: 'rgba(109,40,217,.25)' },
-  'Debt & Special Situations':{ bg: 'rgba(127,29,29,.12)', text: '#fca5a5', border: 'rgba(127,29,29,.25)' },
-  'Retail':                  { bg: 'rgba(124,58,237,.12)', text: '#e9d5ff', border: 'rgba(124,58,237,.25)' },
+const SECTOR_COLORS: Record<string, { bg: string; text: string; border: string; icon: string }> = {
+  'Hospitality':              { bg: 'rgba(180,83,9,.14)',    text: '#fbbf24', border: 'rgba(180,83,9,.3)',    icon: 'fa-hotel' },
+  'Real Estate':              { bg: 'rgba(26,58,107,.14)',   text: '#93c5fd', border: 'rgba(26,58,107,.3)',   icon: 'fa-building' },
+  'HORECA':                   { bg: 'rgba(6,78,59,.14)',     text: '#4ade80', border: 'rgba(6,78,59,.3)',     icon: 'fa-utensils' },
+  'Entertainment':            { bg: 'rgba(109,40,217,.14)',  text: '#c4b5fd', border: 'rgba(109,40,217,.3)',  icon: 'fa-star' },
+  'Debt & Special Situations':{ bg: 'rgba(127,29,29,.14)',   text: '#fca5a5', border: 'rgba(127,29,29,.3)',   icon: 'fa-balance-scale' },
+  'Retail':                   { bg: 'rgba(124,58,237,.14)',  text: '#e9d5ff', border: 'rgba(124,58,237,.3)',  icon: 'fa-shopping-bag' },
 }
+
+/* render 5 stars */
+const stars = (n: number) =>
+  Array.from({ length: 5 }, (_, i) =>
+    `<i class="fas fa-star" style="color:${i < n ? '#f59e0b' : 'rgba(255,255,255,.12)'};font-size:.62rem;"></i>`
+  ).join('')
 
 app.get('/', (c) => {
   const html = `
@@ -108,7 +122,7 @@ app.get('/', (c) => {
 <!-- ── HERO ──────────────────────────────────────────────────────────── -->
 <section class="hero-dk" style="min-height:36vh;display:flex;align-items:center;padding:6rem 0 3rem;">
   <div class="container" style="max-width:1100px;margin:0 auto;padding:0 1.5rem;">
-    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;">
+    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;">
       <span style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(212,174,42,.12);border:1px solid rgba(212,174,42,.3);border-radius:100px;padding:.3rem .9rem;font-size:.78rem;font-family:'DM Sans',sans-serif;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;">
         ⭐ Client Testimonials
       </span>
@@ -129,24 +143,95 @@ app.get('/', (c) => {
   </div>
 </section>
 
-<!-- ── FEATURED TESTIMONIAL ──────────────────────────────────────────── -->
-<section style="background:rgba(212,174,42,.04);border-top:1px solid rgba(212,174,42,.15);border-bottom:1px solid rgba(212,174,42,.15);padding:3rem 0;">
-  <div class="container" style="max-width:900px;margin:0 auto;padding:0 1.5rem;text-align:center;">
-    <div style="font-size:3rem;margin-bottom:.5rem;">🏛️</div>
-    <blockquote style="font-family:'DM Serif Display',Georgia,serif;font-size:clamp(1.2rem,2.2vw,1.7rem);color:#fff;line-height:1.45;font-style:italic;margin-bottom:1.5rem;">
-      "${TESTIMONIALS[0].quote}"
-    </blockquote>
-    <div style="display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap;">
-      <div style="width:44px;height:44px;border-radius:50%;background:rgba(212,174,42,.15);display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:2px solid rgba(212,174,42,.3);">
-        ${TESTIMONIALS[0].emoji}
+<!-- ── TESTIMONIAL CAROUSEL ──────────────────────────────────────────── -->
+<section style="background:rgba(212,174,42,.04);border-top:1px solid rgba(212,174,42,.15);border-bottom:1px solid rgba(212,174,42,.15);padding:3.5rem 0;overflow:hidden;">
+  <div class="container" style="max-width:1100px;margin:0 auto;padding:0 1.5rem;">
+
+    <!-- Carousel track -->
+    <div id="tcarWrap" style="position:relative;">
+      <div id="tcarTrack" style="display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1);will-change:transform;">
+        ${TESTIMONIALS.map((t, i) => {
+          const sc = SECTOR_COLORS[t.sector] || SECTOR_COLORS['Real Estate']
+          return `
+        <div class="tcar-slide" style="min-width:100%;box-sizing:border-box;padding:0 3rem;">
+          <div style="max-width:820px;margin:0 auto;text-align:center;">
+            <!-- Stars -->
+            <div style="display:flex;justify-content:center;gap:.2rem;margin-bottom:1.25rem;">
+              ${stars(t.stars)}
+            </div>
+            <!-- Quote -->
+            <blockquote style="font-family:'DM Serif Display',Georgia,serif;font-size:clamp(1.15rem,2vw,1.6rem);color:#fff;line-height:1.5;font-style:italic;margin-bottom:2rem;position:relative;">
+              <span style="position:absolute;top:-.5rem;left:50%;transform:translateX(-50%);font-size:4rem;color:rgba(212,174,42,.15);font-family:Georgia,serif;line-height:1;pointer-events:none;">&ldquo;</span>
+              "${t.quote}"
+            </blockquote>
+            <!-- Author -->
+            <div style="display:flex;align-items:center;justify-content:center;gap:.875rem;flex-wrap:wrap;">
+              <div style="width:52px;height:52px;border-radius:50%;background:rgba(212,174,42,.12);display:flex;align-items:center;justify-content:center;font-size:1.4rem;border:2px solid rgba(212,174,42,.3);flex-shrink:0;">
+                ${t.emoji}
+              </div>
+              <div style="text-align:left;">
+                <div style="font-weight:700;font-size:1rem;color:#fff;font-family:'DM Sans',sans-serif;">${t.name}</div>
+                <div style="font-size:.8rem;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;">${t.role}</div>
+                <div style="font-size:.7rem;color:rgba(255,255,255,.3);font-family:'DM Sans',sans-serif;margin-top:.15rem;"><i class="fas fa-map-marker-alt" style="font-size:.58rem;color:var(--gold);margin-right:.25rem;"></i>${t.location}</div>
+              </div>
+              <span style="display:inline-flex;align-items:center;gap:.3rem;font-size:.7rem;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:.28rem .8rem;border-radius:100px;background:${sc.bg};color:${sc.text};border:1px solid ${sc.border};">
+                <i class="fas ${sc.icon}" style="font-size:.58rem;"></i>${t.sector}
+              </span>
+            </div>
+            <!-- Outcome pill -->
+            ${t.outcome ? `<div style="display:inline-flex;align-items:center;gap:.5rem;margin-top:1.25rem;padding:.45rem 1rem;background:rgba(212,174,42,.07);border:1px solid rgba(212,174,42,.2);font-size:.75rem;color:rgba(255,255,255,.6);font-family:'DM Sans',sans-serif;">
+              <i class="fas fa-check-circle" style="color:var(--gold);font-size:.68rem;"></i>
+              <strong style="color:rgba(255,255,255,.75);">Outcome:</strong> ${t.outcome}
+            </div>` : ''}
+          </div>
+        </div>`
+        }).join('')}
       </div>
-      <div style="text-align:left;">
-        <div style="font-weight:700;font-size:.95rem;color:#fff;font-family:'DM Sans',sans-serif;">${TESTIMONIALS[0].name}</div>
-        <div style="font-size:.78rem;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;">${TESTIMONIALS[0].role}</div>
-      </div>
-      <span style="display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.25rem .75rem;border-radius:100px;background:${SECTOR_COLORS[TESTIMONIALS[0].sector]?.bg};color:${SECTOR_COLORS[TESTIMONIALS[0].sector]?.text};border:1px solid ${SECTOR_COLORS[TESTIMONIALS[0].sector]?.border};">
-        ${TESTIMONIALS[0].sector}
-      </span>
+
+      <!-- Prev / Next arrows -->
+      <button onclick="tcarNav(-1)" aria-label="Previous testimonial"
+        style="position:absolute;left:0;top:50%;transform:translateY(-50%);width:40px;height:40px;background:rgba(212,174,42,.1);border:1px solid rgba(212,174,42,.25);color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2;"
+        onmouseover="this.style.background='rgba(212,174,42,.2)'" onmouseout="this.style.background='rgba(212,174,42,.1)'">
+        <i class="fas fa-chevron-left" style="font-size:.7rem;"></i>
+      </button>
+      <button onclick="tcarNav(1)" aria-label="Next testimonial"
+        style="position:absolute;right:0;top:50%;transform:translateY(-50%);width:40px;height:40px;background:rgba(212,174,42,.1);border:1px solid rgba(212,174,42,.25);color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2;"
+        onmouseover="this.style.background='rgba(212,174,42,.2)'" onmouseout="this.style.background='rgba(212,174,42,.1)'">
+        <i class="fas fa-chevron-right" style="font-size:.7rem;"></i>
+      </button>
+    </div>
+
+    <!-- Dot indicators -->
+    <div id="tcarDots" style="display:flex;justify-content:center;gap:.5rem;margin-top:2rem;">
+      ${TESTIMONIALS.map((_, i) => `
+      <button onclick="tcarGoTo(${i})" aria-label="Go to testimonial ${i+1}"
+        style="width:${i===0?'24':'8'}px;height:8px;border-radius:4px;background:${i===0?'var(--gold)':'rgba(255,255,255,.18)'};border:none;cursor:pointer;transition:all .35s;padding:0;"
+        class="tcar-dot" data-idx="${i}"></button>`).join('')}
+    </div>
+
+    <!-- Progress bar -->
+    <div style="max-width:400px;margin:1rem auto 0;height:2px;background:rgba(255,255,255,.06);overflow:hidden;">
+      <div id="tcarProgress" style="height:100%;background:linear-gradient(90deg,var(--gold),#e8c84a);width:0%;transition:width 4s linear;"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── STATS STRIP ────────────────────────────────────────────────────── -->
+<section style="background:#0c0c18;border-bottom:1px solid rgba(212,174,42,.1);padding:1.75rem 0;">
+  <div class="container" style="max-width:1000px;margin:0 auto;padding:0 1.5rem;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;text-align:center;">
+      ${[
+        { val: '5.0', label: 'Average Rating', icon: 'fa-star' },
+        { val: `${TESTIMONIALS.length}+`, label: 'Verified Clients', icon: 'fa-users' },
+        { val: '₹1,165 Cr+', label: 'Mandates Advised', icon: 'fa-chart-line' },
+        { val: '100%', label: 'NDA Compliance', icon: 'fa-shield-alt' },
+      ].map(s => `
+      <div>
+        <i class="fas ${s.icon}" style="font-size:1.1rem;color:var(--gold);display:block;margin-bottom:.4rem;"></i>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.4rem;color:#fff;">${s.val}</div>
+        <div style="font-size:.68rem;color:rgba(255,255,255,.4);font-family:'DM Sans',sans-serif;text-transform:uppercase;letter-spacing:.07em;margin-top:.2rem;">${s.label}</div>
+      </div>`).join('')}
     </div>
   </div>
 </section>
@@ -155,24 +240,36 @@ app.get('/', (c) => {
 <section style="background:var(--bg-dk);padding:3rem 0 5rem;">
   <div class="container" style="max-width:1200px;margin:0 auto;padding:0 1.5rem;">
 
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <p style="font-size:.72rem;color:var(--gold);font-family:'DM Sans',sans-serif;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.5rem;">All Sectors</p>
+      <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:clamp(1.6rem,3vw,2.4rem);color:#fff;margin-bottom:.5rem;">Every Client. Every Sector.</h2>
+      <p style="font-size:.9rem;color:rgba(255,255,255,.45);font-family:'DM Sans',sans-serif;max-width:480px;margin:0 auto;">Filter by advisory vertical to see relevant case outcomes.</p>
+    </div>
+
     <!-- Filters -->
-    <div style="display:flex;gap:.6rem;margin-bottom:2rem;flex-wrap:wrap;align-items:center;">
-      <span style="font-size:.78rem;color:rgba(255,255,255,.4);font-family:'DM Sans',sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-right:.5rem;">Filter:</span>
-      ${['All', 'Hospitality', 'Real Estate', 'HORECA', 'Entertainment', 'Debt & Special Situations', 'Retail'].map(cat => `
-      <button onclick="filterTest('${cat}')" id="tcat-${cat.replace(/[^a-z]/gi,'')}"
+    <div style="display:flex;gap:.5rem;margin-bottom:2.25rem;flex-wrap:wrap;align-items:center;justify-content:center;">
+      ${['All', 'Hospitality', 'Real Estate', 'HORECA', 'Entertainment', 'Debt & Special Situations', 'Retail'].map((cat, ci) => `
+      <button onclick="filterTest('${cat}')" id="tcat-${cat.replace(/[^a-z0-9]/gi,'')}"
         class="btn btn-sm btn-dko" data-cat="${cat}"
-        style="${cat === 'All' ? 'background:rgba(212,174,42,.12);border-color:var(--gold);color:var(--gold);' : ''}">
-        ${cat}
+        style="transition:all .2s;${ci === 0 ? 'background:rgba(212,174,42,.12);border-color:var(--gold);color:var(--gold);' : ''}">
+        ${cat === 'All' ? '<i class="fas fa-th" style="margin-right:.3rem;font-size:.6rem;"></i>' : `<i class="fas ${(SECTOR_COLORS[cat]||SECTOR_COLORS['Real Estate']).icon}" style="margin-right:.3rem;font-size:.6rem;"></i>`}${cat}
       </button>`).join('')}
     </div>
 
-    <!-- Testimonial Wall -->
+    <!-- Testimonial Wall (masonry-style 3-col) -->
     <div class="test-wall" id="testWall">
-      ${TESTIMONIALS.map((t, i) => {
+      ${TESTIMONIALS.map((t) => {
         const sc = SECTOR_COLORS[t.sector] || SECTOR_COLORS['Real Estate']
         return `
-      <div class="test-card reveal" data-cat="${t.sector}" style="${i === 0 ? 'display:none;' : ''}">
-        <p class="test-quote">${t.quote}</p>
+      <div class="test-card reveal" data-cat="${t.sector}">
+        <!-- Stars row -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;">
+          <div style="display:flex;gap:.18rem;">${stars(t.stars)}</div>
+          <span style="font-size:.6rem;color:rgba(255,255,255,.3);font-family:'DM Sans',sans-serif;">${t.location}</span>
+        </div>
+        <!-- Quote -->
+        <p class="test-quote" style="position:relative;">${t.quote}</p>
+        <!-- Author -->
         <div class="test-author">
           <div class="test-avatar">${t.emoji}</div>
           <div>
@@ -180,13 +277,13 @@ app.get('/', (c) => {
             <div class="test-role">${t.role}</div>
             <div style="margin-top:.35rem;">
               <span class="test-sector" style="background:${sc.bg};color:${sc.text};border:1px solid ${sc.border};">
-                ${t.sector}
+                <i class="fas ${sc.icon}" style="margin-right:.25rem;font-size:.55rem;"></i>${t.sector}
               </span>
             </div>
           </div>
         </div>
-        ${t.outcome ? `<div style="margin-top:.85rem;padding:.5rem .75rem;background:rgba(212,174,42,.07);border-left:2px solid var(--gold);border-radius:0 6px 6px 0;font-size:.76rem;color:rgba(255,255,255,.55);font-family:'DM Sans',sans-serif;">
-          <strong style="color:rgba(255,255,255,.7);">Outcome:</strong> ${t.outcome}
+        ${t.outcome ? `<div style="margin-top:.85rem;padding:.5rem .75rem;background:rgba(212,174,42,.07);border-left:2px solid var(--gold);font-size:.76rem;color:rgba(255,255,255,.55);font-family:'DM Sans',sans-serif;">
+          <i class="fas fa-check-circle" style="color:var(--gold);font-size:.62rem;margin-right:.3rem;"></i><strong style="color:rgba(255,255,255,.7);">Outcome:</strong> ${t.outcome}
         </div>` : ''}
       </div>`
       }).join('')}
@@ -210,28 +307,100 @@ app.get('/', (c) => {
   </div>
 </section>
 
-<script>
-function filterTest(cat) {
-  // Update button styles
-  document.querySelectorAll('[data-cat][id^="tcat-"]').forEach(btn => {
-    const isActive = btn.dataset.cat === cat;
-    btn.style.background = isActive ? 'rgba(212,174,42,.12)' : '';
-    btn.style.borderColor = isActive ? 'var(--gold)' : '';
-    btn.style.color = isActive ? 'var(--gold)' : '';
-  });
+<style>
+/* ── Responsive stats strip ── */
+@media(max-width:560px){
+  #testStatStrip { grid-template-columns: repeat(2,1fr) !important; }
+}
+/* ── Carousel slide mobile padding ── */
+@media(max-width:600px){
+  .tcar-slide { padding: 0 2rem !important; }
+}
+/* ── Testimonial wall reveal animation ── */
+.test-card { opacity:0; transform:translateY(18px); transition:opacity .5s ease, transform .5s ease; }
+.test-card.visible { opacity:1; transform:none; }
+</style>
 
-  // Show/hide cards (skip the first — it's the featured)
-  document.querySelectorAll('#testWall .test-card').forEach(card => {
-    const cardCat = card.dataset.cat;
-    const show = cat === 'All' || cardCat === cat;
+<script>
+/* ── TESTIMONIAL CAROUSEL ─────────────────────────────────────────── */
+(function(){
+  var total = ${TESTIMONIALS.length};
+  var current = 0;
+  var autoTimer = null;
+  var progressTimer = null;
+  var DURATION = 4000;
+
+  function tcarGoTo(idx){
+    current = ((idx % total) + total) % total;
+    var track = document.getElementById('tcarTrack');
+    if(track) track.style.transform = 'translateX(-' + (current * 100) + '%)';
+    /* dots */
+    document.querySelectorAll('.tcar-dot').forEach(function(d,i){
+      var isActive = i === current;
+      d.style.width = isActive ? '24px' : '8px';
+      d.style.background = isActive ? 'var(--gold)' : 'rgba(255,255,255,.18)';
+    });
+    /* reset progress bar */
+    var bar = document.getElementById('tcarProgress');
+    if(bar){ bar.style.transition = 'none'; bar.style.width = '0%'; setTimeout(function(){ bar.style.transition = 'width '+DURATION+'ms linear'; bar.style.width = '100%'; }, 30); }
+  }
+  window.tcarGoTo = tcarGoTo;
+  window.tcarNav = function(dir){ clearInterval(autoTimer); tcarGoTo(current + dir); startAuto(); };
+
+  function startAuto(){
+    clearInterval(autoTimer);
+    autoTimer = setInterval(function(){ tcarGoTo(current + 1); }, DURATION);
+    var bar = document.getElementById('tcarProgress');
+    if(bar){ bar.style.transition = 'none'; bar.style.width = '0%'; setTimeout(function(){ bar.style.transition = 'width '+DURATION+'ms linear'; bar.style.width = '100%'; }, 30); }
+  }
+
+  /* pause on hover */
+  var wrap = document.getElementById('tcarWrap');
+  if(wrap){
+    wrap.addEventListener('mouseenter', function(){ clearInterval(autoTimer); var b=document.getElementById('tcarProgress'); if(b){ b.style.animationPlayState='paused'; } });
+    wrap.addEventListener('mouseleave', function(){ startAuto(); });
+    /* touch swipe */
+    var tx0 = 0;
+    wrap.addEventListener('touchstart', function(e){ tx0 = e.touches[0].clientX; }, {passive:true});
+    wrap.addEventListener('touchend',   function(e){ var dx = e.changedTouches[0].clientX - tx0; if(Math.abs(dx)>40) tcarNav(dx<0?1:-1); });
+  }
+
+  /* kick off */
+  startAuto();
+})();
+
+/* ── FILTER ───────────────────────────────────────────────────────── */
+function filterTest(cat) {
+  document.querySelectorAll('[data-cat][id^="tcat"]').forEach(function(btn){
+    var isActive = btn.dataset.cat === cat;
+    btn.style.background  = isActive ? 'rgba(212,174,42,.12)' : '';
+    btn.style.borderColor = isActive ? 'var(--gold)' : '';
+    btn.style.color       = isActive ? 'var(--gold)' : '';
+  });
+  document.querySelectorAll('#testWall .test-card').forEach(function(card){
+    var show = cat === 'All' || card.dataset.cat === cat;
     card.style.display = show ? '' : 'none';
+    if(show) setTimeout(function(){ card.classList.add('visible'); }, 30);
   });
 }
+
+/* ── REVEAL ON SCROLL ─────────────────────────────────────────────── */
+(function(){
+  if(!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.test-card').forEach(function(c){ c.classList.add('visible'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+  },{threshold:0.12});
+  document.querySelectorAll('.test-card').forEach(function(c){ io.observe(c); });
+})();
 </script>
 `
-  return c.html(layout('Client Testimonials', html, {
+  return c.html(layout('Client Testimonials — India Gully Advisory', html, {
     description: 'Read what India Gully clients say about our transaction advisory, HORECA procurement, and hospitality development services across ₹1,165 Cr+ of mandates.',
     canonical: 'https://india-gully.pages.dev/testimonials',
+    ogImage: 'https://india-gully.pages.dev/static/og.jpg',
   }))
 })
 
