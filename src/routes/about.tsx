@@ -132,61 +132,225 @@ app.get('/', (c) => {
 <!-- LEADERSHIP TEAM -->
 <div class="sec-wh" id="leadership" style="padding-top:7rem;">
   <div class="wrap">
-    <div style="text-align:center;max-width:600px;margin:0 auto 4.5rem;">
+    <div style="text-align:center;max-width:640px;margin:0 auto 5rem;">
       <div class="gr-c"></div>
       <p class="eyebrow" style="margin-bottom:.875rem;">Our People</p>
       <h2 class="h2">Board &amp; Key Managerial<br>Personnel</h2>
-      <p class="lead" style="margin-top:1.25rem;">Three decades of combined experience spanning hospitality, real estate, retail and entertainment.</p>
+      <p class="lead" style="margin-top:1.25rem;">Three decades of combined experience spanning hospitality, real estate, retail and entertainment — earned through landmark transactions, not just advisory.</p>
     </div>
 
-    <div class="team-grid" style="max-width:1080px;margin:0 auto;">
-      ${[
-        { name:'Arun Manikonda',  title:'Managing Director',       role:'Director on Board & KMP',        phone:'+91 98108 89134', email:'akm@indiagully.com',          init:'AM', photo:'/static/team/arun-manikonda.jpg', bio:"Arun leads India Gully's strategic direction and client relationships, bringing deep expertise in multi-vertical enterprise advisory across hospitality, retail and real estate. As Managing Director and Director on Board, he oversees all major mandates and institutional partnerships." },
-        { name:'Pavan Manikonda', title:'Executive Director',       role:'Director on Board & KMP',        phone:'+91 6282556067', email:'pavan@indiagully.com',        init:'PM', photo:'/static/team/pavan-manikonda.jpg', bio:"Pavan drives operational excellence and business development across India Gully's advisory verticals. As Executive Director and Director on Board, he leads execution across hospitality management, brand on-boarding and project delivery mandates." },
-        { name:'Amit Jhingan',    title:'President, Real Estate',   role:'Key Managerial Personnel (KMP)', phone:'+91 9899993543', email:'amit.jhingan@indiagully.com', init:'AJ', photo:'/static/team/amit-jhingan.png', bio:"Amit leads India Gully's Real Estate advisory vertical, overseeing transaction advisory mandates, investment sales, asset management and real estate brokerage across commercial, hospitality and mixed-use assets nationwide." },
-      ].map((p, pi) => `
-      <div class="feature-card reveal" style="overflow:hidden;transition-delay:${pi*0.12}s;">
-        <!-- Photo area -->
+    <!-- ── ARUN MANIKONDA — Featured MD Profile ──────────────────── -->
+    <div class="reveal" style="background:var(--parch);border:1px solid var(--border);overflow:hidden;margin-bottom:2rem;max-width:1080px;margin:0 auto 2.5rem;">
+      <!-- Gold top accent -->
+      <div style="height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-lt),transparent);"></div>
+      <div style="display:grid;grid-template-columns:320px 1fr;gap:0;" class="mob-stack">
+
+        <!-- Left: Photo Column -->
+        <div style="position:relative;overflow:hidden;background:var(--ink);min-height:380px;">
+          <img src="/static/team/arun-manikonda.jpg" alt="Arun Kumar Manikonda"
+               style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div style="display:none;width:100%;height:380px;background:linear-gradient(135deg,#0a0a12,#141420);align-items:center;justify-content:center;">
+            <div style="width:100px;height:100px;background:linear-gradient(135deg,var(--gold),var(--gold-lt));display:flex;align-items:center;justify-content:center;">
+              <span style="font-family:'DM Serif Display',Georgia,serif;font-size:2.2rem;color:#fff;">AM</span>
+            </div>
+          </div>
+          <!-- Gradient overlay at bottom -->
+          <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 55%,rgba(0,0,0,.85) 100%);pointer-events:none;"></div>
+          <!-- Name on photo -->
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:1.75rem;">
+            <div style="font-size:.55rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.35rem;">Managing Director · Director on Board · KMP</div>
+            <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.6rem;color:#fff;line-height:1.1;text-shadow:0 2px 10px rgba(0,0,0,.5);">Arun Kumar<br>Manikonda</h3>
+          </div>
+          <!-- LinkedIn badge -->
+          <a href="https://www.linkedin.com/in/arun-kumar-manikon" target="_blank" rel="noopener"
+             style="position:absolute;top:1.25rem;right:1.25rem;background:rgba(10,102,194,.9);color:#fff;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:opacity .2s;text-decoration:none;border-radius:4px;"
+             title="Connect on LinkedIn">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+        </div>
+
+        <!-- Right: Content Column -->
+        <div style="padding:2.5rem;">
+          <!-- Current role tag -->
+          <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(184,150,12,.08);border:1px solid rgba(184,150,12,.2);padding:.3rem .875rem;margin-bottom:1.75rem;">
+            <i class="fas fa-briefcase" style="color:var(--gold);font-size:.65rem;"></i>
+            <span style="font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);">Managing Director, India Gully</span>
+          </div>
+
+          <!-- Bio -->
+          <p style="font-size:.925rem;color:var(--ink-soft);line-height:1.9;margin-bottom:1.75rem;">
+            Arun Kumar Manikonda is the Managing Director &amp; Founder of India Gully (Vivacious Entertainment and Hospitality Pvt. Ltd.), India's premier multi-vertical advisory firm. With over <strong style="color:var(--ink);">20 years</strong> of deep domain expertise spanning hospitality, real estate, retail, entertainment and HORECA, Arun has led landmark institutional transactions and built enduring partnerships with India's most prominent developers, hotel brands and investors.
+          </p>
+          <p style="font-size:.925rem;color:var(--ink-soft);line-height:1.9;margin-bottom:2rem;">
+            Prior to founding India Gully, Arun served as <strong style="color:var(--ink);">Managing Director of Entertainment City Limited, Noida</strong> — India's largest entertainment destination, where he co-led the landmark ₹1,350+ Cr divestment transaction in joint advisory with Ernst &amp; Young, one of the most complex and significant entertainment real estate deals in India's history.
+          </p>
+
+          <!-- Career highlights -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem;">
+            ${[
+              { icon:'trophy',     color:'#B8960C', label:'₹1,350 Cr+', sub:'Entertainment City divestment (EY joint advisory)' },
+              { icon:'hotel',      color:'#1A3A6B', label:'15+ Hotels',   sub:'Pre-opening PMC & brand on-boarding mandates' },
+              { icon:'store',      color:'#15803d', label:'1,40,000 sq ft', sub:'Retail leased across premium destinations' },
+              { icon:'chart-line', color:'#7C3AED', label:'₹1,165 Cr+',  sub:'Active advisory pipeline under management' },
+            ].map(h => `
+            <div style="display:flex;gap:.75rem;align-items:flex-start;padding:1rem;background:var(--parch-dk);border:1px solid var(--border-lt);">
+              <div style="width:34px;height:34px;background:${h.color}15;border:1px solid ${h.color}22;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-${h.icon}" style="color:${h.color};font-size:.72rem;"></i>
+              </div>
+              <div>
+                <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1rem;color:var(--ink);line-height:1;">${h.label}</div>
+                <div style="font-size:.68rem;color:var(--ink-muted);line-height:1.4;margin-top:.18rem;">${h.sub}</div>
+              </div>
+            </div>`).join('')}
+          </div>
+
+          <!-- Prior Role Banner -->
+          <div style="padding:1rem 1.25rem;border-left:3px solid var(--gold);background:rgba(184,150,12,.04);margin-bottom:1.75rem;display:flex;align-items:flex-start;gap:.875rem;">
+            <i class="fas fa-history" style="color:var(--gold);font-size:.8rem;margin-top:.15rem;flex-shrink:0;"></i>
+            <div>
+              <div style="font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;">Prior Leadership Role</div>
+              <div style="font-size:.875rem;color:var(--ink);font-weight:600;">Managing Director — Entertainment City Limited, Noida</div>
+              <div style="font-size:.78rem;color:var(--ink-muted);margin-top:.2rem;">India's largest entertainment destination · ₹1,350+ Cr divestment advisory alongside Ernst &amp; Young</div>
+            </div>
+          </div>
+
+          <!-- Contact row -->
+          <div style="display:flex;flex-wrap:wrap;gap:.75rem;padding-top:1.5rem;border-top:1px solid var(--border);">
+            <a href="tel:+919810889134" style="display:inline-flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--ink-muted);padding:.5rem .875rem;border:1px solid var(--border);background:var(--parch);transition:all .2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(184,150,12,.3)'" onmouseout="this.style.color='var(--ink-muted)';this.style.borderColor='var(--border)'">
+              <i class="fas fa-phone" style="color:var(--gold);font-size:.62rem;"></i>+91 98108 89134
+            </a>
+            <a href="mailto:akm@indiagully.com" style="display:inline-flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--ink-muted);padding:.5rem .875rem;border:1px solid var(--border);background:var(--parch);transition:all .2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(184,150,12,.3)'" onmouseout="this.style.color='var(--ink-muted)';this.style.borderColor='var(--border)'">
+              <i class="fas fa-envelope" style="color:var(--gold);font-size:.62rem;"></i>akm@indiagully.com
+            </a>
+            <a href="https://www.linkedin.com/in/arun-kumar-manikon" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--ink-muted);padding:.5rem .875rem;border:1px solid var(--border);background:var(--parch);transition:all .2s;" onmouseover="this.style.color='#0a66c2';this.style.borderColor='rgba(10,102,194,.3)'" onmouseout="this.style.color='var(--ink-muted)';this.style.borderColor='var(--border)'">
+              <i class="fab fa-linkedin-in" style="color:#0a66c2;font-size:.72rem;"></i>LinkedIn Profile
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAVAN & AMIT — Two-column profiles ────────────────────── -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:1080px;margin:0 auto;" class="mob-stack">
+
+      <!-- PAVAN MANIKONDA -->
+      <div class="feature-card reveal" style="overflow:hidden;transition-delay:.1s;">
+        <!-- Photo -->
         <div style="background:var(--ink);position:relative;overflow:hidden;">
-          <div style="position:relative;width:100%;height:240px;overflow:hidden;">
-            <img src="${p.photo}" alt="${p.name}"
+          <div style="position:relative;width:100%;height:280px;overflow:hidden;">
+            <img src="/static/team/pavan-manikonda.jpg" alt="Pavan Kumar Manikonda"
                  style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;transition:transform .5s ease;"
                  onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-            <div style="display:none;width:100%;height:240px;background:var(--ink-mid);align-items:center;justify-content:center;">
-              <div style="width:80px;height:80px;background:linear-gradient(135deg,var(--gold),var(--gold-lt));display:flex;align-items:center;justify-content:center;">
-                <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:#fff;">${p.init}</span>
+            <div style="display:none;width:100%;height:280px;background:linear-gradient(135deg,#0a0a12,#141420);align-items:center;justify-content:center;">
+              <div style="width:80px;height:80px;background:linear-gradient(135deg,#1A3A6B,#2a5298);display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:#fff;">PM</span>
               </div>
             </div>
-            <!-- Gradient overlay -->
-            <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 45%,rgba(0,0,0,.8) 100%);pointer-events:none;"></div>
-            <!-- Name overlay on image -->
-            <div style="position:absolute;bottom:0;left:0;right:0;padding:1.5rem;text-align:center;">
-              <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.2rem;color:#fff;margin-bottom:.2rem;text-shadow:0 1px 6px rgba(0,0,0,.5);">${p.name}</h3>
-              <p style="font-size:.78rem;color:var(--gold);margin-bottom:.12rem;">${p.title}</p>
-              <p style="font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);">${p.role}</p>
+            <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.85) 100%);pointer-events:none;"></div>
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/pavan-kumar-manikonda-49254421/" target="_blank" rel="noopener"
+               style="position:absolute;top:1rem;right:1rem;background:rgba(10,102,194,.9);color:#fff;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:opacity .2s;text-decoration:none;border-radius:3px;">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:1.5rem;">
+              <div style="font-size:.54rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(212,174,42,.7);margin-bottom:.25rem;">Executive Director · Director on Board · KMP</div>
+              <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:#fff;line-height:1.1;">Pavan Kumar<br>Manikonda</h3>
             </div>
           </div>
         </div>
         <!-- Content -->
         <div style="padding:1.75rem;">
-          <!-- Bio -->
-          <p style="font-size:.875rem;color:var(--ink-soft);line-height:1.85;margin-bottom:1.5rem;">${p.bio}</p>
+          <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(26,58,107,.08);border:1px solid rgba(26,58,107,.18);padding:.28rem .75rem;margin-bottom:1.25rem;">
+            <i class="fas fa-building" style="color:#1A3A6B;font-size:.6rem;"></i>
+            <span style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#1A3A6B;">Executive Director, India Gully</span>
+          </div>
+          <p style="font-size:.875rem;color:var(--ink-soft);line-height:1.85;margin-bottom:1.25rem;">
+            Pavan Kumar Manikonda is Executive Director &amp; Director on Board of Vivacious Entertainment and Hospitality Pvt. Ltd. (India Gully). An incisive hospitality leader with <strong style="color:var(--ink);">18+ years of experience</strong> in hotel operations, brand on-boarding and HORECA solutions, Pavan drives operational excellence and new business development across India Gully's advisory verticals.
+          </p>
+          <p style="font-size:.875rem;color:var(--ink-soft);line-height:1.85;margin-bottom:1.5rem;">
+            He leads execution across hospitality management mandates, HORECA procurement, FF&amp;E project delivery and hotel brand partnerships — having supplied and on-boarded properties for Mahindra Holidays, Accor, CGH Earth and WelcomHeritage across India.
+          </p>
+          <!-- Key expertise tags -->
+          <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.5rem;">
+            ${['Hotel Operations','HORECA Supply','Brand On-Boarding','Pre-Opening PMC','FF&E Procurement','F&B Strategy'].map(t=>`<span style="background:var(--parch-dk);border:1px solid var(--border-lt);color:var(--ink-muted);font-size:.6rem;font-weight:600;letter-spacing:.08em;padding:.22rem .65rem;">${t}</span>`).join('')}
+          </div>
           <!-- Contact -->
-          <div style="display:flex;flex-direction:column;gap:.5rem;padding-top:1.25rem;border-top:1px solid var(--border);">
-            <a href="tel:${p.phone}" style="display:flex;align-items:center;gap:.65rem;font-size:.78rem;color:var(--ink-muted);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'">
-              <div style="width:28px;height:28px;background:var(--parch);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-phone" style="color:var(--gold);font-size:.58rem;"></i></div>${p.phone}
+          <div style="display:flex;flex-direction:column;gap:.4rem;padding-top:1.25rem;border-top:1px solid var(--border);">
+            <a href="tel:+916282556067" style="display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--ink-muted);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'">
+              <div style="width:26px;height:26px;background:var(--parch);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-phone" style="color:var(--gold);font-size:.55rem;"></i></div>+91 62825 56067
             </a>
-            <a href="mailto:${p.email}" style="display:flex;align-items:center;gap:.65rem;font-size:.78rem;color:var(--ink-muted);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'">
-              <div style="width:28px;height:28px;background:var(--parch);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-envelope" style="color:var(--gold);font-size:.58rem;"></i></div>${p.email}
+            <a href="mailto:pavan@indiagully.com" style="display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--ink-muted);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'">
+              <div style="width:26px;height:26px;background:var(--parch);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-envelope" style="color:var(--gold);font-size:.55rem;"></i></div>pavan@indiagully.com
+            </a>
+            <a href="https://www.linkedin.com/in/pavan-kumar-manikonda-49254421/" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--ink-muted);transition:color .2s;" onmouseover="this.style.color='#0a66c2'" onmouseout="this.style.color='var(--ink-muted)'">
+              <div style="width:26px;height:26px;background:var(--parch);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fab fa-linkedin-in" style="color:#0a66c2;font-size:.55rem;"></i></div>LinkedIn Profile
             </a>
           </div>
         </div>
       </div>
-      `).join('')}
+
+      <!-- AMIT JHINGAN -->
+      <div class="feature-card reveal" style="overflow:hidden;transition-delay:.2s;">
+        <!-- Photo -->
+        <div style="background:var(--ink);position:relative;overflow:hidden;">
+          <div style="position:relative;width:100%;height:280px;overflow:hidden;">
+            <img src="/static/team/amit-jhingan.png" alt="Amit Jhingan"
+                 style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;transition:transform .5s ease;"
+                 onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div style="display:none;width:100%;height:280px;background:linear-gradient(135deg,#0a0a12,#141420);align-items:center;justify-content:center;">
+              <div style="width:80px;height:80px;background:linear-gradient(135deg,#15803d,#16a34a);display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'DM Serif Display',Georgia,serif;font-size:1.75rem;color:#fff;">AJ</span>
+              </div>
+            </div>
+            <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.85) 100%);pointer-events:none;"></div>
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/amit-jhingan-11631451/" target="_blank" rel="noopener"
+               style="position:absolute;top:1rem;right:1rem;background:rgba(10,102,194,.9);color:#fff;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:opacity .2s;text-decoration:none;border-radius:3px;">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:1.5rem;">
+              <div style="font-size:.54rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(21,128,61,.7);margin-bottom:.25rem;">President, Real Estate · Key Managerial Personnel</div>
+              <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.35rem;color:#fff;line-height:1.1;">Amit<br>Jhingan</h3>
+            </div>
+          </div>
+        </div>
+        <!-- Content -->
+        <div style="padding:1.75rem;">
+          <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(21,128,61,.08);border:1px solid rgba(21,128,61,.18);padding:.28rem .75rem;margin-bottom:1.25rem;">
+            <i class="fas fa-building" style="color:#15803d;font-size:.6rem;"></i>
+            <span style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#15803d;">President – Real Estate, India Gully</span>
+          </div>
+          <p style="font-size:.875rem;color:var(--ink-soft);line-height:1.85;margin-bottom:1.25rem;">
+            Amit Jhingan is President, Real Estate &amp; Key Managerial Personnel at India Gully. A seasoned real estate specialist with <strong style="color:var(--ink);">15+ years of pan-India experience</strong>, Amit heads India Gully's Real Estate advisory vertical covering transaction advisory, investment sales, retail leasing and commercial asset management.
+          </p>
+          <p style="font-size:.875rem;color:var(--ink-soft);line-height:1.85;margin-bottom:1.5rem;">
+            He has led landmark leasing mandates at Gardens Galleria, Hyatt Andaz Delhi, AIPL Joy Street and Entertainment City — placing 30+ premium brands across India's top retail and hospitality destinations, and advising on commercial and hospitality transactions across Delhi NCR, Gurugram and tier-2 markets.
+          </p>
+          <!-- Key expertise tags -->
+          <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.5rem;">
+            ${['Transaction Advisory','Retail Leasing','Investment Sales','Asset Management','Due Diligence','Commercial Real Estate'].map(t=>`<span style="background:var(--parch-dk);border:1px solid var(--border-lt);color:var(--ink-muted);font-size:.6rem;font-weight:600;letter-spacing:.08em;padding:.22rem .65rem;">${t}</span>`).join('')}
+          </div>
+          <!-- Contact -->
+          <div style="display:flex;flex-direction:column;gap:.4rem;padding-top:1.25rem;border-top:1px solid var(--border);">
+            <a href="tel:+919899993543" style="display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--ink-muted);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'">
+              <div style="width:26px;height:26px;background:var(--parch);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-phone" style="color:var(--gold);font-size:.55rem;"></i></div>+91 98999 93543
+            </a>
+            <a href="mailto:amit.jhingan@indiagully.com" style="display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--ink-muted);transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'">
+              <div style="width:26px;height:26px;background:var(--parch);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-envelope" style="color:var(--gold);font-size:.55rem;"></i></div>amit.jhingan@indiagully.com
+            </a>
+            <a href="https://www.linkedin.com/in/amit-jhingan-11631451/" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.6rem;font-size:.78rem;color:var(--ink-muted);transition:color .2s;" onmouseover="this.style.color='#0a66c2'" onmouseout="this.style.color='var(--ink-muted)'">
+              <div style="width:26px;height:26px;background:var(--parch);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fab fa-linkedin-in" style="color:#0a66c2;font-size:.55rem;"></i></div>LinkedIn Profile
+            </a>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <div style="margin-top:3.5rem;background:var(--parch);border:1px solid var(--border);padding:1.5rem 2rem;max-width:700px;margin:3.5rem auto 0;text-align:center;">
+    <div style="background:var(--parch);border:1px solid var(--border);padding:1.5rem 2rem;max-width:700px;margin:2.5rem auto 0;text-align:center;">
       <p style="font-size:.8rem;color:var(--ink-muted);line-height:1.75;"><i class="fas fa-envelope" style="color:var(--gold);margin-right:.5rem;"></i>To connect with our leadership directly, reach us at <a href="mailto:info@indiagully.com" style="color:var(--gold);font-weight:600;">info@indiagully.com</a> or call <strong style="color:var(--ink);">+91 8988 988 988</strong>.</p>
     </div>
   </div>

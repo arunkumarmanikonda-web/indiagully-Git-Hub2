@@ -187,9 +187,9 @@ app.get('/', (c) => {
 <div class="sec-sep"></div>
 
 <!-- ══ PARTNER MARQUEE ══════════════════════════════════════════════════ -->
-<div style="background:rgba(255,255,255,.015);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);padding:1.1rem 0;overflow:hidden;">
+<div style="background:var(--parch-dk);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1.1rem 0;overflow:hidden;">
   <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0;">
-    <div style="flex-shrink:0;padding:0 1.5rem;font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);white-space:nowrap;">
+    <div style="flex-shrink:0;padding:0 1.5rem;font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-muted);white-space:nowrap;">
       Advisory Partners
     </div>
     <div class="marquee-outer" style="flex:1;">
@@ -224,7 +224,7 @@ app.get('/', (c) => {
 </div>
 
 <!-- ══ TRUST SIGNALS ROW ════════════════════════════════════════════════ -->
-<div style="background:var(--bg-dk);padding:1.5rem 0;border-bottom:1px solid rgba(255,255,255,.06);">
+<div style="background:var(--parch-dk);padding:1.5rem 0;border-bottom:1px solid var(--border);">
   <div class="wrap">
     <div class="trust-row">
       <div class="trust-item">
@@ -684,9 +684,9 @@ app.get('/', (c) => {
 
       <div style="display:flex;flex-direction:column;gap:1.25rem;">
         ${[
-          { name:'Arun Manikonda',  title:'Managing Director',      sub:'Director on Board & KMP',  init:'AM', photo:'/static/team/arun-manikonda.jpg',  ph:'+91 98108 89134', em:'akm@indiagully.com', bio:'Founding Director with 20+ years across hospitality, real estate and entertainment. Leads India Gully\'s strategic direction and all major institutional mandates.' },
-          { name:'Pavan Manikonda', title:'Executive Director',      sub:'Director on Board & KMP',  init:'PM', photo:'/static/team/pavan-manikonda.jpg',  ph:'+91 62825 56067', em:'pavan@indiagully.com', bio:'Drives operations and business development across HORECA, hotel management and new verticals. Board Director and KMP of Vivacious Entertainment and Hospitality Pvt. Ltd.' },
-          { name:'Amit Jhingan',    title:'President, Real Estate',  sub:'Key Managerial Personnel', init:'AJ', photo:'/static/team/amit-jhingan.png',       ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com', bio:'Real Estate Vertical Head. Specialist in retail leasing, commercial transactions and entertainment city advisory with 15+ years of pan-India experience.' },
+          { name:'Arun K. Manikonda', title:'Managing Director',      sub:'Director on Board & KMP',  init:'AM', photo:'/static/team/arun-manikonda.jpg',  ph:'+91 98108 89134', em:'akm@indiagully.com', li:'https://www.linkedin.com/in/arun-kumar-manikon', bio:'Founding MD with 20+ years across hospitality, real estate and entertainment. Former MD of Entertainment City Limited, Noida. Led ₹1,350 Cr+ joint advisory with EY — India\'s largest entertainment transaction.' },
+          { name:'Pavan K. Manikonda', title:'Executive Director',      sub:'Director on Board & KMP',  init:'PM', photo:'/static/team/pavan-manikonda.jpg',  ph:'+91 62825 56067', em:'pavan@indiagully.com', li:'https://www.linkedin.com/in/pavan-kumar-manikonda-49254421/', bio:'Hospitality operations leader with 18+ years across hotel management, HORECA supply and brand on-boarding. Drives business development and operational delivery across India Gully\'s advisory verticals.' },
+          { name:'Amit Jhingan',    title:'President, Real Estate',  sub:'Key Managerial Personnel', init:'AJ', photo:'/static/team/amit-jhingan.png',       ph:'+91 98999 93543', em:'amit.jhingan@indiagully.com', li:'https://www.linkedin.com/in/amit-jhingan-11631451/', bio:'Real Estate Vertical Head with 15+ years of pan-India experience. Specialist in retail leasing (1,40,000+ sq ft placed), commercial transactions and hospitality asset advisory across Delhi NCR and beyond.' },
         ].map((p, pi) => `
         <div class="leader-card" style="padding:1.75rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.5rem;align-items:center;transition-delay:${pi*0.1}s;border:1px solid var(--border);" onmouseover="this.style.borderColor='rgba(184,150,12,.25)'" onmouseout="this.style.borderColor='var(--border)'">
           <!-- Avatar -->
@@ -705,6 +705,7 @@ app.get('/', (c) => {
           <div style="text-align:right;flex-shrink:0;display:flex;flex-direction:column;gap:.3rem;">
             <a href="tel:${p.ph.replace(/\s/g,'')}" style="font-size:.68rem;color:var(--ink-muted);display:flex;align-items:center;gap:.3rem;justify-content:flex-end;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'"><i class="fas fa-phone" style="font-size:.58rem;color:var(--gold);"></i>${p.ph}</a>
             <a href="mailto:${p.em}" style="font-size:.68rem;color:var(--ink-muted);display:flex;align-items:center;gap:.3rem;justify-content:flex-end;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink-muted)'"><i class="fas fa-envelope" style="font-size:.58rem;color:var(--gold);"></i>${p.em}</a>
+            <a href="${p.li}" target="_blank" rel="noopener" style="font-size:.68rem;color:var(--ink-muted);display:flex;align-items:center;gap:.3rem;justify-content:flex-end;transition:color .2s;" onmouseover="this.style.color='#0a66c2'" onmouseout="this.style.color='var(--ink-muted)'"><i class="fab fa-linkedin-in" style="font-size:.58rem;color:#0a66c2;"></i>LinkedIn</a>
           </div>
         </div>`).join('')}
       </div>
