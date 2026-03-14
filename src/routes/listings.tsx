@@ -265,7 +265,8 @@ function resetFilters() {
 `
   return c.html(layout('Active Mandates — India Gully Advisory Pipeline', content, {
     description: 'India Gully active mandates — ₹1,165 Cr+ institutional-grade investment opportunities across Real Estate, Hospitality, Entertainment and Retail. All opportunities subject to NDA.',
-    canonical: 'https://india-gully.pages.dev/listings'
+    canonical: 'https://india-gully.pages.dev/listings',
+    ogImage: 'https://india-gully.pages.dev/static/og-listings.jpg'
   }))
 })
 

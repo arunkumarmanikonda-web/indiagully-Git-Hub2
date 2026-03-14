@@ -35,6 +35,7 @@ function adminShell(pageTitle: string, active: string, body: string) {
     { id:'contracts',    icon:'file-signature',  label:'Contracts',      g:'ERP',      badge:'' },
     { id:'sales',        icon:'funnel-dollar',   label:'Sales Force',    g:'ERP',      badge:'5' },
     { id:'mandates',     icon:'briefcase',       label:'Mandates',       g:'Business', badge:'' },
+    { id:'enquiries',    icon:'envelope-open-text', label:'Enquiry Inbox', g:'Business', badge:'NEW' },
     { id:'clients',      icon:'building',        label:'Clients',        g:'Business', badge:'' },
     { id:'documents',    icon:'folder-open',     label:'Documents',      g:'Business', badge:'' },
     { id:'integrations', icon:'plug',            label:'Integrations',   g:'Platform', badge:'' },
@@ -16251,6 +16252,195 @@ app.get('/dpdp', (c) => {
   };
   </script>`
   return c.html(layout('DPDP Compliance', adminShell('DPDP Compliance', 'dpdp', body), {noNav:true,noFooter:true}))
+})
+
+// ── ENQUIRY INBOX ─────────────────────────────────────────────────────────────
+app.get('/enquiries', async (c) => {
+  const env = (c as any).env
+  let enquiries: any[] = []
+  let horecaEnquiries: any[] = []
+  let kvAvailable = false
+
+  // Try to fetch from KV (production only — local dev will show demo data)
+  try {
+    if (env?.KV) {
+      kvAvailable = true
+      const list = await env.KV.list({ prefix: 'enquiry:' })
+      const hList = await env.KV.list({ prefix: 'horeca_enquiry:' })
+
+      const enqResults = await Promise.all(
+        (list.keys || []).slice(0, 50).map(async (k: any) => {
+          try { return JSON.parse(await env.KV.get(k.name) || '{}') } catch { return null }
+        })
+      )
+      enquiries = enqResults.filter(Boolean).sort((a: any, b: any) =>
+        new Date(b.ts || 0).getTime() - new Date(a.ts || 0).getTime()
+      )
+
+      const horecaResults = await Promise.all(
+        (hList.keys || []).slice(0, 20).map(async (k: any) => {
+          try { return JSON.parse(await env.KV.get(k.name) || '{}') } catch { return null }
+        })
+      )
+      horecaEnquiries = horecaResults.filter(Boolean).sort((a: any, b: any) =>
+        new Date(b.ts || 0).getTime() - new Date(a.ts || 0).getTime()
+      )
+    }
+  } catch (_) { /* KV unavailable */ }
+
+  // Demo data for local dev
+  if (!kvAvailable) {
+    enquiries = [
+      { ref:'IG-ENQ-DEMO-001', type:'general', name:'Rahul Sharma', email:'rahul.sharma@example.com', phone:'+91 98765 43210', org:'Sharma Group', message:'Interested in your hotel advisory services for a 50-key boutique property in Manali.', source:'contact_form', ts: new Date(Date.now() - 1000*60*60*2).toISOString() },
+      { ref:'IG-ENQ-DEMO-002', type:'nda_acceptance', name:'Priya Mehta', email:'priya@metropolis.in', phone:'+91 91234 56789', org:'Metropolis Capital', mandateTitle:'Prism Tower, Gurugram', mandateValue:'₹400 Cr', ts: new Date(Date.now() - 1000*60*60*26).toISOString() },
+      { ref:'IG-ENQ-DEMO-003', type:'eoi', name:'Vikram Nair', email:'v.nair@peninsular.com', phone:'+91 80123 45678', org:'Peninsular Holdings', mandateTitle:'Hotel Rajshree & Spa', mandateValue:'₹70 Cr', ticketSize:'₹50 Cr+', investorType:'Family Office', ts: new Date(Date.now() - 1000*60*60*48).toISOString() },
+      { ref:'IG-ENQ-DEMO-004', type:'general', name:'Anjali Singh', email:'anjali@realtyworld.co', phone:'+91 99887 76655', org:'Realty World Developers', message:'Looking for retail leasing advisory for our upcoming mixed-use project in Noida Extension. About 1.2L sq ft of retail.', source:'contact_form', ts: new Date(Date.now() - 1000*60*60*72).toISOString() },
+    ]
+    horecaEnquiries = [
+      { ref:'IG-HORECA-DEMO-001', name:'Chef Amandeep Bedi', email:'chef.bedi@thegrand.com', phone:'+91 97654 32109', org:'The Grand Hotel Delhi', message:'Need FF&E procurement for 80 room renovation.', ts: new Date(Date.now() - 1000*60*60*5).toISOString() },
+    ]
+  }
+
+  const allEnquiries = [...enquiries, ...horecaEnquiries.map((h: any) => ({ ...h, type: h.type || 'horeca' }))]
+  const stats = {
+    total: allEnquiries.length,
+    general: enquiries.filter((e: any) => e.type === 'general' || e.type === 'contact').length,
+    eoi: enquiries.filter((e: any) => e.type === 'eoi').length,
+    nda: enquiries.filter((e: any) => e.type === 'nda_acceptance').length,
+    horeca: horecaEnquiries.length,
+    today: allEnquiries.filter((e: any) => {
+      const d = new Date(e.ts || 0)
+      const now = new Date()
+      return d.toDateString() === now.toDateString()
+    }).length,
+  }
+
+  function typeStyle(type: string) {
+    if (type === 'eoi') return 'background:rgba(37,99,235,.15);color:#60a5fa;border:1px solid rgba(37,99,235,.3);'
+    if (type === 'nda_acceptance') return 'background:rgba(124,58,237,.15);color:#a78bfa;border:1px solid rgba(124,58,237,.3);'
+    if (type === 'horeca') return 'background:rgba(22,163,74,.15);color:#4ade80;border:1px solid rgba(22,163,74,.3);'
+    return 'background:rgba(184,150,12,.15);color:#fbbf24;border:1px solid rgba(184,150,12,.3);'
+  }
+  function typeLabel(type: string) {
+    if (type === 'eoi') return 'EOI'
+    if (type === 'nda_acceptance') return 'NDA'
+    if (type === 'horeca') return 'HORECA'
+    return 'Contact'
+  }
+  function timeAgo(ts: string) {
+    const diff = Date.now() - new Date(ts || 0).getTime()
+    const m = Math.floor(diff / 60000)
+    if (m < 60) return `${m}m ago`
+    const h = Math.floor(m / 60)
+    if (h < 24) return `${h}h ago`
+    return `${Math.floor(h / 24)}d ago`
+  }
+
+  const body = `
+<div style="padding:2rem;max-width:1200px;">
+
+  <!-- Header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;">
+    <div>
+      <h1 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.6rem;color:#fff;margin-bottom:.3rem;">Enquiry Inbox</h1>
+      <p style="font-size:.78rem;color:rgba(255,255,255,.4);">${kvAvailable ? 'Live data from Cloudflare KV' : '⚠️ Demo data — KV not available in local dev'}</p>
+    </div>
+    <a href="mailto:info@indiagully.com" style="display:inline-flex;align-items:center;gap:.5rem;padding:.6rem 1.25rem;background:rgba(184,150,12,.15);border:1px solid rgba(184,150,12,.3);color:#fbbf24;text-decoration:none;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">
+      <i class="fas fa-envelope"></i>Open Email
+    </a>
+  </div>
+
+  <!-- Stats strip -->
+  <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:1rem;margin-bottom:2rem;">
+    ${[
+      { label:'Total', value: stats.total, icon:'inbox', color:'#fbbf24' },
+      { label:'Today', value: stats.today, icon:'clock', color:'#34d399' },
+      { label:'Contact', value: stats.general, icon:'envelope', color:'#fbbf24' },
+      { label:'EOI', value: stats.eoi, icon:'file-signature', color:'#60a5fa' },
+      { label:'NDA', value: stats.nda, icon:'lock', color:'#a78bfa' },
+      { label:'HORECA', value: stats.horeca, icon:'utensils', color:'#4ade80' },
+    ].map(s => `
+    <div style="background:#1a1a2e;border:1px solid rgba(255,255,255,.06);padding:1.1rem;text-align:center;">
+      <i class="fas fa-${s.icon}" style="color:${s.color};font-size:.8rem;margin-bottom:.5rem;display:block;"></i>
+      <div style="font-size:1.6rem;font-weight:700;color:${s.color};font-family:'DM Serif Display',Georgia,serif;line-height:1;">${s.value}</div>
+      <div style="font-size:.6rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em;margin-top:.25rem;">${s.label}</div>
+    </div>`).join('')}
+  </div>
+
+  <!-- Enquiries table -->
+  <div style="background:#0f0f1a;border:1px solid rgba(255,255,255,.07);overflow:hidden;">
+    <div style="padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);">All Enquiries (${allEnquiries.length})</span>
+      <div style="display:flex;gap:.5rem;">
+        <button onclick="filterEnq('all')" id="eqf-all" class="eq-filter-btn on" style="padding:.3rem .75rem;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(184,150,12,.4);background:rgba(184,150,12,.15);color:#fbbf24;cursor:pointer;">All</button>
+        <button onclick="filterEnq('eoi')" id="eqf-eoi" class="eq-filter-btn" style="padding:.3rem .75rem;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(255,255,255,.08);background:transparent;color:rgba(255,255,255,.4);cursor:pointer;">EOI</button>
+        <button onclick="filterEnq('nda')" id="eqf-nda" class="eq-filter-btn" style="padding:.3rem .75rem;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(255,255,255,.08);background:transparent;color:rgba(255,255,255,.4);cursor:pointer;">NDA</button>
+        <button onclick="filterEnq('general')" id="eqf-general" class="eq-filter-btn" style="padding:.3rem .75rem;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(255,255,255,.08);background:transparent;color:rgba(255,255,255,.4);cursor:pointer;">Contact</button>
+      </div>
+    </div>
+
+    ${allEnquiries.length === 0 ? `
+    <div style="padding:3rem;text-align:center;">
+      <i class="fas fa-inbox" style="font-size:2rem;color:rgba(255,255,255,.1);margin-bottom:1rem;display:block;"></i>
+      <p style="color:rgba(255,255,255,.3);font-size:.85rem;">No enquiries yet</p>
+    </div>` : allEnquiries.map((enq: any) => `
+    <div class="enq-row" data-type="${enq.type}" style="padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.04);display:grid;grid-template-columns:auto 1fr auto auto;gap:1.25rem;align-items:start;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,.02)'" onmouseout="this.style.background='transparent'">
+      <!-- Type badge -->
+      <div style="padding-top:.15rem;">
+        <span style="font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .55rem;${typeStyle(enq.type)}">${typeLabel(enq.type)}</span>
+      </div>
+      <!-- Main content -->
+      <div>
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.3rem;">
+          <span style="font-size:.85rem;font-weight:600;color:#fff;">${enq.name || '—'}</span>
+          ${enq.org ? `<span style="font-size:.7rem;color:rgba(255,255,255,.35);">· ${enq.org}</span>` : ''}
+        </div>
+        <div style="display:flex;gap:1.25rem;margin-bottom:.5rem;">
+          <a href="mailto:${enq.email}" style="font-size:.72rem;color:#fbbf24;text-decoration:none;"><i class="fas fa-envelope" style="margin-right:.3rem;opacity:.6;font-size:.65rem;"></i>${enq.email || '—'}</a>
+          ${enq.phone ? `<span style="font-size:.72rem;color:rgba(255,255,255,.35);"><i class="fas fa-phone" style="margin-right:.3rem;opacity:.5;font-size:.65rem;"></i>${enq.phone}</span>` : ''}
+        </div>
+        ${enq.mandateTitle ? `<div style="font-size:.72rem;color:rgba(255,255,255,.45);margin-bottom:.35rem;"><i class="fas fa-briefcase" style="margin-right:.3rem;opacity:.5;font-size:.62rem;"></i>${enq.mandateTitle}${enq.mandateValue ? ` — <span style="color:#fbbf24;">${enq.mandateValue}</span>` : ''}</div>` : ''}
+        ${enq.message ? `<p style="font-size:.72rem;color:rgba(255,255,255,.3);line-height:1.6;margin:0;max-width:580px;white-space:normal;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${enq.message}</p>` : ''}
+      </div>
+      <!-- Ref -->
+      <div style="font-family:monospace;font-size:.62rem;color:rgba(255,255,255,.2);white-space:nowrap;">${enq.ref || '—'}</div>
+      <!-- Time + reply button -->
+      <div style="text-align:right;white-space:nowrap;">
+        <div style="font-size:.68rem;color:rgba(255,255,255,.3);margin-bottom:.5rem;">${timeAgo(enq.ts)}</div>
+        ${enq.email ? `<a href="mailto:${enq.email}?subject=Re: Your Enquiry — Ref ${enq.ref}" style="display:inline-block;padding:.3rem .75rem;background:rgba(184,150,12,.12);border:1px solid rgba(184,150,12,.25);color:#fbbf24;text-decoration:none;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">Reply</a>` : ''}
+      </div>
+    </div>`).join('')}
+  </div>
+
+  ${!kvAvailable ? `
+  <div style="margin-top:1.5rem;padding:1rem 1.25rem;background:rgba(184,150,12,.06);border:1px solid rgba(184,150,12,.2);display:flex;gap:.75rem;align-items:flex-start;">
+    <i class="fas fa-info-circle" style="color:#fbbf24;margin-top:.1rem;flex-shrink:0;"></i>
+    <div>
+      <p style="font-size:.78rem;color:rgba(255,255,255,.7);margin-bottom:.3rem;font-weight:600;">Showing demo data</p>
+      <p style="font-size:.72rem;color:rgba(255,255,255,.4);margin:0;">Production enquiries are stored in Cloudflare KV. To see live data, deploy to Cloudflare Pages with KV binding enabled. Set <code style="background:rgba(255,255,255,.06);padding:.1rem .3rem;font-size:.7rem;">SENDGRID_API_KEY</code> in Cloudflare secrets for email delivery.</p>
+    </div>
+  </div>` : ''}
+</div>
+
+<script>
+function filterEnq(type){
+  document.querySelectorAll('.eq-filter-btn').forEach(function(b){
+    b.style.background='transparent';b.style.color='rgba(255,255,255,.4)';b.style.borderColor='rgba(255,255,255,.08)';b.classList.remove('on');
+  });
+  var btn=document.getElementById('eqf-'+type);
+  if(btn){btn.style.background='rgba(184,150,12,.15)';btn.style.color='#fbbf24';btn.style.borderColor='rgba(184,150,12,.4)';btn.classList.add('on');}
+  document.querySelectorAll('.enq-row').forEach(function(r){
+    var t=r.getAttribute('data-type')||'';
+    if(type==='all'){r.style.display='';}
+    else if(type==='eoi'){r.style.display=t==='eoi'?'':'none';}
+    else if(type==='nda'){r.style.display=t==='nda_acceptance'?'':'none';}
+    else if(type==='general'){r.style.display=(t==='general'||t==='contact')?'':'none';}
+    else{r.style.display=t===type?'':'none';}
+  });
+}
+</script>`
+
+  return c.html(layout('Enquiry Inbox', adminShell('Enquiry Inbox', 'enquiries', body), {noNav:true, noFooter:true}))
 })
 
 export default app

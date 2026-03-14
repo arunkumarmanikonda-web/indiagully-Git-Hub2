@@ -10,6 +10,7 @@ export function layout(title: string, content: string, opts?: {
   cspNonce?: string       // kept for API compatibility; CSP now uses unsafe-inline + CDN allowlist
   jsonLd?: string | object  // optional JSON-LD structured data blob (string or object)
   canonical?: string      // optional canonical URL override
+  heroPreload?: string    // optional above-fold image URL to preload with high priority
 }) {
   const desc = opts?.description || "India Gully — Celebrating Desiness. India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions."
   const ogImg = opts?.ogImage || 'https://india-gully.pages.dev/static/og.jpg'
@@ -57,6 +58,7 @@ ${opts?.jsonLd ? `<script type="application/ld+json">${typeof opts.jsonLd === 's
 <link rel="preconnect" href="https://www.mapleresorts.in">
 <link rel="dns-prefetch" href="https://hotelrajshreechandigarh.com">
 <link rel="dns-prefetch" href="https://www.welcomheritagehotels.in">
+${opts?.heroPreload ? `<link rel="preload" as="image" href="${opts.heroPreload}" fetchpriority="high">` : ''}
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
 <script src="https://cdn.tailwindcss.com"></script>

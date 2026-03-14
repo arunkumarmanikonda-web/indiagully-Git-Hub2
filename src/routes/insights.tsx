@@ -1123,6 +1123,7 @@ function filterInsights(cat) {
   return c.html(layout('Insights & Research — India Gully', content, {
     description: 'India Gully Insights \u2014 thought leadership, market research and sector analysis across hospitality, real estate, retail, entertainment, HORECA, and debt & special situations advisory.',
     canonical: 'https://india-gully.pages.dev/insights',
+    ogImage: 'https://india-gully.pages.dev/static/og.jpg',
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',

@@ -439,6 +439,7 @@ document.getElementById('apply-modal').addEventListener('click', function(e){
   return c.html(layout('Careers — Join India Gully', content, {
     description: 'Join India Gully\'s high-performance advisory team. We are hiring across Transaction Advisory, HORECA Procurement, Business Development and Research. Celebrating Desiness since 2017.',
     canonical: 'https://india-gully.pages.dev/careers',
+    ogImage: 'https://india-gully.pages.dev/static/og.jpg',
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'JobPosting',

@@ -382,6 +382,7 @@ function filterInvest(sector) {
   return c.html(layout('Investor Relations — Active Pipeline & Mandates', content, {
     description: 'India Gully Investor Relations — ₹1,165 Cr+ active advisory pipeline across Real Estate, Hospitality, Retail, Entertainment and Debt. Institutional-grade mandates. Request Information Memorandum.',
     canonical: 'https://india-gully.pages.dev/invest',
+    ogImage: 'https://india-gully.pages.dev/static/og-invest.jpg',
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'WebPage',

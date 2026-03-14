@@ -186,6 +186,46 @@ app.get('/', (c) => {
 <!-- gold rule separator -->
 <div class="sec-sep"></div>
 
+<!-- ══ CREDENTIALS PROOF BAR ════════════════════════════════════════════ -->
+<div id="proofBar" style="background:#0c0c18;border-top:1px solid rgba(184,150,12,.15);border-bottom:1px solid rgba(184,150,12,.15);padding:.85rem 0;overflow:hidden;position:relative;">
+  <!-- subtle animated gold line top -->
+  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(184,150,12,.4) 30%,rgba(212,174,42,.6) 50%,rgba(184,150,12,.4) 70%,transparent 100%);animation:goldShimmer 3s ease-in-out infinite;"></div>
+  <div class="proof-track" style="display:flex;align-items:center;gap:0;white-space:nowrap;animation:proofScroll 38s linear infinite;">
+    ${[
+      { icon:'shield-alt',     color:'#22c55e', text:'CERT-In Compliant' },
+      { icon:'check-double',   color:'#B8960C', text:'OWASP Top-10 Secure' },
+      { icon:'handshake',      color:'#60a5fa', text:'EY Co-Advisory Partner' },
+      { icon:'chart-line',     color:'#B8960C', text:'₹1,165 Cr+ Active Pipeline' },
+      { icon:'hotel',          color:'#a78bfa', text:'15+ Hotel Projects Executed' },
+      { icon:'store',          color:'#34d399', text:'30+ Retail Brand Partnerships' },
+      { icon:'building',       color:'#60a5fa', text:'CBRE Co-Advisory Partner' },
+      { icon:'balance-scale',  color:'#fbbf24', text:'SEBI-Framework Advisory' },
+      { icon:'registered',     color:'#B8960C', text:'MCA Registered · CIN U74999DL2017PTC323237' },
+      { icon:'map-marked-alt', color:'#a78bfa', text:'Pan-India · Delhi · Chandigarh · Mumbai · Kerala' },
+      { icon:'trophy',         color:'#fbbf24', text:'₹2,000 Cr+ Transactions Advised' },
+      { icon:'calendar-alt',   color:'#34d399', text:'Established 2017 · 8+ Years' },
+      { icon:'file-contract',  color:'#B8960C', text:'Mutual NDA Framework · All Mandates' },
+      { icon:'concierge-bell', color:'#a78bfa', text:'20+ Hospitality Brand Partnerships' },
+    ].concat([
+      { icon:'shield-alt',     color:'#22c55e', text:'CERT-In Compliant' },
+      { icon:'check-double',   color:'#B8960C', text:'OWASP Top-10 Secure' },
+      { icon:'handshake',      color:'#60a5fa', text:'EY Co-Advisory Partner' },
+      { icon:'chart-line',     color:'#B8960C', text:'₹1,165 Cr+ Active Pipeline' },
+      { icon:'hotel',          color:'#a78bfa', text:'15+ Hotel Projects Executed' },
+      { icon:'store',          color:'#34d399', text:'30+ Retail Brand Partnerships' },
+    ]).map(item => `
+    <span style="display:inline-flex;align-items:center;gap:.5rem;padding:0 2rem;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);">
+      <i class="fas fa-${item.icon}" style="color:${item.color};font-size:.58rem;flex-shrink:0;"></i>${item.text}
+    </span><span style="color:rgba(184,150,12,.3);font-size:.45rem;flex-shrink:0;">◆</span>`).join('')}
+  </div>
+  <style>
+    @keyframes proofScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+    @keyframes goldShimmer { 0%,100%{opacity:.5} 50%{opacity:1} }
+    #proofBar:hover .proof-track { animation-play-state:paused; }
+    @media(prefers-reduced-motion:reduce){ .proof-track{animation:none;} }
+  </style>
+</div>
+
 <!-- ══ PARTNER MARQUEE ══════════════════════════════════════════════════ -->
 <div style="background:var(--parch-dk);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1.1rem 0;overflow:hidden;">
   <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0;">
@@ -762,6 +802,8 @@ app.get('/', (c) => {
   return c.html(layout('Home', content, {
     description: "India Gully. Celebrating Desiness. India's premier multi-vertical advisory firm across Real Estate, Retail, Hospitality, Entertainment, Debt & HORECA Solutions. ₹1,165 Cr+ active mandate pipeline.",
     canonical: 'https://india-gully.pages.dev/',
+    ogImage: 'https://india-gully.pages.dev/static/og.jpg',
+    heroPreload: 'https://www.mapleresorts.in/img/about/new-left1.jpg',
     jsonLd: JSON.stringify({
       "@context": "https://schema.org",
       "@graph": [

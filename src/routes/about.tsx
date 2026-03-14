@@ -510,6 +510,7 @@ app.get('/', (c) => {
   return c.html(layout('About India Gully', content, {
     description: "About India Gully. Celebrating Desiness since 2017. Leadership, vision, values and the story behind India's premier multi-vertical advisory firm.",
     canonical: 'https://india-gully.pages.dev/about',
+    ogImage: 'https://india-gully.pages.dev/static/og.jpg',
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'AboutPage',

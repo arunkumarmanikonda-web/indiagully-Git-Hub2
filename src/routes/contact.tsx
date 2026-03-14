@@ -420,6 +420,7 @@ function igContactAjax() {
   return c.html(layout('Contact & Enquiry', content, {
     description: 'Contact India Gully, submit a mandate enquiry, HORECA RFQ or advisory request. Our leadership team responds within 24 hours.',
     canonical: 'https://india-gully.pages.dev/contact',
+    ogImage: 'https://india-gully.pages.dev/static/og.jpg',
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'ContactPage',
