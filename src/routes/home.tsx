@@ -484,15 +484,15 @@ app.get('/', (c) => {
 </div>
 
 <!-- ══ THE INDIA GULLY DIFFERENCE ════════════════════════════════════ -->
-<div class="sec-dk" style="position:relative;overflow:hidden;padding-top:7rem;padding-bottom:7rem;">
-  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.03) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;"></div>
+<div class="sec-dk diff-section" style="background:#0a0a10;position:relative;overflow:hidden;padding-top:7rem;padding-bottom:7rem;">
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.04) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;"></div>
 
   <div class="wrap" style="position:relative;">
     <div style="text-align:center;max-width:640px;margin:0 auto 4.5rem;">
       <div class="gr-c"></div>
       <p class="eyebrow-lt" style="margin-bottom:1rem;">Our Proposition</p>
-      <h2 class="h2-lt">The India Gully Difference</h2>
-      <p style="font-size:1rem;line-height:1.85;color:rgba(255,255,255,.45);margin-top:1.25rem;">What separates us from other advisory firms is not just depth of expertise — it is the way we stay committed from mandate inception to final delivery.</p>
+      <h2 class="h2-lt" style="color:#fff;">The India Gully Difference</h2>
+      <p style="font-size:1rem;line-height:1.85;color:rgba(255,255,255,.6);margin-top:1.25rem;">What separates us from other advisory firms is not just depth of expertise — it is the way we stay committed from mandate inception to final delivery.</p>
     </div>
 
     <div class="diff-grid">
@@ -503,12 +503,12 @@ app.get('/', (c) => {
         { icon:'bolt',      n:'04', title:'Execution-Led',           desc:'We stay involved through implementation, not just advisory. Turnkey delivery and hands-on project management is our differentiator.' },
       ].map((d, di) => `
       <div class="diff-cell reveal" style="transition-delay:${di*0.1}s;">
-        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:4rem;color:rgba(184,150,12,.07);line-height:1;margin-bottom:1.25rem;letter-spacing:-.05em;">${d.n}</div>
+        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:4rem;color:rgba(212,174,42,.18);line-height:1;margin-bottom:1.25rem;letter-spacing:-.05em;">${d.n}</div>
         <div class="ig-icon-box" style="margin-bottom:1.75rem;">
           <i class="fas fa-${d.icon}" style="color:var(--gold);font-size:.85rem;"></i>
         </div>
         <h3 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.3rem;color:#fff;line-height:1.2;margin-bottom:1rem;">${d.title}</h3>
-        <p style="font-size:.875rem;line-height:1.85;color:rgba(255,255,255,.45);">${d.desc}</p>
+        <p style="font-size:.875rem;line-height:1.85;color:rgba(255,255,255,.6);">${d.desc}</p>
       </div>`).join('')}
     </div>
   </div>

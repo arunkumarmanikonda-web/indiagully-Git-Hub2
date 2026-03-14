@@ -98,6 +98,11 @@ tailwind.config = {
 [data-theme="dark"] .mandate-card [style*="background:#fff"],[data-theme="dark"] .insight-card [style*="background:#fff"]{background:#141420!important;color:#f1f5f9!important;}
 [data-theme="dark"] [style*="background:#fff"]:not(.hero-dk *):not(nav *):not(footer *){background:#141420!important;}
 [data-theme="dark"] .sec-pc,[data-theme="dark"] .sec-pd{background:#111118!important;}
+/* sec-dk must stay dark in dark-mode (--ink flips to light) */
+[data-theme="dark"] .sec-dk{background:#0a0a0f!important;}
+[data-theme="dark"] .sec-dk .diff-grid{background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.08)!important;}
+[data-theme="dark"] .diff-cell{background:rgba(255,255,255,.04)!important;}
+[data-theme="dark"] .diff-cell:hover{background:rgba(255,255,255,.08)!important;}
 [data-theme="dark"] .am,[data-theme="dark"] .ig-tbl thead tr{background:#1a1a28!important;}
 [data-theme="dark"] table.ig-tbl tbody tr{background:#141420;}
 [data-theme="dark"] table.ig-tbl tbody tr:hover{background:#1a1a28;}
@@ -1152,15 +1157,18 @@ body{overflow-x:hidden;}
 @media(max-width:640px){.highlights-grid{grid-template-columns:repeat(2,1fr);}}
 
 /* ── India Gully difference ──────────────────── */
-.diff-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid rgba(255,255,255,.06);}
+/* diff-section always stays dark regardless of theme */
+.diff-section{background:#0a0a10!important;}
+.diff-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.15);}
 @media(max-width:860px){.diff-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:480px){.diff-grid{grid-template-columns:1fr;}}
-.diff-cell{padding:3rem 2.5rem;border-right:1px solid rgba(255,255,255,.06);transition:background var(--t-med);position:relative;overflow:hidden;}
-.diff-cell::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(184,150,12,.4),transparent);opacity:0;transition:opacity var(--t-med);}
-.diff-cell:hover{background:rgba(255,255,255,.025);}
-.diff-cell:hover::after{opacity:1;}
-@media(max-width:860px){.diff-cell:nth-child(2n){border-right:none;}.diff-cell:nth-child(1),.diff-cell:nth-child(2){border-bottom:1px solid rgba(255,255,255,.06);}}
-@media(max-width:480px){.diff-cell{border-right:none!important;border-bottom:1px solid rgba(255,255,255,.06);}.diff-cell:last-child{border-bottom:none;}}
+.diff-cell{padding:3rem 2.5rem;background:rgba(255,255,255,.06);border-right:none;transition:background var(--t-med);position:relative;overflow:hidden;}
+.diff-cell::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-lt),transparent);opacity:0;transition:opacity var(--t-med);}
+.diff-cell::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(184,150,12,.5),transparent);opacity:0;transition:opacity var(--t-med);}
+.diff-cell:hover{background:rgba(255,255,255,.09);}
+.diff-cell:hover::before,.diff-cell:hover::after{opacity:1;}
+@media(max-width:860px){.diff-cell:nth-child(2n){border-right:none;}.diff-cell:nth-child(1),.diff-cell:nth-child(2){border-bottom:none;}}
+@media(max-width:480px){.diff-cell{border-right:none!important;border-bottom:none;}.diff-cell:last-child{border-bottom:none;}}
 
 /* ── Pipeline stats ──────────────────────────── */
 #pipelineStats{display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid rgba(255,255,255,.06);}
@@ -1239,8 +1247,8 @@ body{overflow-x:hidden;}
 .trust-item{display:flex;align-items:center;gap:.5rem;font-size:.78rem;font-family:'DM Sans',sans-serif;color:var(--ink-soft);}
 .trust-item strong{color:var(--ink);}
 [data-theme="dark"] .trust-row{border-top-color:rgba(255,255,255,.07);border-bottom-color:rgba(255,255,255,.07);}
-[data-theme="dark"] .trust-item{color:rgba(255,255,255,.5);}
-[data-theme="dark"] .trust-item strong{color:rgba(255,255,255,.75);}
+[data-theme="dark"] .trust-item{color:rgba(255,255,255,.75);}
+[data-theme="dark"] .trust-item strong{color:#fff;}
 
 /* ── tel-card (quick dial team card) ─────────── */
 .tel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem;}
