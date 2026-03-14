@@ -120,7 +120,7 @@ app.get('/', (c) => {
 </a>
 
 <!-- ── HERO ──────────────────────────────────────────────────────────── -->
-<section class="hero-dk" style="min-height:36vh;display:flex;align-items:center;padding:6rem 0 3rem;">
+<section class="hero-dk" style="min-height:36vh;display:flex;align-items:center;padding:calc(6rem - var(--nav-h)) 0 3rem;">
   <div class="container" style="max-width:1100px;margin:0 auto;padding:0 1.5rem;">
     <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;">
       <span style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(212,174,42,.12);border:1px solid rgba(212,174,42,.3);border-radius:100px;padding:.3rem .9rem;font-size:.78rem;font-family:'DM Sans',sans-serif;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;">

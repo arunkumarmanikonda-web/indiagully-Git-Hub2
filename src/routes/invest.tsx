@@ -25,10 +25,8 @@ app.get('/', (c) => {
   const sectors = ['Real Estate', 'Hospitality', 'Retail', 'Entertainment', 'Debt & Special']
 
   const content = `
-<div class="nav-sp"></div>
-
 <!-- ══ HERO ══════════════════════════════════════════════════════════════════ -->
-<div style="background:linear-gradient(135deg,#060608 0%,#0a0a10 60%,#111118 100%);padding:7rem 0 5rem;position:relative;overflow:hidden;">
+<div style="background:linear-gradient(135deg,#060608 0%,#0a0a10 60%,#111118 100%);padding:calc(7rem - var(--nav-h)) 0 5rem;position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.04) 1px,transparent 1px);background-size:72px 72px;pointer-events:none;"></div>
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 100%,rgba(184,150,12,.08) 0%,transparent 65%);pointer-events:none;"></div>
   <div class="wrap" style="position:relative;text-align:center;">

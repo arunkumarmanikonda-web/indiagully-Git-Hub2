@@ -50,7 +50,7 @@ app.get('/', (c) => {
   const now = 'March 2026'
   const html = `
 <!-- ── HERO ──────────────────────────────────────────────────────────── -->
-<section class="hero-dk" style="min-height:34vh;display:flex;align-items:center;padding:5.5rem 0 2.5rem;">
+<section class="hero-dk" style="min-height:34vh;display:flex;align-items:center;padding:calc(5.5rem - var(--nav-h)) 0 2.5rem;">
   <div class="container" style="max-width:1200px;margin:0 auto;padding:0 1.5rem;">
     <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;">
       <span style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(212,174,42,.12);border:1px solid rgba(212,174,42,.3);border-radius:100px;padding:.3rem .9rem;font-size:.78rem;font-family:'DM Sans',sans-serif;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;">

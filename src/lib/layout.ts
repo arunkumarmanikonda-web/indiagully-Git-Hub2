@@ -400,7 +400,8 @@ button{font-family:inherit;}
 }
 
 /* ── HERO CAROUSEL ──────────────────────────── */
-.car{position:relative;overflow:hidden;height:100vh;min-height:640px;max-height:1000px}
+/* Pull carousel up behind the fixed nav so no blank band shows above it */
+.car{position:relative;overflow:hidden;height:calc(100vh + var(--nav-h));margin-top:calc(-1 * var(--nav-h));min-height:640px;max-height:1076px}
 .car-track{display:flex;height:100%;transition:transform var(--t-cinema)}
 .car-slide{flex:0 0 100%;position:relative;overflow:hidden}
 .car-bg{position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.1);transition:transform 11s cubic-bezier(.4,0,.2,1)}
@@ -840,7 +841,7 @@ body{overflow-x:hidden;}
 
 /* ── HERO DARK SECTION (secondary pages) ─────── */
 .hero-dk{
-  background:var(--ink);padding:9rem 0 6rem;position:relative;overflow:hidden;
+  background:var(--ink);padding:calc(9rem - var(--nav-h)) 0 6rem;position:relative;overflow:hidden;
 }
 .hero-dk-grid{
   position:absolute;inset:0;

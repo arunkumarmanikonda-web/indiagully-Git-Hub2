@@ -83,10 +83,9 @@ app.get('/', (c) => {
   const stageOrder = ['active', 'negotiation', 'feasibility', 'listed', 'completed']
 
   const content = `
-<div class="nav-sp"></div>
 <style>
 /* ── Pipeline Dashboard ─────────────────────────────────────── */
-.pip-hero{background:linear-gradient(135deg,#060608 0%,#0a0a12 60%,#111118 100%);padding:7rem 0 4rem;position:relative;overflow:hidden;}
+.pip-hero{background:linear-gradient(135deg,#060608 0%,#0a0a12 60%,#111118 100%);padding:calc(7rem - var(--nav-h)) 0 4rem;position:relative;overflow:hidden;}
 .pip-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.04) 1px,transparent 1px);background-size:72px 72px;pointer-events:none;}
 .pip-glow{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 100%,rgba(184,150,12,.08) 0%,transparent 60%);pointer-events:none;}
 

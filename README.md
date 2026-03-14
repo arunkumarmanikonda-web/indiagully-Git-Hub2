@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://c8ac771b.india-gully.pages.dev |
+| **Latest Deploy** | https://d0b3ecef.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
@@ -100,19 +100,21 @@ All portals require credentials provisioned by the system administrator.
 
 ---
 
-## 🚀 Phase 17 — Insights Expansion, Pipeline Dashboard, India Map, Enhanced Author Bylines (v28)
+## 🚀 Phase 17 — Insights Expansion, Pipeline Dashboard, India Map, Header Fix, JS Fix (v29)
 
-**Version: v28 | Build: 3.9 MB | Routes: 23+ all 200 OK | Deploy: https://c8ac771b.india-gully.pages.dev**  
-**Commit: 79d17c5 | Date: March 2026**
+**Version: v29 | Build: 3.9 MB | Routes: 23+ all 200 OK | Deploy: https://d0b3ecef.india-gully.pages.dev**  
+**Commit: 912302c | Date: March 2026**
 
 ### ✅ Phase 17 Deliverables
 
 | Area | What Changed |
 |------|-------------|
+| **BUGFIX — Nav Header Bands** | **Root cause fixed**: `#stickyStats` was using `transform:translateY(-110%)` which moved it into the nav area visually. Changed to `opacity:0; visibility:hidden` approach — element is fully invisible when hidden and only becomes visible (opacity:1, visibility:visible, top:var(--nav-h)) after user scrolls. No CSS overlap possible. Nav renders cleanly on page load. |
+| **BUGFIX — JS 'Unexpected identifier color'** | Fixed long-standing syntax error in the Cmd+K search palette's no-results `innerHTML` string — single quotes inside single-quoted string were terminating the string early, making `color` appear as a bare identifier. Fixed by using double-quote HTML attributes. All JS now parses without errors. |
 | **17B — 3 New Insight Articles** | Added 3 deep-dive research articles: (1) **"Cloud Kitchens & Dark Stores: India's HORECA Infrastructure Revolution"** (HORECA, 9 min) — covers GMV, cloud kitchen formats, dark store real estate, investment models; (2) **"Hotel Brand Affiliation in India 2026: Choosing the Right Flag"** (Hospitality, 12 min) — comprehensive MC framework covering Marriott/IHG/Hyatt/domestic brands, contract terms, exit value; (3) **"Building India's Next Entertainment Destination"** (Entertainment, 10 min) — development economics, capex benchmarks, revenue models, operator structures. Insights count updated to 19. |
 | **17B — Enhanced Author Byline Card** | Article detail sidebar now shows a premium dark "India Gully Research" byline card with IG monogram, 4-stat mini-grid (8+ Yrs Advisory, 40+ Contracts, ₹1,165 Cr Pipeline, 6 Sectors), category badge, publish date and CIN registration. Replaces the plain icon author block. |
-| **17C — Pipeline Dashboard `/pipeline`** | New investor-facing pipeline dashboard at `/pipeline`. Features: (1) Hero with live pipeline indicator; (2) 5-KPI metrics bar; (3) Analytics section with SVG sector-mix donut chart (Real Estate 77.3%, Hospitality 21.1%, Debt 1.7%), deal-size distribution bar chart across 4 buckets, and stage-breakdown table; (4) Timeline view grouping all 8 mandates by stage (Active Fundraise → Due Diligence → Feasibility) with colored stage indicators and mandate cards; (5) NDA request CTA. Added to nav "More" dropdown and footer sitemap. |
-| **17D — India Map on Homepage** | Pan-India Presence section added to `/` between trust signals and "Why India Gully". SVG India outline map with animated pulsing pin for Delhi NCR (₹900 Cr, 3 mandates), static pins for Chandigarh, Kasauli/Chail, Jaipur and Mumbai. City list grid with 6 locations. Hover tooltips show mandate details. Pipeline Dashboard CTA button. |
+| **17C — Pipeline Dashboard `/pipeline`** | New investor-facing pipeline dashboard at `/pipeline`. Features: (1) Hero with live pipeline indicator; (2) 5-KPI metrics bar; (3) Analytics section with SVG sector-mix donut chart (Real Estate 77.3%, Hospitality 21.1%, Debt 1.7%), deal-size distribution bar chart across 4 buckets, and stage-breakdown table; (4) Timeline view grouping all 8 mandates by stage (Active Fundraise → Due Diligence → Feasibility) with colored stage indicators and mandate cards; (5) NDA request CTA. Added to nav "More" dropdown. |
+| **17D — India Map on Homepage** | Pan-India Presence section on `/` with SVG India outline map, animated pulsing pin for Delhi NCR (₹900 Cr, 3 mandates), static pins for Chandigarh, Kasauli/Chail, Jaipur and Mumbai. City list grid, hover tooltips with mandate details, Pipeline Dashboard CTA. |
 
 ---
 
