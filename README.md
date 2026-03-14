@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://7623bd78.india-gully.pages.dev |
+| **Latest Deploy** | https://b27bbc9b.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
@@ -96,6 +96,32 @@ All portals require credentials provisioned by the system administrator.
 | Page | URL |
 |------|-----|
 | Investor Relations | https://india-gully.pages.dev/invest |
+
+---
+
+## 🚀 Phase 14 — OG Social Images, Home Proof Bar, Admin Enquiry Inbox & Performance (v25)
+
+**Version: v25 | Build: 3.8 MB | Routes: 22+ all 200 OK | Deploy: https://b27bbc9b.india-gully.pages.dev**  
+**Commit: 264998b | Date: March 2026**
+
+### ✅ Phase 14 Deliverables
+
+| Area | What Changed |
+|------|-------------|
+| **OG Social Images** | 3 custom AI-generated social share images: `/static/og.jpg` (default brand image), `/static/og-invest.jpg` (Investor Relations), `/static/og-listings.jpg` (Active Mandates). All 1200×630 format with dark luxury branding and gold typography. |
+| **ogImage — all pages** | `ogImage` property added to every page's layout call (20+ pages): home, about, services, works, insights, contact, careers, invest, listings, horeca, resources, testimonials. Default fallback is `og.jpg`. |
+| **Build script — static copy** | `npm run build` now runs `cp -r public/static/. dist/static/` after esbuild, ensuring all team photos, OG images, partner logos etc. are included in every Cloudflare Pages deployment. |
+| **Home — Credentials Proof Bar** | New dark animated strip between stats and partner marquee. 14 credential chips scroll continuously: CERT-In Compliant, OWASP Top-10, EY Co-Advisory, ₹1,165 Cr+ Pipeline, 15+ Hotel Projects, 30+ Retail Brands, CBRE Co-Advisory, SEBI Advisory, MCA Registered, Pan-India Network, ₹2,000 Cr+ Transacted, 8+ Years, Mutual NDA Framework, 20+ Hospitality Brands. Pauses on hover. Respects `prefers-reduced-motion`. |
+| **Hero preload** | `<link rel="preload" as="image" fetchpriority="high">` added for first hero slide image (`mapleresorts.in`) to improve LCP score. Layout accepts `heroPreload` opt on all pages. |
+| **Admin — Enquiry Inbox** | New route `/admin/enquiries` (auth-protected). Reads all `enquiry:*` and `horeca_enquiry:*` keys from Cloudflare KV. Shows stats strip (Total, Today, Contact, EOI, NDA, HORECA), searchable table with type badges, name, email, phone, org, message preview, ref number, time-ago, and Reply button. Falls back to demo data in local dev. Filterable by type (All / EOI / NDA / Contact). Added to admin sidebar under Business group. |
+
+### 🌐 New Asset URLs
+| Asset | URL |
+|-------|-----|
+| Default OG image | https://india-gully.pages.dev/static/og.jpg |
+| Investor Relations OG | https://india-gully.pages.dev/static/og-invest.jpg |
+| Active Mandates OG | https://india-gully.pages.dev/static/og-listings.jpg |
+| Enquiry Inbox | https://india-gully.pages.dev/admin/enquiries (auth required) |
 
 ---
 
