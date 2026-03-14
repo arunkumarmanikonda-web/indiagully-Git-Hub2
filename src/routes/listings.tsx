@@ -83,15 +83,22 @@ app.get('/', (c) => {
          style="display:block;text-decoration:none;animation:fadeUp .6s cubic-bezier(.4,0,.2,1) ${idx * 0.07}s both;box-shadow:0 1px 3px rgba(0,0,0,.04);">
 
         <!-- IMAGE / NDA PLACEHOLDER -->
-        <div class="ed-card-img" style="position:relative;height:240px;background:#0e0e18;">
+        <div class="ed-card-img" style="position:relative;height:240px;background:#0a0a14;">
           ${hasImages
             ? `<img src="${l.images[0]}" alt="${l.title}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">`
-            : `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#0d0d1a 0%,#16162a 100%);">
-                <div style="width:60px;height:60px;background:rgba(184,150,12,.12);border:1px solid rgba(184,150,12,.28);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
-                  <i class="fas fa-lock" style="color:var(--gold);font-size:1.2rem;"></i>
+            : `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,#090912 0%,#0f0f1e 50%,#111128 100%);position:relative;overflow:hidden;">
+                <!-- subtle grid pattern -->
+                <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.04) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;"></div>
+                <!-- gold radial glow -->
+                <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(184,150,12,.06) 0%,transparent 70%);pointer-events:none;"></div>
+                <div style="position:relative;text-align:center;">
+                  <div style="width:64px;height:64px;background:rgba(184,150,12,.1);border:1.5px solid rgba(184,150,12,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;border-radius:2px;">
+                    <i class="fas fa-lock" style="color:var(--gold);font-size:1.35rem;"></i>
+                  </div>
+                  <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.55rem;color:#fff;line-height:1;margin-bottom:.3rem;">${l.value}</div>
+                  ${l.valueUSD ? `<div style="font-size:.6rem;color:rgba(255,255,255,.4);letter-spacing:.06em;margin-bottom:.7rem;">${l.valueUSD}</div>` : '<div style="margin-bottom:.7rem;"></div>'}
+                  <div style="font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(184,150,12,.7);">Confidential · NDA Required</div>
                 </div>
-                <div style="font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);">Images Under NDA</div>
-                <div style="font-size:.58rem;color:rgba(255,255,255,.22);margin-top:.35rem;">Available post-NDA execution</div>
               </div>`
           }
           <!-- Gradient overlay for images -->
@@ -100,11 +107,11 @@ app.get('/', (c) => {
           <div style="position:absolute;top:1.1rem;left:1.1rem;">
             <span style="background:${l.sectorColor};color:#fff;font-size:.57rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.26rem .7rem;">${l.sector}</span>
           </div>
-          <!-- NDA badge (always shown for NDA mandates) -->
-          ${l.nda ? `<div style="position:absolute;top:1.1rem;right:1.1rem;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);padding:.2rem .6rem;display:flex;align-items:center;gap:.35rem;border:1px solid rgba(184,150,12,.35);">
+          <!-- NDA badge (always shown for all mandates) -->
+          <div style="position:absolute;top:1.1rem;right:1.1rem;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);padding:.22rem .65rem;display:flex;align-items:center;gap:.35rem;border:1px solid rgba(184,150,12,.4);">
             <i class="fas fa-lock" style="font-size:.48rem;color:var(--gold);"></i>
-            <span style="font-size:.56rem;color:rgba(255,255,255,.8);letter-spacing:.08em;font-weight:700;text-transform:uppercase;">NDA</span>
-          </div>` : ''}
+            <span style="font-size:.56rem;color:rgba(255,255,255,.85);letter-spacing:.08em;font-weight:700;text-transform:uppercase;">NDA</span>
+          </div>
           <!-- Value overlay (images only) -->
           ${hasImages ? `
           <div style="position:absolute;bottom:1.1rem;left:1.1rem;right:1.1rem;display:flex;align-items:flex-end;justify-content:space-between;">
@@ -112,10 +119,10 @@ app.get('/', (c) => {
               <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.9rem;color:#fff;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.7);">${l.value}</div>
               ${l.valueUSD ? `<div style="font-size:.58rem;color:rgba(255,255,255,.5);margin-top:.1rem;">${l.valueUSD}</div>` : ''}
             </div>
-            ${hasImages ? `<div style="background:rgba(0,0,0,.4);backdrop-filter:blur(6px);padding:.2rem .55rem;display:flex;align-items:center;gap:.3rem;border:1px solid rgba(255,255,255,.15);">
+            <div style="background:rgba(0,0,0,.4);backdrop-filter:blur(6px);padding:.2rem .55rem;display:flex;align-items:center;gap:.3rem;border:1px solid rgba(255,255,255,.15);">
               <i class="fas fa-images" style="font-size:.48rem;color:rgba(255,255,255,.5);"></i>
-              <span style="font-size:.56rem;color:rgba(255,255,255,.6);letter-spacing:.06em;">${l.images.length} photos · NDA required for detail</span>
-            </div>` : ''}
+              <span style="font-size:.56rem;color:rgba(255,255,255,.6);letter-spacing:.06em;">${l.images.length} photos · NDA required</span>
+            </div>
           </div>` : ''}
         </div>
 

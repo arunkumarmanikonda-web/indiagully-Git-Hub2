@@ -332,34 +332,42 @@ app.get('/', (c) => {
         <div class="ed-card-img" style="height:248px;background:#0a0a12;position:relative;">
           ${img
             ? `<img src="${img}" alt="${l.title}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">`
-            : `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;background:linear-gradient(135deg,#0a0a14 0%,#141428 100%);">
-                <div style="width:60px;height:60px;background:rgba(184,150,12,.1);border:1px solid rgba(184,150,12,.25);display:flex;align-items:center;justify-content:center;">
-                  <i class="fas fa-lock" style="color:var(--gold);font-size:1.15rem;"></i>
-                </div>
-                <div style="text-align:center;">
-                  <div style="font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.4);">Images Under NDA</div>
-                  <div style="font-size:.58rem;color:rgba(255,255,255,.2);margin-top:.25rem;">Available post NDA execution</div>
+            : `<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,#090912 0%,#0f0f1e 50%,#111128 100%);position:relative;overflow:hidden;">
+                <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.04) 1px,transparent 1px);background-size:32px 32px;"></div>
+                <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(184,150,12,.06) 0%,transparent 70%);"></div>
+                <div style="position:relative;text-align:center;">
+                  <div style="width:56px;height:56px;background:rgba(184,150,12,.1);border:1.5px solid rgba(184,150,12,.3);display:flex;align-items:center;justify-content:center;margin:0 auto .875rem;border-radius:2px;">
+                    <i class="fas fa-lock" style="color:var(--gold);font-size:1.2rem;"></i>
+                  </div>
+                  <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.6rem;color:#fff;line-height:1;margin-bottom:.25rem;">${l.value}</div>
+                  ${l.valueUSD ? `<div style="font-size:.58rem;color:rgba(255,255,255,.4);letter-spacing:.05em;margin-bottom:.5rem;">${l.valueUSD}</div>` : '<div style="margin-bottom:.5rem;"></div>'}
+                  <div style="font-size:.56rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(184,150,12,.7);">Confidential · NDA</div>
                 </div>
               </div>`
           }
-          <!-- Gradient overlay -->
-          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8) 0%,rgba(0,0,0,.2) 50%,transparent 100%);"></div>
+          <!-- Gradient overlay (images only) -->
+          ${img ? `<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8) 0%,rgba(0,0,0,.2) 50%,transparent 100%);"></div>` : ''}
 
           <!-- Sector pill -->
           <div style="position:absolute;top:1.25rem;left:1.25rem;">
             <span style="background:${l.sectorColor};color:#fff;font-size:.57rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.28rem .75rem;">${l.sector}</span>
           </div>
+          <!-- NDA badge always shown -->
+          <div style="position:absolute;top:1.25rem;right:1.25rem;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);padding:.22rem .65rem;display:flex;align-items:center;gap:.3rem;border:1px solid rgba(184,150,12,.4);">
+            <i class="fas fa-lock" style="font-size:.48rem;color:var(--gold);"></i>
+            <span style="font-size:.54rem;color:rgba(255,255,255,.85);letter-spacing:.08em;font-weight:700;text-transform:uppercase;">NDA</span>
+          </div>
 
-          <!-- Value overlay on image bottom -->
+          <!-- Value overlay on image bottom (images only) -->
           ${img ? `<div style="position:absolute;bottom:1.25rem;left:1.25rem;right:1.25rem;display:flex;align-items:flex-end;justify-content:space-between;">
             <div>
               <div style="font-family:'DM Serif Display',Georgia,serif;font-size:2.1rem;color:#fff;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.6);">${l.value}</div>
               ${l.valueUSD ? `<div style="font-size:.6rem;color:rgba(255,255,255,.5);letter-spacing:.08em;">${l.valueUSD}</div>` : ''}
             </div>
-            ${l.nda ? `<div style="background:rgba(0,0,0,.45);backdrop-filter:blur(6px);padding:.2rem .55rem;display:flex;align-items:center;gap:.3rem;border:1px solid rgba(184,150,12,.25);">
-              <i class="fas fa-lock" style="font-size:.5rem;color:var(--gold);"></i>
-              <span style="font-size:.58rem;color:rgba(255,255,255,.65);letter-spacing:.06em;">NDA</span>
-            </div>` : ''}
+            <div style="background:rgba(0,0,0,.4);backdrop-filter:blur(6px);padding:.2rem .55rem;display:flex;align-items:center;gap:.3rem;border:1px solid rgba(255,255,255,.15);">
+              <i class="fas fa-images" style="font-size:.48rem;color:rgba(255,255,255,.5);"></i>
+              <span style="font-size:.54rem;color:rgba(255,255,255,.6);letter-spacing:.06em;">${l.images.length} photos · NDA</span>
+            </div>
           </div>` : ''}
         </div>
 

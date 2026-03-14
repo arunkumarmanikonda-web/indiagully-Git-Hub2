@@ -317,8 +317,8 @@ button{font-family:inherit;}
 #mainNav.nav-clear{background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.12) 65%,transparent 100%);}
 .nav-sp{height:var(--nav-h)}
 .n-lk{
-  font-size:.75rem;font-weight:500;letter-spacing:.05em;
-  color:rgba(255,255,255,.55);padding:.5rem 1rem;
+  font-size:.73rem;font-weight:500;letter-spacing:.04em;
+  color:rgba(255,255,255,.55);padding:.5rem .75rem;
   transition:color var(--t-fast);position:relative;
 }
 .n-lk::after{
@@ -349,9 +349,9 @@ button{font-family:inherit;}
 #nav-desktop-links,#nav-desktop-right{display:none}
 #mobileBtn{display:flex}
 #mobileMenu{display:none}
-@media(min-width:1024px){
-  #nav-desktop-links{display:flex;align-items:center;gap:.15rem}
-  #nav-desktop-right{display:flex;align-items:center;gap:.75rem}
+@media(min-width:1080px){
+  #nav-desktop-links{display:flex;align-items:center;gap:.1rem}
+  #nav-desktop-right{display:flex;align-items:center;gap:.6rem}
   #mobileBtn{display:none}
   #mobileMenu{display:none!important}
 }
@@ -1202,15 +1202,15 @@ body{overflow-x:hidden;}
 /* ── val-grid / val-card (valuation calculator) ── */
 .val-grid{display:grid;grid-template-columns:1fr 360px;gap:2rem;align-items:start;}
 @media(max-width:960px){.val-grid{grid-template-columns:1fr;}}
-.val-card{background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.09);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;}
+.val-card{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;}
 .val-card-title{font-family:'DM Serif Display',Georgia,serif;font-size:1.25rem;color:#fff;margin-bottom:.4rem;}
 .val-card-sub{font-size:.85rem;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;line-height:1.6;margin-bottom:1.25rem;}
 
 /* ── marquee (partner logo ticker) ──────────── */
 .marquee-outer{overflow:hidden;position:relative;}
 .marquee-outer::before,.marquee-outer::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none;}
-.marquee-outer::before{left:0;background:linear-gradient(to right,var(--bg),transparent);}
-.marquee-outer::after{right:0;background:linear-gradient(to left,var(--bg),transparent);}
+.marquee-outer::before{left:0;background:linear-gradient(to right,rgba(255,255,255,.015),transparent);}
+.marquee-outer::after{right:0;background:linear-gradient(to left,rgba(255,255,255,.015),transparent);}
 .marquee-track{display:flex;gap:2.5rem;animation:marquee 28s linear infinite;width:max-content;align-items:center;}
 .marquee-track:hover{animation-play-state:paused;}
 @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
