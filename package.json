@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node_modules/.bin/esbuild src/index.tsx --bundle --outfile=dist/_worker.js --format=esm --platform=browser --target=es2022 --external:node:* --define:process.env.NODE_ENV='\"production\"' --minify-syntax --minify-whitespace",
+    "build": "node_modules/.bin/esbuild src/index.tsx --bundle --outfile=dist/_worker.js --format=esm --platform=browser --target=es2022 --external:node:* --define:process.env.NODE_ENV='\"production\"' --minify-syntax --minify-whitespace && mkdir -p dist/static && cp -r public/static/. dist/static/",
     "build:vite": "vite build",
     "preview": "wrangler pages dev dist",
     "deploy": "npm run build && wrangler pages deploy dist --project-name india-gully --branch main",
