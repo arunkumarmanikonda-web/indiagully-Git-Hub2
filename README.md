@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://b27bbc9b.india-gully.pages.dev |
+| **Latest Deploy** | https://3e7281ee.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
@@ -96,6 +96,23 @@ All portals require credentials provisioned by the system administrator.
 | Page | URL |
 |------|-----|
 | Investor Relations | https://india-gully.pages.dev/invest |
+
+---
+
+## 🚀 Phase 15 — Cmd+K Search Palette, Mobile CTA Bar, Social Proof, Hero Stars, Works Improvements (v26)
+
+**Version: v26 | Build: 3.8 MB | Routes: 22+ all 200 OK | Deploy: https://3e7281ee.india-gully.pages.dev**  
+**Commit: bcf3e8f | Date: March 2026**
+
+### ✅ Phase 15 Deliverables
+
+| Area | What Changed |
+|------|-------------|
+| **15A — Mobile Sticky CTA Bar** | `#ig-mob-bar` shown on ≤768 px screens: 3 full-width tap targets — WhatsApp (green, pre-filled message), Call (+91 8988 988 988), Enquire (gold → `/contact`). Safe-area inset for iOS notch. Hidden on desktop; print-media hidden. |
+| **15B — Cmd+K Search Palette** | Global `Ctrl+K` / `⌘K` shortcut opens a full-screen search overlay. 55-item index covers all Pages, 8 Active Mandates, 14 Insight Articles. Fuzzy substring matching, ↑↓ keyboard navigation, Enter to open, Esc to close, hover highlight. Shows featured mandates when query is empty. Data index embedded in layout.ts globally — works on every page. |
+| **15C — Listing Social Proof Badge** | Each mandate detail sidebar now shows a view-counter widget: animated SVG ring fills based on simulated weekly views (42–210), count-up number animation, and an "N investors interested" badge that fades in after 600 ms. Seeded deterministically from listing ID for consistency. |
+| **15D — Hero Star Particles** | Canvas-based star/particle overlay added to every hero carousel slide. 80–120 gently drifting gold particles, alpha-pulse twinkling animation. Paused on non-active slides to save CPU. Respects lazy-start (initialises after hero loads). |
+| **15E — Works Page Improvements** | Summary stats now use `count-up` + `data-target` with IntersectionObserver animation (₹2,000 Cr+, N+ Mandates, 6 Verticals). Project cards grid becomes 2-col at ≤900 px and 1-col at ≤560 px via `.works-card-grid` responsive CSS. |
 
 ---
 
