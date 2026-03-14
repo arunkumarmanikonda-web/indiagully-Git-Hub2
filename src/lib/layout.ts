@@ -122,18 +122,18 @@ tailwind.config = {
 [data-theme="dark"] .sec-wh,[data-theme="dark"] .card{background:#141420!important;}
 [data-theme="dark"] .mandate-card [style*="background:#fff"],[data-theme="dark"] .insight-card [style*="background:#fff"]{background:#141420!important;color:#f1f5f9!important;}
 [data-theme="dark"] [style*="background:#fff"]:not(.hero-dk *):not(nav *):not(footer *){background:#141420!important;}
-[data-theme="dark"] .sec-pc,[data-theme="dark"] .sec-pd{background:#111118!important;}
+[data-theme="dark"] .sec-pc,[data-theme="dark"] .sec-pd{background:#0e0e1a!important;}
 /* sec-dk must stay dark in dark-mode (--ink flips to light) */
 [data-theme="dark"] .sec-dk{background:#0a0a0f!important;}
-[data-theme="dark"] .sec-dk .diff-grid{background:rgba(255,255,255,.06)!important;border-color:rgba(255,255,255,.08)!important;}
-[data-theme="dark"] .diff-cell{background:rgba(255,255,255,.04)!important;}
-[data-theme="dark"] .diff-cell:hover{background:rgba(255,255,255,.08)!important;}
+[data-theme="dark"] .sec-dk .diff-grid{background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.1)!important;}
+[data-theme="dark"] .diff-cell{background:rgba(255,255,255,.07)!important;}
+[data-theme="dark"] .diff-cell:hover{background:rgba(255,255,255,.12)!important;}
 [data-theme="dark"] .am,[data-theme="dark"] .ig-tbl thead tr{background:#1a1a28!important;}
 [data-theme="dark"] table.ig-tbl tbody tr{background:#141420;}
 [data-theme="dark"] table.ig-tbl tbody tr:hover{background:#1a1a28;}
 [data-theme="dark"] .ig-input,.ig-inp{background:#1a1a28;color:#f1f5f9;border-color:rgba(255,255,255,.1);}
 [data-theme="dark"] .ig-panel{background:#1a1a28;border-color:rgba(255,255,255,.07);}
-[data-theme="dark"] .why-card,[data-theme="dark"] .vg-cell{background:#141420!important;border-color:rgba(255,255,255,.06)!important;}
+[data-theme="dark"] .why-card,[data-theme="dark"] .vg-cell{background:#22223a!important;border-color:rgba(255,255,255,.13)!important;}
 [data-theme="dark"] .mandate-card,[data-theme="dark"] .insight-card{background:#141420!important;border-color:rgba(255,255,255,.06)!important;}
 [data-theme="dark"] .home-stat-cell,[data-theme="dark"] .ig-metric-box{background:#141420!important;border-color:rgba(255,255,255,.06)!important;}
 [data-theme="dark"] .feature-card{background:#141420!important;border-color:rgba(255,255,255,.06)!important;}
@@ -152,6 +152,47 @@ tailwind.config = {
 [data-theme="dark"] .ig-prop-cell{background:#141420!important;color:rgba(255,255,255,.45)!important;}
 /* Dark mode: works-card, contact-info-card */
 [data-theme="dark"] .works-card,[data-theme="dark"] .contact-info-card{background:#141420!important;border-color:rgba(255,255,255,.06)!important;}
+/* Dark mode: partner-marquee-section & trust-signals */
+[data-theme="dark"] .partner-marquee-section{background:#0a0a12!important;border-color:rgba(255,255,255,.06)!important;}
+[data-theme="dark"] .partner-marquee-label{color:rgba(255,255,255,.35)!important;}
+[data-theme="dark"] .trust-signals-section{background:#0a0a12!important;border-color:rgba(255,255,255,.06)!important;}
+/* Dark mode: map section */
+[data-theme="dark"] .map-presence-section{background:#080810!important;border-color:rgba(255,255,255,.06)!important;}
+[data-theme="dark"] .map-city-card{background:#141420!important;border-color:rgba(255,255,255,.07)!important;}
+[data-theme="dark"] .map-city-card:hover{border-color:rgba(184,150,12,.3)!important;}
+[data-theme="dark"] .map-city-name{color:rgba(255,255,255,.9)!important;}
+[data-theme="dark"] .map-city-sub{color:rgba(255,255,255,.4)!important;}
+[data-theme="dark"] .india-map-box{background:linear-gradient(135deg,#0d0d1e 0%,#141428 100%)!important;border-color:rgba(255,255,255,.08)!important;}
+[data-theme="dark"] .india-map-wrap svg .india-land{fill:#1e1e35!important;stroke:rgba(184,150,12,.35)!important;}
+[data-theme="dark"] .india-map-wrap svg .map-island-label{fill:rgba(255,255,255,.4)!important;}
+[data-theme="dark"] .india-map-caption{color:rgba(255,255,255,.3)!important;}
+[data-theme="dark"] .india-map-wrap svg text{fill:rgba(255,255,255,.75)!important;}
+[data-theme="dark"] .india-map-wrap svg .map-legend-bg{fill:rgba(184,150,12,.06)!important;stroke:rgba(184,150,12,.2)!important;}
+[data-theme="dark"] .india-map-wrap svg .map-legend-text{fill:rgba(255,255,255,.5)!important;}
+[data-theme="dark"] .india-map-wrap svg .map-pin-label{fill:rgba(255,255,255,.88)!important;}
+[data-theme="dark"] .india-map-wrap svg .map-pin-sub{fill:rgba(255,255,255,.5)!important;}
+/* Dark mode: why-cards section text */
+[data-theme="dark"] .why-card{background:#22223a!important;border-color:rgba(255,255,255,.13)!important;}
+[data-theme="dark"] .why-card h3{color:#f1f5f9!important;}
+[data-theme="dark"] .why-card p{color:rgba(255,255,255,.65)!important;}
+/* Dark mode: sec-wh inline-bg overrides */
+[data-theme="dark"] [style*="background:var(--parch)"]{background:var(--parch)!important;}
+[data-theme="dark"] [style*="background:var(--parch-dk)"]{background:var(--parch-dk)!important;}
+/* Dark mode: city list cards with background:#fff */
+[data-theme="dark"] .city-pin-card{background:#141420!important;border-color:rgba(255,255,255,.07)!important;}
+/* Dark mode: hb-card (hotel brand cards) */
+[data-theme="dark"] .hb-card{border-color:rgba(255,255,255,.07)!important;background:#141420!important;}
+[data-theme="dark"] .hb-card img{filter:brightness(.85) contrast(1.1);}
+/* Dark mode: rb-card (retail brand cards) */
+[data-theme="dark"] .rb-card{border-color:rgba(255,255,255,.07)!important;background:#141420!important;}
+/* Dark mode: insight mini-card on home page */
+[data-theme="dark"] .home-insight-card{background:#141420!important;border-color:rgba(255,255,255,.06)!important;}
+[data-theme="dark"] .home-insight-card h3{color:rgba(255,255,255,.88)!important;}
+[data-theme="dark"] .home-insight-card p{color:rgba(255,255,255,.45)!important;}
+/* Dark mode: stat cells inline */
+[data-theme="dark"] .home-stat-cell{background:#141420!important;border-color:rgba(255,255,255,.06)!important;}
+/* Dark mode: filter buttons (inline bg) */
+[data-theme="dark"] [data-hbcat],[data-theme="dark"] [data-rbcat]{background:transparent!important;border-color:rgba(255,255,255,.12)!important;color:rgba(255,255,255,.5)!important;}
 
 /* ── FOCUS VISIBLE (ARIA) ──────────────────────────────────────────────── */
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
@@ -1300,6 +1341,11 @@ body{overflow-x:hidden;}
 [data-theme="dark"] .trust-row{border-top-color:rgba(255,255,255,.07);border-bottom-color:rgba(255,255,255,.07);}
 [data-theme="dark"] .trust-item{color:rgba(255,255,255,.75);}
 [data-theme="dark"] .trust-item strong{color:#fff;}
+
+/* ── india-map-box (map section card) ────────── */
+.india-map-box{background:linear-gradient(135deg,#f0ebe0 0%,#e8e1d0 100%);}
+.india-map-wrap svg .india-land{fill:#e8ddc8;stroke:#b8a878;stroke-width:1.2;stroke-linejoin:round;}
+.india-map-wrap svg text{fill:#444;}
 
 /* ── tel-card (quick dial team card) ─────────── */
 .tel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem;}

@@ -281,6 +281,81 @@ app.route('/resources', resourcesRoute)
 app.route('/careers', careersRoute)
 app.route('/invest', investRoute)
 app.route('/pipeline', pipelineRoute)
+
+// ── PUBLIC API: MANDATE LOCATIONS MAP ─────────────────────────────────────────
+// Returns active mandate pin data for the home page India map
+// No auth required — public data only (city-level, no sensitive deal info)
+app.get('/api/mandate-locations', (c) => {
+  c.header('Cache-Control', 'public, max-age=3600')
+  return c.json({
+    updated: 'Q1 2026',
+    total_value: '₹1,165 Cr+',
+    total_mandates: 8,
+    locations: [
+      {
+        id: 'delhi',
+        city: 'Delhi NCR',
+        sub: 'Gurugram · Noida · Shalimar Bagh',
+        mandates: 'Prism Tower · Ambience Tower · Sawasdee JLG',
+        value: '₹900 Cr combined',
+        status: 'active',
+        color: '#B8960C',
+        sectors: ['Real Estate', 'Hospitality']
+      },
+      {
+        id: 'chandigarh',
+        city: 'Chandigarh',
+        sub: 'Hotel Rajshree & Spa',
+        mandates: 'Hotel Rajshree & Spa · 41 Keys',
+        value: '₹70 Cr',
+        status: 'active',
+        color: '#065F46',
+        sectors: ['Hospitality']
+      },
+      {
+        id: 'himachal',
+        city: 'Himachal Pradesh',
+        sub: 'Kasauli · Chail · Shimla',
+        mandates: 'WelcomHeritage Kasauli · Maple Resort Chail',
+        value: '₹75 Cr combined',
+        status: 'active',
+        color: '#1A3A6B',
+        sectors: ['Hospitality']
+      },
+      {
+        id: 'jaipur',
+        city: 'Jaipur',
+        sub: 'Heritage Hotel Corridor',
+        mandates: 'Heritage Hotel · 43 Keys',
+        value: '₹20 Cr',
+        status: 'active',
+        color: '#7C3AED',
+        sectors: ['Hospitality']
+      },
+      {
+        id: 'mumbai',
+        city: 'Mumbai',
+        sub: 'BKC · Lower Parel',
+        mandates: 'Advisory pipeline · Active discussion',
+        value: 'Pipeline',
+        status: 'pipeline',
+        color: '#dc2626',
+        sectors: ['Real Estate']
+      },
+      {
+        id: 'bengaluru',
+        city: 'Bengaluru',
+        sub: 'Whitefield · MG Road',
+        mandates: 'Whitefield · MG Road · Active pipeline',
+        value: 'Pipeline',
+        status: 'pipeline',
+        color: '#065F46',
+        sectors: ['Real Estate', 'Retail']
+      }
+    ]
+  })
+})
+
 app.route('/api', apiRoute)
 
 // ── 404 NOT FOUND ─────────────────────────────────────────────────────────────
