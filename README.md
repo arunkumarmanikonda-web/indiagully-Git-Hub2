@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://d2529cc3.india-gully.pages.dev |
+| **Latest Deploy** | https://45c166af.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
@@ -53,7 +53,41 @@ All portals require credentials provisioned by the system administrator.
 
 ---
 
-## 🚀 Phase 8 — UI Polish, Bug Fixes & Final QA (v19)
+## 🚀 Phase 10 — NDA Card Consistency, Color System Fixes & Nav Polish (v21)
+
+**Version: v21 | Build: 3.6 MB | Routes: 20+ all 200 OK | Deploy: https://45c166af.india-gully.pages.dev**  
+**Commit: 912b3db | Date: March 2026**
+
+### ✅ Phase 10 Deliverables
+
+| Area | What Changed |
+|------|-------------|
+| **NDA Card Consistency** | 5 listings with no public images now show an elegant dark placeholder (grid-pattern bg + radial gold glow + lock icon + property value + "Confidential · NDA Required") instead of a blank black box. All 8 cards now show an NDA lock badge (top-right corner) regardless of whether images exist. Fully consistent visual language across the mandates grid. |
+| **Home page mandates** | Same fix applied to Featured Mandates section on home page — no-image cards show value + lock, all cards always display NDA badge. |
+| **Marquee gradient bug** | Fixed `.marquee-outer::before/::after` gradient which was using `var(--bg)` (now light parchment). Changed to `rgba(255,255,255,.015)` matching the dark marquee container. |
+| **val-card visibility** | Increased `val-card` border to `rgba(255,255,255,.12)` (from `.09`) for better visibility on dark `#0c0c18` background. |
+| **Nav compact** | Reduced `.n-lk` padding to `.5rem .75rem` (from `1rem`); tightened desktop breakpoint to `1080px`; reduced letter-spacing to `.04em`. Nav no longer overflows on 1080px–1280px screens. |
+| **`--bg` / `--bg-dk` system** | `--bg: #FAFAF6` (light parchment for light sections), `--bg-dk: #0c0c18` (dark for dark-bg sections). All dark sections (valuation, compare, market-data, testimonials, home trust strip, works timeline) use `var(--bg-dk)`. Light sections (about, careers) use `var(--bg)`. |
+
+---
+
+## 🚀 Phase 9 — Nav Slim, Layout Title Fix & Light Mode Default (v20)
+
+**Version: v20 | Build: 3.6 MB | Routes: 20+ all 200 OK | Deploy: https://d2529cc3.india-gully.pages.dev**  
+**Commit: dd14faa | Date: March 2026**
+
+### ✅ Phase 9 Deliverables
+
+| Area | What Changed |
+|------|-------------|
+| **Navigation** | Slimmed from 11 to 7 top-level items. Services & Tools moved into Advisory dropdown. Our Work, Resources, Testimonials, Careers moved to More dropdown. FA icons instead of emojis. |
+| **Valuation title bug** | Fixed `[object Object]` title — was calling `layout({title:...})` instead of `layout('Title', html, opts)`. Fixed across compare, market-data, testimonials pages too. |
+| **Light mode default** | Removed system dark-mode fallback. Site now defaults to light mode; dark mode only activates when user explicitly toggles. |
+| **Dark mode CSS** | Tightened `[data-theme="dark"]` selectors to prevent overriding nav/footer/hero backgrounds. |
+
+---
+
+
 
 **Version: v19 | Build: 3.6 MB | Routes: 20+ all 200 OK | Deploy: https://61b06b68.india-gully.pages.dev**  
 **Commit: fb611a8 | Date: March 2026**
