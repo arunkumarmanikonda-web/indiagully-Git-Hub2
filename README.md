@@ -10,12 +10,13 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://45c166af.india-gully.pages.dev |
+| **Latest Deploy** | https://89f9072c.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
 | **Knowledge Hub** | https://india-gully.pages.dev/resources |
 | **Careers** | https://india-gully.pages.dev/careers |
+| **Investor Relations** | https://india-gully.pages.dev/invest |
 | **Sandbox Preview** | http://localhost:3000 |
 
 ---
@@ -68,6 +69,33 @@ All portals require credentials provisioned by the system administrator.
 | **val-card visibility** | Increased `val-card` border to `rgba(255,255,255,.12)` (from `.09`) for better visibility on dark `#0c0c18` background. |
 | **Nav compact** | Reduced `.n-lk` padding to `.5rem .75rem` (from `1rem`); tightened desktop breakpoint to `1080px`; reduced letter-spacing to `.04em`. Nav no longer overflows on 1080px–1280px screens. |
 | **`--bg` / `--bg-dk` system** | `--bg: #FAFAF6` (light parchment for light sections), `--bg-dk: #0c0c18` (dark for dark-bg sections). All dark sections (valuation, compare, market-data, testimonials, home trust strip, works timeline) use `var(--bg-dk)`. Light sections (about, careers) use `var(--bg)`. |
+
+---
+
+## 🚀 Phase 11 — SEO Foundation, Scroll UX, Contact FAB, Social Sharing & Investor Relations (v22)
+
+**Version: v22 | Build: 3.7 MB | Routes: 21+ all 200 OK | Deploy: https://89f9072c.india-gully.pages.dev**  
+**Commit: 08c0112 | Date: March 2026**
+
+### ✅ Phase 11 Deliverables
+
+| Area | What Changed |
+|------|-------------|
+| **SEO — Canonical URLs** | Added `canonical` meta tag to all missing routes: `about`, `services`, `works`, `contact`, `careers`. All 20+ pages now have correct canonical URLs pointing to `https://india-gully.pages.dev/…`. |
+| **SEO — JSON-LD Schema** | Verified JSON-LD structured data (`WebPage` + `Organization`) on home, insights, invest pages for Google rich results. |
+| **Scroll Progress Bar** | Gold thin progress bar (`#ig-scroll-prog`) at top of every page, animates with scroll position. Hidden on `@media print`. |
+| **Global Contact FAB** | Fixed contact bubble (`#ig-contact-fab`) bottom-right on every page (except portal/admin). Three quick-action buttons: WhatsApp (green), Call (gold), Email (slate). Animates on hover. Hidden on print. |
+| **Insights Social Sharing** | Article detail pages now show full social-share row: X/Twitter, LinkedIn, WhatsApp, Copy-Link buttons. Published meta line includes read time with clock icon. |
+| **Insights Read Time** | All 20 articles have `readTime` metadata. Read time shown in article card meta and article detail footer. |
+| **/invest — Investor Relations page** | New page at `/invest` with: dark hero + key metric strip (₹1,165 Cr+ pipeline, ₹2,000 Cr+ transacted, 15+ hotel mandates, 8 active mandates, 5 verticals), Why Partner section (6 advantage cards), Active Pipeline table (filterable by sector), NDA/Information Request form, Leadership contact cards, Legal Disclaimer. |
+| **Nav & Footer — Investor Relations** | `/invest` added to desktop "More" dropdown (with chart-line icon), mobile menu, and footer quick-links. |
+| **Dark mode fix — India Gully Difference** | `.diff-section` class forces `background:#0a0a10` regardless of theme. `[data-theme="dark"] .sec-dk` also overridden to `#0a0a0f !important` so the section is never washed out in dark mode. |
+| **Trust Row readability** | Dark-mode `.trust-item` text raised to `rgba(255,255,255,.75)` (from `.5`); `strong` now `#fff`. Fully legible in both modes. |
+
+### 🌐 New Page URLs
+| Page | URL |
+|------|-----|
+| Investor Relations | https://india-gully.pages.dev/invest |
 
 ---
 
