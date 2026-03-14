@@ -152,7 +152,7 @@ app.get('/', (c) => {
 </section>
 
 <!-- ── FILTER + WALL ─────────────────────────────────────────────────── -->
-<section style="background:var(--bg);padding:3rem 0 5rem;">
+<section style="background:var(--bg-dk);padding:3rem 0 5rem;">
   <div class="container" style="max-width:1200px;margin:0 auto;padding:0 1.5rem;">
 
     <!-- Filters -->

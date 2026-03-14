@@ -89,7 +89,7 @@ app.get('/', (c) => {
 </section>
 
 <!-- ── COMPARE TABLE ─────────────────────────────────────────────────── -->
-<section style="background:var(--bg);padding:2.5rem 0 5rem;">
+<section style="background:var(--bg-dk);padding:2.5rem 0 5rem;">
   <div class="container" style="max-width:1200px;margin:0 auto;padding:0 1.5rem;">
 
     <!-- Empty state -->

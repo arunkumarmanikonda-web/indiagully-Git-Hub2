@@ -90,6 +90,8 @@ tailwind.config = {
   --ink:#f1f5f9;--ink-muted:#94a3b8;--ink-soft:#cbd5e1;--ink-faint:#475569;
   --parch:#0a0a0f;--parch-dk:#111118;--border:rgba(255,255,255,.07);
   --surface:#141420;--surface-2:#1a1a28;
+  --bg:#07070f;--bg-2:#0d0d1c;--bg-3:#111120;
+  --bg-dk:#07070f;--bg-dk2:#0d0d1c;--bg-dk3:#111120;
 }
 [data-theme="dark"] body{background:#0a0a0f;color:#f1f5f9;}
 [data-theme="dark"] .sec-wh,[data-theme="dark"] .card{background:#141420!important;}
@@ -134,6 +136,10 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offse
   --gold-glow:rgba(184,150,12,.35);--gold-line:rgba(184,150,12,.22);
   /* Obsidian ink palette */
   --ink:#0A0A0A;--ink-mid:#141414;--ink-soft:#3A3A3A;--ink-muted:#6B6B6B;--ink-faint:#A8A8A8;
+  /* General page background — light parchment (mirrors --parch) */
+  --bg:#FAFAF6;--bg-2:#F4EFE6;--bg-3:#EEEAE0;
+  /* Dark section background — used by calculator, compare, market-data etc. */
+  --bg-dk:#0c0c18;--bg-dk2:#111120;--bg-dk3:#16162a;
   /* Ivory parchment palette */
   --parch:#FAFAF6;--parch-dk:#F4EFE6;--border:#E6E0D4;--border-lt:#EDE8DF;
   --surface:#FFFFFF;--surface-2:#F8F5F0;

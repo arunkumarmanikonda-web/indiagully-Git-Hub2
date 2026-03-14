@@ -29,7 +29,7 @@ app.get('/', (c) => {
 </section>
 
 <!-- ── METHODOLOGY TABS ─────────────────────────────────────────────── -->
-<section style="background:var(--bg);padding:3rem 0 5rem;">
+<section style="background:#0c0c18;padding:3rem 0 5rem;">
   <div class="container" style="max-width:1100px;margin:0 auto;padding:0 1.5rem;">
 
     <!-- Method Switcher -->
@@ -230,7 +230,7 @@ app.get('/', (c) => {
           <a href="/contact#enquiry" class="btn btn-g" style="display:block;text-align:center;text-decoration:none;margin-bottom:.6rem;">
             Request Valuation Advisory
           </a>
-          <a href="/listings" class="btn btn-dko" style="display:block;text-align:center;text-decoration:none;">
+          <a href="/listings" style="display:block;text-align:center;text-decoration:none;border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.75);padding:.65rem 1.5rem;font-size:.82rem;font-weight:600;letter-spacing:.06em;font-family:'DM Sans',sans-serif;transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,.08)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,.75)'">
             View Active Mandates
           </a>
         </div>

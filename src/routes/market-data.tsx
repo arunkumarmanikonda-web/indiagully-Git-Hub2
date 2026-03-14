@@ -97,7 +97,7 @@ app.get('/', (c) => {
 </section>
 
 <!-- ── CITY RATE CARD TABLE ──────────────────────────────────────────── -->
-<section style="background:var(--bg);padding:3rem 0;">
+<section style="background:var(--bg-dk);padding:3rem 0;">
   <div class="container" style="max-width:1200px;margin:0 auto;padding:0 1.5rem;">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1.5rem;">
       <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;margin:0;">City Rate Card <span style="font-size:.85rem;color:rgba(255,255,255,.4);font-family:'DM Sans',sans-serif;">(₹ per sq ft unless noted)</span></h2>
@@ -177,7 +177,7 @@ app.get('/', (c) => {
 </section>
 
 <!-- ── DEAL ACTIVITY ─────────────────────────────────────────────────── -->
-<section style="background:var(--bg);padding:3rem 0;">
+<section style="background:var(--bg-dk);padding:3rem 0;">
   <div class="container" style="max-width:1200px;margin:0 auto;padding:0 1.5rem;">
     <h2 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.5rem;color:#fff;margin-bottom:1.5rem;">Transaction Activity — FY26</h2>
     <div class="mkt-deal-grid">
@@ -236,7 +236,7 @@ app.get('/', (c) => {
 </section>
 
 <!-- ── DISCLAIMER ────────────────────────────────────────────────────── -->
-<section style="background:var(--bg);padding:2rem 0;">
+<section style="background:var(--bg-dk);padding:2rem 0;">
   <div class="container" style="max-width:1200px;margin:0 auto;padding:0 1.5rem;">
     <div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:1.25rem;font-size:.74rem;color:rgba(255,255,255,.35);font-family:'DM Sans',sans-serif;line-height:1.7;">
       <strong style="color:rgba(255,255,255,.5);">Data Sources & Disclaimer:</strong> Market data compiled from JLL, CBRE, ANAROCK, STR (Smith Travel Research), 

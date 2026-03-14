@@ -127,7 +127,7 @@ app.get('/', (c) => {
 </div>
 
 <!-- ══ ACHIEVEMENT TIMELINE ══════════════════════════════════════════════ -->
-<div style="background:var(--bg);padding:3.5rem 0;border-bottom:1px solid rgba(255,255,255,.06);">
+<div style="background:var(--bg-dk);padding:3.5rem 0;border-bottom:1px solid rgba(255,255,255,.06);">
   <div class="wrap">
     <div style="text-align:center;margin-bottom:2.5rem;">
       <p style="font-size:.6rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;">Our Journey</p>

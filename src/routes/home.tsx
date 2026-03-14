@@ -224,7 +224,7 @@ app.get('/', (c) => {
 </div>
 
 <!-- ══ TRUST SIGNALS ROW ════════════════════════════════════════════════ -->
-<div style="background:var(--bg);padding:1.5rem 0;border-bottom:1px solid rgba(255,255,255,.06);">
+<div style="background:var(--bg-dk);padding:1.5rem 0;border-bottom:1px solid rgba(255,255,255,.06);">
   <div class="wrap">
     <div class="trust-row">
       <div class="trust-item">
