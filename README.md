@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://d098b3b6.india-gully.pages.dev |
+| **Latest Deploy** | https://7623bd78.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
@@ -96,6 +96,27 @@ All portals require credentials provisioned by the system administrator.
 | Page | URL |
 |------|-----|
 | Investor Relations | https://india-gully.pages.dev/invest |
+
+---
+
+## 🚀 Phase 13 — About Page Redesign, Listing Detail Share/WhatsApp, Contact Email API & Global UX (v24)
+
+**Version: v24 | Build: 3.7 MB | Routes: 21+ all 200 OK | Deploy: https://7623bd78.india-gully.pages.dev**  
+**Commit: f4d8ef2 | Date: March 2026**
+
+### ✅ Phase 13 Deliverables
+
+| Area | What Changed |
+|------|-------------|
+| **About — Timeline extended** | 2025 and 2026 milestones added: ₹1,165 Cr+ pipeline, co-advisory with EY, Debt & Special Situations scale; 2026 Investor Relations portal launch, CERT-In OWASP Top-10 compliance, 8 active mandates across 5 asset classes. |
+| **About — Accolades strip** | New credentials & affiliations strip (dark band between By-the-Numbers and Recognition sections): CERT-In Compliant, OWASP Top-10 Secure, Mutual NDA Framework, SEBI-Compliant Advisory, EY Co-Advisory, CBRE Co-Advisory, MCA Registered, Pan-India Network. |
+| **About — Count-up numbers** | "By The Numbers" stat cards use `count-up` class — numbers animate in with IntersectionObserver when the section scrolls into view. |
+| **Listing detail — Share buttons** | Share row added to sidebar CTA box: X/Twitter, LinkedIn, WhatsApp share links + clipboard copy-link button. |
+| **Listing detail — WhatsApp CTA** | Green WhatsApp Enquiry button in sidebar with pre-filled message including mandate title and value. |
+| **Listing detail — Dark-mode fix** | "More Active Mandates" card body backgrounds changed from hardcoded `#fff` to `var(--parch)` — fully theme-aware. |
+| **Contact form — Email API** | `/api/enquiry` now fires email notifications for `type: 'general'` (contact form): team notification to `info@indiagully.com` + CC to `akm@indiagully.com` + confirmation email to submitter with reference number and next steps. All via SendGrid. |
+| **Contact form — UX improvements** | `d.success` check added — server-side errors now surface as inline form errors (not silent). Success path triggers `igToast('Enquiry submitted! A confirmation email has been sent.', 'success')`. |
+| **Lazy loading** | `loading="lazy"` added to all team photos in `about.tsx`, vertical images in `works.tsx`, and article images in `insights.tsx`. |
 
 ---
 
