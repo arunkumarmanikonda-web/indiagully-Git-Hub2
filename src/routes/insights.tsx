@@ -1151,7 +1151,7 @@ app.get('/:id', (c) => {
 <div style="background:var(--ink);position:relative;overflow:hidden;">
   <!-- Background image -->
   <div style="position:absolute;inset:0;">
-    <img src="${catImg}" alt="${article.title}" style="width:100%;height:100%;object-fit:cover;opacity:.18;">
+    <img loading="lazy" src="${catImg}" alt="${article.title}" style="width:100%;height:100%;object-fit:cover;opacity:.18;">
     <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(8,8,8,.96) 0%,rgba(8,8,8,.75) 100%);"></div>
   </div>
   <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(184,150,12,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,150,12,.04) 1px,transparent 1px);background-size:72px 72px;pointer-events:none;"></div>

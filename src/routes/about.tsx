@@ -98,6 +98,8 @@ app.get('/', (c) => {
         { year:'2021', desc:'Launched India Gully brand identity, celebrating Desiness. Deepened retail leasing practice with 30+ brand relationships across fashion, F&B and entertainment.' },
         { year:'2023', desc:'Scaled hospitality transaction advisory with high-value asset sales and acquisitions across Delhi NCR, Chandigarh and Himachal Pradesh. Debt & Special Situations vertical established. Advisory pipeline crosses ₹1,000 Cr+.' },
         { year:'2024', desc:'Digital transformation initiative. India Gully Enterprise Platform (ERP), integrated advisory management, governance and HORECA procurement system launched.' },
+        { year:'2025', desc:'₹1,165 Cr+ active advisory pipeline. Prism Tower (₹400 Cr) and Belcibo Hospitality Platform (₹100 Cr) mandates added. Co-advisory with EY on mixed-use transactions. Debt & Special Situations vertical scales with IBC-related hospitality mandates.' },
+        { year:'2026', desc:'India Gully Investor Relations portal launched. /invest page goes live for qualified institutional investors and family offices. CERT-In OWASP Top-10 security compliance achieved. Eight active mandates across five asset classes.' },
       ].map((t,i) => `
       <div style="display:grid;grid-template-columns:1fr 44px 1fr;gap:0;margin-bottom:2.5rem;align-items:center;">
         ${i%2===0 ? `
@@ -147,7 +149,7 @@ app.get('/', (c) => {
 
         <!-- Left: Photo Column -->
         <div style="position:relative;overflow:hidden;background:var(--ink);min-height:380px;">
-          <img src="/static/team/arun-manikonda.jpg" alt="Arun Kumar Manikonda"
+          <img loading="lazy" src="/static/team/arun-manikonda.jpg" alt="Arun Kumar Manikonda"
                style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;"
                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
           <div style="display:none;width:100%;height:380px;background:linear-gradient(135deg,#0a0a12,#141420);align-items:center;justify-content:center;">
@@ -239,7 +241,7 @@ app.get('/', (c) => {
         <!-- Photo -->
         <div style="background:var(--ink);position:relative;overflow:hidden;">
           <div style="position:relative;width:100%;height:280px;overflow:hidden;">
-            <img src="/static/team/pavan-manikonda.jpg" alt="Pavan Kumar Manikonda"
+            <img loading="lazy" src="/static/team/pavan-manikonda.jpg" alt="Pavan Kumar Manikonda"
                  style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;transition:transform .5s ease;"
                  onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
@@ -296,7 +298,7 @@ app.get('/', (c) => {
         <!-- Photo -->
         <div style="background:var(--ink);position:relative;overflow:hidden;">
           <div style="position:relative;width:100%;height:280px;overflow:hidden;">
-            <img src="/static/team/amit-jhingan.png" alt="Amit Jhingan"
+            <img loading="lazy" src="/static/team/amit-jhingan.png" alt="Amit Jhingan"
                  style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;transition:transform .5s ease;"
                  onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
@@ -413,7 +415,7 @@ app.get('/', (c) => {
       <div class="reveal" style="padding:2rem;border:1px solid var(--border-lt);text-align:center;transition:all .28s;position:relative;overflow:hidden;" onmouseover="this.style.borderColor='rgba(184,150,12,.3)';this.style.transform='translateY(-4px)'" onmouseout="this.style.borderColor='var(--border-lt)';this.style.transform='translateY(0)'">
         <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,${s.color},transparent);opacity:0;transition:opacity .3s;" class="num-top"></div>
         <i class="fas fa-${s.icon}" style="font-size:1.1rem;color:${s.color};margin-bottom:1rem;display:block;"></i>
-        <div style="font-family:'DM Serif Display',Georgia,serif;font-size:1.85rem;color:${s.color};line-height:1;margin-bottom:.5rem;letter-spacing:-.02em;">${s.n}</div>
+        <div class="count-up" data-target="${s.n}" style="font-family:'DM Serif Display',Georgia,serif;font-size:1.85rem;color:${s.color};line-height:1;margin-bottom:.5rem;letter-spacing:-.02em;">${s.n}</div>
         <div style="font-size:.72rem;font-weight:700;color:var(--ink);letter-spacing:.04em;margin-bottom:.35rem;">${s.label}</div>
         <p style="font-size:.72rem;color:var(--ink-muted);line-height:1.55;margin:0;">${s.sub}</p>
       </div>`).join('')}
@@ -421,8 +423,36 @@ app.get('/', (c) => {
   </div>
 </div>
 
+<!-- ══ ACCOLADES STRIP ══════════════════════════════════════════════════ -->
+<div style="background:var(--parch-dk);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:2rem 0;overflow:hidden;">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <span style="font-size:.58rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-muted);">Credentials & Affiliations</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;align-items:stretch;">
+      ${[
+        { icon:'shield-alt',    color:'#065F46', bg:'rgba(22,163,74,.08)', border:'rgba(22,163,74,.2)',  title:'CERT-In Compliant',         sub:'Cyber security advisory standard' },
+        { icon:'check-shield',  color:'#1A3A6B', bg:'rgba(37,99,235,.08)', border:'rgba(37,99,235,.2)',  title:'OWASP Top-10 Secure',       sub:'Platform security verified 2025' },
+        { icon:'file-contract', color:'#B8960C', bg:'rgba(184,150,12,.08)',border:'rgba(184,150,12,.2)', title:'Mutual NDA Framework',      sub:'All mandates NDA-protected' },
+        { icon:'balance-scale', color:'#7C3AED', bg:'rgba(124,58,237,.08)',border:'rgba(124,58,237,.2)', title:'SEBI-Compliant Advisory',   sub:'Transaction advisory within regulatory framework' },
+        { icon:'building',      color:'#065F46', bg:'rgba(22,163,74,.08)', border:'rgba(22,163,74,.2)',  title:'EY Co-Advisory',            sub:'Joint mandates with Ernst & Young' },
+        { icon:'chart-bar',     color:'#1A3A6B', bg:'rgba(37,99,235,.08)', border:'rgba(37,99,235,.2)',  title:'CBRE Co-Advisory',          sub:'Commercial & hospitality mandates' },
+        { icon:'registered',    color:'#B8960C', bg:'rgba(184,150,12,.08)',border:'rgba(184,150,12,.2)', title:'MCA Registered',            sub:'CIN: U74999DL2017PTC323237' },
+        { icon:'map-marked-alt',color:'#7C3AED', bg:'rgba(124,58,237,.08)',border:'rgba(124,58,237,.2)', title:'Pan-India Network',         sub:'Delhi · Chandigarh · Mumbai · Kerala' },
+      ].map(a => `
+      <div class="reveal" style="display:flex;align-items:center;gap:.75rem;background:${a.bg};border:1px solid ${a.border};padding:.75rem 1.25rem;border-radius:3px;flex:0 1 auto;white-space:nowrap;transition:transform .2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        <i class="fas fa-${a.icon}" style="color:${a.color};font-size:.85rem;flex-shrink:0;"></i>
+        <div>
+          <div style="font-size:.68rem;font-weight:700;color:var(--ink);letter-spacing:.02em;">${a.title}</div>
+          <div style="font-size:.6rem;color:var(--ink-muted);">${a.sub}</div>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>
+</div>
+
 <!-- ══ RECOGNITION & MEDIA ═══════════════════════════════════════════════ -->\n
-<div style="background:#fff;padding:4.5rem 0;border-top:1px solid var(--border);">
+<div style="background:var(--parch);padding:4.5rem 0;border-top:1px solid var(--border);">
   <div class="wrap">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;">
       <div>

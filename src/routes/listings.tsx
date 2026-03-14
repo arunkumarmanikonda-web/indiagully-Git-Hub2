@@ -1153,10 +1153,40 @@ ${ndaModal}
         <div style="background:var(--ink);padding:1.5rem;text-align:center;">
           <i class="fas fa-file-signature" style="color:var(--gold);font-size:1.75rem;margin-bottom:.875rem;display:block;"></i>
           <h4 style="font-family:'DM Serif Display',Georgia,serif;font-size:1.1rem;color:#fff;margin-bottom:.5rem;">Ready to Proceed?</h4>
-          <p style="font-size:.75rem;color:rgba(255,255,255,.45);line-height:1.65;margin-bottom:1.25rem;">Scroll down to submit your Expression of Interest and receive the Information Memorandum within 24 hours.</p>
-          <a href="#eoi-section" onclick="(function(){ var s=sessionStorage.getItem('ig_nda_${l.id}'); if(s&&JSON.parse(s).accepted){ document.getElementById('eoi-section').scrollIntoView({behavior:'smooth'}); } else { igScrollToNDA(); } })(); return false;" class="btn btn-g" style="width:100%;display:block;text-align:center;padding:.875rem;text-decoration:none;">
+          <p style="font-size:.75rem;color:rgba(255,255,255,.45);line-height:1.65;margin-bottom:1.25rem;">Submit your Expression of Interest and receive the Information Memorandum within 24 hours.</p>
+          <a href="#eoi-section" onclick="(function(){ var s=sessionStorage.getItem('ig_nda_${l.id}'); if(s&&JSON.parse(s).accepted){ document.getElementById('eoi-section').scrollIntoView({behavior:'smooth'}); } else { igScrollToNDA(); } })(); return false;" class="btn btn-g" style="width:100%;display:block;text-align:center;padding:.875rem;text-decoration:none;margin-bottom:.75rem;">
             <i class="fas fa-arrow-down" style="margin-right:.4rem;font-size:.7rem;"></i>Submit EOI
           </a>
+          <!-- WhatsApp quick connect -->
+          <a href="https://wa.me/918988988988?text=${encodeURIComponent('Hi, I am interested in ' + l.title + ' (' + l.value + ') — please share the Information Memorandum and schedule a call.')}" target="_blank" rel="noopener"
+            style="display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.65rem;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#25D366;color:#fff;text-decoration:none;transition:background .2s;margin-bottom:.75rem;"
+            onmouseover="this.style.background='#1eb659'" onmouseout="this.style.background='#25D366'">
+            <i class="fab fa-whatsapp" style="font-size:.8rem;"></i>WhatsApp Enquiry
+          </a>
+          <!-- Share row -->
+          <div style="display:flex;justify-content:center;gap:.5rem;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.07);">
+            <span style="font-size:.58rem;color:rgba(255,255,255,.3);align-self:center;margin-right:.2rem;text-transform:uppercase;letter-spacing:.1em;">Share</span>
+            <a href="https://twitter.com/intent/tweet?url=https://india-gully.pages.dev/listings/${l.id}&text=${encodeURIComponent(l.title + ' — Active Mandate, India Gully Advisory')}" target="_blank" rel="noopener" title="Share on X/Twitter"
+               style="width:30px;height:30px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);text-decoration:none;transition:all .2s;"
+               onmouseover="this.style.background='rgba(255,255,255,.12)';this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,.06)';this.style.color='rgba(255,255,255,.6)'">
+              <i class="fab fa-x-twitter" style="font-size:.62rem;"></i>
+            </a>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://india-gully.pages.dev/listings/${l.id}" target="_blank" rel="noopener" title="Share on LinkedIn"
+               style="width:30px;height:30px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);text-decoration:none;transition:all .2s;"
+               onmouseover="this.style.background='#0A66C2';this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,.06)';this.style.color='rgba(255,255,255,.6)'">
+              <i class="fab fa-linkedin-in" style="font-size:.62rem;"></i>
+            </a>
+            <a href="https://wa.me/?text=${encodeURIComponent(l.title + ' — Active Mandate https://india-gully.pages.dev/listings/' + l.id)}" target="_blank" rel="noopener" title="Share on WhatsApp"
+               style="width:30px;height:30px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);text-decoration:none;transition:all .2s;"
+               onmouseover="this.style.background='#25D366';this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,.06)';this.style.color='rgba(255,255,255,.6)'">
+              <i class="fab fa-whatsapp" style="font-size:.62rem;"></i>
+            </a>
+            <button onclick="navigator.clipboard&&navigator.clipboard.writeText('https://india-gully.pages.dev/listings/${l.id}').then(function(){igToast('Link copied!','success')}).catch(function(){})" title="Copy link"
+               style="width:30px;height:30px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);cursor:pointer;transition:all .2s;"
+               onmouseover="this.style.background='rgba(255,255,255,.12)';this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,.06)';this.style.color='rgba(255,255,255,.6)'">
+              <i class="fas fa-link" style="font-size:.62rem;"></i>
+            </button>
+          </div>
         </div>
 
       </div>
@@ -1175,7 +1205,7 @@ ${ndaModal}
       ${others.map((x: any) => {
         const xHasImg = x.images && x.images.length > 0
         return `
-      <a href="/listings/${x.id}" style="display:block;background:#fff;border:1px solid var(--border);overflow:hidden;transition:all .25s;text-decoration:none;"
+      <a href="/listings/${x.id}" style="display:block;background:var(--parch);border:1px solid var(--border);overflow:hidden;transition:all .25s;text-decoration:none;"
          onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 8px 28px rgba(0,0,0,.08)'" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none'">
         <div style="height:160px;overflow:hidden;position:relative;background:#1a1a1a;">
           ${xHasImg

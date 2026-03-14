@@ -239,12 +239,18 @@ function igContactAjax() {
   })
   .then(function(r){return r.json();})
   .then(function(d){
+    if(!d.success){
+      if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Submit Mandate Enquiry';}
+      showErr(d.error||'Submission failed. Please try again or email info@indiagully.com');
+      return;
+    }
     if(form)form.style.display='none';
     var succ=document.getElementById('contact-success');
     var refEl=document.getElementById('contact-success-ref');
     if(succ)succ.style.display='block';
     if(refEl)refEl.textContent=d.ref||('IG-ENQ-'+Date.now());
     if(succ)succ.scrollIntoView({behavior:'smooth',block:'start'});
+    if(window.igToast)window.igToast('Enquiry submitted! A confirmation email has been sent.','success');
   })
   .catch(function(){
     if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane" style="margin-right:.5rem;"></i>Submit Mandate Enquiry';}

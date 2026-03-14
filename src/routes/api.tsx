@@ -2483,6 +2483,100 @@ app.post('/enquiry', async (c) => {
       })
     }
 
+    // ── GENERAL CONTACT FORM notifications ──────────────────────────────────
+    if (type === 'general' || type === 'contact') {
+      const location    = sanitiseStr((data as any).location || '', 200)
+      const scale       = sanitiseStr((data as any).scale   || '', 80)
+      const source      = sanitiseStr((data as any).source  || 'website', 80)
+      const contactBody = `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border:1px solid #e5e7eb;">
+          <div style="background:#0c0c18;padding:24px 32px;border-bottom:3px solid #B8960C;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:rgba(184,150,12,.8);margin-bottom:6px;">India Gully Advisory</div>
+            <div style="font-family:'Georgia',serif;font-size:20px;color:#fff;">New Contact Enquiry</div>
+          </div>
+          <div style="padding:24px 32px;">
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+              ${[
+                ['Reference', ref],
+                ['Name', name],
+                ['Email', `<a href="mailto:${email}" style="color:#B8960C;">${email}</a>`],
+                ['Phone', phone || '—'],
+                ['Organisation', org || '—'],
+                ['Location / Property', location || '—'],
+                ['Deal Scale', scale || '—'],
+                ['Source', source],
+                ['Submitted', new Date(ts).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })],
+              ].map(([k, v]) => `
+              <tr style="border-bottom:1px solid #f3f4f6;">
+                <td style="padding:10px 8px;font-weight:600;color:#6b7280;white-space:nowrap;width:140px;">${k}</td>
+                <td style="padding:10px 8px;color:#111827;">${v}</td>
+              </tr>`).join('')}
+            </table>
+            ${message ? `
+            <div style="margin-top:20px;background:#f9fafb;border-left:3px solid #B8960C;padding:14px 18px;">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#9ca3af;margin-bottom:8px;">Message</div>
+              <p style="font-size:13px;color:#374151;line-height:1.7;margin:0;">${message.replace(/\n/g, '<br>')}</p>
+            </div>` : ''}
+            <div style="margin-top:24px;text-align:center;">
+              <a href="mailto:${email}?subject=Re: Your Enquiry — Ref ${ref}" style="display:inline-block;background:#B8960C;color:#fff;text-decoration:none;padding:11px 24px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">Reply to ${name.split(' ')[0]}</a>
+            </div>
+          </div>
+          <div style="padding:16px 32px;background:#f9fafb;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af;text-align:center;">
+            India Gully Advisory · info@indiagully.com · +91 8988 988 988
+          </div>
+        </div>`
+
+      const userConfirmBody = `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#fff;border:1px solid #e5e7eb;">
+          <div style="background:#0c0c18;padding:24px 32px;border-bottom:3px solid #B8960C;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:rgba(184,150,12,.8);margin-bottom:6px;">India Gully Advisory</div>
+            <div style="font-family:'Georgia',serif;font-size:20px;color:#fff;">Enquiry Received</div>
+          </div>
+          <div style="padding:28px 32px;">
+            <p style="font-size:14px;color:#374151;line-height:1.7;">Dear ${name.split(' ')[0]},</p>
+            <p style="font-size:14px;color:#374151;line-height:1.7;">Thank you for reaching out to India Gully Advisory. We have received your enquiry and our leadership team will respond within <strong>24 business hours</strong>.</p>
+            <div style="background:#f9fafb;border:1px solid #e5e7eb;padding:16px 20px;margin:20px 0;">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#9ca3af;margin-bottom:6px;">Reference Number</div>
+              <div style="font-family:'Georgia',serif;font-size:1.4rem;color:#B8960C;letter-spacing:.05em;">${ref}</div>
+            </div>
+            <p style="font-size:13px;color:#6b7280;line-height:1.7;">If you need immediate assistance, please contact us directly:</p>
+            <ul style="font-size:13px;color:#374151;line-height:2;padding-left:20px;">
+              <li>📞 <a href="tel:+918988988988" style="color:#B8960C;text-decoration:none;">+91 8988 988 988</a></li>
+              <li>✉ <a href="mailto:info@indiagully.com" style="color:#B8960C;text-decoration:none;">info@indiagully.com</a></li>
+              <li>💬 <a href="https://wa.me/918988988988" style="color:#25D366;text-decoration:none;">WhatsApp: +91 8988 988 988</a></li>
+            </ul>
+          </div>
+          <div style="padding:16px 32px;background:#f9fafb;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af;text-align:center;">
+            India Gully Advisory · Celebrating Desiness · <a href="https://india-gully.pages.dev" style="color:#B8960C;text-decoration:none;">india-gully.pages.dev</a>
+          </div>
+        </div>`
+
+      // Notify team
+      sendEmail(env, {
+        to: 'info@indiagully.com',
+        toName: 'India Gully Team',
+        subject: `[New Enquiry] ${name} — ${org || 'Individual'} · ${ref}`,
+        html: contactBody,
+        replyTo: email,
+      })
+      // CC leadership
+      sendEmail(env, {
+        to: 'akm@indiagully.com',
+        toName: 'Arun Manikonda',
+        subject: `[Contact Form] ${name} · ${ref}`,
+        html: contactBody,
+        replyTo: email,
+      })
+      // Confirmation to submitter
+      sendEmail(env, {
+        to: email,
+        toName: name,
+        subject: `Enquiry Received — India Gully Advisory · Ref ${ref}`,
+        html: userConfirmBody,
+        replyTo: 'info@indiagully.com',
+      })
+    }
+
     return c.json({
       success: true,
       ref,
