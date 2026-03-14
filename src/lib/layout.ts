@@ -110,7 +110,9 @@ tailwind.config = {
 ══════════════════════════════════════════════════════════════════════════ */
 
 /* ── DARK MODE VARIABLES ───────────────────────────────────────────────── */
-[data-theme="dark"]{
+/* Use html[data-theme="dark"] (specificity 0-1-1) to beat :root (0-1-0) so
+   dark-mode custom properties actually override the light-mode :root values */
+html[data-theme="dark"]{
   --gold:#D4AE2A;--gold-pale:rgba(212,174,42,.08);
   --ink:#f1f5f9;--ink-muted:#94a3b8;--ink-soft:#cbd5e1;--ink-faint:#475569;
   --parch:#0a0a0f;--parch-dk:#111118;--border:rgba(255,255,255,.07);--border-lt:rgba(255,255,255,.07);
