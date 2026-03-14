@@ -10,7 +10,7 @@ Vivacious Entertainment and Hospitality Pvt. Ltd.
 | Environment | URL |
 |-------------|-----|
 | **Production** | https://india-gully.pages.dev |
-| **Latest Deploy** | https://89f9072c.india-gully.pages.dev |
+| **Latest Deploy** | https://d098b3b6.india-gully.pages.dev |
 | **🔍 Deep Audit Report** | https://india-gully.pages.dev/audit |
 | **HORECA Customer Portal** | https://india-gully.pages.dev/horeca/portal |
 | **GraphQL Playground** | https://india-gully.pages.dev/admin/api-docs |
@@ -96,6 +96,27 @@ All portals require credentials provisioned by the system administrator.
 | Page | URL |
 |------|-----|
 | Investor Relations | https://india-gully.pages.dev/invest |
+
+---
+
+## 🚀 Phase 12 — SEO Completion, Listings UX, /invest Polish & Dark Mode Fixes (v23)
+
+**Version: v23 | Build: 3.7 MB | Routes: 21+ all 200 OK | Deploy: https://d098b3b6.india-gully.pages.dev**  
+**Commit: 3cfc9cb | Date: March 2026**
+
+### ✅ Phase 12 Deliverables
+
+| Area | What Changed |
+|------|-------------|
+| **Canonical SEO — all pages** | Added absolute canonical URLs to `horeca.tsx` (main + catalogue), `resources.tsx`, and fixed `testimonials.tsx` relative → absolute. All 20+ pages now have correct canonical URLs. |
+| **Sitemap — /invest added** | `/invest` with `priority: 0.85` and `changefreq: monthly` added to `/sitemap.xml`. Sitemap now covers all 21+ routes. |
+| **/listings — Sort controls** | Sort bar added above mandate grid: Default Order, Value High→Low, Value Low→High, By Sector. Cards get `data-value` and `data-idx` attributes. Result count badge updates dynamically. |
+| **/listings — Reset button** | One-click reset restores default sort + "All Mandates" filter. |
+| **/listings — WhatsApp Enquire** | Green WhatsApp Enquire button on every mandate card with pre-filled message: "Hi, I am interested in [Mandate Title] — please share details / Information Memorandum." |
+| **/listings — Canonical + title** | Page title improved to "Active Mandates — India Gully Advisory Pipeline". Canonical added. |
+| **/listings — Dark mode cards** | Card body background changed from hardcoded `#fff` to `var(--parch)` (adapts to theme). |
+| **/invest — Sector filter** | Filter pills (All, Real Estate, Hospitality, Heritage Hospitality, Mixed-Use) above pipeline grid with live JS filtering. |
+| **/invest — Dark mode cards** | Pipeline card backgrounds changed from `#fff` to `var(--parch)`. `data-sector` added to each card for filtering. |
 
 ---
 
