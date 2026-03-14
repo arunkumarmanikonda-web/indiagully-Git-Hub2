@@ -625,8 +625,8 @@ textarea.ig-input{resize:vertical;min-height:130px}
 #btt.show{display:flex;}
 
 /* ── Sticky stats bar ────────────────────────── */
-#stickyStats{position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;transform:translateY(-110%);transition:transform .38s cubic-bezier(.4,0,.2,1);background:rgba(6,6,6,.98);backdrop-filter:blur(20px);border-bottom:1px solid rgba(184,150,12,.15);pointer-events:none;}
-#stickyStats.visible{transform:translateY(0);pointer-events:auto;}
+#stickyStats{position:fixed;top:calc(var(--nav-h) - 60px);left:0;right:0;z-index:190;opacity:0;visibility:hidden;transform:translateY(-12px);transition:top .35s cubic-bezier(.4,0,.2,1),opacity .35s cubic-bezier(.4,0,.2,1),transform .35s cubic-bezier(.4,0,.2,1),visibility 0s .35s;background:rgba(6,6,6,.98);backdrop-filter:blur(20px);border-bottom:1px solid rgba(184,150,12,.15);pointer-events:none;}
+#stickyStats.visible{top:var(--nav-h);opacity:1;visibility:visible;transform:translateY(0);transition:top .35s cubic-bezier(.4,0,.2,1),opacity .35s cubic-bezier(.4,0,.2,1),transform .35s cubic-bezier(.4,0,.2,1),visibility 0s 0s;pointer-events:auto;}
 .sticky-stat{display:flex;align-items:center;gap:.5rem;padding:.58rem 1.35rem;}
 .sticky-stat-n{font-family:"DM Serif Display",Georgia,serif;font-size:1.05rem;color:var(--gold);line-height:1;}
 .sticky-stat-l{font-size:.54rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);}
@@ -2487,7 +2487,7 @@ const SCRIPTS = (_nonce?: string) => `
       if(!results) return;
       activeIdx = -1;
       if(items.length === 0){
-        results.innerHTML = '<div style="padding:2rem 1.25rem;text-align:center;font-size:.8rem;color:rgba(255,255,255,.3);">No results for <em style=\'color:rgba(255,255,255,.55)\'>"'+q+'"</em></div>';
+        results.innerHTML = '<div style="padding:2rem 1.25rem;text-align:center;font-size:.8rem;color:rgba(255,255,255,.3);">No results for <em style="color:rgba(255,255,255,.55)">&ldquo;'+q+'&rdquo;</em></div>';
         return;
       }
       var html = items.map(function(item, i){
