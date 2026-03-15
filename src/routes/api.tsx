@@ -619,7 +619,7 @@ app.get('/auth/csrf-token', async (c) => {
   MEM_CSRF.set(sessionId, { token, expires: Date.now() + 30 * 60 * 1000 })
   const preProto = c.req.header('X-Forwarded-Proto') || c.req.header('x-forwarded-proto') || 'http'
   const preSecure = preProto === 'https' ? '; Secure' : ''
-  c.header('Set-Cookie', `ig_pre_session=${sessionId}; HttpOnly${preSecure}; SameSite=Lax; Path=/; Max-Age=1800`)
+  c.header('Set-Cookie', `ig_pre_session=${sessionId}; HttpOnly${preSecure}; SameSite=Strict; Path=/; Max-Age=1800`)
   return c.json({ csrf_token: token, expires_in: 1800 })
 })
 
@@ -633,8 +633,10 @@ app.post('/auth/login', async (c) => {
     const rate = await kvRateCheck(c.env?.IG_RATELIMIT_KV, rateKey)
 
     if (!rate.allowed) {
-      const lockMinutes = Math.ceil((rate.locked_until - Date.now()) / 60000)
-      c.header('Retry-After', String(rate.locked_until - Date.now()))
+      const lockMs = Math.max(rate.locked_until - Date.now(), 0)
+      const lockMinutes = Math.ceil(lockMs / 60000)
+      // Retry-After must be in seconds per RFC 9110
+      c.header('Retry-After', String(Math.ceil(lockMs / 1000)))
       c.header('X-RateLimit-Remaining', '0')
       c.header('X-RateLimit-Reset', String(rate.locked_until))
       return c.html(errorRedirect('/portal', `Too many failed attempts. Account locked for ${lockMinutes} minute(s). Contact admin@indiagully.com for early unlock.`), 429)
@@ -701,7 +703,7 @@ app.post('/auth/login', async (c) => {
     // Issue HttpOnly session cookie — Secure flag only when request arrived over HTTPS
     const proto = c.req.header('X-Forwarded-Proto') || c.req.header('x-forwarded-proto') || 'http'
     const secureFlag = proto === 'https' ? '; Secure' : ''
-    const cookieFlags = `HttpOnly${secureFlag}; SameSite=Lax; Path=/; Max-Age=1800`
+    const cookieFlags = `HttpOnly${secureFlag}; SameSite=Strict; Path=/; Max-Age=1800`
     c.header('Set-Cookie', `ig_session=${sessionId}; ${cookieFlags}`)
     c.header('X-CSRF-Token', csrfToken)
 
@@ -769,7 +771,7 @@ app.post('/auth/admin', async (c) => {
     // Issue HttpOnly session cookie — Secure flag only when request arrived over HTTPS
     const adminProto = c.req.header('X-Forwarded-Proto') || c.req.header('x-forwarded-proto') || 'http'
     const adminSecureFlag = adminProto === 'https' ? '; Secure' : ''
-    const adminCookieFlags = `HttpOnly${adminSecureFlag}; SameSite=Lax; Path=/; Max-Age=1800`
+    const adminCookieFlags = `HttpOnly${adminSecureFlag}; SameSite=Strict; Path=/; Max-Age=1800`
     c.header('Set-Cookie', `ig_session=${sessionId}; ${adminCookieFlags}`)
     c.header('X-CSRF-Token', csrfToken)
     await kvRateDel(c.env?.IG_RATELIMIT_KV, rateKey)
@@ -797,7 +799,8 @@ app.post('/auth/logout', async (c) => {
   }
   const logoutProto = c.req.header('X-Forwarded-Proto') || c.req.header('x-forwarded-proto') || 'http'
   const logoutSecure = logoutProto === 'https' ? '; Secure' : ''
-  c.header('Set-Cookie', `ig_session=; HttpOnly${logoutSecure}; SameSite=Lax; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT`)
+  c.header('Set-Cookie', `ig_session=; HttpOnly${logoutSecure}; SameSite=Strict; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT`)
+  c.header('Set-Cookie', `ig_pre_session=; HttpOnly${logoutSecure}; SameSite=Strict; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT`, { append: true })
   return c.redirect(portalDest === 'admin' ? '/admin' : `/portal/${portalDest}`, 302)
 })
 
@@ -1656,7 +1659,7 @@ app.post('/payments/create-order', async (c) => {
     }
 
     // Fallback demo mode
-    const order_id = `order_${generateSecureToken(8)}_demo`
+    const order_id = `order_${await generateSecureToken(8)}_demo`
     return c.json({
       success: true,
       order_id,
